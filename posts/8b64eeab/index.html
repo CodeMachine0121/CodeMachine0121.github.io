@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|JetBrains Mono:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Hi all, 來到第13天 昨天由於依賴衝突的關係，導致延後套用 SDK~~~今天就來把專案引入昨天寫好的 SDK吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ithome鐵人賽-2024-Day13 Apply Ecc SDK">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/8b64eeab/index.html">
+<meta property="og:site_name" content="James&#39; Blog">
+<meta property="og:description" content="Hi all, 來到第13天 昨天由於依賴衝突的關係，導致延後套用 SDK~~~今天就來把專案引入昨天寫好的 SDK吧。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2024-08-15T13:31:57.000Z">
+<meta property="article:modified_time" content="2024-09-30T16:34:28.068Z">
+<meta property="article:author" content="James Hsueh">
+<meta property="article:tag" content="ithome 鐵人賽-2024">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://codemachine0121.github.io/posts/8b64eeab/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>ithome鐵人賽-2024-Day13 Apply Ecc SDK | James' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="James' Blog" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism.css" type="text/css"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">James' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">地域列車車長</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">29</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+
+
+  </ul>
+</nav>
+
+<div class="coffee" style="display:flex;justify-content:center;padding:10px;">
+  <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="James.Hsueh" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+</div>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜尋..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/8b64eeab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ithome鐵人賽-2024-Day13 Apply Ecc SDK
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2024-08-15 21:31:57" itemprop="dateCreated datePublished" datetime="2024-08-15T21:31:57+08:00">2024-08-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2024-10-01 00:34:28" itemprop="dateModified" datetime="2024-10-01T00:34:28+08:00">2024-10-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/" itemprop="url" rel="index"><span itemprop="name">ithome 鐵人賽-2024</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Hi all, 來到第13天 昨天由於依賴衝突的關係，導致延後套用 SDK~~~今天就來把專案引入昨天寫好的 SDK吧。</p>
+<span id="more"></span>
+<p>今日的目標就是: 替區塊補上 Cameleon Hash, 此次套用的SDK 版本為: 1.0.4</p>
+<h2 id="programs">Programs</h2>
+<p>首先我們必須於 <code>Programs</code> 中替 KeyPair, SessionKey 物件做DI的註冊。</p>
+<p>至於為甚麼是 Singleton，主要原因是我期望每個 request 進來時使用的 key都是同組。code 如下:</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> keyPair = EccGenerator.GenerateKeyPair(<span class="number">256</span>);</span><br><span class="line"><span class="keyword">var</span> sessionKey = SessionKeyGenerator.GenerateSessionKey();</span><br><span class="line">builder.Services.AddSingleton(keyPair);</span><br><span class="line">builder.Services.AddSingleton(sessionKey);</span><br></pre></td></tr></table></figure>
+<h2 id="controller">Controller</h2>
+<p>接著就是使用的地方，我們必須於建構子中注入 <code>keypair</code>, <code>SessionKey</code> 物件，並導入Dto物件，最後再從Dto物件中透過 <code>EccGenerator</code> 物件進行變色龍雜湊函數的計算，code 如下:</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Route(<span class="string">&quot;api/v1/[controller]&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChainController</span>(<span class="params">IChainService chainService, KeyPair keyPair, SessionKey sessionKey</span>) : ControllerBase</span> </span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpGet(<span class="string">&quot;&#123;id&#125;&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;ApiResponse&gt; <span class="title">GetBlockById</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> block = <span class="keyword">await</span> chainService.GetBlockById(id);</span><br><span class="line">        <span class="keyword">return</span> ApiResponse.SuccessWithData(block);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">HttpPost(<span class="string">&quot;new&quot;</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;ApiResponse&gt; <span class="title">GenerateNewBlock</span>(<span class="params">[FromBody] GenerateNewBlockRequest request</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> newBlock = <span class="keyword">await</span> chainService.GenerateNewBlock(request.ToDto(keyPair, sessionKey));</span><br><span class="line">        <span class="keyword">return</span> ApiResponse.SuccessWithData(newBlock);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="request">Request:</h2>
+<ul>
+<li>需要新增兩個 property 的 setter</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GenerateNewBlockRequest</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Data &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> GenerateNewBlockDto <span class="title">ToDto</span>(<span class="params">KeyPair keyPair, SessionKey sessionKey</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> GenerateNewBlockDto()</span><br><span class="line">        &#123;</span><br><span class="line">            KeyPair = keyPair,</span><br><span class="line">            SessionKey = sessionKey,</span><br><span class="line">            Data =  Data</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="dto">DTO</h2>
+<p>需要替第一個 Block計算簽章值，會有點 confus的地方是在於，原本我們是把 new Block 這段code寫在service層，</p>
+<p>但基於單一職責的問題，我把他抽 method 之後在塞進 dto 內，code如下。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GenerateNewBlockDto</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Data &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> DateTime TimeStamp &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> KeyPair KeyPair &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> SessionKey SessionKey &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BlockDomain <span class="title">GetGenesisBlock</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span>,</span><br><span class="line">            ChameleonSignature = ChameleonHashHelper.Sign(<span class="keyword">new</span> ChameleonHashRequest</span><br><span class="line">            &#123;</span><br><span class="line">                KeyPair = KeyPair,</span><br><span class="line">                Message = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">                SessionKey = SessionKey.Key,</span><br><span class="line">                Order = KeyPair.PublicKey.Curve.Order,</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="service">Service</h2>
+<p>經過一番 refactor 後，變成這樣</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChainService</span>(<span class="params">IChainRepository chainRepository</span>) : IChainService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">int</span> Nonce = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GetBlockById</span>(<span class="params"><span class="built_in">int</span> i</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">await</span> chainRepository.GetBlockBy(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> chainLength = <span class="keyword">await</span> chainRepository.GetChainLength();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">var</span> newBlock = chainLength == <span class="number">0</span></span><br><span class="line">            ? dto.GetGenesisBlock()</span><br><span class="line">            : (<span class="keyword">await</span> chainRepository.GetBlockBy(chainLength)).GenerateNextBlock(dto, Nonce);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">        <span class="keyword">return</span> newBlock;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="domain">Domain</h2>
+<p>接著就是計算下個區塊以及轉換 Entity的地方需要計算與新增簽章，code 如下</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BlockDomain</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Data &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Hash &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> PreviousHash &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> DateTime TimeStamp &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Nonce &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ChameleonSignature ChameleonSignature &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> BlockDomain <span class="title">GenerateNextBlock</span>(<span class="params">GenerateNewBlockDto dto, <span class="built_in">int</span> nonce</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = dto.Data,</span><br><span class="line">            PreviousHash = Hash,</span><br><span class="line">            TimeStamp = dto.TimeStamp,</span><br><span class="line">            Hash = HashHelper.ToSha256(<span class="string">$&quot;<span class="subst">&#123;dto.TimeStamp&#125;</span>:<span class="subst">&#123;Hash&#125;</span>:<span class="subst">&#123;dto.Data&#125;</span>:<span class="subst">&#123;nonce&#125;</span>&quot;</span>),</span><br><span class="line">            Nonce = nonce,</span><br><span class="line">            ChameleonSignature = ChameleonHashHelper.Sign(<span class="keyword">new</span> ChameleonHashRequest</span><br><span class="line">            &#123;</span><br><span class="line">                KeyPair = dto.KeyPair,</span><br><span class="line">                Message = <span class="string">$&quot;<span class="subst">&#123;dto.TimeStamp&#125;</span>:<span class="subst">&#123;Hash&#125;</span>:<span class="subst">&#123;dto.Data&#125;</span>:<span class="subst">&#123;nonce&#125;</span>&quot;</span>,</span><br><span class="line">                SessionKey = dto.SessionKey.Key,</span><br><span class="line">                Order = dto.KeyPair.PublicKey.Curve.Order,</span><br><span class="line">            &#125;),</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Block <span class="title">ToEntity</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Block</span><br><span class="line">        &#123;</span><br><span class="line">            Data = Data,</span><br><span class="line">            Hash = Hash,</span><br><span class="line">            PreviousHash = PreviousHash,</span><br><span class="line">            TimeStamp = TimeStamp,</span><br><span class="line">            Nonce = Nonce,</span><br><span class="line">            ChameleonSignature = ChameleonSignature.Value.ToString()</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="entity">Entity</h2>
+<p>新增 property</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Block</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Key</span>]</span><br><span class="line">    [<span class="meta">DatabaseGenerated(DatabaseGeneratedOption.Identity)</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Required</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Data &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Required</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Hash &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Required</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> PreviousHash &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Required</span>]</span><br><span class="line">    <span class="keyword">public</span> DateTime TimeStamp &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Required</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Nonce &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ChameleonSignature &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BlockDomain <span class="title">ToDomain</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = Data,</span><br><span class="line">            Hash = Hash,</span><br><span class="line">            PreviousHash = PreviousHash,</span><br><span class="line">            TimeStamp = TimeStamp,</span><br><span class="line">            Nonce = Nonce</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="conclusion">Conclusion</h2>
+<p>經過一番努力，總算是可以正常替區塊計算簽章值了，明天接著進行 edit 區塊的部分</p>
+<p>結語: SDK 輸出的東西，能的話就多墊一層 model，可以避免翻車</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/" rel="tag"># ithome 鐵人賽-2024</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/78964999/" rel="prev" title="ithome鐵人賽-2024-Day12-SDK 放送事故…">
+      <i class="fa fa-chevron-left"></i> ithome鐵人賽-2024-Day12-SDK 放送事故…
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/737e6e43/" rel="next" title="Type and Interface">
+      Type and Interface <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#programs"><span class="nav-number">1.</span> <span class="nav-text">Programs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#controller"><span class="nav-number">2.</span> <span class="nav-text">Controller</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#request"><span class="nav-number">3.</span> <span class="nav-text">Request:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dto"><span class="nav-number">4.</span> <span class="nav-text">DTO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service"><span class="nav-number">5.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#domain"><span class="nav-number">6.</span> <span class="nav-text">Domain</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#entity"><span class="nav-number">7.</span> <span class="nav-text">Entity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">8.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">James Hsueh</p>
+  <div class="site-description" itemprop="description">分享紀錄的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/codeMachine0121" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;codeMachine0121" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:asdfg55887@gmail.com" title="E-Mail → mailto:asdfg55887@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/ksz54213" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;ksz54213" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">James Hsueh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
