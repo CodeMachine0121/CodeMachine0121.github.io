@@ -1,39 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Golang/Gin: (CRUD) Delete Data</title>
-    <url>/posts/302493fc/</url>
-    <content><![CDATA[<p>Hi all, for this article, I’ll show how to delete data using Gin</p>
-<h2 id="purpose">Purpose</h2>
-<ol>
-<li>New endpoint to delete data.</li>
-<li>Add a function in the service layer to handle the request.</li>
-<li>Extract the ID from the request parameter(Restful).</li>
-<li>Remove the data from the list.</li>
-<li>Return the list.</li>
-</ol>
+    <title>C# Unit Test 如何驗證多次呼叫</title>
+    <url>/posts/43a9b739/</url>
+    <content><![CDATA[<p>Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰<br>
+假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。</p>
 <span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	router.GET(<span class="string">&quot;/users&quot;</span>, service.FetchAll)</span><br><span class="line">	router.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	<span class="comment">// define the route with parameter</span></span><br><span class="line">	router.DELETE(<span class="string">&quot;user/:id&quot;</span>, service.Delete)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="service-user-go">service/user.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Delete</span><span class="params">(context *gin.Context)</span></span> &#123;</span><br><span class="line">	<span class="comment">// get id from routing like restful api and to int</span></span><br><span class="line">	id, _ := strconv.Atoi(context.Param(<span class="string">&quot;id&quot;</span>))</span><br><span class="line"></span><br><span class="line">	useList = Filter(useList, <span class="function"><span class="keyword">func</span><span class="params">(user models.User)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> user.ID != id</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	context.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">		<span class="string">&quot;message&quot;</span>: useList,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Filter</span><span class="params">(list []models.User, predicate <span class="keyword">func</span>(user models.User)</span></span> <span class="type">bool</span>) []models.User &#123;</span><br><span class="line">	<span class="keyword">var</span> result []models.User</span><br><span class="line">	<span class="keyword">for</span> _, user := <span class="keyword">range</span> list &#123;</span><br><span class="line">		<span class="keyword">if</span> predicate(user) &#123;</span><br><span class="line">			result = <span class="built_in">append</span>(result, user)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
-<ol>
-<li>Added a new route for the DELETE request in main.go.</li>
-<li>In the service layer, added a function to handle the DELETE request.
-<ol>
-<li>Extract the ID from the request parameter.</li>
-<li>New a function <code>Filter</code> and make it receive a func as a parameter</li>
-<li>For the predicate function, we check if the user ID is not equal to the ID we want to delete.</li>
-<li>Return the list as a response.</li>
-</ol>
-</li>
-<li>return the list as a response.</li>
-</ol>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Run</span>(<span class="params"><span class="built_in">int</span> batch</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> students = studentRepository.FetchByBatch(batch);</span><br><span class="line">        <span class="keyword">if</span> (!students.Any())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        studentRepository.Insert(students);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那這樣問題來了，我們該如何驗證呢?</p>
+<h2 id="寫測試囉">寫測試囉</h2>
+<p>這個問題其實苦惱了我們一下子，但透過 你的好同事 Chat GPT 後，我們發現其實我們使用的Assert 框架及 Mock框架提供了這樣的寫法 (BTW 這裡使用的 package分別為: NSubstitute 及 FluentAssertions )。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">should_get_data_by_batch</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    _batchService.Run(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>).ToList();</span><br><span class="line">    argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的 test code 雖然看起來又長又臭的，但其實可以蠻明確地看出 test 3A( Arrange, Action, Assert)。<br>
+Arrange<br>
+一般來說，我們會使用 Returns 來mock 這個被呼叫的函數回傳特定的值，但其實有的隱藏版用法就是可以透過逗號來區分第幾次呼叫要回傳的值，以這次的例子舉例，我們指定了第一次呼叫時要回傳 3個 Id為1~3的student 資料。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">_studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h2 id="assert">Assert</h2>
+<p>在 Assert這一段，我們用了個人比較不常用到的方式來驗證。我們透過 ReceivedCalls() 取得我們整段測試針對此mock 物件接收到的呼叫請求，並再一步拿到 呼叫函數的資訊把方法名為 “Insert” 提取出來。<br>
+提取出來的物件會是一個List物件，其中每個成員都是每次呼叫方法的請求物件。在這個物件中，我們可以透過 GetArguments 取得該次請求所送出的參數，因此我們就可以來驗證不同呼叫時所帶的參數是否正確。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>)</span><br><span class="line">.ToList();</span><br><span class="line">argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">&#125;);</span><br><span class="line">argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="conclusion">Conclusion</h2>
+<p>以上為如何驗證多次呼叫的實作，單純個人筆記。</p>
 ]]></content>
+      <categories>
+        <category>單元測試</category>
+      </categories>
       <tags>
-        <tag>Golang/Gin</tag>
+        <tag>UnitTest</tag>
       </tags>
   </entry>
   <entry>
@@ -94,32 +87,39 @@
       </tags>
   </entry>
   <entry>
-    <title>C# Unit Test 如何驗證多次呼叫</title>
-    <url>/posts/43a9b739/</url>
-    <content><![CDATA[<p>Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰<br>
-假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。</p>
+    <title>Golang/Gin: (CRUD) Delete Data</title>
+    <url>/posts/302493fc/</url>
+    <content><![CDATA[<p>Hi all, for this article, I’ll show how to delete data using Gin</p>
+<h2 id="purpose">Purpose</h2>
+<ol>
+<li>New endpoint to delete data.</li>
+<li>Add a function in the service layer to handle the request.</li>
+<li>Extract the ID from the request parameter(Restful).</li>
+<li>Remove the data from the list.</li>
+<li>Return the list.</li>
+</ol>
 <span id="more"></span>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Run</span>(<span class="params"><span class="built_in">int</span> batch</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> students = studentRepository.FetchByBatch(batch);</span><br><span class="line">        <span class="keyword">if</span> (!students.Any())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        studentRepository.Insert(students);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>那這樣問題來了，我們該如何驗證呢?</p>
-<h2 id="寫測試囉">寫測試囉</h2>
-<p>這個問題其實苦惱了我們一下子，但透過 你的好同事 Chat GPT 後，我們發現其實我們使用的Assert 框架及 Mock框架提供了這樣的寫法 (BTW 這裡使用的 package分別為: NSubstitute 及 FluentAssertions )。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">should_get_data_by_batch</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    _batchService.Run(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>).ToList();</span><br><span class="line">    argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的 test code 雖然看起來又長又臭的，但其實可以蠻明確地看出 test 3A( Arrange, Action, Assert)。<br>
-Arrange<br>
-一般來說，我們會使用 Returns 來mock 這個被呼叫的函數回傳特定的值，但其實有的隱藏版用法就是可以透過逗號來區分第幾次呼叫要回傳的值，以這次的例子舉例，我們指定了第一次呼叫時要回傳 3個 Id為1~3的student 資料。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">_studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<h2 id="assert">Assert</h2>
-<p>在 Assert這一段，我們用了個人比較不常用到的方式來驗證。我們透過 ReceivedCalls() 取得我們整段測試針對此mock 物件接收到的呼叫請求，並再一步拿到 呼叫函數的資訊把方法名為 “Insert” 提取出來。<br>
-提取出來的物件會是一個List物件，其中每個成員都是每次呼叫方法的請求物件。在這個物件中，我們可以透過 GetArguments 取得該次請求所送出的參數，因此我們就可以來驗證不同呼叫時所帶的參數是否正確。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>)</span><br><span class="line">.ToList();</span><br><span class="line">argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">&#125;);</span><br><span class="line">argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="conclusion">Conclusion</h2>
-<p>以上為如何驗證多次呼叫的實作，單純個人筆記。</p>
+<h2 id="code">Code</h2>
+<h3 id="main-go">main.go</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	router.GET(<span class="string">&quot;/users&quot;</span>, service.FetchAll)</span><br><span class="line">	router.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	<span class="comment">// define the route with parameter</span></span><br><span class="line">	router.DELETE(<span class="string">&quot;user/:id&quot;</span>, service.Delete)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="service-user-go">service/user.go</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Delete</span><span class="params">(context *gin.Context)</span></span> &#123;</span><br><span class="line">	<span class="comment">// get id from routing like restful api and to int</span></span><br><span class="line">	id, _ := strconv.Atoi(context.Param(<span class="string">&quot;id&quot;</span>))</span><br><span class="line"></span><br><span class="line">	useList = Filter(useList, <span class="function"><span class="keyword">func</span><span class="params">(user models.User)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> user.ID != id</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	context.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">		<span class="string">&quot;message&quot;</span>: useList,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Filter</span><span class="params">(list []models.User, predicate <span class="keyword">func</span>(user models.User)</span></span> <span class="type">bool</span>) []models.User &#123;</span><br><span class="line">	<span class="keyword">var</span> result []models.User</span><br><span class="line">	<span class="keyword">for</span> _, user := <span class="keyword">range</span> list &#123;</span><br><span class="line">		<span class="keyword">if</span> predicate(user) &#123;</span><br><span class="line">			result = <span class="built_in">append</span>(result, user)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="explanation">Explanation</h2>
+<ol>
+<li>Added a new route for the DELETE request in main.go.</li>
+<li>In the service layer, added a function to handle the DELETE request.
+<ol>
+<li>Extract the ID from the request parameter.</li>
+<li>New a function <code>Filter</code> and make it receive a func as a parameter</li>
+<li>For the predicate function, we check if the user ID is not equal to the ID we want to delete.</li>
+<li>Return the list as a response.</li>
+</ol>
+</li>
+<li>return the list as a response.</li>
+</ol>
 ]]></content>
-      <categories>
-        <category>單元測試</category>
-      </categories>
       <tags>
-        <tag>UnitTest</tag>
+        <tag>Golang/Gin</tag>
       </tags>
   </entry>
   <entry>
@@ -513,29 +513,6 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
       </tags>
   </entry>
   <entry>
-    <title>ithome鐵人賽-2024 Day04 Get the First Block</title>
-    <url>/posts/6f938f8a/</url>
-    <content><![CDATA[<p>Hi all,  到了第四天終於可以來搞專案了，今天的目標很簡單，我想要寫出取得 Block 的 API。</p>
-<span id="more"></span>
-<p>首先來簡單介紹下 Block 的結構:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    index<span class="punctuation">:</span> block 的索引值，用來標識這是區塊鏈中的第幾個區塊。</span><br><span class="line">    timestamp<span class="punctuation">:</span> 區塊創建的時間。</span><br><span class="line">    data<span class="punctuation">:</span> 儲存在區塊中的資料，可以是任何類型的資料。</span><br><span class="line">    previous hash<span class="punctuation">:</span> 前一個區塊的雜湊值，用來鏈接到前一個區塊，確保區塊鏈的連續性。</span><br><span class="line">    hash<span class="punctuation">:</span> 當前區塊雜湊值。</span><br><span class="line">    nonce<span class="punctuation">:</span> 一個隨機數，用於工作量證明 (proof of work) 算法，確保區塊的有效性。</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>接下來說明下區塊雜湊值的計算:</p>
-<p><code>Hash = SHA256 ( Timestamp + Previous Hash + Data  + Nonce)</code></p>
-<p>其中 Nonce 是個變數值，他會隨著當前的計算困難度( Difficulty) 而有所變化，由於是自己的區塊鏈環境，我們不需要太過強的困難度，因此困難度可視為0。</p>
-<p>以下就是 TDD 寫出 Get Block 的過程，供參:</p>
-<p><a href="https://www.youtube.com/watch?v=2e_w17iWLSU"><img src="https://img.youtube.com/vi/2e_w17iWLSU/0.jpg" alt="Yes"></a></p>
-<p>由上面的影片可以看出，我們搭建了專案的三層架構，且在 Repository層 hard code 一個 block 資料作為回傳值，明天的時候再來定義 Block 的生成哈。</p>
-<p>今天應該就先到這， 先付上<a href="https://github.com/CodeMachine0121/CustomBlockChainLab.git">專案 GitHub 任意門</a></p>
-<p>總結: 青藍色星期二，明天不是假日，後天也不是。</p>
-]]></content>
-      <categories>
-        <category>ithome 鐵人賽-2024</category>
-      </categories>
-      <tags>
-        <tag>ithome 鐵人賽-2024</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ithome鐵人賽-2024 Day03 Introduce 3-layers</title>
     <url>/posts/b75c561e/</url>
     <content><![CDATA[<p>Hi all, 來到第三天，今天來稍微介紹下這次 side project 的專案架構好了。</p>
@@ -583,6 +560,29 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
 <p>以上就是本人對於三層式架構的粗淺看法，如果有興趣練習TDD 也可以以這種方式來搭建自己的後端專案，並陸續在 Service 撰寫更多單元測試來逼出自己專案的Domain邏輯囉。</p>
 <p>題外話，其實專案夠大的話 repository 底下還會有層 DAO(Data Access Object)，但這次的專案還沒有那麼大就暫不考慮囉。</p>
 <p>總結: 藍色星期一 ~~ 需要咖啡~~~  <a href="https://www.buymeacoffee.com/James.Hsueh">或許你就是那位咖啡天使</a></p>
+]]></content>
+      <categories>
+        <category>ithome 鐵人賽-2024</category>
+      </categories>
+      <tags>
+        <tag>ithome 鐵人賽-2024</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ithome鐵人賽-2024 Day04 Get the First Block</title>
+    <url>/posts/6f938f8a/</url>
+    <content><![CDATA[<p>Hi all,  到了第四天終於可以來搞專案了，今天的目標很簡單，我想要寫出取得 Block 的 API。</p>
+<span id="more"></span>
+<p>首先來簡單介紹下 Block 的結構:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    index<span class="punctuation">:</span> block 的索引值，用來標識這是區塊鏈中的第幾個區塊。</span><br><span class="line">    timestamp<span class="punctuation">:</span> 區塊創建的時間。</span><br><span class="line">    data<span class="punctuation">:</span> 儲存在區塊中的資料，可以是任何類型的資料。</span><br><span class="line">    previous hash<span class="punctuation">:</span> 前一個區塊的雜湊值，用來鏈接到前一個區塊，確保區塊鏈的連續性。</span><br><span class="line">    hash<span class="punctuation">:</span> 當前區塊雜湊值。</span><br><span class="line">    nonce<span class="punctuation">:</span> 一個隨機數，用於工作量證明 (proof of work) 算法，確保區塊的有效性。</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>接下來說明下區塊雜湊值的計算:</p>
+<p><code>Hash = SHA256 ( Timestamp + Previous Hash + Data  + Nonce)</code></p>
+<p>其中 Nonce 是個變數值，他會隨著當前的計算困難度( Difficulty) 而有所變化，由於是自己的區塊鏈環境，我們不需要太過強的困難度，因此困難度可視為0。</p>
+<p>以下就是 TDD 寫出 Get Block 的過程，供參:</p>
+<p><a href="https://www.youtube.com/watch?v=2e_w17iWLSU"><img src="https://img.youtube.com/vi/2e_w17iWLSU/0.jpg" alt="Yes"></a></p>
+<p>由上面的影片可以看出，我們搭建了專案的三層架構，且在 Repository層 hard code 一個 block 資料作為回傳值，明天的時候再來定義 Block 的生成哈。</p>
+<p>今天應該就先到這， 先付上<a href="https://github.com/CodeMachine0121/CustomBlockChainLab.git">專案 GitHub 任意門</a></p>
+<p>總結: 青藍色星期二，明天不是假日，後天也不是。</p>
 ]]></content>
       <categories>
         <category>ithome 鐵人賽-2024</category>
@@ -803,6 +803,53 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
       </tags>
   </entry>
   <entry>
+    <title>ithome鐵人賽-2024 Day09 Insert New Block To SQL</title>
+    <url>/posts/c35b4088/</url>
+    <content><![CDATA[<p>Hi all, 今天第九天 今天就來讓專案可以 Insert Block吧！</p>
+<span id="more"></span>
+<p>那由於主要內容都是與SQL做互動，所以我們的code 主要也會動在 repository 層的 <code>InsertBlock(BlockDomain)</code> 。</p>
+<h2 id="repository">Repository</h2>
+<p>首先我們必須在 Repository 注入一個與資料庫連線的類別 <code>DbContext</code> ，code 如下</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChainRepository</span>(<span class="params">BlockchainDbContext blockchainDbContext</span>): IChainRepository</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> DbSet&lt;Block&gt; _blocks = blockchainDbContext.Blocks;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">InsertBlock</span>(<span class="params">BlockDomain newBlockDomain</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> _blocks.AddAsync(newBlockDomain.ToEntity());</span><br><span class="line">        <span class="keyword">await</span> blockchainDbContext.SaveChangesAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這樣一來，我們就可以成功在 Table裡頭新增資料了。但還有個問題，那就是在 Service 層的新增區塊的流程 code 如下</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="update-service-code">Update Service Code</h2>
+<p>可以看到我們在計算 <code>newBlock</code>  是透過 id 為 0 的區塊計算出來的，但這不是我們期望的，我們希望的是取得目前鏈上的最後一塊區塊對吧？<br>
+所以我們必須要來小修改下，當然這邊也會是由 TDD 出發，code 如下：</p>
+<h3 id="unit-test-code">Unit Test Code</h3>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">should_not_request_block_when_the_length_is_0</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _chainRepository!.GetChainLength().Returns(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">await</span> _chainService.GenerateNewBlock(<span class="keyword">new</span> GenerateNewBlockDto()</span><br><span class="line">    &#123;</span><br><span class="line">        Data = <span class="string">&quot;new&quot;</span>,</span><br><span class="line">        TimeStamp = DateTime.Now</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    _chainRepository.DidNotReceive().GetBlockBy(Arg.Any&lt;<span class="built_in">int</span>&gt;());</span><br><span class="line">    <span class="keyword">await</span> _chainRepository.Received().InsertBlock(Arg.Is&lt;BlockDomain&gt;(b =&gt; b.Data == <span class="string">&quot;Genesis Block&quot;</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="production-code">Production Code</h3>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">await</span> chainRepository.GetChainLength() == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> genesisBlock = <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">await</span> chainRepository.InsertBlock(genesisBlock);</span><br><span class="line">        <span class="keyword">return</span> genesisBlock;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(<span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接著我們還可以再寫下個 test case → 鏈長度不為 0的時候</p>
+<h3 id="unit-test-code">Unit Test Code</h3>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">should_generate_new_block_base_on_latest_block</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _chainRepository!.GetChainLength().Returns(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    GivenBlock(<span class="keyword">new</span> BlockDomain</span><br><span class="line">    &#123;</span><br><span class="line">        Hash = <span class="string">&quot;123&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> newBlock = <span class="keyword">await</span> _chainService.GenerateNewBlock(<span class="keyword">new</span> GenerateNewBlockDto()</span><br><span class="line">    &#123;</span><br><span class="line">        Data = <span class="string">&quot;new&quot;</span>,</span><br><span class="line">        TimeStamp = DateTime.Now</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    _chainRepository.Received().GetBlockBy(Arg.Is&lt;<span class="built_in">int</span>&gt;(i =&gt; i==<span class="number">1</span><span class="number">-1</span>));</span><br><span class="line">    newBlock.PreviousHash.Should().Be(<span class="string">&quot;123&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="production-code">Production Code</h2>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> chainLength = <span class="keyword">await</span> chainRepository.GetChainLength();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (chainLength == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> genesisBlock = <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">await</span> chainRepository.InsertBlock(genesisBlock);</span><br><span class="line">        <span class="keyword">return</span> genesisBlock;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(chainLength<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br></pre></td></tr></table></figure>
+<p>該有的邏輯都完成了，就來重構下吧！</p>
+<h2 id="refactor-code">Refactor Code</h2>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> chainLength = <span class="keyword">await</span> chainRepository.GetChainLength();</span><br><span class="line">    <span class="keyword">var</span> newBlock = chainLength == <span class="number">0</span></span><br><span class="line">        ? <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        : chainRepository.GetBlockBy(chainLength - <span class="number">1</span>).GenerateNextBlock(dto, Nonce);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上我們就完成了，我們的新需求：基於上一個區塊的 hash值進行計算。</p>
+<h2 id="題外話：get-block-by">題外話：Get Block By</h2>
+<p>如果記憶力好的話，我們還有個 <code>GetBlockBy</code> 還沒有實作，這就來實作個，code 如下</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GetBlockBy</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> block = <span class="keyword">await</span> _blocks.FirstAsync(x=&gt;x.Id == id);</span><br><span class="line">    <span class="keyword">return</span> block.ToDomain();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="e2e-test">E2e Test</h2>
+<p>如此一來，系統就可以好好運行啦，來個 E2E Test下</p>
+<h3 id="first-block">First Block</h3>
+<p><img src="https://fv5-4.failiem.lv/thumb_show.php?i=u4yfg222hn&amp;view&amp;v=1&amp;PHPSESSID=bae84d3f0f5d214bece104d1a114c1b2e86b8f4d" alt="image.png"></p>
+<h3 id="second-block">Second Block</h3>
+<p><img src="https://fv5-4.failiem.lv/thumb_show.php?i=aud6rqqypv&amp;view&amp;v=1&amp;PHPSESSID=bae84d3f0f5d214bece104d1a114c1b2e86b8f4d" alt="image.png"></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>總算是打通與DB的連線了～～～ 接著我們就可以往<strong>可編輯</strong> 的方向走了，但這是明天的事情 ，明天再說**</p>
+<p>結語：明天上班 🫠🫠🫠🫠🫠</p>
+]]></content>
+      <categories>
+        <category>ithome 鐵人賽-2024</category>
+      </categories>
+      <tags>
+        <tag>ithome 鐵人賽-2024</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ithome鐵人賽-2024-Day10 Introduce Chameleon Hash</title>
     <url>/posts/9aa313dd/</url>
     <content><![CDATA[<p>Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!</p>
@@ -883,53 +930,6 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
 </ul>
 <p>好啦，今天就到這邊啦~~~</p>
 <p>結語:  憂鬱星期二放鬆下哈</p>
-]]></content>
-      <categories>
-        <category>ithome 鐵人賽-2024</category>
-      </categories>
-      <tags>
-        <tag>ithome 鐵人賽-2024</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ithome鐵人賽-2024 Day09 Insert New Block To SQL</title>
-    <url>/posts/c35b4088/</url>
-    <content><![CDATA[<p>Hi all, 今天第九天 今天就來讓專案可以 Insert Block吧！</p>
-<span id="more"></span>
-<p>那由於主要內容都是與SQL做互動，所以我們的code 主要也會動在 repository 層的 <code>InsertBlock(BlockDomain)</code> 。</p>
-<h2 id="repository">Repository</h2>
-<p>首先我們必須在 Repository 注入一個與資料庫連線的類別 <code>DbContext</code> ，code 如下</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChainRepository</span>(<span class="params">BlockchainDbContext blockchainDbContext</span>): IChainRepository</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> DbSet&lt;Block&gt; _blocks = blockchainDbContext.Blocks;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">InsertBlock</span>(<span class="params">BlockDomain newBlockDomain</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">await</span> _blocks.AddAsync(newBlockDomain.ToEntity());</span><br><span class="line">        <span class="keyword">await</span> blockchainDbContext.SaveChangesAsync();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>這樣一來，我們就可以成功在 Table裡頭新增資料了。但還有個問題，那就是在 Service 層的新增區塊的流程 code 如下</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="update-service-code">Update Service Code</h2>
-<p>可以看到我們在計算 <code>newBlock</code>  是透過 id 為 0 的區塊計算出來的，但這不是我們期望的，我們希望的是取得目前鏈上的最後一塊區塊對吧？<br>
-所以我們必須要來小修改下，當然這邊也會是由 TDD 出發，code 如下：</p>
-<h3 id="unit-test-code">Unit Test Code</h3>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">should_not_request_block_when_the_length_is_0</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _chainRepository!.GetChainLength().Returns(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">await</span> _chainService.GenerateNewBlock(<span class="keyword">new</span> GenerateNewBlockDto()</span><br><span class="line">    &#123;</span><br><span class="line">        Data = <span class="string">&quot;new&quot;</span>,</span><br><span class="line">        TimeStamp = DateTime.Now</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    _chainRepository.DidNotReceive().GetBlockBy(Arg.Any&lt;<span class="built_in">int</span>&gt;());</span><br><span class="line">    <span class="keyword">await</span> _chainRepository.Received().InsertBlock(Arg.Is&lt;BlockDomain&gt;(b =&gt; b.Data == <span class="string">&quot;Genesis Block&quot;</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="production-code">Production Code</h3>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">await</span> chainRepository.GetChainLength() == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> genesisBlock = <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">await</span> chainRepository.InsertBlock(genesisBlock);</span><br><span class="line">        <span class="keyword">return</span> genesisBlock;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(<span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>接著我們還可以再寫下個 test case → 鏈長度不為 0的時候</p>
-<h3 id="unit-test-code">Unit Test Code</h3>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task <span class="title">should_generate_new_block_base_on_latest_block</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _chainRepository!.GetChainLength().Returns(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    GivenBlock(<span class="keyword">new</span> BlockDomain</span><br><span class="line">    &#123;</span><br><span class="line">        Hash = <span class="string">&quot;123&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> newBlock = <span class="keyword">await</span> _chainService.GenerateNewBlock(<span class="keyword">new</span> GenerateNewBlockDto()</span><br><span class="line">    &#123;</span><br><span class="line">        Data = <span class="string">&quot;new&quot;</span>,</span><br><span class="line">        TimeStamp = DateTime.Now</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    _chainRepository.Received().GetBlockBy(Arg.Is&lt;<span class="built_in">int</span>&gt;(i =&gt; i==<span class="number">1</span><span class="number">-1</span>));</span><br><span class="line">    newBlock.PreviousHash.Should().Be(<span class="string">&quot;123&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="production-code">Production Code</h2>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> chainLength = <span class="keyword">await</span> chainRepository.GetChainLength();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (chainLength == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> genesisBlock = <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">await</span> chainRepository.InsertBlock(genesisBlock);</span><br><span class="line">        <span class="keyword">return</span> genesisBlock;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> firstBlock = chainRepository.GetBlockBy(chainLength<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">var</span> newBlock = firstBlock.GenerateNextBlock(dto, Nonce);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br></pre></td></tr></table></figure>
-<p>該有的邏輯都完成了，就來重構下吧！</p>
-<h2 id="refactor-code">Refactor Code</h2>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GenerateNewBlock</span>(<span class="params">GenerateNewBlockDto dto</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> chainLength = <span class="keyword">await</span> chainRepository.GetChainLength();</span><br><span class="line">    <span class="keyword">var</span> newBlock = chainLength == <span class="number">0</span></span><br><span class="line">        ? <span class="keyword">new</span> BlockDomain</span><br><span class="line">        &#123;</span><br><span class="line">            Data = <span class="string">&quot;Genesis Block&quot;</span>,</span><br><span class="line">            Hash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            PreviousHash = <span class="string">&quot;0&quot;</span>,</span><br><span class="line">            TimeStamp = DateTime.Now,</span><br><span class="line">            Nonce = <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">        : chainRepository.GetBlockBy(chainLength - <span class="number">1</span>).GenerateNextBlock(dto, Nonce);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> chainRepository.InsertBlock(newBlock);</span><br><span class="line">    <span class="keyword">return</span> newBlock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上我們就完成了，我們的新需求：基於上一個區塊的 hash值進行計算。</p>
-<h2 id="題外話：get-block-by">題外話：Get Block By</h2>
-<p>如果記憶力好的話，我們還有個 <code>GetBlockBy</code> 還沒有實作，這就來實作個，code 如下</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;BlockDomain&gt; <span class="title">GetBlockBy</span>(<span class="params"><span class="built_in">int</span> id</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> block = <span class="keyword">await</span> _blocks.FirstAsync(x=&gt;x.Id == id);</span><br><span class="line">    <span class="keyword">return</span> block.ToDomain();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="e2e-test">E2e Test</h2>
-<p>如此一來，系統就可以好好運行啦，來個 E2E Test下</p>
-<h3 id="first-block">First Block</h3>
-<p><img src="https://fv5-4.failiem.lv/thumb_show.php?i=u4yfg222hn&amp;view&amp;v=1&amp;PHPSESSID=bae84d3f0f5d214bece104d1a114c1b2e86b8f4d" alt="image.png"></p>
-<h3 id="second-block">Second Block</h3>
-<p><img src="https://fv5-4.failiem.lv/thumb_show.php?i=aud6rqqypv&amp;view&amp;v=1&amp;PHPSESSID=bae84d3f0f5d214bece104d1a114c1b2e86b8f4d" alt="image.png"></p>
-<h2 id="conclusion">Conclusion</h2>
-<p>總算是打通與DB的連線了～～～ 接著我們就可以往<strong>可編輯</strong> 的方向走了，但這是明天的事情 ，明天再說**</p>
-<p>結語：明天上班 🫠🫠🫠🫠🫠</p>
 ]]></content>
       <categories>
         <category>ithome 鐵人賽-2024</category>
@@ -1025,6 +1025,89 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
 ]]></content>
       <tags>
         <tag>latex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Stock side-project::J.Granville Rules</title>
+    <url>/posts/5fabe0cb/</url>
+    <content><![CDATA[<p>Hi all, 這是個深度學習小白想玩玩 Learning 的一個 Side Project，目標是預測股勢，告訴我什麼時候可以進/退場。</p>
+<p>但在實作之前啊，必須補齊一下股票這方面的 Domain know how，不求精通只求夠用，這篇文章主要會用來記錄這些 domain knowledge。<br>
+<code>註記： 這次的code 主體是由 Chat GPT 撰寫，小弟的部分只有提供想法，並基於回應再提出問題，最後將產出的code進行參數的調整</code></p>
+<span id="more"></span>
+<h1>葛蘭碧法則, J.Granville Rules</h1>
+<p>簡單來說，是個交易訊號，一個告知我們什麼時候該進退場的訊號</p>
+<p><img src="/images/trade_signal.png" alt="img.png"><br>
+紅線：移動平均線　黑線：股價走勢</p>
+<h2 id="買進訊號-：">【買進訊號】：</h2>
+<p>買進訊號條件</p>
+<p>1.突破當移動平均線從下降趨勢逐漸轉為水平盤整或上昇時，且股價從移動平均線下方突破移動平均線，可視為買進訊號。</p>
+<p>2.假跌破股價往下跌破移動平均線，但隨即又回到移動平均線之上，且此時移動平均線依然呈現上升趨勢，可視為買進訊號。</p>
+<p>3.支撐當股價趨勢走在移動平均線之上，雖然股價修正下跌但並未跌破移動平均線便再度反彈走高，可視為買進訊號。</p>
+<p>4.抄底當股價向下急跌，不僅跌破移動平均線，甚至遠遠偏離至移動平均線下方深處，而股價開始反彈上升又趨向移動平均線時，可視為買進訊號。</p>
+<h2 id="賣出訊號-：">【賣出訊號】：</h2>
+<p>賣出訊號條件</p>
+<p>5.跌破當移動平均線從上升趨勢轉變成水平線或呈現下跌時，且股價從移動平均線上方跌破移動平均線時，可視為賣出訊號。</p>
+<p>6.假突破當股價反彈突破移動平均線後，卻又隨即下跌跌破移動平均線，且此時移動平均線依然呈現下降趨勢，可視為賣出訊號。</p>
+<p>7.反壓當股價走勢持續走在移動平均線之下，即使股價反彈也無法突破移動平均線，這時移動平均線成為股價的反壓，可視為賣出訊號。</p>
+<p>8.反轉當股價向上急漲，且遠遠偏離移動平均線上方極遠之後，股價反轉下跌使得股價趨向移動平均線時，可視為賣出訊號。</p>
+<h1>關鍵點</h1>
+<ol>
+<li>趨勢判斷
+<ul>
+<li>上漲趨勢中,股價高於上升移動平均線,不宜做空</li>
+<li>下跌趨勢中,股價低於下降移動平均線,不宜做多</li>
+</ul>
+</li>
+<li>移動平均線作為支撐/阻力
+<ul>
+<li>移動平均線本身具有趨勢線的屬性</li>
+<li>可作為潛在的支撐或阻力位</li>
+</ul>
+</li>
+<li>趨勢反轉訊號
+<ul>
+<li>關注股價在均線上下的多頭/空頭排列模式</li>
+<li>一旦排列方向反轉,視為潛在的反向入場時機</li>
+</ul>
+</li>
+<li>均線交叉訊號
+<ul>
+<li>均線黃金交叉(短期穿越長期上方)可能引發上漲趨勢</li>
+<li>均線死亡交叉(短期穿越長期下方)可能引發下跌趨勢</li>
+<li>交叉點附近可尋找順勢入場時機均#線的種類</li>
+</ul>
+</li>
+</ol>
+<h1><strong>均線的種類</strong></h1>
+<p>均線大概可以分成三種，計算方式不同，靈敏度也不一樣：</p>
+<ul>
+<li>
+<p><strong>SMA（簡單移動平均線）</strong></p>
+<p>這是最常見、也是計算最簡單的均線。通常報價軟體預設的均線就是這種。它的計算方式是把選定區間內的數值全部加起來，然後除以總天數。也就是說，每天的價格權重都一樣。</p>
+</li>
+<li>
+<p><strong>EMA（指數移動平均線）</strong></p>
+<p>EMA給最近的價格更高的權重，反應比較快。它的計算方法是，越近期的價格權重越高，依照指數方式往前遞減，所以比SMA更靈敏。</p>
+</li>
+</ul>
+<p>每種均線都有其特定的應用情境，而我們在找葛蘭碧突破的股票時，我們只需要用到SMA就好，所以後面我們所提到的均線都是指SMA。</p>
+<hr>
+<h1>Python 實作</h1>
+<p>依賴 Library: FinMind</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> FinMind.data <span class="keyword">import</span> DataLoader </span><br><span class="line"></span><br><span class="line">stock_no = <span class="string">&#x27;006208&#x27;</span></span><br><span class="line">dl = DataLoader()</span><br><span class="line">stock_data = dl.taiwan_stock_daily(</span><br><span class="line">    stock_id=stock_no, </span><br><span class="line">    start_date=<span class="string">&#x27;2024-08-25&#x27;</span>,</span><br><span class="line">    end_date=<span class="string">&#x27;2024-09-30&#x27;</span>)</span><br><span class="line">stock_data[<span class="string">&#x27;MA_50&#x27;</span>] = stock_data[<span class="string">&#x27;close&#x27;</span>].rolling(windows=<span class="number">50</span>).mean()</span><br></pre></td></tr></table></figure>
+<h2 id="找出-買入訊號-賣出訊號">找出 買入訊號，賣出訊號</h2>
+<h3 id="sma">SMA</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = stock_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ma</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_ma</span>(<span class="params">data, window</span>):</span><br><span class="line">    <span class="keyword">return</span> data.rolling(window=window).mean()</span><br><span class="line">ma_window = <span class="number">60</span></span><br><span class="line">df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=ma_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">df[<span class="string">&#x27;is_sell_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">buy_dates = df[df[<span class="string">&#x27;is_buy_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line">sell_dates = df[df[<span class="string">&#x27;is_sell_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;買入信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;buy_dates.tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n賣出信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;sell_dates.tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="ema">EMA</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">&#x27;stock_data.csv&#x27;</span>)</span><br><span class="line"><span class="comment"># calculate ema</span></span><br><span class="line">ema_window = <span class="number">60</span> </span><br><span class="line">df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=ema_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;is_sell_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;買入信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_buy_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;賣出信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_sell_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="打包成-csv檔">打包成 csv檔</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data = pd.DataFrame()</span><br><span class="line">data[<span class="string">&quot;Close&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">data[<span class="string">&quot;EMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;SMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;date&quot;</span>] = df[<span class="string">&#x27;date&#x27;</span>]</span><br><span class="line"></span><br><span class="line">features = [<span class="string">&quot;Close&quot;</span>, <span class="string">&quot;EMA&quot;</span>, <span class="string">&quot;SMA&quot;</span>, <span class="string">&quot;date&quot;</span>]</span><br><span class="line">data = data.dropna()</span><br><span class="line">data.to_csv(<span class="string">&#x27;data.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h1>Conclusion</h1>
+<p>這篇文章主要是透過以往的資料，來判定說在之前的情況什麼時候該買/賣，並在最後將計算得出的 MA, EMA 及實際收盤價打包成 <code>data.csv</code>。<br>
+這篇就先這樣，之後就可以來 train 個 model 預測收盤價囉。</p>
+]]></content>
+      <tags>
+        <tag>Stock</tag>
       </tags>
   </entry>
   <entry>
@@ -1174,91 +1257,8 @@ By Eric Evans</p>
       </tags>
   </entry>
   <entry>
-    <title>股票 side-project:葛蘭碧法則</title>
-    <url>/posts/5fabe0cb/</url>
-    <content><![CDATA[<p>Hi all, 這是個深度學習小白想玩玩 Learning 的一個 Side Project，目標是預測股勢，告訴我什麼時候可以進/退場。</p>
-<p>但在實作之前啊，必須補齊一下股票這方面的 Domain know how，不求精通只求夠用，這篇文章主要會用來記錄這些 domain knowledge。<br>
-<code>註記： 這次的code 主體是由 Chat GPT 撰寫，小弟的部分只有提供想法，並基於回應再提出問題，最後將產出的code進行參數的調整</code></p>
-<span id="more"></span>
-<h1>葛蘭碧法則, J.Granville Rules</h1>
-<p>簡單來說，是個交易訊號，一個告知我們什麼時候該進退場的訊號</p>
-<p><img src="/source/_posts/stock-side-project/trade_signal.png" alt="image.png"></p>
-<p>紅線：移動平均線　黑線：股價走勢</p>
-<h2 id="買進訊號-：">【買進訊號】：</h2>
-<p>買進訊號條件</p>
-<p>1.突破當移動平均線從下降趨勢逐漸轉為水平盤整或上昇時，且股價從移動平均線下方突破移動平均線，可視為買進訊號。</p>
-<p>2.假跌破股價往下跌破移動平均線，但隨即又回到移動平均線之上，且此時移動平均線依然呈現上升趨勢，可視為買進訊號。</p>
-<p>3.支撐當股價趨勢走在移動平均線之上，雖然股價修正下跌但並未跌破移動平均線便再度反彈走高，可視為買進訊號。</p>
-<p>4.抄底當股價向下急跌，不僅跌破移動平均線，甚至遠遠偏離至移動平均線下方深處，而股價開始反彈上升又趨向移動平均線時，可視為買進訊號。</p>
-<h2 id="賣出訊號-：">【賣出訊號】：</h2>
-<p>賣出訊號條件</p>
-<p>5.跌破當移動平均線從上升趨勢轉變成水平線或呈現下跌時，且股價從移動平均線上方跌破移動平均線時，可視為賣出訊號。</p>
-<p>6.假突破當股價反彈突破移動平均線後，卻又隨即下跌跌破移動平均線，且此時移動平均線依然呈現下降趨勢，可視為賣出訊號。</p>
-<p>7.反壓當股價走勢持續走在移動平均線之下，即使股價反彈也無法突破移動平均線，這時移動平均線成為股價的反壓，可視為賣出訊號。</p>
-<p>8.反轉當股價向上急漲，且遠遠偏離移動平均線上方極遠之後，股價反轉下跌使得股價趨向移動平均線時，可視為賣出訊號。</p>
-<h1>關鍵點</h1>
-<ol>
-<li>趨勢判斷
-<ul>
-<li>上漲趨勢中,股價高於上升移動平均線,不宜做空</li>
-<li>下跌趨勢中,股價低於下降移動平均線,不宜做多</li>
-</ul>
-</li>
-<li>移動平均線作為支撐/阻力
-<ul>
-<li>移動平均線本身具有趨勢線的屬性</li>
-<li>可作為潛在的支撐或阻力位</li>
-</ul>
-</li>
-<li>趨勢反轉訊號
-<ul>
-<li>關注股價在均線上下的多頭/空頭排列模式</li>
-<li>一旦排列方向反轉,視為潛在的反向入場時機</li>
-</ul>
-</li>
-<li>均線交叉訊號
-<ul>
-<li>均線黃金交叉(短期穿越長期上方)可能引發上漲趨勢</li>
-<li>均線死亡交叉(短期穿越長期下方)可能引發下跌趨勢</li>
-<li>交叉點附近可尋找順勢入場時機均#線的種類</li>
-</ul>
-</li>
-</ol>
-<h1><strong>均線的種類</strong></h1>
-<p>均線大概可以分成三種，計算方式不同，靈敏度也不一樣：</p>
-<ul>
-<li>
-<p><strong>SMA（簡單移動平均線）</strong></p>
-<p>這是最常見、也是計算最簡單的均線。通常報價軟體預設的均線就是這種。它的計算方式是把選定區間內的數值全部加起來，然後除以總天數。也就是說，每天的價格權重都一樣。</p>
-</li>
-<li>
-<p><strong>EMA（指數移動平均線）</strong></p>
-<p>EMA給最近的價格更高的權重，反應比較快。它的計算方法是，越近期的價格權重越高，依照指數方式往前遞減，所以比SMA更靈敏。</p>
-</li>
-</ul>
-<p>每種均線都有其特定的應用情境，而我們在找葛蘭碧突破的股票時，我們只需要用到SMA就好，所以後面我們所提到的均線都是指SMA。</p>
-<hr>
-<h1>Python 實作</h1>
-<p>依賴 Library: FinMind</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> FinMind.data <span class="keyword">import</span> DataLoader </span><br><span class="line"></span><br><span class="line">stock_no = <span class="string">&#x27;006208&#x27;</span></span><br><span class="line">dl = DataLoader()</span><br><span class="line">stock_data = dl.taiwan_stock_daily(</span><br><span class="line">    stock_id=stock_no, </span><br><span class="line">    start_date=<span class="string">&#x27;2024-08-25&#x27;</span>,</span><br><span class="line">    end_date=<span class="string">&#x27;2024-09-30&#x27;</span>)</span><br><span class="line">stock_data[<span class="string">&#x27;MA_50&#x27;</span>] = stock_data[<span class="string">&#x27;close&#x27;</span>].rolling(windows=<span class="number">50</span>).mean()</span><br></pre></td></tr></table></figure>
-<h2 id="找出-買入訊號-賣出訊號">找出 買入訊號，賣出訊號</h2>
-<h3 id="sma">SMA</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = stock_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ma</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_ma</span>(<span class="params">data, window</span>):</span><br><span class="line">    <span class="keyword">return</span> data.rolling(window=window).mean()</span><br><span class="line">ma_window = <span class="number">60</span></span><br><span class="line">df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=ma_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">df[<span class="string">&#x27;is_sell_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">buy_dates = df[df[<span class="string">&#x27;is_buy_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line">sell_dates = df[df[<span class="string">&#x27;is_sell_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;買入信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;buy_dates.tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n賣出信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;sell_dates.tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="ema">EMA</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">&#x27;stock_data.csv&#x27;</span>)</span><br><span class="line"><span class="comment"># calculate ema</span></span><br><span class="line">ema_window = <span class="number">60</span> </span><br><span class="line">df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=ema_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;is_sell_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;買入信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_buy_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;賣出信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_sell_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="打包成-csv檔">打包成 csv檔</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data = pd.DataFrame()</span><br><span class="line">data[<span class="string">&quot;Close&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">data[<span class="string">&quot;EMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;SMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;date&quot;</span>] = df[<span class="string">&#x27;date&#x27;</span>]</span><br><span class="line"></span><br><span class="line">features = [<span class="string">&quot;Close&quot;</span>, <span class="string">&quot;EMA&quot;</span>, <span class="string">&quot;SMA&quot;</span>, <span class="string">&quot;date&quot;</span>]</span><br><span class="line">data = data.dropna()</span><br><span class="line">data.to_csv(<span class="string">&#x27;data.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-<h1>Conclusion</h1>
-<p>這篇文章主要是透過以往的資料，來判定說在之前的情況什麼時候該買/賣，並在最後將計算得出的 MA, EMA 及實際收盤價打包成 <code>data.csv</code>。<br>
-這篇就先這樣，之後就可以來 train 個 model 預測收盤價囉。</p>
-]]></content>
-      <tags>
-        <tag>Stock</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -1267,8 +1267,8 @@ By Eric Evans</p>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
