@@ -30,63 +30,6 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>Dao 與 Repository 職責</title>
-    <url>/posts/21be0a47/</url>
-    <content><![CDATA[<p>由於小弟近期工作遇到ㄧ些架構層面上的問題，其中我和 team 上的 member <a href="https://github.com/YNCBearz">Bear</a> 再定義 Dao 及 Repository 的路上有些許的討論。</p>
-<p>我覺得蠻有意義的，故紀錄於此。</p>
-<span id="more"></span>
-<h2 id="introduction">Introduction</h2>
-<p>先來簡單比較一下兩者的差異</p>
-<h3 id="dao-data-access-object">DAO, Data Access Object</h3>
-<ul>
-<li>針對 Table 的 CRUD 操作</li>
-<li>會是直接與 DB 互動的層級</li>
-<li>Dto 進，Entity/Domain 出</li>
-</ul>
-<h3 id="repository">Repository</h3>
-<ul>
-<li>Domain 物件整合的地方</li>
-<li>輸出 Domain 物件</li>
-</ul>
-<h2 id="架構">架構</h2>
-<p>通常來說，我們的架構通常會是長的像這樣</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">controller -&gt; service -&gt; repository -&gt; call Stored Procedure (SP) </span><br></pre></td></tr></table></figure>
-<p>會拉出這個架構的主要原因是我們想針對每次從 SP 取得的 List of Entities 做轉換Domain物件這件事情撰寫單元測試。</p>
-<p>但又礙於 <code>DbClient</code> 難以透過介面進行 mock，因此我們把呼叫 SP 的部分再抽出一層介面(也就是Dao) ，並在 Repository 層針對 Dao 進行依賴注入，最後我們的架構長得像這樣:</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">controller -&gt; service -&gt; repository -&gt; dao -&gt; call stored procedure</span><br></pre></td></tr></table></figure>
-<h2 id="困惑點">困惑點</h2>
-<p>當我跟 <a href="https://github.com/YNCBearz">Bear</a> 興奮的拿著這個架構詢問部門上另個 Senior <a href="https://github.com/kyoforing">Kyo</a> 時，他提出了一個問題點</p>
-<blockquote>
-<p>如果 Dao 的職責是針對一張 Table 的 CRUD，那一個 stored procedure 裏頭 Join 多張表怎麼辦 ?</p>
-</blockquote>
-<p>這個問題可以衍生出兩個問題點</p>
-<ul>
-<li><strong>堅持 Dao 與 Table 就是 1:1 的關係</strong>，那表示 join 的工全部都要拉回到 Repository 層做，職責乍聽下蠻合理的，但仔細想想錢包還沒大到可以扛住大資料運算呀</li>
-<li><strong>不限制 Dao 跟 Table 的關係</strong>。 假設有個 SP 裏頭是 <code>select from a join b</code> 這樣 Dao 出來的物件還能算是 Entity 嗎? 如果直接是輸出 Domain 物件那還需要多墊ㄧ層 Repository 嗎?</li>
-</ul>
-<h3 id="你的好同事-chatgpt">你的好同事 ChatGPT</h3>
-<p>我的問題是:</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">假設今天我有個 stored procedure，他 join了兩張表，且出來的物件就是domain物件</span><br><span class="line">我該使用 dao實作呼叫 還是 repository呢?</span><br></pre></td></tr></table></figure>
-<ul>
-<li>
-<p>選擇 DAO：當你的 Stored Procedure 返回的結果已經是你所需的 Domain 物件，且你不需要在應用層進行進一步的業務邏輯處理時，DAO 是簡單且直接的選擇。</p>
-</li>
-<li>
-<p>選擇 Repository：當你需要將這些結果進一步與其他業務邏輯整合，或者需要保持應用層與數據存取層的解耦時，使用 Repository 會更加靈活和強大。</p>
-</li>
-</ul>
-<h3 id="總和理解">總和理解</h3>
-<p>當我們今天有個 SP 且在他輸出的東西已經 Domain 物件的情況下，我們可以直接透過 Service 直接呼叫 Dao 後直接進行業務邏輯的計算，反之則是透過 Repository 層進行 Entities 與 Domain 物件的轉換。</p>
-<p>以上是小弟對於 DAO 和 Repository 的見解，但沒有最好的架構，只有最適合當前情況的架構。</p>
-]]></content>
-      <categories>
-        <category>軟體架構</category>
-      </categories>
-      <tags>
-        <tag>clean-architecture</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Golang/Gin: (CRUD) Fetch all</title>
     <url>/posts/9a6a850b/</url>
     <content><![CDATA[<p>This is a simple CRUD example using Gin to fetch all data.</p>
@@ -166,6 +109,63 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
+    <title>Dao 與 Repository 職責</title>
+    <url>/posts/21be0a47/</url>
+    <content><![CDATA[<p>由於小弟近期工作遇到ㄧ些架構層面上的問題，其中我和 team 上的 member <a href="https://github.com/YNCBearz">Bear</a> 再定義 Dao 及 Repository 的路上有些許的討論。</p>
+<p>我覺得蠻有意義的，故紀錄於此。</p>
+<span id="more"></span>
+<h2 id="introduction">Introduction</h2>
+<p>先來簡單比較一下兩者的差異</p>
+<h3 id="dao-data-access-object">DAO, Data Access Object</h3>
+<ul>
+<li>針對 Table 的 CRUD 操作</li>
+<li>會是直接與 DB 互動的層級</li>
+<li>Dto 進，Entity/Domain 出</li>
+</ul>
+<h3 id="repository">Repository</h3>
+<ul>
+<li>Domain 物件整合的地方</li>
+<li>輸出 Domain 物件</li>
+</ul>
+<h2 id="架構">架構</h2>
+<p>通常來說，我們的架構通常會是長的像這樣</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">controller -&gt; service -&gt; repository -&gt; call Stored Procedure (SP) </span><br></pre></td></tr></table></figure>
+<p>會拉出這個架構的主要原因是我們想針對每次從 SP 取得的 List of Entities 做轉換Domain物件這件事情撰寫單元測試。</p>
+<p>但又礙於 <code>DbClient</code> 難以透過介面進行 mock，因此我們把呼叫 SP 的部分再抽出一層介面(也就是Dao) ，並在 Repository 層針對 Dao 進行依賴注入，最後我們的架構長得像這樣:</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">controller -&gt; service -&gt; repository -&gt; dao -&gt; call stored procedure</span><br></pre></td></tr></table></figure>
+<h2 id="困惑點">困惑點</h2>
+<p>當我跟 <a href="https://github.com/YNCBearz">Bear</a> 興奮的拿著這個架構詢問部門上另個 Senior <a href="https://github.com/kyoforing">Kyo</a> 時，他提出了一個問題點</p>
+<blockquote>
+<p>如果 Dao 的職責是針對一張 Table 的 CRUD，那一個 stored procedure 裏頭 Join 多張表怎麼辦 ?</p>
+</blockquote>
+<p>這個問題可以衍生出兩個問題點</p>
+<ul>
+<li><strong>堅持 Dao 與 Table 就是 1:1 的關係</strong>，那表示 join 的工全部都要拉回到 Repository 層做，職責乍聽下蠻合理的，但仔細想想錢包還沒大到可以扛住大資料運算呀</li>
+<li><strong>不限制 Dao 跟 Table 的關係</strong>。 假設有個 SP 裏頭是 <code>select from a join b</code> 這樣 Dao 出來的物件還能算是 Entity 嗎? 如果直接是輸出 Domain 物件那還需要多墊ㄧ層 Repository 嗎?</li>
+</ul>
+<h3 id="你的好同事-chatgpt">你的好同事 ChatGPT</h3>
+<p>我的問題是:</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">假設今天我有個 stored procedure，他 join了兩張表，且出來的物件就是domain物件</span><br><span class="line">我該使用 dao實作呼叫 還是 repository呢?</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>選擇 DAO：當你的 Stored Procedure 返回的結果已經是你所需的 Domain 物件，且你不需要在應用層進行進一步的業務邏輯處理時，DAO 是簡單且直接的選擇。</p>
+</li>
+<li>
+<p>選擇 Repository：當你需要將這些結果進一步與其他業務邏輯整合，或者需要保持應用層與數據存取層的解耦時，使用 Repository 會更加靈活和強大。</p>
+</li>
+</ul>
+<h3 id="總和理解">總和理解</h3>
+<p>當我們今天有個 SP 且在他輸出的東西已經 Domain 物件的情況下，我們可以直接透過 Service 直接呼叫 Dao 後直接進行業務邏輯的計算，反之則是透過 Repository 層進行 Entities 與 Domain 物件的轉換。</p>
+<p>以上是小弟對於 DAO 和 Repository 的見解，但沒有最好的架構，只有最適合當前情況的架構。</p>
+]]></content>
+      <categories>
+        <category>軟體架構</category>
+      </categories>
+      <tags>
+        <tag>clean-architecture</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Golang/Gin: (CRUD) Insert Data</title>
     <url>/posts/db734ca8/</url>
     <content><![CDATA[<p>Hi all, this article is expected to see how post request works with Gin.<br>
@@ -201,30 +201,6 @@ I’ll show a simple demo for handling the POST request.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -X POST http://localhost:8080 -d <span class="string">&#x27;&#123;&quot;ID&quot;: 3, &quot;Name&quot;: &quot;Jane&quot;, &quot;Email&quot;: &quot;jane@mail&quot;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>we should see the response:</p>
 <figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;john@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Doe&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;doe@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Jane&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jane@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>Golang/Gin</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Golang/Gin: router group</title>
-    <url>/posts/2761fa2d/</url>
-    <content><![CDATA[<p>Hi all, for this article, I will keep note of how to use router group in Gin.</p>
-<h2 id="what-is-router-group">What is Router Group</h2>
-<p>Router Group is a function to extract routers for each group.<br>
-For example, if there are 2 features of the API, we can use Router Group to separate routers to another file and split the routers by features.</p>
-<span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service/routers&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	routerGroup := router.Group(<span class="string">&quot;/v1&quot;</span>)</span><br><span class="line">	routers.AddRouters(routerGroup)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="routers-userrouters-go">routers/UserRouters.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> routers</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddRouters</span><span class="params">(r *gin.RouterGroup)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	user := r.Group(<span class="string">&quot;/users&quot;</span>)</span><br><span class="line"></span><br><span class="line">	user.GET(<span class="string">&quot;&quot;</span>, service.FetchAll)</span><br><span class="line">	user.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	user.DELETE(<span class="string">&quot;/:id&quot;</span>, service.Delete)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
-<ol>
-<li>We delete routing we’d added before and create a variable for the router group called <code>routerGroup</code>.</li>
-<li>We call the <code>AddRouters</code> function from the <code>routers</code> package and pass the <code>routerGroup</code> as a parameter.</li>
-<li>We add a new file called <code>UserRouters.go</code> in the <code>routers</code> package and add some routing config in the function <code>AddRouters</code>.</li>
-</ol>
-]]></content>
       <tags>
         <tag>Golang/Gin</tag>
       </tags>
@@ -296,6 +272,30 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
+    <title>Golang/Gin: router group</title>
+    <url>/posts/2761fa2d/</url>
+    <content><![CDATA[<p>Hi all, for this article, I will keep note of how to use router group in Gin.</p>
+<h2 id="what-is-router-group">What is Router Group</h2>
+<p>Router Group is a function to extract routers for each group.<br>
+For example, if there are 2 features of the API, we can use Router Group to separate routers to another file and split the routers by features.</p>
+<span id="more"></span>
+<h2 id="code">Code</h2>
+<h3 id="main-go">main.go</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service/routers&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	routerGroup := router.Group(<span class="string">&quot;/v1&quot;</span>)</span><br><span class="line">	routers.AddRouters(routerGroup)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="routers-userrouters-go">routers/UserRouters.go</h3>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> routers</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddRouters</span><span class="params">(r *gin.RouterGroup)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	user := r.Group(<span class="string">&quot;/users&quot;</span>)</span><br><span class="line"></span><br><span class="line">	user.GET(<span class="string">&quot;&quot;</span>, service.FetchAll)</span><br><span class="line">	user.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	user.DELETE(<span class="string">&quot;/:id&quot;</span>, service.Delete)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="explanation">Explanation</h2>
+<ol>
+<li>We delete routing we’d added before and create a variable for the router group called <code>routerGroup</code>.</li>
+<li>We call the <code>AddRouters</code> function from the <code>routers</code> package and pass the <code>routerGroup</code> as a parameter.</li>
+<li>We add a new file called <code>UserRouters.go</code> in the <code>routers</code> package and add some routing config in the function <code>AddRouters</code>.</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Golang/Gin</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ithome 鐵人賽-2024-Day14 Make a Editable Block</title>
     <url>/posts/75f7afc7/</url>
     <content><![CDATA[<p>Hi all 來到14天， 昨天我們成功把專案引入EccSDK，同時也將 insert 區塊的變色龍雜湊值補上，但似乎還少了點啥，今天就來定義下吧。</p>
@@ -318,34 +318,45 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
-    <title>ithome 鐵人賽-2024-Day15 Store Key Data for EccSDK</title>
-    <url>/posts/3f976c9/</url>
-    <content><![CDATA[<p>Hi all, 來到第15天，今天就來好好處理如何永久儲存 變色龍雜湊函數所需要使用的 key 吧</p>
+    <title>Type and Interface</title>
+    <url>/posts/737e6e43/</url>
+    <content><![CDATA[<p>Hi all, 這篇文章主要會用來比較 type 與 inteface的差別，做為自己的小小筆記。</p>
 <span id="more"></span>
-<p>不多說直接呈現 code吧</p>
+<h2 id="使用方式">使用方式</h2>
+<p>兩者之間主要功能大略一致，以下為typscript語法中宣告的方式</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">PersonType</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span>  <span class="attr">type_person</span>: <span class="title class_">PersonType</span>= &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">interface_person</span>: <span class="title class_">PersonInterface</span>= &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>可以看到其實使用方式都是一樣的，唯一不同的點在宣告時 type 是需要使用= 來給值。</p>
+<p>但保持實驗精神，我們在把這段 typescript 翻譯成 javascript 來觀察看看 js 層如何實作 (如下)</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> type_person = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> interface_person = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>給個結論: 其實都一樣😂</p>
+<h2 id="進階使用">進階使用</h2>
+<p>以上面的實驗看下來，type 與 interface確實是大同小異的。以下就來介紹兩者在繼承或是擴充上的使用方式。</p>
+<h3 id="interface">Interface:</h3>
 <ul>
-<li>首先我們需要更動 DI 的部分，我們抽一個 KeyStorageService 來做 Key 載入/存放 這件事情。</li>
+<li>物件導向中規章：介面用於定義物件的需要的規範，需要實作哪些方法。</li>
+<li>可繼承：介面可以透過 extends 繼承其他介面 (以下為 extends的例子)。</li>
 </ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> keyStorageService = <span class="keyword">new</span> KeyStorageService();</span><br><span class="line"><span class="keyword">var</span> keyData = keyStorageService.LoadKeyPair();</span><br><span class="line"></span><br><span class="line">builder.Services.AddSingleton(keyData.KeyPair);</span><br><span class="line">builder.Services.AddSingleton(keyData.SessionKey);</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Wizard</span> <span class="keyword">extends</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="title function_">burn</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">papa</span>: <span class="title class_">Wizard</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;wizard&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">burn</span>: <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;burn&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="type">Type:</h3>
 <ul>
-<li>接著我們就可以來實作 KeyStorageService，code如下</li>
+<li>不可繼承 ：不同 type間不可以繼承(extends)</li>
+<li>對型別進行複合形式的操作：雖然 type 不能像介面那樣透過 extends 被繼承，但它可以通過聯合（|）和交集（&amp;）等操作組合其他型別，來建立複雜的型別 (以下為例)。</li>
 </ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">KeyStorageService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> KeysPath = <span class="string">&quot;~/keys.json&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KeyData <span class="title">LoadKeyPair</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (File.Exists(KeysPath))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> RestoreKeys(KeysPath);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> keyData = <span class="keyword">new</span> KeyData()</span><br><span class="line">        &#123;</span><br><span class="line">            KeyPair = EccGenerator.GenerateKeyPair(<span class="number">256</span>),</span><br><span class="line">            SessionKey = SessionKeyGenerator.GenerateSessionKey()</span><br><span class="line">        &#125;;</span><br><span class="line">        keyData.SaveKeys(KeysPath);</span><br><span class="line">        <span class="keyword">return</span> keyData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> KeyData <span class="title">RestoreKeys</span>(<span class="params"><span class="built_in">string</span> path</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> keyData = File.ReadAllText(path);</span><br><span class="line">        <span class="keyword">return</span> JsonSerializer.Deserialize&lt;KeyData&gt;(keyData)!;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中，我們使用了些檔案讀寫的方式來做存放，主要流程為:</p>
-<ol>
-<li>檢查key 是否存在</li>
-<li>若存在，直接做 KeyRestore 的作業</li>
-<li>若不存在，直接新增 key pair 及 session key</li>
-<li>最後將 session key 及 key pair 多墊一層 KeyData 的 model 進行回傳</li>
-</ol>
-<h2 id="conlusion">Conlusion</h2>
-<p>今天我們定義好了 key 要怎麼進行存放，且針對有無已存在key file 進行處理。 好了今天先到這。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">PersonType</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Shooter</span> = &#123;</span><br><span class="line">    <span class="title function_">reload</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Archor</span> = &#123;</span><br><span class="line">    <span class="title function_">shoot</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="attr">james</span>: <span class="title class_">Archor</span> &amp; <span class="title class_">PersonType</span> | <span class="title class_">Shooter</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;archor&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">shoot</span>: <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;shoot&#x27;</span>)</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>在上面的實作中，可以發現 james 的型別為 Archor &amp; PersonType，這個型別表示說常數需要同時實作兩個 type 底下的屬性，跟 implement 意思差不多。再來可以發現其實後面又多了個 | Shooter 這個的意思就表示了 james 可以選擇性的實作 Shooter底下的屬性。</p>
+<h2 id="結論">結論</h2>
+<p>以上實驗 Interface 及 Type 兩者的使用方式後，最後的問題: 兩個功能上幾乎都差不多，那到底甚麼時候該使用哪一個來做為型別定義呢?</p>
+<blockquote>
+<p>我自己的觀點呢 -&gt; 還是那句話 case by case。</p>
+</blockquote>
+<p>如果今天的撰寫的是多人共同管理的中大型專案又或是與後端API定義交互的物件時，我會選擇使用 interface 來換得更嚴謹的規範。</p>
+<p>相反的今天的專案可能是ㄧ些小型專案又或是一些需要負責定義複雜型別的場合，我認為type可以帶來更加彈性的寫法。</p>
 ]]></content>
       <categories>
-        <category>ithome 鐵人賽-2024</category>
+        <category>Js/Ts</category>
       </categories>
       <tags>
-        <tag>ithome 鐵人賽-2024</tag>
+        <tag>typescript</tag>
       </tags>
   </entry>
   <entry>
@@ -399,6 +410,37 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
 <li>Day 29: Make whole project into K8s ( project)</li>
 <li>DAy 30: recap and conclusion</li>
 </ol>
+]]></content>
+      <categories>
+        <category>ithome 鐵人賽-2024</category>
+      </categories>
+      <tags>
+        <tag>ithome 鐵人賽-2024</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ithome 鐵人賽-2024-Day15 Store Key Data for EccSDK</title>
+    <url>/posts/3f976c9/</url>
+    <content><![CDATA[<p>Hi all, 來到第15天，今天就來好好處理如何永久儲存 變色龍雜湊函數所需要使用的 key 吧</p>
+<span id="more"></span>
+<p>不多說直接呈現 code吧</p>
+<ul>
+<li>首先我們需要更動 DI 的部分，我們抽一個 KeyStorageService 來做 Key 載入/存放 這件事情。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> keyStorageService = <span class="keyword">new</span> KeyStorageService();</span><br><span class="line"><span class="keyword">var</span> keyData = keyStorageService.LoadKeyPair();</span><br><span class="line"></span><br><span class="line">builder.Services.AddSingleton(keyData.KeyPair);</span><br><span class="line">builder.Services.AddSingleton(keyData.SessionKey);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接著我們就可以來實作 KeyStorageService，code如下</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">KeyStorageService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> KeysPath = <span class="string">&quot;~/keys.json&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KeyData <span class="title">LoadKeyPair</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (File.Exists(KeysPath))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> RestoreKeys(KeysPath);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> keyData = <span class="keyword">new</span> KeyData()</span><br><span class="line">        &#123;</span><br><span class="line">            KeyPair = EccGenerator.GenerateKeyPair(<span class="number">256</span>),</span><br><span class="line">            SessionKey = SessionKeyGenerator.GenerateSessionKey()</span><br><span class="line">        &#125;;</span><br><span class="line">        keyData.SaveKeys(KeysPath);</span><br><span class="line">        <span class="keyword">return</span> keyData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> KeyData <span class="title">RestoreKeys</span>(<span class="params"><span class="built_in">string</span> path</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> keyData = File.ReadAllText(path);</span><br><span class="line">        <span class="keyword">return</span> JsonSerializer.Deserialize&lt;KeyData&gt;(keyData)!;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，我們使用了些檔案讀寫的方式來做存放，主要流程為:</p>
+<ol>
+<li>檢查key 是否存在</li>
+<li>若存在，直接做 KeyRestore 的作業</li>
+<li>若不存在，直接新增 key pair 及 session key</li>
+<li>最後將 session key 及 key pair 多墊一層 KeyData 的 model 進行回傳</li>
+</ol>
+<h2 id="conlusion">Conlusion</h2>
+<p>今天我們定義好了 key 要怎麼進行存放，且針對有無已存在key file 進行處理。 好了今天先到這。</p>
 ]]></content>
       <categories>
         <category>ithome 鐵人賽-2024</category>
@@ -527,6 +569,29 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
+    <title>ithome鐵人賽-2024 Day04 Get the First Block</title>
+    <url>/posts/6f938f8a/</url>
+    <content><![CDATA[<p>Hi all,  到了第四天終於可以來搞專案了，今天的目標很簡單，我想要寫出取得 Block 的 API。</p>
+<span id="more"></span>
+<p>首先來簡單介紹下 Block 的結構:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    index<span class="punctuation">:</span> block 的索引值，用來標識這是區塊鏈中的第幾個區塊。</span><br><span class="line">    timestamp<span class="punctuation">:</span> 區塊創建的時間。</span><br><span class="line">    data<span class="punctuation">:</span> 儲存在區塊中的資料，可以是任何類型的資料。</span><br><span class="line">    previous hash<span class="punctuation">:</span> 前一個區塊的雜湊值，用來鏈接到前一個區塊，確保區塊鏈的連續性。</span><br><span class="line">    hash<span class="punctuation">:</span> 當前區塊雜湊值。</span><br><span class="line">    nonce<span class="punctuation">:</span> 一個隨機數，用於工作量證明 (proof of work) 算法，確保區塊的有效性。</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>接下來說明下區塊雜湊值的計算:</p>
+<p><code>Hash = SHA256 ( Timestamp + Previous Hash + Data  + Nonce)</code></p>
+<p>其中 Nonce 是個變數值，他會隨著當前的計算困難度( Difficulty) 而有所變化，由於是自己的區塊鏈環境，我們不需要太過強的困難度，因此困難度可視為0。</p>
+<p>以下就是 TDD 寫出 Get Block 的過程，供參:</p>
+<p><a href="https://www.youtube.com/watch?v=2e_w17iWLSU"><img src="https://img.youtube.com/vi/2e_w17iWLSU/0.jpg" alt="Yes"></a></p>
+<p>由上面的影片可以看出，我們搭建了專案的三層架構，且在 Repository層 hard code 一個 block 資料作為回傳值，明天的時候再來定義 Block 的生成哈。</p>
+<p>今天應該就先到這， 先付上<a href="https://github.com/CodeMachine0121/CustomBlockChainLab.git">專案 GitHub 任意門</a></p>
+<p>總結: 青藍色星期二，明天不是假日，後天也不是。</p>
+]]></content>
+      <categories>
+        <category>ithome 鐵人賽-2024</category>
+      </categories>
+      <tags>
+        <tag>ithome 鐵人賽-2024</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ithome鐵人賽-2024 Day05 Generate New Block</title>
     <url>/posts/c1987c23/</url>
     <content><![CDATA[<p>Hi all, 來到第五天，今天目標是是解說下 區塊的產生並將其實做出來。</p>
@@ -560,48 +625,6 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
-    <title>Type and Interface</title>
-    <url>/posts/737e6e43/</url>
-    <content><![CDATA[<p>Hi all, 這篇文章主要會用來比較 type 與 inteface的差別，做為自己的小小筆記。</p>
-<span id="more"></span>
-<h2 id="使用方式">使用方式</h2>
-<p>兩者之間主要功能大略一致，以下為typscript語法中宣告的方式</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">PersonType</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span>  <span class="attr">type_person</span>: <span class="title class_">PersonType</span>= &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">interface_person</span>: <span class="title class_">PersonInterface</span>= &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<p>可以看到其實使用方式都是一樣的，唯一不同的點在宣告時 type 是需要使用= 來給值。</p>
-<p>但保持實驗精神，我們在把這段 typescript 翻譯成 javascript 來觀察看看 js 層如何實作 (如下)</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> type_person = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> interface_person = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;developer&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>給個結論: 其實都一樣😂</p>
-<h2 id="進階使用">進階使用</h2>
-<p>以上面的實驗看下來，type 與 interface確實是大同小異的。以下就來介紹兩者在繼承或是擴充上的使用方式。</p>
-<h3 id="interface">Interface:</h3>
-<ul>
-<li>物件導向中規章：介面用於定義物件的需要的規範，需要實作哪些方法。</li>
-<li>可繼承：介面可以透過 extends 繼承其他介面 (以下為 extends的例子)。</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Wizard</span> <span class="keyword">extends</span> <span class="title class_">PersonInterface</span>&#123;</span><br><span class="line">    <span class="title function_">burn</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="attr">papa</span>: <span class="title class_">Wizard</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;wizard&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">burn</span>: <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;burn&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="type">Type:</h3>
-<ul>
-<li>不可繼承 ：不同 type間不可以繼承(extends)</li>
-<li>對型別進行複合形式的操作：雖然 type 不能像介面那樣透過 extends 被繼承，但它可以通過聯合（|）和交集（&amp;）等操作組合其他型別，來建立複雜的型別 (以下為例)。</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">PersonType</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="built_in">string</span>;</span><br><span class="line">    <span class="attr">age</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Shooter</span> = &#123;</span><br><span class="line">    <span class="title function_">reload</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> <span class="title class_">Archor</span> = &#123;</span><br><span class="line">    <span class="title function_">shoot</span>(): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="attr">james</span>: <span class="title class_">Archor</span> &amp; <span class="title class_">PersonType</span> | <span class="title class_">Shooter</span> = &#123;</span><br><span class="line">    <span class="attr">job</span>: <span class="string">&#x27;archor&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">shoot</span>: <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;shoot&#x27;</span>)</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<p>在上面的實作中，可以發現 james 的型別為 Archor &amp; PersonType，這個型別表示說常數需要同時實作兩個 type 底下的屬性，跟 implement 意思差不多。再來可以發現其實後面又多了個 | Shooter 這個的意思就表示了 james 可以選擇性的實作 Shooter底下的屬性。</p>
-<h2 id="結論">結論</h2>
-<p>以上實驗 Interface 及 Type 兩者的使用方式後，最後的問題: 兩個功能上幾乎都差不多，那到底甚麼時候該使用哪一個來做為型別定義呢?</p>
-<blockquote>
-<p>我自己的觀點呢 -&gt; 還是那句話 case by case。</p>
-</blockquote>
-<p>如果今天的撰寫的是多人共同管理的中大型專案又或是與後端API定義交互的物件時，我會選擇使用 interface 來換得更嚴謹的規範。</p>
-<p>相反的今天的專案可能是ㄧ些小型專案又或是一些需要負責定義複雜型別的場合，我認為type可以帶來更加彈性的寫法。</p>
-]]></content>
-      <categories>
-        <category>Js/Ts</category>
-      </categories>
-      <tags>
-        <tag>typescript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ithome鐵人賽-2024 Day06 Use MySQL</title>
     <url>/posts/84f4b7b3/</url>
     <content><![CDATA[<p>Hi 來到第六天，昨天講到我們需要透過 Repository 層與資料庫進行交互取得實際的區塊鍊資料。</p>
@@ -619,29 +642,6 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
 <p>那由於方便性來說，我打算將此次的專案以及 db 都透過 Docker 容器化的方式打包成 image 做使用，至於為甚麼不透過 像是 AWS 或是 GCP 服務… 主要還是$$啦，如果真有需要到時再說，但實做不會相差太大。</p>
 <p>至於該怎麼去做 docker 的使用，那是明天的事情惹。</p>
 <p>結語:  明天 happy Friday!!!</p>
-]]></content>
-      <categories>
-        <category>ithome 鐵人賽-2024</category>
-      </categories>
-      <tags>
-        <tag>ithome 鐵人賽-2024</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ithome鐵人賽-2024 Day04 Get the First Block</title>
-    <url>/posts/6f938f8a/</url>
-    <content><![CDATA[<p>Hi all,  到了第四天終於可以來搞專案了，今天的目標很簡單，我想要寫出取得 Block 的 API。</p>
-<span id="more"></span>
-<p>首先來簡單介紹下 Block 的結構:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    index<span class="punctuation">:</span> block 的索引值，用來標識這是區塊鏈中的第幾個區塊。</span><br><span class="line">    timestamp<span class="punctuation">:</span> 區塊創建的時間。</span><br><span class="line">    data<span class="punctuation">:</span> 儲存在區塊中的資料，可以是任何類型的資料。</span><br><span class="line">    previous hash<span class="punctuation">:</span> 前一個區塊的雜湊值，用來鏈接到前一個區塊，確保區塊鏈的連續性。</span><br><span class="line">    hash<span class="punctuation">:</span> 當前區塊雜湊值。</span><br><span class="line">    nonce<span class="punctuation">:</span> 一個隨機數，用於工作量證明 (proof of work) 算法，確保區塊的有效性。</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>接下來說明下區塊雜湊值的計算:</p>
-<p><code>Hash = SHA256 ( Timestamp + Previous Hash + Data  + Nonce)</code></p>
-<p>其中 Nonce 是個變數值，他會隨著當前的計算困難度( Difficulty) 而有所變化，由於是自己的區塊鏈環境，我們不需要太過強的困難度，因此困難度可視為0。</p>
-<p>以下就是 TDD 寫出 Get Block 的過程，供參:</p>
-<p><a href="https://www.youtube.com/watch?v=2e_w17iWLSU"><img src="https://img.youtube.com/vi/2e_w17iWLSU/0.jpg" alt="Yes"></a></p>
-<p>由上面的影片可以看出，我們搭建了專案的三層架構，且在 Repository層 hard code 一個 block 資料作為回傳值，明天的時候再來定義 Block 的生成哈。</p>
-<p>今天應該就先到這， 先付上<a href="https://github.com/CodeMachine0121/CustomBlockChainLab.git">專案 GitHub 任意門</a></p>
-<p>總結: 青藍色星期二，明天不是假日，後天也不是。</p>
 ]]></content>
       <categories>
         <category>ithome 鐵人賽-2024</category>
@@ -939,6 +939,30 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
+    <title>ithome鐵人賽-2024-Day12-SDK 放送事故…</title>
+    <url>/posts/78964999/</url>
+    <content><![CDATA[<p>各位… 由於 SDK 的放送事故，今天就來搶修下 我們的 EccSDK</p>
+<span id="more"></span>
+<p>主要問題: BigInteger Reference 衝突</p>
+<ul>
+<li>由於在專案中產生 Session Key 時，其型別為 BigInteger，但發現這個型別 Reference 的地方竟然有兩個 = =</li>
+</ul>
+<p>Solution:</p>
+<ul>
+<li>把 SessionKey 封裝起來，讓使用端透過 SessionKeyHelper 產生，code 如下</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SessionKeyGenerator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BigInteger <span class="title">GenerateSessionKey</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BigInteger(<span class="number">256</span>, <span class="keyword">new</span> Random());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上是暫時解法，今天就先這樣了~~~ 需要好好來想想怎麼會有 Reference 衝突的問題@@</p>
+<p>結語: 刺激星期三，明天不是假日，後天也不是</p>
+]]></content>
+      <categories>
+        <category>ithome 鐵人賽-2024</category>
+      </categories>
+      <tags>
+        <tag>ithome 鐵人賽-2024</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ithome鐵人賽-2024-Day13 Apply Ecc SDK</title>
     <url>/posts/8b64eeab/</url>
     <content><![CDATA[<p>Hi all, 來到第13天 昨天由於依賴衝突的關係，導致延後套用 SDK~~~今天就來把專案引入昨天寫好的 SDK吧。</p>
@@ -981,30 +1005,6 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
       </tags>
   </entry>
   <entry>
-    <title>ithome鐵人賽-2024-Day12-SDK 放送事故…</title>
-    <url>/posts/78964999/</url>
-    <content><![CDATA[<p>各位… 由於 SDK 的放送事故，今天就來搶修下 我們的 EccSDK</p>
-<span id="more"></span>
-<p>主要問題: BigInteger Reference 衝突</p>
-<ul>
-<li>由於在專案中產生 Session Key 時，其型別為 BigInteger，但發現這個型別 Reference 的地方竟然有兩個 = =</li>
-</ul>
-<p>Solution:</p>
-<ul>
-<li>把 SessionKey 封裝起來，讓使用端透過 SessionKeyHelper 產生，code 如下</li>
-</ul>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SessionKeyGenerator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BigInteger <span class="title">GenerateSessionKey</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BigInteger(<span class="number">256</span>, <span class="keyword">new</span> Random());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上是暫時解法，今天就先這樣了~~~ 需要好好來想想怎麼會有 Reference 衝突的問題@@</p>
-<p>結語: 刺激星期三，明天不是假日，後天也不是</p>
-]]></content>
-      <categories>
-        <category>ithome 鐵人賽-2024</category>
-      </categories>
-      <tags>
-        <tag>ithome 鐵人賽-2024</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Show Latex in Hexo</title>
     <url>/posts/4d56e4ff/</url>
     <content><![CDATA[<h2 id="installing-steps">Installing Steps</h2>
@@ -1025,6 +1025,111 @@ we can change the port by passing a parameter to the <code>r.Run()</code> functi
 ]]></content>
       <tags>
         <tag>latex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>六角架構 (Port and Adpater)</title>
+    <url>/posts/406b4875/</url>
+    <content><![CDATA[<p>現今許多開發團隊表面上採用分層架構，但實際上更接近六角架構，這是因為許多專案或多或少都會使用依賴注入的緣故。<br>
+採用依賴注入後，架構的開發自然而然地更傾向於這種 Port 對 Adapter 的設計風格。</p>
+<p><img src="/images/hexagoanl-architecture.png" alt="img.png"></p>
+<span id="more"></span>
+<h2 id="畫圖說故事">畫圖說故事</h2>
+<p>以上圖為例， 外層的大六角形的每個邊都代表不同類型的 <strong>Port</strong>，可以是輸入或是輸出。 不同的用戶端都會有屬於自己的<strong>轉接器 (Adapter)</strong>，接著這些轉接器會將輸入轉為跟應用程式相符合的輸入(即 request轉 dto 或是 response/Entity 轉 Domain)。</p>
+<h2 id="舉個例子">舉個例子</h2>
+<p>有個 Request 透過 Adapter A 將 request參數 轉換成 Dto 物件並輸入至應用程式中。<br>
+接著這個應用程式需要透過其他的外力協助才能滿足 Request 所需要的 Response (在這邊以DB為例子)，應用程式就會在往外擴展至 Port 再擴展至 Adapter E 索取所需的資料後再一路往回走。</p>
+<p>值得注意的是在 Adapter E 回傳 DB Entity 至 Port 時，還需要將 Entity 轉換為 Domain 物件，作為返回應用程式的輸入。</p>
+<p>返回應用程式後，就會透過裡面的領域模型進行ㄧ連串的業務邏輯運算，再將運算出來的 Domain 物件回傳至用戶端即可。</p>
+]]></content>
+      <categories>
+        <category>軟體架構</category>
+      </categories>
+      <tags>
+        <tag>clean-architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>股票 side-project:葛蘭碧法則</title>
+    <url>/posts/5fabe0cb/</url>
+    <content><![CDATA[<p>Hi all, 這是個深度學習小白想玩玩 Learning 的一個 Side Project，目標是預測股勢，告訴我什麼時候可以進/退場。</p>
+<p>但在實作之前啊，必須補齊一下股票這方面的 Domain know how，不求精通只求夠用，這篇文章主要會用來記錄這些 domain knowledge。<br>
+<code>註記： 這次的code 主體是由 Chat GPT 撰寫，小弟的部分只有提供想法，並基於回應再提出問題，最後將產出的code進行參數的調整</code></p>
+<span id="more"></span>
+<h1>葛蘭碧法則, J.Granville Rules</h1>
+<p>簡單來說，是個交易訊號，一個告知我們什麼時候該進退場的訊號</p>
+<p><img src="stock-side-project/trade_signal.png" alt="image.png"></p>
+<p>紅線：移動平均線　黑線：股價走勢</p>
+<h2 id="買進訊號-：">【買進訊號】：</h2>
+<p>買進訊號條件</p>
+<p>1.突破當移動平均線從下降趨勢逐漸轉為水平盤整或上昇時，且股價從移動平均線下方突破移動平均線，可視為買進訊號。</p>
+<p>2.假跌破股價往下跌破移動平均線，但隨即又回到移動平均線之上，且此時移動平均線依然呈現上升趨勢，可視為買進訊號。</p>
+<p>3.支撐當股價趨勢走在移動平均線之上，雖然股價修正下跌但並未跌破移動平均線便再度反彈走高，可視為買進訊號。</p>
+<p>4.抄底當股價向下急跌，不僅跌破移動平均線，甚至遠遠偏離至移動平均線下方深處，而股價開始反彈上升又趨向移動平均線時，可視為買進訊號。</p>
+<h2 id="賣出訊號-：">【賣出訊號】：</h2>
+<p>賣出訊號條件</p>
+<p>5.跌破當移動平均線從上升趨勢轉變成水平線或呈現下跌時，且股價從移動平均線上方跌破移動平均線時，可視為賣出訊號。</p>
+<p>6.假突破當股價反彈突破移動平均線後，卻又隨即下跌跌破移動平均線，且此時移動平均線依然呈現下降趨勢，可視為賣出訊號。</p>
+<p>7.反壓當股價走勢持續走在移動平均線之下，即使股價反彈也無法突破移動平均線，這時移動平均線成為股價的反壓，可視為賣出訊號。</p>
+<p>8.反轉當股價向上急漲，且遠遠偏離移動平均線上方極遠之後，股價反轉下跌使得股價趨向移動平均線時，可視為賣出訊號。</p>
+<h1>關鍵點</h1>
+<ol>
+<li>趨勢判斷
+<ul>
+<li>上漲趨勢中,股價高於上升移動平均線,不宜做空</li>
+<li>下跌趨勢中,股價低於下降移動平均線,不宜做多</li>
+</ul>
+</li>
+<li>移動平均線作為支撐/阻力
+<ul>
+<li>移動平均線本身具有趨勢線的屬性</li>
+<li>可作為潛在的支撐或阻力位</li>
+</ul>
+</li>
+<li>趨勢反轉訊號
+<ul>
+<li>關注股價在均線上下的多頭/空頭排列模式</li>
+<li>一旦排列方向反轉,視為潛在的反向入場時機</li>
+</ul>
+</li>
+<li>均線交叉訊號
+<ul>
+<li>均線黃金交叉(短期穿越長期上方)可能引發上漲趨勢</li>
+<li>均線死亡交叉(短期穿越長期下方)可能引發下跌趨勢</li>
+<li>交叉點附近可尋找順勢入場時機均#線的種類</li>
+</ul>
+</li>
+</ol>
+<h1><strong>均線的種類</strong></h1>
+<p>均線大概可以分成三種，計算方式不同，靈敏度也不一樣：</p>
+<ul>
+<li>
+<p><strong>SMA（簡單移動平均線）</strong></p>
+<p>這是最常見、也是計算最簡單的均線。通常報價軟體預設的均線就是這種。它的計算方式是把選定區間內的數值全部加起來，然後除以總天數。也就是說，每天的價格權重都一樣。</p>
+</li>
+<li>
+<p><strong>EMA（指數移動平均線）</strong></p>
+<p>EMA給最近的價格更高的權重，反應比較快。它的計算方法是，越近期的價格權重越高，依照指數方式往前遞減，所以比SMA更靈敏。</p>
+</li>
+</ul>
+<p>每種均線都有其特定的應用情境，而我們在找葛蘭碧突破的股票時，我們只需要用到SMA就好，所以後面我們所提到的均線都是指SMA。</p>
+<hr>
+<h1>Python 實作</h1>
+<p>依賴 Library: FinMind</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> FinMind.data <span class="keyword">import</span> DataLoader </span><br><span class="line"></span><br><span class="line">stock_no = <span class="string">&#x27;006208&#x27;</span></span><br><span class="line">dl = DataLoader()</span><br><span class="line">stock_data = dl.taiwan_stock_daily(</span><br><span class="line">    stock_id=stock_no, </span><br><span class="line">    start_date=<span class="string">&#x27;2024-08-25&#x27;</span>,</span><br><span class="line">    end_date=<span class="string">&#x27;2024-09-30&#x27;</span>)</span><br><span class="line">stock_data[<span class="string">&#x27;MA_50&#x27;</span>] = stock_data[<span class="string">&#x27;close&#x27;</span>].rolling(windows=<span class="number">50</span>).mean()</span><br></pre></td></tr></table></figure>
+<h2 id="找出-買入訊號-賣出訊號">找出 買入訊號，賣出訊號</h2>
+<h3 id="sma">SMA</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = stock_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ma</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_ma</span>(<span class="params">data, window</span>):</span><br><span class="line">    <span class="keyword">return</span> data.rolling(window=window).mean()</span><br><span class="line">ma_window = <span class="number">60</span></span><br><span class="line">df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=ma_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">df[<span class="string">&#x27;is_sell_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">buy_dates = df[df[<span class="string">&#x27;is_buy_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line">sell_dates = df[df[<span class="string">&#x27;is_sell_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;買入信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;buy_dates.tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n賣出信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;sell_dates.tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="ema">EMA</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">&#x27;stock_data.csv&#x27;</span>)</span><br><span class="line"><span class="comment"># calculate ema</span></span><br><span class="line">ema_window = <span class="number">60</span> </span><br><span class="line">df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=ema_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;is_sell_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;買入信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_buy_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;賣出信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_sell_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="打包成-csv檔">打包成 csv檔</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data = pd.DataFrame()</span><br><span class="line">data[<span class="string">&quot;Close&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">data[<span class="string">&quot;EMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;SMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;date&quot;</span>] = df[<span class="string">&#x27;date&#x27;</span>]</span><br><span class="line"></span><br><span class="line">features = [<span class="string">&quot;Close&quot;</span>, <span class="string">&quot;EMA&quot;</span>, <span class="string">&quot;SMA&quot;</span>, <span class="string">&quot;date&quot;</span>]</span><br><span class="line">data = data.dropna()</span><br><span class="line">data.to_csv(<span class="string">&#x27;data.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h1>Conclusion</h1>
+<p>這篇文章主要是透過以往的資料，來判定說在之前的情況什麼時候該買/賣，並在最後將計算得出的 MA, EMA 及實際收盤價打包成 <code>data.csv</code>。<br>
+這篇就先這樣，之後就可以來 train 個 model 預測收盤價囉。</p>
+]]></content>
+      <tags>
+        <tag>Stock</tag>
       </tags>
   </entry>
   <entry>
@@ -1152,123 +1257,18 @@ By Eric Evans</p>
       </tags>
   </entry>
   <entry>
-    <title>六角架構 (Port and Adpater)</title>
-    <url>/posts/406b4875/</url>
-    <content><![CDATA[<p>現今許多開發團隊表面上採用分層架構，但實際上更接近六角架構，這是因為許多專案或多或少都會使用依賴注入的緣故。<br>
-採用依賴注入後，架構的開發自然而然地更傾向於這種 Port 對 Adapter 的設計風格。</p>
-<p><img src="/images/hexagoanl-architecture.png" alt="img.png"></p>
-<span id="more"></span>
-<h2 id="畫圖說故事">畫圖說故事</h2>
-<p>以上圖為例， 外層的大六角形的每個邊都代表不同類型的 <strong>Port</strong>，可以是輸入或是輸出。 不同的用戶端都會有屬於自己的<strong>轉接器 (Adapter)</strong>，接著這些轉接器會將輸入轉為跟應用程式相符合的輸入(即 request轉 dto 或是 response/Entity 轉 Domain)。</p>
-<h2 id="舉個例子">舉個例子</h2>
-<p>有個 Request 透過 Adapter A 將 request參數 轉換成 Dto 物件並輸入至應用程式中。<br>
-接著這個應用程式需要透過其他的外力協助才能滿足 Request 所需要的 Response (在這邊以DB為例子)，應用程式就會在往外擴展至 Port 再擴展至 Adapter E 索取所需的資料後再一路往回走。</p>
-<p>值得注意的是在 Adapter E 回傳 DB Entity 至 Port 時，還需要將 Entity 轉換為 Domain 物件，作為返回應用程式的輸入。</p>
-<p>返回應用程式後，就會透過裡面的領域模型進行ㄧ連串的業務邏輯運算，再將運算出來的 Domain 物件回傳至用戶端即可。</p>
-]]></content>
-      <categories>
-        <category>軟體架構</category>
-      </categories>
-      <tags>
-        <tag>clean-architecture</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>股票 side-project:葛蘭碧法則</title>
-    <url>/posts/5fabe0cb/</url>
-    <content><![CDATA[<p>Hi all, 這是個深度學習小白想玩玩 Learning 的一個 Side Project，目標是預測股勢，告訴我什麼時候可以進/退場。</p>
-<p>但在實作之前啊，必須補齊一下股票這方面的 Domain know how，不求精通只求夠用，這篇文章主要會用來記錄這些 domain knowledge。<br>
-<code>註記： 這次的code 主體是由 Chat GPT 撰寫，小弟的部分只有提供想法，並基於回應再提出問題，最後將產出的code進行參數的調整</code></p>
-<span id="more"></span>
-<h1>葛蘭碧法則, J.Granville Rules</h1>
-<p>簡單來說，是個交易訊號，一個告知我們什麼時候該進退場的訊號</p>
-<p><img src="%E8%82%A1%E7%A5%A8-side-project/trade_signal.png" alt="image.png"></p>
-<p>紅線：移動平均線　黑線：股價走勢</p>
-<h2 id="買進訊號-：">【買進訊號】：</h2>
-<p>買進訊號條件</p>
-<p>1.突破當移動平均線從下降趨勢逐漸轉為水平盤整或上昇時，且股價從移動平均線下方突破移動平均線，可視為買進訊號。</p>
-<p>2.假跌破股價往下跌破移動平均線，但隨即又回到移動平均線之上，且此時移動平均線依然呈現上升趨勢，可視為買進訊號。</p>
-<p>3.支撐當股價趨勢走在移動平均線之上，雖然股價修正下跌但並未跌破移動平均線便再度反彈走高，可視為買進訊號。</p>
-<p>4.抄底當股價向下急跌，不僅跌破移動平均線，甚至遠遠偏離至移動平均線下方深處，而股價開始反彈上升又趨向移動平均線時，可視為買進訊號。</p>
-<h2 id="賣出訊號-：">【賣出訊號】：</h2>
-<p>賣出訊號條件</p>
-<p>5.跌破當移動平均線從上升趨勢轉變成水平線或呈現下跌時，且股價從移動平均線上方跌破移動平均線時，可視為賣出訊號。</p>
-<p>6.假突破當股價反彈突破移動平均線後，卻又隨即下跌跌破移動平均線，且此時移動平均線依然呈現下降趨勢，可視為賣出訊號。</p>
-<p>7.反壓當股價走勢持續走在移動平均線之下，即使股價反彈也無法突破移動平均線，這時移動平均線成為股價的反壓，可視為賣出訊號。</p>
-<p>8.反轉當股價向上急漲，且遠遠偏離移動平均線上方極遠之後，股價反轉下跌使得股價趨向移動平均線時，可視為賣出訊號。</p>
-<h1>關鍵點</h1>
-<ol>
-<li>趨勢判斷
-<ul>
-<li>上漲趨勢中,股價高於上升移動平均線,不宜做空</li>
-<li>下跌趨勢中,股價低於下降移動平均線,不宜做多</li>
-</ul>
-</li>
-<li>移動平均線作為支撐/阻力
-<ul>
-<li>移動平均線本身具有趨勢線的屬性</li>
-<li>可作為潛在的支撐或阻力位</li>
-</ul>
-</li>
-<li>趨勢反轉訊號
-<ul>
-<li>關注股價在均線上下的多頭/空頭排列模式</li>
-<li>一旦排列方向反轉,視為潛在的反向入場時機</li>
-</ul>
-</li>
-<li>均線交叉訊號
-<ul>
-<li>均線黃金交叉(短期穿越長期上方)可能引發上漲趨勢</li>
-<li>均線死亡交叉(短期穿越長期下方)可能引發下跌趨勢</li>
-<li>交叉點附近可尋找順勢入場時機均#線的種類</li>
-</ul>
-</li>
-</ol>
-<h1><strong>均線的種類</strong></h1>
-<p>均線大概可以分成三種，計算方式不同，靈敏度也不一樣：</p>
-<ul>
-<li>
-<p><strong>SMA（簡單移動平均線）</strong></p>
-<p>這是最常見、也是計算最簡單的均線。通常報價軟體預設的均線就是這種。它的計算方式是把選定區間內的數值全部加起來，然後除以總天數。也就是說，每天的價格權重都一樣。</p>
-</li>
-<li>
-<p><strong>EMA（指數移動平均線）</strong></p>
-<p>EMA給最近的價格更高的權重，反應比較快。它的計算方法是，越近期的價格權重越高，依照指數方式往前遞減，所以比SMA更靈敏。</p>
-</li>
-</ul>
-<p>每種均線都有其特定的應用情境，而我們在找葛蘭碧突破的股票時，我們只需要用到SMA就好，所以後面我們所提到的均線都是指SMA。</p>
-<hr>
-<h1>Python 實作</h1>
-<p>依賴 Library: FinMind</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> FinMind.data <span class="keyword">import</span> DataLoader </span><br><span class="line"></span><br><span class="line">stock_no = <span class="string">&#x27;006208&#x27;</span></span><br><span class="line">dl = DataLoader()</span><br><span class="line">stock_data = dl.taiwan_stock_daily(</span><br><span class="line">    stock_id=stock_no, </span><br><span class="line">    start_date=<span class="string">&#x27;2024-08-25&#x27;</span>,</span><br><span class="line">    end_date=<span class="string">&#x27;2024-09-30&#x27;</span>)</span><br><span class="line">stock_data[<span class="string">&#x27;MA_50&#x27;</span>] = stock_data[<span class="string">&#x27;close&#x27;</span>].rolling(windows=<span class="number">50</span>).mean()</span><br></pre></td></tr></table></figure>
-<h2 id="找出-買入訊號-賣出訊號">找出 買入訊號，賣出訊號</h2>
-<h3 id="sma">SMA</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = stock_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate ma</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_ma</span>(<span class="params">data, window</span>):</span><br><span class="line">    <span class="keyword">return</span> data.rolling(window=window).mean()</span><br><span class="line">ma_window = <span class="number">60</span></span><br><span class="line">df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=ma_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">df[<span class="string">&#x27;is_sell_signal&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>]) </span><br><span class="line">buy_dates = df[df[<span class="string">&#x27;is_buy_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line">sell_dates = df[df[<span class="string">&#x27;is_sell_signal&#x27;</span>]][[<span class="string">&#x27;date&#x27;</span>, <span class="string">f&#x27;MA_<span class="subst">&#123;ma_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;買入信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;buy_dates.tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n賣出信號日期：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;sell_dates.tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="ema">EMA</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">&#x27;stock_data.csv&#x27;</span>)</span><br><span class="line"><span class="comment"># calculate ema</span></span><br><span class="line">ema_window = <span class="number">60</span> </span><br><span class="line">df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=ema_window).mean()</span><br><span class="line"><span class="built_in">print</span>(df[[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>, <span class="string">&#x27;close&#x27;</span>]].tail())</span><br><span class="line"></span><br><span class="line"><span class="comment"># calculate when should be buy or sell</span></span><br><span class="line">df[<span class="string">&#x27;is_buy_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line">df[<span class="string">&#x27;is_sell_signal_ema&#x27;</span>] = (df[<span class="string">&#x27;close&#x27;</span>].shift(<span class="number">1</span>) &gt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>].shift(<span class="number">1</span>)) &amp; (df[<span class="string">&#x27;close&#x27;</span>] &lt; df[<span class="string">f&#x27;EMA_<span class="subst">&#123;ema_window&#125;</span>&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># output result</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;買入信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_buy_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;賣出信號日期：\n<span class="subst">&#123;df[df[<span class="string">&quot;is_sell_signal_ema&quot;</span>]][[<span class="string">&quot;date&quot;</span>, <span class="string">f&quot;EMA_<span class="subst">&#123;ema_window&#125;</span>&quot;</span>, <span class="string">&quot;close&quot;</span>]].tail()&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="打包成-csv檔">打包成 csv檔</h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data = pd.DataFrame()</span><br><span class="line">data[<span class="string">&quot;Close&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">data[<span class="string">&quot;EMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].ewm(span=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;SMA&quot;</span>] = df[<span class="string">&#x27;close&#x27;</span>].rolling(window=<span class="number">60</span>).mean()</span><br><span class="line">data[<span class="string">&quot;date&quot;</span>] = df[<span class="string">&#x27;date&#x27;</span>]</span><br><span class="line"></span><br><span class="line">features = [<span class="string">&quot;Close&quot;</span>, <span class="string">&quot;EMA&quot;</span>, <span class="string">&quot;SMA&quot;</span>, <span class="string">&quot;date&quot;</span>]</span><br><span class="line">data = data.dropna()</span><br><span class="line">data.to_csv(<span class="string">&#x27;data.csv&#x27;</span>, index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-<h1>Conclusion</h1>
-<p>這篇文章主要是透過以往的資料，來判定說在之前的情況什麼時候該買/賣，並在最後將計算得出的 MA, EMA 及實際收盤價打包成 <code>data.csv</code>。<br>
-這篇就先這樣，之後就可以來 train 個 model 預測收盤價囉。</p>
-]]></content>
-      <tags>
-        <tag>Stock</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>about</title>
     <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
