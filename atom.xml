@@ -6,7 +6,7 @@
   <link href="https://codemachine0121.github.io/atom.xml" rel="self"/>
   
   <link href="https://codemachine0121.github.io/"/>
-  <updated>2024-09-30T18:16:52.545Z</updated>
+  <updated>2024-10-13T18:11:50.450Z</updated>
   <id>https://codemachine0121.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>原子習慣- note</title>
+    <link href="https://codemachine0121.github.io/posts/52f9f614/"/>
+    <id>https://codemachine0121.github.io/posts/52f9f614/</id>
+    <published>2024-10-13T18:03:18.000Z</published>
+    <updated>2024-10-13T18:11:50.450Z</updated>
+    
+    <content type="html"><![CDATA[<p>hi all, 小弟最近在讀本書，叫做原子習慣，那這本書主要在講如何透過建立習慣，來達到自己的目標，這篇文章主要會用來記錄這本書的內容，預防針打一下，不一定是每個知識點都會紀錄。</p><p>所有的筆記都會紀錄在這一篇，所以這是一篇連載筆記？</p><span id="more"></span><h1>原子習慣</h1><p>習慣的四階段模型：提示、渴望、回應、獎賞</p><h2 id="改變習慣">改變習慣</h2><p>舉個例子<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 戒菸： 我不抽煙 vs 我正在戒煙</p><p>想要改變可以分兩種：</p><ol><li>以身份認同作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我是個不抽煙的人</li><li>以結果作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我要戒菸</li></ol><blockquote><p>一開始就把重點放在：希望自己變成什麼樣的人 （身份認同）</p></blockquote><h3 id="改變身份認同">改變身份認同</h3><p>其實 身份認同是從習慣演變而來，舉個例子： 你每天固定運動，那你就是個運動的人</p><blockquote><p>每個習慣都像在暗示自己：嘿我好像就是這樣子的人</p></blockquote><p>新的身份認同就需要新的證據，以下兩步驟</p><ol><li>決定想要成為什麼樣的人</li><li>透過生活中的小勝利來向自己證明 （可以嘗試提問自己一個 xxx 會怎麼做，自己找出答案）</li></ol><blockquote><p>焦點永遠放在成為某一種人，而不是達到某件事情</p></blockquote>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;hi all, 小弟最近在讀本書，叫做原子習慣，那這本書主要在講如何透過建立習慣，來達到自己的目標，這篇文章主要會用來記錄這本書的內容，預防針打一下，不一定是每個知識點都會紀錄。&lt;/p&gt;
+&lt;p&gt;所有的筆記都會紀錄在這一篇，所以這是一篇連載筆記？&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="閱讀" scheme="https://codemachine0121.github.io/categories/%E9%96%B1%E8%AE%80/"/>
+    
+    
+    <category term="閱讀小記" scheme="https://codemachine0121.github.io/tags/%E9%96%B1%E8%AE%80%E5%B0%8F%E8%A8%98/"/>
+    
+  </entry>
   
   <entry>
     <title>Stock side-project::J.Granville Rules</title>
@@ -441,28 +463,6 @@ By Eric Evans&lt;/p&gt;
     
     
     <category term="Refactoring" scheme="https://codemachine0121.github.io/tags/Refactoring/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C# Unit Test 如何驗證多次呼叫</title>
-    <link href="https://codemachine0121.github.io/posts/43a9b739/"/>
-    <id>https://codemachine0121.github.io/posts/43a9b739/</id>
-    <published>2024-08-11T23:46:13.000Z</published>
-    <updated>2024-09-30T16:34:28.064Z</updated>
-    
-    <content type="html"><![CDATA[<p>Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰<br>假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。</p><span id="more"></span><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Run</span>(<span class="params"><span class="built_in">int</span> batch</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> students = studentRepository.FetchByBatch(batch);</span><br><span class="line">        <span class="keyword">if</span> (!students.Any())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        studentRepository.Insert(students);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>那這樣問題來了，我們該如何驗證呢?</p><h2 id="寫測試囉">寫測試囉</h2><p>這個問題其實苦惱了我們一下子，但透過 你的好同事 Chat GPT 後，我們發現其實我們使用的Assert 框架及 Mock框架提供了這樣的寫法 (BTW 這裡使用的 package分別為: NSubstitute 及 FluentAssertions )。</p><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">should_get_data_by_batch</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    _batchService.Run(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>).ToList();</span><br><span class="line">    argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>上面的 test code 雖然看起來又長又臭的，但其實可以蠻明確地看出 test 3A( Arrange, Action, Assert)。<br>Arrange<br>一般來說，我們會使用 Returns 來mock 這個被呼叫的函數回傳特定的值，但其實有的隱藏版用法就是可以透過逗號來區分第幾次呼叫要回傳的值，以這次的例子舉例，我們指定了第一次呼叫時要回傳 3個 Id為1~3的student 資料。</p><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">_studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">);</span><br></pre></td></tr></table></figure><h2 id="assert">Assert</h2><p>在 Assert這一段，我們用了個人比較不常用到的方式來驗證。我們透過 ReceivedCalls() 取得我們整段測試針對此mock 物件接收到的呼叫請求，並再一步拿到 呼叫函數的資訊把方法名為 “Insert” 提取出來。<br>提取出來的物件會是一個List物件，其中每個成員都是每次呼叫方法的請求物件。在這個物件中，我們可以透過 GetArguments 取得該次請求所送出的參數，因此我們就可以來驗證不同呼叫時所帶的參數是否正確。</p><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>)</span><br><span class="line">.ToList();</span><br><span class="line">argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">&#125;);</span><br><span class="line">argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="conclusion">Conclusion</h2><p>以上為如何驗證多次呼叫的實作，單純個人筆記。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰&lt;br&gt;
-假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="單元測試" scheme="https://codemachine0121.github.io/categories/%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/"/>
-    
-    
-    <category term="UnitTest" scheme="https://codemachine0121.github.io/tags/UnitTest/"/>
     
   </entry>
   

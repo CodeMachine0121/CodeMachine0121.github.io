@@ -147,6 +147,45 @@ By Eric Evans</p>
       </tags>
   </entry>
   <entry>
+    <title>原子習慣- note</title>
+    <url>/posts/52f9f614/</url>
+    <content><![CDATA[<p>hi all, 小弟最近在讀本書，叫做原子習慣，那這本書主要在講如何透過建立習慣，來達到自己的目標，這篇文章主要會用來記錄這本書的內容，預防針打一下，不一定是每個知識點都會紀錄。</p>
+<p>所有的筆記都會紀錄在這一篇，所以這是一篇連載筆記？</p>
+<span id="more"></span>
+<h1>原子習慣</h1>
+<p>習慣的四階段模型：提示、渴望、回應、獎賞</p>
+<h2 id="改變習慣">改變習慣</h2>
+<p>舉個例子<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 戒菸： 我不抽煙 vs 我正在戒煙</p>
+<p>想要改變可以分兩種：</p>
+<ol>
+<li>以身份認同作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我是個不抽煙的人</li>
+<li>以結果作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我要戒菸</li>
+</ol>
+<blockquote>
+<p>一開始就把重點放在：希望自己變成什麼樣的人 （身份認同）</p>
+</blockquote>
+<h3 id="改變身份認同">改變身份認同</h3>
+<p>其實 身份認同是從習慣演變而來，舉個例子： 你每天固定運動，那你就是個運動的人</p>
+<blockquote>
+<p>每個習慣都像在暗示自己：嘿我好像就是這樣子的人</p>
+</blockquote>
+<p>新的身份認同就需要新的證據，以下兩步驟</p>
+<ol>
+<li>決定想要成為什麼樣的人</li>
+<li>透過生活中的小勝利來向自己證明 （可以嘗試提問自己一個 xxx 會怎麼做，自己找出答案）</li>
+</ol>
+<blockquote>
+<p>焦點永遠放在成為某一種人，而不是達到某件事情</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>閱讀</category>
+      </categories>
+      <tags>
+        <tag>閱讀小記</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Stock side-project::J.Granville Rules</title>
     <url>/posts/5fabe0cb/</url>
     <content><![CDATA[<p>Hi all, 這是個深度學習小白想玩玩 Learning 的一個 Side Project，目標是預測股勢，告訴我什麼時候可以進/退場。</p>
@@ -1257,11 +1296,6 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>categories</title>
     <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
@@ -1269,6 +1303,11 @@ Arrange<br>
   <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
