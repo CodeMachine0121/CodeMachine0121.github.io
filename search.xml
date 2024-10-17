@@ -177,6 +177,62 @@ By Eric Evans</p>
 <blockquote>
 <p>焦點永遠放在成為某一種人，而不是達到某件事情</p>
 </blockquote>
+<h1>習慣四大步驟</h1>
+<table>
+<thead>
+<tr>
+<th>步驟</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提示</td>
+<td>促使我們去執行的一個提示，會以透漏一點獎賞資訊的方式告訴大腦需要執行某一特定的作業</td>
+</tr>
+<tr>
+<td>渴望</td>
+<td>所有習慣背後的動力( 為什麼要做這件事情 )。 舉個例子，抽菸不是只是為了抽菸，而是抽菸帶來的爽感。</td>
+</tr>
+<tr>
+<td>回應</td>
+<td>確實執行習慣，回應會不會持續發生，取決於自己受到的刺激以及做這件事情的阻力。</td>
+</tr>
+<tr>
+<td>獎賞</td>
+<td>每個習慣他背後的終極目標。舉個例子，運動的獎賞就是身材變好及提高約異性出門的機率</td>
+</tr>
+</tbody>
+</table>
+<p>以上四個步驟缺一不可。</p>
+<h1>讓習慣顯而易見</h1>
+<h2 id="習慣計分卡">習慣計分卡</h2>
+<p>簡單來說，就是把要做的事情寫成步驟會是memo 貼再醒目的地方提醒自己，另外在執行步驟時需要透過嘴巴要事項說出來。</p>
+<h2 id="習慣堆疊">習慣堆疊</h2>
+<p>將要做的事情以幾點幾分在哪做什麼的方式預先條列出來，告訴自己要做哪些事情。</p>
+<blockquote>
+<p>對何時何地執行一向新習慣做出確切計畫的人，比較可能真的去執行。</p>
+</blockquote>
+<p>習慣堆疊強調的是：<strong>先找出目前的每日習慣，在把新習慣堆疊上去。</strong></p>
+<blockquote>
+<p>做完 [目前的習慣] 後，我要做 [ 新習慣 ]</p>
+</blockquote>
+<ul>
+<li>以下舉個例子
+<ul>
+<li>為了習慣靜心：
+<ul>
+<li>每天早上把咖啡倒入杯中後，我會靜心一分鐘。</li>
+</ul>
+</li>
+<li>不同習慣的習慣堆疊
+<ul>
+<li>倒好咖啡後，我會靜心 10分鐘。靜心完畢後，我會寫下今日的待辦事項…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 ]]></content>
       <categories>
         <category>閱讀</category>
@@ -1296,8 +1352,8 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -1306,8 +1362,8 @@ Arrange<br>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
