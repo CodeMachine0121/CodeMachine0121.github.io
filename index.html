@@ -131,7 +131,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">10</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">11</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -141,7 +141,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">30</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">31</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -205,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/21be0a47/">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/bcd9b3bc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -219,7 +219,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/21be0a47/" class="post-title-link" itemprop="url">Dao 與 Repository 職責</a>
+            <a href="/posts/bcd9b3bc/" class="post-title-link" itemprop="url">系統高可靠性</a>
         </h2>
 
         <div class="post-meta">
@@ -229,24 +229,15 @@
               </span>
               <span class="post-meta-item-text">發表於</span>
 
-              <time title="創建時間：2024-09-03 00:58:23" itemprop="dateCreated datePublished" datetime="2024-09-03T00:58:23+08:00">2024-09-03</time>
+              <time title="創建時間：2024-10-18 21:42:28" itemprop="dateCreated datePublished" datetime="2024-10-18T21:42:28+08:00">2024-10-18</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-10-14 02:01:18" itemprop="dateModified" datetime="2024-10-14T02:01:18+08:00">2024-10-14</time>
+                <time title="修改時間：2024-10-19 00:28:48" itemprop="dateModified" datetime="2024-10-19T00:28:48+08:00">2024-10-19</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
-                </span>
-            </span>
 
           
 
@@ -259,184 +250,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>由於小弟近期工作遇到ㄧ些架構層面上的問題，其中我和 team 上的 member <a target="_blank" rel="noopener" href="https://github.com/YNCBearz">Bear</a> 再定義 Dao 及 Repository 的路上有些許的討論。</p>
-<p>我覺得蠻有意義的，故紀錄於此。</p>
+          <p>判斷指標有三個：</p>
+<ul>
+<li>吞吐量: 一個系統在單位時間內處理的請求數量</li>
+<li>回應時間: 一個系統處理請求所需的時間</li>
+<li>可併發數: 一個系統能夠同時處理的請求數量</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/posts/21be0a47/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/406b4875/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James' Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/406b4875/" class="post-title-link" itemprop="url">六角架構 (Port and Adpater)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2024-09-02 23:25:47" itemprop="dateCreated datePublished" datetime="2024-09-02T23:25:47+08:00">2024-09-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-10-14 02:01:18" itemprop="dateModified" datetime="2024-10-14T02:01:18+08:00">2024-10-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>現今許多開發團隊表面上採用分層架構，但實際上更接近六角架構，這是因為許多專案或多或少都會使用依賴注入的緣故。<br>
-採用依賴注入後，架構的開發自然而然地更傾向於這種 Port 對 Adapter 的設計風格。</p>
-<p><img src="/images/hexagoanl-architecture.png" alt="img.png"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/406b4875/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/92d0760d/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James' Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/92d0760d/" class="post-title-link" itemprop="url">軟體架構:分層式架構</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2024-08-30 00:42:46" itemprop="dateCreated datePublished" datetime="2024-08-30T00:42:46+08:00">2024-08-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-10-14 02:01:18" itemprop="dateModified" datetime="2024-10-14T02:01:18+08:00">2024-10-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>把領域模型與業務邏輯分開，然後拿掉對基礎設施、使用者介面、甚至那些應用程式中非業務邏輯的直接依賴。把一個複雜的城市切割為不同層，在每個層中僅根據該階層本身的特性以及該層以下的各層，去考慮該層應該採用的設計模型。<br>
-By Eric Evans</p>
-</blockquote>
-<p>在軟體架構中主要會有幾層 layer 再做不同的事情:</p>
-<ol>
-<li>應用程式層 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> API 請求接收端</li>
-<li>領域層 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 處理業務邏輯的地方</li>
-<li>基礎設施層 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 呼叫外部 API或是連線 DB的地方</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/92d0760d/#more" rel="contents">
+              <a class="btn" href="/posts/bcd9b3bc/#more" rel="contents">
                 閱讀全文 &raquo;
               </a>
             </div>
@@ -995,10 +817,175 @@ I’ll show a simple demo for handling the POST request.</p>
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/21be0a47/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James' Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/21be0a47/" class="post-title-link" itemprop="url">Dao 與 Repository 職責</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2024-09-03 00:58:23" itemprop="dateCreated datePublished" datetime="2024-09-03T00:58:23+08:00">2024-09-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2024-10-19 00:24:47" itemprop="dateModified" datetime="2024-10-19T00:24:47+08:00">2024-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>由於小弟近期工作遇到ㄧ些架構層面上的問題，其中我和 team 上的 member <a target="_blank" rel="noopener" href="https://github.com/YNCBearz">Bear</a> 再定義 Dao 及 Repository 的路上有些許的討論。</p>
+<p>我覺得蠻有意義的，故紀錄於此。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/21be0a47/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/406b4875/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James' Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/406b4875/" class="post-title-link" itemprop="url">六角架構 (Port and Adpater)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2024-09-02 23:25:47" itemprop="dateCreated datePublished" datetime="2024-09-02T23:25:47+08:00">2024-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2024-10-19 00:24:33" itemprop="dateModified" datetime="2024-10-19T00:24:33+08:00">2024-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>現今許多開發團隊表面上採用分層架構，但實際上更接近六角架構，這是因為許多專案或多或少都會使用依賴注入的緣故。<br>
+採用依賴注入後，架構的開發自然而然地更傾向於這種 Port 對 Adapter 的設計風格。</p>
+<p><img src="/images/hexagoanl-architecture.png" alt="img.png"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/406b4875/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一頁"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一頁"></i></a>
   </nav>
 
 
@@ -1064,7 +1051,7 @@ I’ll show a simple demo for handling the POST request.</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -1077,7 +1064,7 @@ I’ll show a simple demo for handling the POST request.</p>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>

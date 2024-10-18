@@ -20,33 +20,32 @@
     var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ithome鐵人賽-2024-Day10 Introduce Chameleon Hash">
-<meta property="og:url" content="https://codemachine0121.github.io/posts/9aa313dd/index.html">
+  <meta name="description" content="分享紀錄的地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="James&#39; Blog">
+<meta property="og:url" content="https://codemachine0121.github.io/page/4/index.html">
 <meta property="og:site_name" content="James&#39; Blog">
-<meta property="og:description" content="Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!">
+<meta property="og:description" content="分享紀錄的地方">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2024-08-12T15:04:54.000Z">
-<meta property="article:modified_time" content="2024-09-30T16:34:28.067Z">
 <meta property="article:author" content="James Hsueh">
-<meta property="article:tag" content="ithome 鐵人賽-2024">
+<meta property="article:tag" content="Tech">
+<meta property="article:tag" content="Life">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://codemachine0121.github.io/posts/9aa313dd/">
+<link rel="canonical" href="https://codemachine0121.github.io/page/4/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
-    isPost : true,
+    isHome : true,
+    isPost : false,
     lang   : 'zh-TW'
   };
 </script>
 
-  <title>ithome鐵人賽-2024-Day10 Introduce Chameleon Hash | James' Blog</title>
+  <title>James' Blog</title>
   
 
 
@@ -200,14 +199,13 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content index posts-expand">
             
-
-    
+      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/9aa313dd/">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/8d3907ed/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -219,9 +217,10 @@
       <meta itemprop="name" content="James' Blog">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          ithome鐵人賽-2024-Day10 Introduce Chameleon Hash
-        </h1>
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/8d3907ed/" class="post-title-link" itemprop="url">ithome鐵人賽-2024 Day01 Introduce 30-day 目標</a>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -230,7 +229,7 @@
               </span>
               <span class="post-meta-item-text">發表於</span>
 
-              <time title="創建時間：2024-08-12 23:04:54" itemprop="dateCreated datePublished" datetime="2024-08-12T23:04:54+08:00">2024-08-12</time>
+              <time title="創建時間：2024-08-11 23:07:49" itemprop="dateCreated datePublished" datetime="2024-08-11T23:07:49+08:00">2024-08-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -260,84 +259,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!</p>
-<span id="more"></span>
-<h2 id="how-chat-gpt-introduce">How Chat GPT Introduce</h2>
-<blockquote>
-<p>Chameleon Hash 是一種密鑰控制的可碰撞雜湊函數（keyed collision-resistant hash function）。這意味著給定一個密鑰，使用者可以控制雜湊值的碰撞，即可以找到不同的輸入消息，讓它們產生相同的雜湊值。</p>
-</blockquote>
-<h2 id="自己的總結">自己的總結</h2>
-<p>想想看以往常見的雜湊函數: md5、sha1、sha256… 等等的特性都是秉持著不同輸入皆會得到不同的輸出，即不可碰撞性。而變色龍雜湊函數卻是反其道而行，在特定的情況下 ( 擁有相同的 key ) 可以使演算法遵循不同的輸入得到相同輸入的特性。</p>
-<h2 id="how">How</h2>
-<p>以下為小弟在碩士時提出之演算法公式 ，簽章計算如下:</p>
-<p><code>sign = (sessionKey - dn) mod n</code><br>
-<code>dn = H(m) * kn</code></p>
-<p>Chameleon Hash 計算方式如下:</p>
-<p><code>chameleonHash = [Kn x H(m)] + [P x sign]</code></p>
-<p>最後我們只需要將收到的 requests 資訊透過上述公式，即可得出一個 Chameleon Hash，在跟自己的 Chameleon Hash比對是否一致即可。</p>
-<p>變數對應如下</p>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>(Kn, kn)</td>
-<td>對稱式金鑰對</td>
-</tr>
-<tr>
-<td>H(m)</td>
-<td>訊息的雜湊值</td>
-</tr>
-<tr>
-<td>P</td>
-<td>橢圓曲線之基點</td>
-</tr>
-<tr>
-<td>SessionKey</td>
-<td>一次性的金鑰</td>
-</tr>
-</tbody>
-</table>
-<h2 id="conclusion">Conclusion</h2>
-<p>以上就是這次專案會使用到的雜湊演算法，上述只是很簡單的介紹簽章公式，更細節的可以翻找下論文，這邊附上任意門: <a target="_blank" rel="noopener" href="https://ndltd.ncl.edu.tw/cgi-bin/gs32/gsweb.cgi/login?o=dnclcdr&amp;s=id=%22110YUNT0392023%22.&amp;searchmode=basic">論文網址</a></p>
-<p>接著我們就可以來想想怎麼透過 code 將其實作囉，那一樣是明天的事情了~~~</p>
-<p>結語:  夢迴研究生嗚嗚</p>
-
+          <p>Hi all, 由於07/25 的颱風為我們帶來了長達五天的假期，讓宅在家的我有了想要做 side project的想法，既然都想到要做了又剛好遇到這次鐵人賽的機會，那就做吧 :)。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/8d3907ed/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
     </div>
 
     
     
     
-
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/" rel="tag"># ithome 鐵人賽-2024</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/posts/f0cbbe44/" rel="prev" title="[重構] 工廠裏頭的策略 Startegy in Factory by C#">
-      <i class="fa fa-chevron-left"></i> [重構] 工廠裏頭的策略 Startegy in Factory by C#
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/5edf55db/" rel="next" title="ithome鐵人賽-2024-Day11-Use SDK for Chameleon Hash">
-      ithome鐵人賽-2024-Day11-Use SDK for Chameleon Hash <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
+        <div class="post-eof"></div>
       </footer>
-    
   </article>
   
   
   
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一頁"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+  </nav>
 
 
 
@@ -389,7 +338,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#how-chat-gpt-introduce"><span class="nav-number">1.</span> <span class="nav-text">How Chat GPT Introduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E7%9A%84%E7%B8%BD%E7%B5%90"><span class="nav-number">2.</span> <span class="nav-text">自己的總結</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how"><span class="nav-number">3.</span> <span class="nav-text">How</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
