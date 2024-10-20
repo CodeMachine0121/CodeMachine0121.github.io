@@ -299,191 +299,6 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
       </tags>
   </entry>
   <entry>
-    <title>Golang/Gin: (CRUD) Delete Data</title>
-    <url>/posts/302493fc/</url>
-    <content><![CDATA[<p>Hi all, for this article, I’ll show how to delete data using Gin</p>
-<h2 id="purpose">Purpose</h2>
-<ol>
-<li>New endpoint to delete data.</li>
-<li>Add a function in the service layer to handle the request.</li>
-<li>Extract the ID from the request parameter(Restful).</li>
-<li>Remove the data from the list.</li>
-<li>Return the list.</li>
-</ol>
-<span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	router.GET(<span class="string">&quot;/users&quot;</span>, service.FetchAll)</span><br><span class="line">	router.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	<span class="comment">// define the route with parameter</span></span><br><span class="line">	router.DELETE(<span class="string">&quot;user/:id&quot;</span>, service.Delete)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="service-user-go">service/user.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Delete</span><span class="params">(context *gin.Context)</span></span> &#123;</span><br><span class="line">	<span class="comment">// get id from routing like restful api and to int</span></span><br><span class="line">	id, _ := strconv.Atoi(context.Param(<span class="string">&quot;id&quot;</span>))</span><br><span class="line"></span><br><span class="line">	useList = Filter(useList, <span class="function"><span class="keyword">func</span><span class="params">(user models.User)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> user.ID != id</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	context.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">		<span class="string">&quot;message&quot;</span>: useList,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Filter</span><span class="params">(list []models.User, predicate <span class="keyword">func</span>(user models.User)</span></span> <span class="type">bool</span>) []models.User &#123;</span><br><span class="line">	<span class="keyword">var</span> result []models.User</span><br><span class="line">	<span class="keyword">for</span> _, user := <span class="keyword">range</span> list &#123;</span><br><span class="line">		<span class="keyword">if</span> predicate(user) &#123;</span><br><span class="line">			result = <span class="built_in">append</span>(result, user)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
-<ol>
-<li>Added a new route for the DELETE request in main.go.</li>
-<li>In the service layer, added a function to handle the DELETE request.
-<ol>
-<li>Extract the ID from the request parameter.</li>
-<li>New a function <code>Filter</code> and make it receive a func as a parameter</li>
-<li>For the predicate function, we check if the user ID is not equal to the ID we want to delete.</li>
-<li>Return the list as a response.</li>
-</ol>
-</li>
-<li>return the list as a response.</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>Golang/Gin</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Golang/Gin: (CRUD) Insert Data</title>
-    <url>/posts/db734ca8/</url>
-    <content><![CDATA[<p>Hi all, this article is expected to see how post request works with Gin.<br>
-I’ll show a simple demo for handling the POST request.</p>
-<h2 id="purpose">Purpose</h2>
-<ol>
-<li>Create a POST endpoint to insert data.</li>
-<li>Add function in the service layer to handle the request.</li>
-<li>Parse the data from request body into model type.</li>
-<li>Add the data to the list.</li>
-<li>Return the list.</li>
-</ol>
-<span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line"><span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line"><span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    router := gin.Default()</span><br><span class="line"></span><br><span class="line">    router.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line"></span><br><span class="line">    router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="service-user-go">service/user.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Insert</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> user models.User</span><br><span class="line">	c.BindJSON(&amp;user)</span><br><span class="line"></span><br><span class="line">	useList = <span class="built_in">append</span>(useList, user)</span><br><span class="line">	c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">		<span class="string">&quot;message&quot;</span>: useList,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
-<ol>
-<li>first, we added a router for the POST request.</li>
-<li>In the service layer, we added a function to handle the POST request.
-<ol>
-<li>Declared a null user model.</li>
-<li>Use <code>BindJSON</code> to bind the request body to the user model.</li>
-<li>Append the parsed data to the list.</li>
-<li>Return the list as a response.</li>
-</ol>
-</li>
-</ol>
-<h2 id="e2e-testing">E2E Testing</h2>
-<p>we cat use curl to test the POST request.</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -X POST http://localhost:8080 -d <span class="string">&#x27;&#123;&quot;ID&quot;: 3, &quot;Name&quot;: &quot;Jane&quot;, &quot;Email&quot;: &quot;jane@mail&quot;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>we should see the response:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;john@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Doe&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;doe@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Jane&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jane@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>Golang/Gin</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Golang/Gin: (CRUD) Fetch all</title>
-    <url>/posts/9a6a850b/</url>
-    <content><![CDATA[<p>This is a simple CRUD example using Gin to fetch all data.</p>
-<h2 id="purpose">Purpose</h2>
-<ol>
-<li>Hard code a list of user data.</li>
-<li>Create a GET endpoint to fetch all data.</li>
-<li>Extract service layer to handle the requests.</li>
-</ol>
-<span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">  <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    router := gin.Default()</span><br><span class="line"></span><br><span class="line">    router.GET(<span class="string">&quot;/users&quot;</span>, service.FetchAll)</span><br><span class="line"></span><br><span class="line">    router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="service-user-go">service/user.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> service</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line"> <span class="string">&quot;first-gin/models&quot;</span></span><br><span class="line"> <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> useList = []models.User&#123;</span><br><span class="line"> &#123;ID: <span class="number">1</span>, Name: <span class="string">&quot;John&quot;</span>, Email: <span class="string">&quot;john@mail&quot;</span>&#125;,</span><br><span class="line"> &#123;ID: <span class="number">2</span>, Name: <span class="string">&quot;Doe&quot;</span>, Email: <span class="string">&quot;doe@mail&quot;</span>&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">FetchAll</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line"></span><br><span class="line"> c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">  <span class="string">&quot;message&quot;</span>: useList,</span><br><span class="line"> &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="models-user-go">models/user.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> models</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line"> ID    <span class="type">int</span>    <span class="string">`json:&quot;id&quot;`</span></span><br><span class="line"> Name  <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span></span><br><span class="line"> Email <span class="type">string</span> <span class="string">`json:&quot;email&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
-<ol>
-<li>Create a routing for <code>/users</code> endpoint.</li>
-<li>Create a service layer to handle the requests and extract the logic from the main.go.
-<ol>
-<li>Create a variable to store the user data.</li>
-<li>Create a function to fetch all data.</li>
-<li>Return the data to the client.</li>
-</ol>
-</li>
-<li>Create a models for the user data.
-<ol>
-<li>Use json tag to map the data to the struct.</li>
-</ol>
-</li>
-</ol>
-<h2 id="e2e-test">E2E Test</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl http://localhost:8080/users</span><br></pre></td></tr></table></figure>
-<p>we should see the response:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;john@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Doe&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;doe@mail&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Golang/Gin</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Golang/Gin: Hello World</title>
-    <url>/posts/34e63b71/</url>
-    <content><![CDATA[<h2 id="why">Why</h2>
-<p>I think it’s a good idea to start with a Gin a web framework for Golang to understand advanced usage of Golang. So I decided to learn Gin day by day. (it’s a unstable plan XD)</p>
-<h2 id="what-is-gin">What is Gin</h2>
-<p>Let’s see how Copilot explain Gin.</p>
-<span id="more"></span>
-<blockquote>
-<blockquote>
-<p>Gin is a web framework written in Go (Golang). It’s known for its lightweight nature, high performance, and low memory footprint. Here are the main features of Gin:</p>
-<ol>
-<li>Speed: Gin uses a custom version of HttpRouter, which makes it extremely fast.</li>
-<li>Middleware support: Gin allows the use of middleware in the request processing pipeline, making it easy to implement features like logging and error handling.</li>
-<li>Error management: Gin provides a convenient mechanism for error handling.</li>
-<li>JSON validation: It has built-in JSON validation functionality, making it easy to handle JSON data.</li>
-<li>Route grouping: Gin supports grouping routes, which is useful for managing APIs in large applications.</li>
-<li>Rendering: It supports rendering XML, JSON, and HTML.</li>
-</ol>
-</blockquote>
-</blockquote>
-<p>Gin is excellent for building API services and can also be used for developing full-stack web applications. Its design philosophy is to keep the core simple while allowing functionality to be added through middleware and extensions. For Go web developers who need high performance and flexibility, Gin is an excellent choice.</p>
-<h2 id="project-setup">Project Setup</h2>
-<ol>
-<li>
-<p>Create a new directory for your project and navigate into it.</p>
-</li>
-<li>
-<p>Initialize a new Go module.</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go mod init hello-gin</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Install Gin.</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go get -u github.com/gin-gonic/gin</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Create a main.go file.</p>
- <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    r := gin.Default()</span><br><span class="line">    r.GET(<span class="string">&quot;/hello-world&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        c.JSON(http.StatusOK, gin.H&#123;</span><br><span class="line">            <span class="string">&quot;message&quot;</span>: <span class="string">&quot;Hello World&quot;</span>,</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">    r.Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>Use Terminal to Run the application.</p>
- <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">go run main.go</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="explanation-code">Explanation code</h2>
-<p><code>import</code><br>
-we import gin package from Gin. maybe can refer this repository <a href="https://github.com/gin-gonic/gin">Gin</a>.</p>
-<p><code>func main()</code><br>
-This is the entry point of the application.</p>
-<p><code>r := gin.Default()</code><br>
-This creates a new Gin router with default settings.</p>
-<p><code>r.GET(&quot;/&quot;, func(c *gin.Context) &#123; ... &#125;)</code><br>
-This sets up a route for GET requests at the root URL (&quot;/&quot;). When a GET request is made to this URL, the function passed as the second argument is executed. It sends a JSON response with a status code of 200 and a message “Hello World”.</p>
-<p><code>r.Run()</code><br>
-This starts the HTTP server and listens for incoming requests on port 8080 by default.<br>
-we can change the port by passing a parameter to the <code>r.Run()</code> function, like this: <code>r.Run(&quot;:3000&quot;)</code>.</p>
-<h2 id="e2e-test">E2E Test</h2>
-<p>we can use <code>curl</code> to test the application.</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl http://localhost:8080</span><br></pre></td></tr></table></figure>
-<p>we should see the response:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;message&quot;</span><span class="punctuation">:</span><span class="string">&quot;Hello World&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Golang/Gin</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Dao 與 Repository 職責</title>
     <url>/posts/21be0a47/</url>
     <content><![CDATA[<p>由於小弟近期工作遇到ㄧ些架構層面上的問題，其中我和 team 上的 member <a href="https://github.com/YNCBearz">Bear</a> 再定義 Dao 及 Repository 的路上有些許的討論。</p>
@@ -1448,11 +1263,6 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
@@ -1460,6 +1270,11 @@ Arrange<br>
   <entry>
     <title>categories</title>
     <url>/categories/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>

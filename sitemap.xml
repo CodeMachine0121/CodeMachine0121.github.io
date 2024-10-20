@@ -65,15 +65,6 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/about/index.html</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://codemachine0121.github.io/tags/index.html</loc>
     
     <lastmod>2024-09-30</lastmod>
@@ -84,6 +75,15 @@
   
   <url>
     <loc>https://codemachine0121.github.io/categories/index.html</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/about/index.html</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -255,42 +255,6 @@
   
   <url>
     <loc>https://codemachine0121.github.io/posts/2761fa2d/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/302493fc/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/db734ca8/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/9a6a850b/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/34e63b71/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
