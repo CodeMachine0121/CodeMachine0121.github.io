@@ -33,6 +33,7 @@
 <li>如果漏桶空了，則不需要流出。</li>
 <li>如果 request 流入的數量超出了漏桶的容量，則會被拒絕。</li>
 </ul>
+<p><img src="/images/leaking-bucket.png" alt="img.png"></p>
 <h3 id="token-桶算法">Token 桶算法</h3>
 <p>特點如下：</p>
 <ul>
@@ -40,6 +41,7 @@
 <li>當 Token 桶裡面的 token 滿了，則不再放入 token。</li>
 <li>當 request 收到後，會先去 Token 桶裡面拿 token，如果拿不到 token，則會被拒絕。</li>
 </ul>
+<p><img src="/images/token-bucket.png" alt="img.png"></p>
 <h3 id="比較">比較</h3>
 <ul>
 <li>漏桶算法是固定的速率流出，不固定的速率流入。
@@ -1446,8 +1448,8 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -1456,8 +1458,8 @@ Arrange<br>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
