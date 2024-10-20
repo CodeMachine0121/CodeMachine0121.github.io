@@ -29,8 +29,9 @@
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://codemachine0121.github.io/images/leaking-bucket.png">
 <meta property="og:image" content="https://codemachine0121.github.io/images/token-bucket.png">
+<meta property="og:image" content="https://codemachine0121.github.io/images/mulitple-thread-module.png">
 <meta property="article:published_time" content="2024-10-19T17:44:45.000Z">
-<meta property="article:modified_time" content="2024-10-20T03:52:41.955Z">
+<meta property="article:modified_time" content="2024-10-20T15:55:18.868Z">
 <meta property="article:author" content="James Hsueh">
 <meta property="article:tag" content="system-design">
 <meta name="twitter:card" content="summary">
@@ -234,7 +235,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2024-10-20 01:44:45 / 修改時間：11:52:41" itemprop="dateCreated datePublished" datetime="2024-10-20T01:44:45+08:00">2024-10-20</time>
+              <time title="創建時間：2024-10-20 01:44:45 / 修改時間：23:55:18" itemprop="dateCreated datePublished" datetime="2024-10-20T01:44:45+08:00">2024-10-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -309,6 +310,15 @@
 </ul>
 </li>
 </ul>
+<h2 id="單機限流的實現">單機限流的實現</h2>
+<h3 id="限制-request-queue-的長度">限制 request queue 的長度</h3>
+<p>以下為，一個多線程request的處理示意圖。<br>
+<img src="/images/mulitple-thread-module.png" alt="img.png"></p>
+<p>依照上面的圖，會有個問題點： request/response queue 的長度該如何配置呢？<br>
+大致上的公式如下：</p>
+<blockquote>
+<p>Request Queue = (Request Timeout <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span></span></span></span> Worker Thread 處理一個 request 的時間) +<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>i</mi><mi>m</mi><mi>e</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span></span></span></span> Worker Thread 數量</p>
+</blockquote>
 
     </div>
 
@@ -389,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E6%B5%81"><span class="nav-number">1.</span> <span class="nav-text">限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E6%A9%9F%E9%99%90%E6%B5%81%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">單機限流的算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">漏桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">Token 桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BC%83"><span class="nav-number">2.3.</span> <span class="nav-text">比較</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E6%B5%81"><span class="nav-number">1.</span> <span class="nav-text">限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E6%A9%9F%E9%99%90%E6%B5%81%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">單機限流的算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">漏桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">Token 桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BC%83"><span class="nav-number">2.3.</span> <span class="nav-text">比較</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E6%A9%9F%E9%99%90%E6%B5%81%E7%9A%84%E5%AF%A6%E7%8F%BE"><span class="nav-number">3.</span> <span class="nav-text">單機限流的實現</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%90%E5%88%B6-request-queue-%E7%9A%84%E9%95%B7%E5%BA%A6"><span class="nav-number">3.1.</span> <span class="nav-text">限制 request queue 的長度</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -1236,6 +1236,15 @@ By Eric Evans</p>
 </ul>
 </li>
 </ul>
+<h2 id="單機限流的實現">單機限流的實現</h2>
+<h3 id="限制-request-queue-的長度">限制 request queue 的長度</h3>
+<p>以下為，一個多線程request的處理示意圖。<br>
+<img src="/images/mulitple-thread-module.png" alt="img.png"></p>
+<p>依照上面的圖，會有個問題點： request/response queue 的長度該如何配置呢？<br>
+大致上的公式如下：</p>
+<blockquote>
+<p>Request Queue = (Request Timeout <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span></span></span></span> Worker Thread 處理一個 request 的時間) +<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>i</mi><mi>m</mi><mi>e</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span></span></span></span> Worker Thread 數量</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>系統設計</category>
