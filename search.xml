@@ -1329,6 +1329,25 @@ By Eric Evans</p>
       </tags>
   </entry>
   <entry>
+    <title>NeoVim 自定義Code Action, Custom Code Action in NeoVim</title>
+    <url>/posts/37475265/</url>
+    <content><![CDATA[<p>Hi all, 由於最近有再研究原生 terminal Vim 的關係，固有這邊文章。 那這篇文章主要會解說如何自定義 Code Action。那我自己是選用<br>
+<a href="https://nvchad.com/">NvChad</a> 進行修改，因此主要的 vim 會是使用NeoVim, 且 Plugin Manager 會是 Lazy 為主(但其實背後與 Packer 差不多，因此Packer 玩家也可參考)</p>
+<p>以下是我的設定環境：</p>
+<ul>
+<li>OS: Mac Air (M2)</li>
+<li>NeoVim: v0.10.2</li>
+<li>Need nodeJs/npm</li>
+<li>Lsp: ts_ls</li>
+</ul>
+<h2 id="環境依賴">環境依賴</h2>
+<p>首先能我們必須安裝以下這樣個套件：</p>
+<ul>
+<li><a href="https://github.com/neovim/nvim-lspconfig">nvim-lspconfig</a>: 這個套件主要會連線到 <strong>Language Server</strong>，其目的就是替 Vim 導入不同程式語言的支援，那我們之後要設定的 code action 也會是吃這邊的設定。</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
