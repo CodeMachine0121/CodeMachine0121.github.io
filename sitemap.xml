@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/tags/index.html</loc>
+    <loc>https://codemachine0121.github.io/about/index.html</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -92,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/about/index.html</loc>
+    <loc>https://codemachine0121.github.io/tags/index.html</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -137,43 +137,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/84f4b7b3/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/a660692f/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/e6c04a02/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/c35b4088/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/9aa313dd/</loc>
+    <loc>https://codemachine0121.github.io/posts/78964999/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -191,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/78964999/</loc>
+    <loc>https://codemachine0121.github.io/posts/9aa313dd/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -200,7 +164,34 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/75f7afc7/</loc>
+    <loc>https://codemachine0121.github.io/posts/c35b4088/</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/posts/e6c04a02/</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/posts/a660692f/</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/posts/84f4b7b3/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -218,7 +209,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/8d3907ed/</loc>
+    <loc>https://codemachine0121.github.io/posts/75f7afc7/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -227,16 +218,7 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/dcec2123/</loc>
-    
-    <lastmod>2024-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://codemachine0121.github.io/posts/b75c561e/</loc>
+    <loc>https://codemachine0121.github.io/posts/c1987c23/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -254,7 +236,25 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/posts/c1987c23/</loc>
+    <loc>https://codemachine0121.github.io/posts/b75c561e/</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/posts/dcec2123/</loc>
+    
+    <lastmod>2024-09-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/posts/8d3907ed/</loc>
     
     <lastmod>2024-09-30</lastmod>
     
@@ -321,6 +321,13 @@
   
   <url>
     <loc>https://codemachine0121.github.io/tags/typescript/</loc>
+    <lastmod>2024-10-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://codemachine0121.github.io/tags/dev-tools/</loc>
     <lastmod>2024-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
