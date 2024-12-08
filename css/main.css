@@ -71,22 +71,22 @@
   list-style-type: disc;
   padding-left: 20px;
 }
-.titansoft {
+.job {
   display: flex;
   gap: 40px;
   padding: 20px;
   border-radius: 8px;
 }
-.titansoft .content {
+.job .content {
   flex: 1;
 }
-.titansoft .title {
+.job .title {
   margin-bottom: 15px;
 }
-.titansoft .working-achievement {
+.job .working-achievement {
   flex: 1;
 }
-.titansoft .working-achievement h2 {
+.job .working-achievement h2 {
   margin-bottom: 15px;
 }
 .working-achievement-list {
@@ -1335,7 +1335,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #f7ff0f;
+  background: #213990;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
