@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+<meta name="google-site-verification" content="8oYideSWQCvbdBG-VEICQWGm2VtW77kAtqw7XP2Wl88" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|JetBrains Mono:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Hi all, 因為工作上的關係接觸到了所謂的 AOP 框架, 覺得挺有趣的故藉此文章分享。 Introduce AOP(面向方面程式設計&#x2F;Aspect-Oriented Programming), 他是一種寫程式的方法，簡單來說就是把一些常常要用到,但是跟主要業務邏輯無關的功能抽出來統一處理。 舉個例子， 假設我們在寫一個購物網站然後建立交易的流程如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Code 魔術師 - AOP using Fody">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/b8160fb4/index.html">
+<meta property="og:site_name" content="James&#39; Blog">
+<meta property="og:description" content="Hi all, 因為工作上的關係接觸到了所謂的 AOP 框架, 覺得挺有趣的故藉此文章分享。 Introduce AOP(面向方面程式設計&#x2F;Aspect-Oriented Programming), 他是一種寫程式的方法，簡單來說就是把一些常常要用到,但是跟主要業務邏輯無關的功能抽出來統一處理。 舉個例子， 假設我們在寫一個購物網站然後建立交易的流程如下：">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://codemachine0121.github.io/images/AOP.png">
+<meta property="article:published_time" content="2024-12-07T11:50:36.000Z">
+<meta property="article:modified_time" content="2024-12-08T05:10:46.479Z">
+<meta property="article:author" content="James Hsueh">
+<meta property="article:tag" content="Tech">
+<meta property="article:tag" content="Life">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://codemachine0121.github.io/images/AOP.png">
+
+<link rel="canonical" href="https://codemachine0121.github.io/posts/b8160fb4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>Code 魔術師 - AOP using Fody | James' Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="James' Blog" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism.css" type="text/css"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">James' Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">地域列車車長</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+
+
+  </ul>
+</nav>
+
+<div class="coffee" style="display:flex;justify-content:center;padding:10px;">
+  <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="James.Hsueh" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+</div>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜尋..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/b8160fb4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James' Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Code 魔術師 - AOP using Fody
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2024-12-07 19:50:36" itemprop="dateCreated datePublished" datetime="2024-12-07T19:50:36+08:00">2024-12-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2024-12-08 13:10:46" itemprop="dateModified" datetime="2024-12-08T13:10:46+08:00">2024-12-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Hi all, 因為工作上的關係接觸到了所謂的 AOP 框架, 覺得挺有趣的故藉此文章分享。</p>
+<h2 id="introduce">Introduce</h2>
+<p>AOP(面向方面程式設計/Aspect-Oriented Programming), 他是一種寫程式的方法，簡單來說就是把一些常常要用到,但是跟主要業務邏輯無關的功能抽出來統一處理。<br>
+舉個例子， 假設我們在寫一個購物網站然後建立交易的流程如下：</p>
+<span id="more"></span>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line">public void 購物流程() &#123;</span><br><span class="line">    寫入<span class="built_in">Log</span>(&quot;開始購物&quot;);  </span><br><span class="line">    檢查會員登入();      </span><br><span class="line">    計算處理時間開始(); <span class="comment">// for Tracing </span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 真正的購物邏輯</span></span><br><span class="line">    檢查商品庫存();</span><br><span class="line">    建立訂單();</span><br><span class="line">    扣除庫存();</span><br><span class="line">    </span><br><span class="line">    計算處理時間結束(); <span class="comment">// for Tracing</span></span><br><span class="line">    寫入<span class="built_in">Log</span>(&quot;購物完成&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看完之後會發現，實際上處理購物的邏輯只有中間那三行，但是我們前前後後要加一堆其他的東西 (Log, 登入, 計時等)。如果每個功能都要這樣寫,程式碼就會變得很亂,而且重複的程式碼到處都是。<br>
+這時候就可以用AOP的想法來處理，我們把跟購物無關的東西抽出來，流程如下：</p>
+<figure class="highlight gcode"><table><tr><td class="code"><pre><span class="line">@需要登入</span><br><span class="line">@要記錄Log</span><br><span class="line">@計算執行時間</span><br><span class="line">public void 購物流程<span class="comment">()</span> &#123;</span><br><span class="line">    <span class="comment">// 只要寫真正要做的事就好</span></span><br><span class="line">    檢查商品庫存<span class="comment">()</span>;</span><br><span class="line">    建立訂單<span class="comment">()</span>;</span><br><span class="line">    扣除庫存<span class="comment">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看出來了嗎？ 這個是不是很像後端API的ActionFilter 或是 Middleware的概念，但其實概念差不多只是再應用場景有些許的不同</p>
+<table>
+<thead>
+<tr>
+<th>比較特性</th>
+<th>執行時機</th>
+<th>作用範圍</th>
+<th>使用場景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Middleware</td>
+<td>HTTP Request Pipeline 最早期</td>
+<td>整個 Application</td>
+<td>身分驗證, 請求加解密, CORS 處理, 異常處理</td>
+</tr>
+<tr>
+<td>Action Filter</td>
+<td>Controller/Action 執行前後</td>
+<td>限於 Controllers</td>
+<td>Model 驗證, Action 權限檢查, 回應格式處理</td>
+</tr>
+<tr>
+<td>AOP</td>
+<td>任何方法執行時期</td>
+<td>任何類別或方法</td>
+<td>方法層級快取, 效能監控, 交易管理, 記錄日誌</td>
+</tr>
+</tbody>
+</table>
+<h2 id="個人使用場景">個人使用場景</h2>
+<p>我自己的使用場景，是要為了做一個替專案進行可觀側性監控的SDK，但不希望再改到使用端的code 的限制下進行設計。<br>
+那此次的SDK 撰寫是使用 <a target="_blank" rel="noopener" href="https://github.com/Fody/Fody">Fody</a> 作為AOP框架提供，以下是基本的應用範例。</p>
+<h2 id="demo-project">Demo Project</h2>
+<h3 id="startup-main-project-part-i">Startup Main Project | Part I</h3>
+<ul>
+<li>目的：在呼叫專案內任何method 前必須執行一特定method</li>
+</ul>
+<p>以下是我們的 API main flow code</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Route(<span class="string">&quot;api/[controller]&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoController</span>(<span class="params">IDemoService demoService</span>) : ControllerBase</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">HttpGet</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IActionResult <span class="title">Get</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        demoService.Echo();</span><br><span class="line">        <span class="keyword">return</span> Ok(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoService</span>(<span class="params">IDemoRepository demoRepository</span>) : IDemoService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Echo</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        demoRepository.Echo();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DemoRepository</span> : <span class="title">IDemoRepository</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Echo</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NotImplementedException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="startup-aop">Startup AOP</h3>
+<p>接著我們就可以安裝以下 nuget 套件：</p>
+<ul>
+<li>Fody <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 專案本體</li>
+<li>FodyHelper <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> Library 專案</li>
+</ul>
+<p>首先，我們必須建立一個專案，名字暫定叫做 <code>AOP-Library.Fody</code>，這邊要記住由於 Fody 的特性，這裡的專案名必須要有<code>.Fody</code> 作為後綴詞（理論上有另一種不需要多添加後綴詞的解法，礙於篇幅就先不敘述），接著來撰寫要讓AOP做的事情，code如下：</p>
+<h4 id="methodlogger">MethodLogger</h4>
+<p>此為，攔截 method</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">public static class MethodLogger</span><br><span class="line">&#123;</span><br><span class="line">    public static void Log(string methodName)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine($&quot;Interceptor get: &#123;methodName&#125;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="moduleweaver">ModuleWeaver</h4>
+<p>在這邊進行 IL code 注入，達到攔截效果</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ModuleWeaver</span> : <span class="title">BaseModuleWeaver</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Execute</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> logMethod = <span class="keyword">typeof</span>(MethodLogger).GetMethod(<span class="keyword">nameof</span>(MethodLogger.Log));</span><br><span class="line">        <span class="keyword">var</span> logMethodRef = ModuleDefinition.ImportReference(logMethod);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> type <span class="keyword">in</span> ModuleDefinition.Types)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (ShouldProcessType(type))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">foreach</span> (<span class="keyword">var</span> method <span class="keyword">in</span> type.Methods)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (ShouldProcessMethod(method))</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">var</span> il = method.Body.GetILProcessor();</span><br><span class="line">                        method.Body.InitLocals = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">var</span> first = method.Body.Instructions.First();</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">var</span> loadMethodName = il.Create(OpCodes.Ldstr, method.FullName);</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">var</span> callLog = il.Create(OpCodes.Call, logMethodRef);</span><br><span class="line"></span><br><span class="line">                        il.InsertBefore(first, loadMethodName);</span><br><span class="line">                        il.InsertAfter(loadMethodName, callLog);</span><br><span class="line"></span><br><span class="line">                        method.Body.Optimize();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> IEnumerable&lt;<span class="built_in">string</span>&gt; <span class="title">GetAssembliesForScanning</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;netstandard&quot;</span>;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;mscorlib&quot;</span>;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;System.Runtime&quot;</span>;</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">return</span> <span class="string">&quot;System.Console&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="built_in">bool</span> <span class="title">ShouldProcessType</span>(<span class="params">TypeDefinition type</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 跳過系統類型、介面和特殊類型</span></span><br><span class="line">        <span class="keyword">return</span> !type.IsInterface &amp;&amp;</span><br><span class="line">               !type.IsEnum &amp;&amp;</span><br><span class="line">               !type.IsAbstract &amp;&amp;</span><br><span class="line">               !type.IsValueType &amp;&amp;</span><br><span class="line">               !type.FullName.StartsWith(<span class="string">&quot;System.&quot;</span>) &amp;&amp;</span><br><span class="line">               !type.FullName.StartsWith(<span class="string">&quot;&lt;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="built_in">bool</span> <span class="title">ShouldProcessMethod</span>(<span class="params">MethodDefinition method</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> method.HasBody &amp;&amp;</span><br><span class="line">               !method.IsConstructor &amp;&amp;</span><br><span class="line">               !method.IsGetter &amp;&amp;</span><br><span class="line">               !method.IsSetter &amp;&amp;</span><br><span class="line">               !method.IsAbstract &amp;&amp;</span><br><span class="line">               !method.IsRuntime &amp;&amp;</span><br><span class="line">               !method.IsPInvokeImpl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="startup-main-project-part-ii">Startup Main Project | Part II</h3>
+<p>設定好上述的AOP注入後，我們還需要來 Main Project這邊針對 csproj 做些事情，如下：</p>
+<h4 id="csproj">Csproj</h4>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Project</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">ProjectReference</span> <span class="attr">Include</span>=<span class="string">&quot;..\AOP-Library.Fody\AOP-Library.Fody.csproj&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">WeaverFiles</span> <span class="attr">Include</span>=<span class="string">&quot;$(OutputPath)AOP-Library.Fody.dll&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="run-project">Run Project</h3>
+<p>在這邊就可以嘗試把專案跑起來看看，如果一切順利的話，Console畫面會跟下圖一樣。</p>
+<p><img src="/images/AOP.png" alt="img.png"></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>以上就是使用 Fody 作為AOP框架的應用實作，但其實AOP 還有另一個框架工具：<code>Castle.Core</code>，那兩者雖然都是AOP框架，但使用上的方式截然不同，若有空的話我再來寫一篇 <code>Castle.Core</code>的應用實作，今天先到這。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/992d0373/" rel="prev" title="LLM 教我啥是Kafka">
+      <i class="fa fa-chevron-left"></i> LLM 教我啥是Kafka
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduce"><span class="nav-number">1.</span> <span class="nav-text">Introduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%8B%E4%BA%BA%E4%BD%BF%E7%94%A8%E5%A0%B4%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">個人使用場景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#demo-project"><span class="nav-number">3.</span> <span class="nav-text">Demo Project</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#startup-main-project-part-i"><span class="nav-number">3.1.</span> <span class="nav-text">Startup Main Project | Part I</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startup-aop"><span class="nav-number">3.2.</span> <span class="nav-text">Startup AOP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#methodlogger"><span class="nav-number">3.2.1.</span> <span class="nav-text">MethodLogger</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#moduleweaver"><span class="nav-number">3.2.2.</span> <span class="nav-text">ModuleWeaver</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startup-main-project-part-ii"><span class="nav-number">3.3.</span> <span class="nav-text">Startup Main Project | Part II</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#csproj"><span class="nav-number">3.3.1.</span> <span class="nav-text">Csproj</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#run-project"><span class="nav-number">3.4.</span> <span class="nav-text">Run Project</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">James Hsueh</p>
+  <div class="site-description" itemprop="description">分享紀錄的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/codeMachine0121" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;codeMachine0121" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:asdfg55887@gmail.com" title="E-Mail → mailto:asdfg55887@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/ksz54213" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;ksz54213" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">James Hsueh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
