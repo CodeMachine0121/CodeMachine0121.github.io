@@ -1,0 +1,65 @@
+.container {
+  width: 100%;
+}
+.left {
+  width: 100%;
+}
+.image-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.image-wrapper {
+  flex: 1;
+}
+.image-wrapper img {
+  width: 100%;
+  height: auto;
+}
+.content-wrapper {
+  flex: 2;
+}
+.disc-list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+.titansoft {
+  display: flex;
+  gap: 40px;
+  padding: 20px;
+  border-radius: 8px;
+}
+.titansoft .content {
+  flex: 1;
+}
+.titansoft .title {
+  margin-bottom: 15px;
+}
+.titansoft .working-achievement {
+  flex: 1;
+}
+.titansoft .working-achievement h2 {
+  margin-bottom: 15px;
+}
+.working-achievement-list {
+  padding-left: 20px;
+}
+.education .numbered-list {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+}
+.personal-achievement {
+  padding: 20px;
+}
+.personal-achievement > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+.personal-achievement ol {
+  margin: 0;
+}
+.t-2 {
+  padding-top: 8px;
+}
