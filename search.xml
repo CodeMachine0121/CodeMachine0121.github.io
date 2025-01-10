@@ -160,7 +160,7 @@
 <ul>
 <li>當一個組織想做一些架構重構的時後，首先要想的並不是服務怎麼切，應該要想為什麼要切</li>
 </ul>
-<p>對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就我自己的再經歷的前公司的微服務後加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：</p>
+<p>對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就自己再經歷了前公司的微服務後加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：</p>
 <span id="more"></span>
 <blockquote>
 <p>當遇到問題的時候，是不是應該先想一下眼前這個問題是不是問題，又應該說目前這個情況的問題點在哪？</p>
@@ -1771,8 +1771,8 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
@@ -1781,8 +1781,8 @@ Arrange<br>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>about</title>
+    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
