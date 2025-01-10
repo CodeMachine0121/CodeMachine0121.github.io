@@ -21,20 +21,20 @@
     var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Hi all, for this article, I will keep note of how to use router group in Gin. What is Router Group Router Group is a function to extract routers for each group. For example, if there are 2 features of">
+  <meta name="description" content="到底怎麼切微服務這是個蠻好發起的問題，以下是我跟我的前同事 丁丁 再吃晚餐時隨口聊的，覺得蠻有趣的所以寫寫文章。 為什麼要切微服務  當一個組織想做一些架構重構的時後，首先要想的並不是服務怎麼切，應該要想為什麼要切  對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就我自己的再經歷的前公司的微服務後加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Golang&#x2F;Gin: router group">
-<meta property="og:url" content="https://codemachine0121.github.io/posts/2761fa2d/index.html">
+<meta property="og:title" content="到底怎麼切微服務">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/a249f144/index.html">
 <meta property="og:site_name" content="James.Hsueh.Dev">
-<meta property="og:description" content="Hi all, for this article, I will keep note of how to use router group in Gin. What is Router Group Router Group is a function to extract routers for each group. For example, if there are 2 features of">
+<meta property="og:description" content="到底怎麼切微服務這是個蠻好發起的問題，以下是我跟我的前同事 丁丁 再吃晚餐時隨口聊的，覺得蠻有趣的所以寫寫文章。 為什麼要切微服務  當一個組織想做一些架構重構的時後，首先要想的並不是服務怎麼切，應該要想為什麼要切  對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就我自己的再經歷的前公司的微服務後加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2024-09-15T16:44:53.000Z">
-<meta property="article:modified_time" content="2024-09-30T16:34:28.065Z">
+<meta property="article:published_time" content="2025-01-10T13:26:34.000Z">
+<meta property="article:modified_time" content="2025-01-10T15:08:05.274Z">
 <meta property="article:author" content="James Hsueh">
-<meta property="article:tag" content="Golang&#x2F;Gin">
+<meta property="article:tag" content="clean-architecture">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://codemachine0121.github.io/posts/2761fa2d/">
+<link rel="canonical" href="https://codemachine0121.github.io/posts/a249f144/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>Golang/Gin: router group | James.Hsueh.Dev</title>
+  <title>到底怎麼切微服務 | James.Hsueh.Dev</title>
   
 
 
@@ -208,7 +208,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/2761fa2d/">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/a249f144/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -221,7 +221,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Golang/Gin: router group
+          到底怎麼切微服務
         </h1>
 
         <div class="post-meta">
@@ -230,16 +230,19 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
+              
 
-              <time title="創建時間：2024-09-16 00:44:53" itemprop="dateCreated datePublished" datetime="2024-09-16T00:44:53+08:00">2024-09-16</time>
+              <time title="創建時間：2025-01-10 21:26:34 / 修改時間：23:08:05" itemprop="dateCreated datePublished" datetime="2025-01-10T21:26:34+08:00">2025-01-10</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-10-01 00:34:28" itemprop="dateModified" datetime="2024-10-01T00:34:28+08:00">2024-10-01</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
               </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
+                </span>
+            </span>
 
           
 
@@ -252,22 +255,53 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Hi all, for this article, I will keep note of how to use router group in Gin.</p>
-<h2 id="what-is-router-group">What is Router Group</h2>
-<p>Router Group is a function to extract routers for each group.<br>
-For example, if there are 2 features of the API, we can use Router Group to separate routers to another file and split the routers by features.</p>
+        <p>到底怎麼切微服務這是個蠻好發起的問題，以下是我跟我的前同事 <a target="_blank" rel="noopener" href="https://medium.com/@yuijzeon">丁丁</a> 再吃晚餐時隨口聊的，覺得蠻有趣的所以寫寫文章。</p>
+<h2 id="為什麼要切微服務">為什麼要切微服務</h2>
+<ul>
+<li>當一個組織想做一些架構重構的時後，首先要想的並不是服務怎麼切，應該要想為什麼要切</li>
+</ul>
+<p>對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就我自己的再經歷的前公司的微服務後加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：</p>
 <span id="more"></span>
-<h2 id="code">Code</h2>
-<h3 id="main-go">main.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service/routers&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	routerGroup := router.Group(<span class="string">&quot;/v1&quot;</span>)</span><br><span class="line">	routers.AddRouters(routerGroup)</span><br><span class="line"></span><br><span class="line">	router.Run(<span class="string">&quot;:8080&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="routers-userrouters-go">routers/UserRouters.go</h3>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> routers</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;first-gin/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddRouters</span><span class="params">(r *gin.RouterGroup)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	user := r.Group(<span class="string">&quot;/users&quot;</span>)</span><br><span class="line"></span><br><span class="line">	user.GET(<span class="string">&quot;&quot;</span>, service.FetchAll)</span><br><span class="line">	user.POST(<span class="string">&quot;&quot;</span>, service.Insert)</span><br><span class="line">	user.DELETE(<span class="string">&quot;/:id&quot;</span>, service.Delete)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="explanation">Explanation</h2>
+<blockquote>
+<p>當遇到問題的時候，是不是應該先想一下眼前這個問題是不是問題，又應該說目前這個情況的問題點在哪？</p>
+</blockquote>
+<p>仔細想想後，會讓工程師想要切微服務的問題應該有以下幾種</p>
 <ol>
-<li>We delete routing we’d added before and create a variable for the router group called <code>routerGroup</code>.</li>
-<li>We call the <code>AddRouters</code> function from the <code>routers</code> package and pass the <code>routerGroup</code> as a parameter.</li>
-<li>We add a new file called <code>UserRouters.go</code> in the <code>routers</code> package and add some routing config in the function <code>AddRouters</code>.</li>
+<li>效能瓶頸</li>
+<li>架構複雜導致更改</li>
 </ol>
+<h3 id="效能瓶頸">效能瓶頸</h3>
+<p>如果是因為這個問題而想切服務… 好像不會比較好反而會更差哈。 主要是因為微服務會將專案切成一個個的 container 運作嘛，那當服務之間要互相溝通時，就會需要透過 http 或是 grpc 這種協定去做溝通，而不是像單體式架構一樣簡單透過 reference的方式進行引用。所以效能瓶頸不會是我想要切微服務的問題點。</p>
+<h3 id="架構複雜導致更改">架構複雜導致更改</h3>
+<p>這是個蠻值得思考的問題，首先先來針對<strong>複雜</strong> 這件事情來做思考，甚麼樣的架構會複雜到需要拆分？</p>
+<ul>
+<li>以一個工程師的角度，想法是職責不單一，專案負責的功能太多了</li>
+<li>就我目前的看法是，什麼架構的東西都馬是人想出來的。與其說是架構複雜，不如來思考看看是不是組織過於複雜？</li>
+</ul>
+<p>會有這個想法，也是近期與<a target="_blank" rel="noopener" href="https://blog.miniasp.com/">保哥</a>共事時有稍微講到的 <strong>康威定律 Conway’s Law</strong> 有關，詳細的可以到這邊做 <a target="_blank" rel="noopener" href="https://felo.ai/search/9pn82wNAATtZsvYS7itye2?invite=B847RoO8qrn8e">reference</a>。 總之康威定律指出團隊的組織結構及溝通的模式會直接呈現在專案架構上。</p>
+<p>基於這點其實就可以讓工程師們思考這件事情</p>
+<blockquote>
+<p>職責單不單一的到底是專案還是自己。</p>
+</blockquote>
+<h2 id="怎麼切微服務">怎麼切微服務</h2>
+<p>以下步驟是我自己的見解：</p>
+<ol>
+<li>先切好組織架構也就是分 team，這邊我們分法會是以功能為角度去分。</li>
+<li>規定 team 之間各自維護各自的專案
+<ol>
+<li>code 之間僅能使用 api 進行資源上的依賴。</li>
+<li>不可以共用 table/DB</li>
+</ol>
+</li>
+<li>讓時間慢慢過，靜觀其變</li>
+<li>步驟 1~3 每隔一段時間做一次</li>
+</ol>
+<h2 id="結論">結論</h2>
+<p>其實上面所說的都是想表達一件事情</p>
+<blockquote>
+<p>不要為了微服務而微服務</p>
+</blockquote>
+<p>還有… 晚餐的牛排還不錯吃，能吃出一篇文章。</p>
 
     </div>
 
@@ -277,7 +311,7 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Golang-Gin/" rel="tag"># Golang/Gin</a>
+              <a href="/tags/clean-architecture/" rel="tag"># clean-architecture</a>
           </div>
 
         
@@ -286,13 +320,10 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/c0077237/" rel="prev" title="Golang/Gin: CRUD">
-      <i class="fa fa-chevron-left"></i> Golang/Gin: CRUD
+    <a href="/posts/4022bb93/" rel="prev" title="ECS Log Standard">
+      <i class="fa fa-chevron-left"></i> ECS Log Standard
     </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/5fabe0cb/" rel="next" title="Stock side-project::J.Granville Rules">
-      Stock side-project::J.Granville Rules <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -351,7 +382,7 @@ For example, if there are 2 features of the API, we can use Router Group to sepa
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-router-group"><span class="nav-number">1.</span> <span class="nav-text">What is Router Group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code"><span class="nav-number">2.</span> <span class="nav-text">Code</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main-go"><span class="nav-number">2.1.</span> <span class="nav-text">main.go</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#routers-userrouters-go"><span class="nav-number">2.2.</span> <span class="nav-text">routers&#x2F;UserRouters.go</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explanation"><span class="nav-number">3.</span> <span class="nav-text">Explanation</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E5%88%87%E5%BE%AE%E6%9C%8D%E5%8B%99"><span class="nav-number">1.</span> <span class="nav-text">為什麼要切微服務</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E8%83%BD%E7%93%B6%E9%A0%B8"><span class="nav-number">1.1.</span> <span class="nav-text">效能瓶頸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%B6%E6%A7%8B%E8%A4%87%E9%9B%9C%E5%B0%8E%E8%87%B4%E6%9B%B4%E6%94%B9"><span class="nav-number">1.2.</span> <span class="nav-text">架構複雜導致更改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E9%BA%BC%E5%88%87%E5%BE%AE%E6%9C%8D%E5%8B%99"><span class="nav-number">2.</span> <span class="nav-text">怎麼切微服務</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="nav-number">3.</span> <span class="nav-text">結論</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
