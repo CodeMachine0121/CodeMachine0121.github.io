@@ -13,8 +13,8 @@ https://codemachine0121.github.io/posts/406b4875/
 https://codemachine0121.github.io/posts/92d0760d/
 https://codemachine0121.github.io/posts/5fabe0cb/
 https://codemachine0121.github.io/about/index.html
-https://codemachine0121.github.io/categories/index.html
 https://codemachine0121.github.io/tags/index.html
+https://codemachine0121.github.io/categories/index.html
 https://codemachine0121.github.io/posts/4d56e4ff/
 https://codemachine0121.github.io/posts/8b64eeab/
 https://codemachine0121.github.io/posts/f0cbbe44/
@@ -38,8 +38,8 @@ https://codemachine0121.github.io/posts/737e6e43/
 https://codemachine0121.github.io/posts/43a9b739/
 https://codemachine0121.github.io/
 https://codemachine0121.github.io/tags/UnitTest/
-https://codemachine0121.github.io/tags/Standard/
 https://codemachine0121.github.io/tags/clean-architecture/
+https://codemachine0121.github.io/tags/Standard/
 https://codemachine0121.github.io/tags/Golang-Gin/
 https://codemachine0121.github.io/tags/system-design/
 https://codemachine0121.github.io/tags/dev-tools/

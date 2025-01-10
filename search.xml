@@ -153,7 +153,7 @@
       </tags>
   </entry>
   <entry>
-    <title>到底怎麼切微服務</title>
+    <title>怎麼切微服務架構，從吃牛排開始</title>
     <url>/posts/a249f144/</url>
     <content><![CDATA[<p>到底怎麼切微服務這是個蠻好發起的問題，以下是我跟我的前同事 <a href="https://medium.com/@yuijzeon">丁丁</a> 再吃晚餐時隨口聊的，覺得蠻有趣的所以寫寫文章。</p>
 <h2 id="為什麼要切微服務">為什麼要切微服務</h2>
@@ -1776,13 +1776,13 @@ Arrange<br>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
