@@ -390,6 +390,13 @@
   </url>
   
   <url>
+    <loc>https://codemachine0121.github.io/tags/dev-tools/</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://codemachine0121.github.io/tags/system-design/</loc>
     <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -411,13 +418,6 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/tags/dev-tools/</loc>
-    <lastmod>2025-01-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://codemachine0121.github.io/tags/docker-mysql/</loc>
     <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -425,14 +425,14 @@
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/tags/Stock/</loc>
+    <loc>https://codemachine0121.github.io/tags/latex/</loc>
     <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://codemachine0121.github.io/tags/latex/</loc>
+    <loc>https://codemachine0121.github.io/tags/Stock/</loc>
     <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

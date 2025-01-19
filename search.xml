@@ -155,57 +155,57 @@
   <entry>
     <title>初探 Functional Design</title>
     <url>/posts/3aad3a7c/</url>
-    <content><![CDATA[<p>有天心血來潮去<a href="https://www.tenlong.com.tw">天瓏書局</a>逛逛，看到了一本 由 <a href="http://cleancoder.com/products">UncleBob</a> 撰寫的 Functional Design 乍聽之下感覺還不錯，就當給自己的2025年 新年禮物回家讀，所以才會有這篇筆記。</p>
+    <content><![CDATA[<p>有天心血來潮去<a href="https://www.tenlong.com.tw">天瓏書局</a>逛逛，看到了一本由 <a href="http://cleancoder.com/products">UncleBob</a> 撰寫的 Functional Design。乍聽之下感覺還不錯，就當給自己的 2025 年新年禮物回家讀，所以才會有這篇筆記。</p>
 <h1>什麼是 Functional Design</h1>
-<p>簡單來說，就是以 function 的方式撰寫code (我知道這樣有講跟沒講一樣 …)。</p>
-<p>以下是 <em><strong>Uncle Bob</strong></em> 的回答</p>
+<p>簡單來說，就是以 function 的方式撰寫程式碼（我知道這樣有講跟沒講一樣…）。</p>
+<p>以下是 <em><strong>Uncle Bob</strong></em> 的回答：</p>
 <blockquote>
 <p><em><strong>Programming without assignment statements.</strong></em></p>
 </blockquote>
-<p>以下是我結合書上列出來的觀點及一些自身的想法所列出來的幾個 Function Design的幾個特色</p>
+<p>以下是我結合書上列出來的觀點及一些自身的想法所列出來的 Functional Design 的幾個特色：</p>
 <ol>
 <li>Always <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">f(x)=y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span></li>
 <li>Function 內不會有變數上的變動</li>
 </ol>
 <span id="more"></span>
 <h1>Always <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">f(x)=y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span></h1>
-<p>意思就是不管什麼時候一個輸入總是會有相對的輸出，寫出來的 function 不應該會讓相同的輸入得到不同的輸出，舉個例子：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">int</span> x</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> x+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上面的例子為例，不管什麼時候 <code>TestFunc(1)</code> 永遠會得到 2</p>
+<p>意思就是不管什麼時候一個輸入總是會有相對的輸出，寫出來的 function 不應該會讓相同的輸入得到不同的輸出。舉個例子：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">int</span> x</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> x + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上面的例子為例，不管什麼時候 <code>TestFunc(1)</code> 永遠會得到 2。</p>
 <h1>Function 內不會有變數上的變動</h1>
-<p>意思就是不能對 變數有後天上的改動，我們應該讓他從function 一開始到結束的值都保持一致。<br>
-如果針對 變數進行改值的話，會怎樣勒，舉個例子：</p>
+<p>意思就是不能對變數有後天上的改動，我們應該讓它從 function 一開始到結束的值都保持一致。<br>
+如果針對變數進行改值的話，會怎樣呢？舉個例子：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">int</span> x</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    DoSomething1(x);</span><br><span class="line">    x++;</span><br><span class="line">    DoSomething2(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上面的例子來說，會有個問題點</p>
+<p>以上面的例子來說，會有個問題點：</p>
 <ol>
-<li>你會讓 你的function變成有順序性的code，意思就是 必須先做 <code>DoSomething1</code> 才能做 <code>DoSomething2</code></li>
+<li>你會讓你的 function 變成有順序性的程式碼，意思就是必須先做 <code>DoSomething1</code> 才能做 <code>DoSomething2</code>。</li>
 </ol>
 <blockquote>
 <p>此類壞味道為： <em><strong>sequential or temporal coupling</strong></em></p>
 </blockquote>
 <h1>How to Be Functional</h1>
 <p>若真要完全符合 <strong>Functional Design</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 遞迴函數<br>
-但遞迴函數會造成運算上很大的負擔，因此書上範例中使用了 laziness calculate 來解決</p>
+但遞迴函數會造成運算上很大的負擔，因此書上範例中使用了 laziness calculate 來解決。</p>
 <h2 id="laziness-calculate">Laziness calculate</h2>
-<p>它的核心思路是將計算的執行延遲到真正需要結果的時候才進行，這種技術在處理大數據集、無限序列或需要動態計算的場景中特別有用，因為它可以避免不必要的計算和內存佔用。</p>
-<p>以下面的code 為例:</p>
+<p>它的核心思路是將計算的執行延遲到真正需要結果的時候才進行，這種技術在處理大數據集、無限序列或需要動態計算的場景中特別有用，因為它可以避免不必要的計算和記憶體佔用。</p>
+<p>以下面的程式碼為例：</p>
 <ul>
 <li><code>Main</code>：<br>
-使用了Fibonacci().Take(10)來取得前10個斐波那契數字並打印出來。這裡的Take方法是一個自定義的擴展方法，用於示範取有限數量的元素。</li>
+使用了 Fibonacci().Take(10) 來取得前 10 個斐波那契數字並打印出來。這裡的 Take 方法是一個自定義的擴展方法，用於示範取有限數量的元素。</li>
 <li><code>Fibonacci</code>：<br>
-這個方法使用了yield return來依次返回無窮長度的斐波那契數列。每次調用yield return時，方法的執行會暫停，並記住當前的執行狀態。當再次訪問序列的下一個元素時，執行會從暫停的位置繼續。</li>
+這個方法使用了 yield return 來依次返回無窮長度的斐波那契數列。每次調用 yield return 時，方法的執行會暫停，並記住當前的執行狀態。當再次訪問序列的下一個元素時，執行會從暫停的位置繼續。</li>
 <li><code>ExtensionMethods</code>：<br>
-Take方法是一個自定義的擴展方法，它模仿了LINQ中的Take方法，用於演示如何從無窮序列中取有限數量的元素。這個方法遍歷序列並返回指定數量的元素。</li>
+Take 方法是一個自定義的擴展方法，它模仿了 LINQ 中的 Take 方法，用於演示如何從無窮序列中取有限數量的元素。這個方法遍歷序列並返回指定數量的元素。</li>
 </ul>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="function"><span class="keyword">var</span> number <span class="keyword">in</span> <span class="title">Fibonacci</span>().<span class="title">Take</span>(<span class="params"><span class="number">10</span></span>))</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.Write(number + <span class="string">&quot; &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> IEnumerable&lt;<span class="built_in">long</span>&gt; <span class="title">Fibonacci</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">long</span> first = <span class="number">0</span>, second = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> first;</span><br><span class="line">            <span class="keyword">var</span> temp = first;</span><br><span class="line">            first = second;</span><br><span class="line">            second = temp + second;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">ExtensionMethods</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="title">IEnumerable</span>&lt;<span class="title">T</span>&gt; <span class="title">Take</span>&lt;<span class="title">T</span>&gt;(<span class="params"><span class="keyword">this</span> IEnumerable&lt;T&gt; source, <span class="built_in">int</span> count</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> counter = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> source)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (counter++ &gt;= count)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">yield</span> <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> item;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="不是說好不能後天改值嗎">不是說好不能後天改值嗎</h2>
-<p>這邊其實作者有提出個蠻 cheating 的想法，那就是當我們很明確知道這個變數當下的值已經不會再被需要了，那為什麼我們要留著他呢？</p>
-<p>因此這邊我自己有個想法</p>
+<p>這邊其實作者有提出個蠻 cheating 的想法，那就是當我們很明確知道這個變數當下的值已經不會再被需要了，那為什麼我們要留著它呢？</p>
+<p>因此這邊我自己有個想法：</p>
 <blockquote>
 <p>變數值的更改只能在確保呼叫端不會再使用該變數的情況下發生。</p>
 </blockquote>
 <h1>小結</h1>
-<p>以上是小弟我，截至目前讀到的part，理論上這會是個連載筆記，如果我的理解有誤或是有不同想法的也可以再下面留個岩交流下哈。</p>
+<p>以上是小弟我，截至目前讀到的部分，理論上這會是個連載筆記。如果我的理解有誤或是有不同想法的也可以在下面留言交流一下哈。</p>
 <h1>Reference</h1>
 <p><a href="https://www.informit.com/store/functional-design-principles-patterns-and-practices-9780138176396">書籍</a></p>
 ]]></content>
