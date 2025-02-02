@@ -104,3 +104,49 @@
 .t-2 {
   padding-top: 8px;
 }
+@media screen and (max-width: 1024px) {
+  .job {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .job .content,
+  .job .working-achievement {
+    flex: none;
+    width: 100%;
+  }
+  .education .numbered-list {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .image-wrapper img {
+    width: 150px;
+    height: 225px;
+  }
+  .personal-achievement ol {
+    columns: 1;
+  }
+}
+@media screen and (max-width: 480px) {
+  .image-wrapper img {
+    width: 100px;
+    height: 150px;
+  }
+  .job {
+    background: #fff;
+    padding: 10px;
+  }
+  .job .title {
+    margin-bottom: 10px;
+  }
+  .job .working-achievement h2 {
+    margin-bottom: 10px;
+  }
+  .personal-achievement {
+    padding: 10px;
+  }
+  .image-wrapper {
+    display: none;
+  }
+}
