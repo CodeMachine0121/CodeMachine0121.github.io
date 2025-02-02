@@ -6,15 +6,21 @@
 }
 .image-container {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
+  justify-content: center;
   gap: 20px;
 }
 .image-wrapper {
-  flex: 1;
+  display: flex;
+  align-items: center;
 }
 .image-wrapper img {
+  object-fit: cover;
+  width: 200px;
+  height: 300px;
+}
+.current-job {
   width: 100%;
-  height: auto;
 }
 .content-wrapper {
   flex: 2;
@@ -24,12 +30,13 @@
   padding-left: 20px;
 }
 .job {
+  background: #2c3e50;
   display: flex;
   gap: 40px;
   padding: 20px;
   border-radius: 8px;
 }
-.job .content {
+.job .content .image-wrapper {
   flex: 1;
 }
 .job .title {
@@ -45,11 +52,13 @@
   padding-left: 20px;
 }
 .education .numbered-list {
+  background: #2c3e50;
   display: flex;
   gap: 20px;
   justify-content: space-around;
 }
 .personal-achievement {
+  background: #2c3e50;
   padding: 20px;
 }
 .personal-achievement > div {
