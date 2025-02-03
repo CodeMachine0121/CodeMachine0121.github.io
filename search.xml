@@ -157,15 +157,21 @@
     <url>/posts/daef0758/</url>
     <content><![CDATA[<p>Hi all, 由於工作上的的需要撰寫單元測試(雖然小弟我是TDD派，但也不是每個人都這麼異類) 加上不是所有 member 都知道怎麼寫單元測試，所以我打算來做的小小Sharing 故有這篇文章，這篇文章會有幾個小topic</p>
 <ol>
-<li><a href="#%E4%BB%8B%E7%B4%B9">介紹</a></li>
 <li><a href="#%E7%9B%AE%E6%A8%99">目標</a></li>
+<li><a href="#%E4%BB%8B%E7%B4%B9">介紹</a></li>
 <li><a href="#%E5%89%8D%E7%BD%AE%E4%BD%9C%E6%A5%AD">前置作業</a></li>
 <li><a href="#%E7%AF%84%E4%BE%8B">範例</a></li>
 <li><a href="#%E7%B5%90%E8%AB%96">結論</a></li>
 </ol>
 <span id="more"></span>
+<h2 id="目標">目標</h2>
+<ul>
+<li>了解單元測試的基本概念</li>
+<li>學習如何使用 NUnit3 來撰寫和執行單元測試</li>
+<li>學習如何使用 NSub 來模擬物件</li>
+</ul>
 <h2 id="介紹">介紹</h2>
-<h3 id="why-unit-test">Why Unit Test</h3>
+<h3 id="why-what-s-unit-test">Why &amp;&amp; What’s Unit Test</h3>
 <p>以我自己的經驗來說，為什麼需要單元測試有以下幾個原因</p>
 <ul>
 <li>確保需求是真的有達到</li>
@@ -210,12 +216,6 @@
 <blockquote>
 <p>在測試金字塔中，越靠上方所耗費成本越高、執行時間越長；反之，越靠底下所耗費成本低，執行時間越短。</p>
 </blockquote>
-<h2 id="目標">目標</h2>
-<ul>
-<li>了解單元測試的基本概念</li>
-<li>學習如何使用 NUnit3 來撰寫和執行單元測試</li>
-<li>學習如何使用 NSub 來模擬物件</li>
-</ul>
 <h2 id="前置作業">前置作業</h2>
 <p>在開始之前，請確保您的開發環境已經安裝以下套件：</p>
 <ul>
@@ -2021,6 +2021,11 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
+    <title>about</title>
+    <url>/about/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>categories</title>
     <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
@@ -2028,11 +2033,6 @@ Arrange<br>
   <entry>
     <title>tags</title>
     <url>/tags/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title>about</title>
-    <url>/about/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>
