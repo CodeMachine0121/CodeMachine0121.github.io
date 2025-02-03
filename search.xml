@@ -165,9 +165,12 @@
 </ol>
 <span id="more"></span>
 <h2 id="介紹">介紹</h2>
+<h3 id="why-unit-test">Why Unit Test</h3>
+<p>以我自己的經驗來說，為什麼需要單元測試有以下幾個原因</p>
 <ul>
-<li>目標: Unit test using C#</li>
-<li>基礎 3A: Arrange(假設), Action(行為), Assert(驗證)</li>
+<li>確保需求是真的有達到</li>
+<li>增加自信心，降低做/改A壞B的機率</li>
+<li>發現隱藏的耦合問題</li>
 </ul>
 <h2 id="目標">目標</h2>
 <ul>
@@ -178,7 +181,7 @@
 <h2 id="前置作業">前置作業</h2>
 <p>在開始之前，請確保您的開發環境已經安裝以下套件：</p>
 <ul>
-<li>Visual Studio 或其他 C# 開發工具</li>
+<li>Rider 或其他 C# 開發工具</li>
 <li>NUnit3</li>
 <li>NSubstitute</li>
 </ul>
