@@ -179,7 +179,6 @@
     height: 150px;
   }
   .job {
-    background: #fff;
     padding: 10px;
   }
   .job .title {
@@ -193,6 +192,13 @@
   }
   .image-wrapper {
     display: none;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .job,
+  .education .numbered-list,
+  .personal-achievement {
+    background: #fff;
   }
 }
 html {
@@ -1390,7 +1396,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cb37d1;
+  background: #ffff94;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
