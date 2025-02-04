@@ -223,7 +223,7 @@ You’ll be able to see various performance metrics, including transactions, err
       </tags>
   </entry>
   <entry>
-    <title>學習單元測試使用 C#、NUnit3 和 NSub</title>
+    <title>學習單元測試使用 C#、NUnit3 和 NSubstitute</title>
     <url>/posts/daef0758/</url>
     <content><![CDATA[<p>Hi all, 由於工作上的的需要撰寫單元測試(雖然小弟我是TDD派，但也不是每個人都這麼異類) 加上不是所有 member 都知道怎麼寫單元測試，所以我打算來做的小小Sharing 故有這篇文章，這篇文章會有幾個小topic</p>
 <ol>
@@ -238,7 +238,8 @@ You’ll be able to see various performance metrics, including transactions, err
 <ul>
 <li>了解單元測試的基本概念</li>
 <li>學習如何使用 NUnit3 來撰寫和執行單元測試</li>
-<li>學習如何使用 NSub 來模擬物件</li>
+<li>學習如何使用 NSubstitute 來模擬物件</li>
+<li>了解不同種類的模擬物件</li>
 </ul>
 <h2 id="介紹">介紹</h2>
 <h3 id="why-what-s-unit-test">Why &amp;&amp; What’s Unit Test</h3>
