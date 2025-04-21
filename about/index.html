@@ -208,159 +208,205 @@
 
           <div class="content index posts-expand">
             
-<hr>
-<div class="container">
-    <div class="left">
-        <div class="image-container">
-           <div class="image-wrapper">
-               <img src="https://gcdnb.pbrd.co/images/LSSIC7plBKbi.png?o=1" alt="personal-image"/>
-           </div>
-           <div class="current-job job">
-            <div class="content">
-              <div class="title">
-                <h3>Now Working At: DUOTIFY 多奇數位</h3>
-              </div>
-              <p>Backend Developer</p>
-              <p>2025~ Now </p>
-              <ol class="disc-list">
-                  <li>Backend: .Net Core</li>
-              </ol>
-            </div>
+<!-- Load Vue.js and resume scripts -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="/js/resume/resume.js"></script>
+<link rel="stylesheet" href="/css/resume.css">
+<!-- Vue.js Resume App -->
+<div id="resume-app" class="resume-container">
+  <!-- Header Section -->
+  <div class="resume-header">
+    <h1 v-text="profile.name"></h1>
+    <p class="resume-subtitle" v-text="profile.title"></p>
+    <p class="resume-summary" v-text="profile.summary"></p>
 
-            <div class="working-achievement">
-                <h2>Working Achievement</h2>
-                <ol class="working-achievement-list">
-                    <li>Provide SDK for projects Logging with ECS Standard</li>
-                    <li>Refactoring 20-year-old System with Micro-Service</li>
-                </ol>
-            </div>
+    <div class="contact-info">
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <span v-text="contact.email"></span>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-github"></i>
+        <span v-text="contact.github"></span>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-linkedin"></i>
+        <span v-text="contact.linkedin"></span>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span v-text="contact.location"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="resume-section profile-section">
+    <div class="image-container">
+      <div class="image-wrapper">
+        <img :src="profile.image" alt="personal-image" />
+      </div>
+
+      <div class="skills-container">
+        <h2>Skills</h2>
+
+        <div class="skill-category">
+          <h3>Languages</h3>
+          <div class="skill-tags">
+            <span class="skill-tag" v-for="skill in skills.languages" v-text="skill"></span>
           </div>
         </div>
-        <hr>
 
-        <div class="content-wrapper">
-            <h2>Working Experience</h2>
-            <div class="garmin job">
-                <div class="content">
-                  <div class="title">
-                      <h3>GARMIN 台灣國際航電股份有限公司</h3>
-                  </div>
-                  <p>SRE Backend Developer </p>
-                  <p>2024~ Now </p>
-                  <ol class="disc-list">
-                      <li>Backend: .Net Core</li>
-                      <li>Observability: OpenTelemetry, Granafa, Loki, Tempo</li>
-                  </ol>
-                </div>
-                <div class="working-achievement">
-                    <h2>Working Achievement</h2>
-                    <ol class="working-achievement-list">
-                        <li>Refactor projects make it more maintainable</li>
-                        <li>Provide SDK for projects Auto Tracting</li>
-                        <li>Provide SDK for Servers Health Check</li>
-                    </ol>
-                </div>
-            </div>
-            <br>
-            <div class="titansoft job">
-                <div class="content">
-                    <div class="title">
-                        <h3>Titansoft, 新加坡商鈦坦科技</h3>
-                    </div>
-                    <p>product developer</p>
-                    <p>2022~ 2024</p>
-                    <ol class="disc-list">
-                        <li>backend: .net core</li>
-                        <li>frontend: vue3</li>
-                        <li>use k8s for deployments of projects</li>
-                        <li>use gitlab for ci/cd</li>
-                    </ol>
-                </div>
-                <div class="working-achievement">
-                    <h2>working achievement</h2>
-                    <ol class="working-achievement-list">
-                        <li>import hexagonal architecture knowledge for members</li>
-                        <li>acting as the <b>outlink</b> in the team</li>
-                        <li>host refactor workshop for intern team</li>
-                        <li>pass ckad</li>
-                        <li>host devops workshop, teaching about docker and k8s</li>
-                        <li>representing titansoft at the gdg dinner.</li>
-                        <li>representing titansoft as speaker at gdg.</li>
-                        <li>construct elk for k8s projects</li>
-                        <li>refactoring legacy code and fix the 2-year-old bugs</li>
-                    </ol>
-                </div>
-            </div>
+        <div class="skill-category">
+          <h3>Frameworks</h3>
+          <div class="skill-tags">
+            <span class="skill-tag" v-for="skill in skills.frameworks" v-text="skill"></span>
+          </div>
         </div>
-        <hr>
 
-        <h2>Education</h2>
-        <div class="education">
-           <ul class="numbered-list">
-               <li>
-                   <div>
-                       <h3>Computer Science and Information Engineering</h3>
-                       <p>National Yunlin University of Science and Technology, YunTech</p>
-                       <p>Master's Degree</p>
-                       <p>2020 ~ 2022</p>
-                       <p class="t-2">Study on Blockchain and Network Security Research Area</p>
-                   </div>
-               </li>
-               <li>
-                   <div>
-                       <h3>Information and Telecommunication Engineering</h3>
-                       <p>Ming Chaun University, MCU</p>
-                       <p>Bachelor's Degree</p>
-                       <p>2016 ~ 2020</p>
-                       <p class="t-2">Study on Network Security Research Area</p>
-                   </div>
-               </li>
-           </ul>
+        <div class="skill-category">
+          <h3>DevOps</h3>
+          <div class="skill-tags">
+            <span class="skill-tag" v-for="skill in skills.devops" v-text="skill"></span>
+          </div>
         </div>
-        <hr>
 
-        <h2>Personal Achievement</h2>
-        <div class="personal-achievement">
-            <div>
-               <div>
-                   <ol>
-                       <li>Current: Sharing Tech Knowledge on Blog</li>
-                       <li>PasswordManager using <b>Vault</b></li>
-                       <li>Department Sharing: <b>Clean Architecture</b></li>
-                       <li>iThome 鐵人賽 自我挑戰
-                           <ol class="disc-list">
-                               <li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20115082/ironman/7165">Side-Project:: 為自己打造個可編輯的區塊鏈</a></li>
-                           </ol>
-                       </li>
-                       <li>Open Source SDK for nuget: <a target="_blank" rel="noopener" href="https://www.nuget.org/packages/EccSDK#usedby-body-tab">EccSDK</a></li>
-                       <li>Host Refactor WorkShop for Intern Team in TitanSoft</li>
-                       <li>Pass CKAD License</li>
-                       <li><a target="_blank" rel="noopener" href="https://gdg.community.dev/gdg-kaohsiung/">GDG Kaohsiung</a> Speaker
-                           <ol class="disc-list">
-                               <li><a target="_blank" rel="noopener" href="https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/">使用 Golang 監聽 Discord 頻道延遲</a></li>
-                               <li><a target="_blank" rel="noopener" href="https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/">讓 Vim 成為 IDE</a></li>
-                           </ol>
-                       </li>
-                       <li>Host DevOps WorkShop in TitanSoft</li>
-                       <li>iThome 鐵人賽 自我挑戰組
-                           <ol class="disc-list">
-                               <li><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1">在30天內使用 golang 寫出 30種不同的設計模型</a></li>
-                           </ol>
-                       </li>
-                       <li>Join 91's TDD Workshop in TitanSoft</li>
-                       <li>Blockchain Trusted Transaction Module</li>
-                       <li>Microwave Detection Analyser Module</li>
-                       <li>Full Stack Develop - Website of CSIE in YunTech</li>
-                       <li>Department Network Administrator in YunTech</li>
-                       <li>Custom Blockchain System with <b>ZooKeeper</b></li>
-                       <li>Blockchain Cold Wallet Transaction Module</li>
-                   </ol>
-               </div>
-           </div>
+        <div class="skill-category">
+          <h3>Cloud</h3>
+          <div class="skill-tags">
+            <span class="skill-tag" v-for="skill in skills.cloud" v-text="skill"></span>
+          </div>
         </div>
-        <hr>
+
+        <div class="skill-category">
+          <h3>Databases</h3>
+          <div class="skill-tags">
+            <span class="skill-tag" v-for="skill in skills.databases" v-text="skill"></span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+
+  <!-- Current Job Section -->
+  <div class="resume-section">
+    <h2>Current Position</h2>
+    <div class="job current-job">
+      <div class="content">
+        <div class="title">
+          <h3 v-text="currentJob.company"></h3>
+        </div>
+        <p class="job-title" v-text="currentJob.title"></p>
+        <p class="job-period" v-text="currentJob.period"></p>
+        <div class="job-skills">
+          <span class="skill-tag" v-for="skill in currentJob.skills" v-text="skill"></span>
+        </div>
+      </div>
+
+      <div class="working-achievement">
+        <h3>Achievements</h3>
+        <ol class="working-achievement-list">
+          <template v-for="(achievement, idx) in currentJob.achievements">
+            <li v-text="achievement"></li>
+            <template v-if="(idx + 1) % 10 === 0"><br></template>
+          </template>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Work Experience Section -->
+  <div class="resume-section">
+    <h2>Work Experience</h2>
+    <div v-for="job in workExperience" class="job">
+      <div class="content">
+        <div class="title">
+          <h3 v-text="job.company"></h3>
+        </div>
+        <p class="job-title" v-text="job.title"></p>
+        <p class="job-period" v-text="job.period"></p>
+        <div class="job-skills">
+          <span class="skill-tag" v-for="skill in job.skills" v-text="skill"></span>
+        </div>
+      </div>
+      <div class="working-achievement">
+        <h3>Achievements</h3>
+        <ol class="working-achievement-list">
+          <li v-for="achievement in job.achievements" v-text="achievement"></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Education Section -->
+  <div class="resume-section">
+    <h2>Education</h2>
+    <div class="education">
+      <ol class="numbered-list">
+        <li v-for="edu in education">
+          <div>
+            <h3 v-text="edu.field"></h3>
+            <p class="institution" v-text="edu.institution"></p>
+            <p class="degree" v-text="edu.degree"></p>
+            <p class="period" v-text="edu.period"></p>
+            <p class="t-2" v-text="edu.description"></p>
+            <div class="education-achievements" v-if="edu.achievements">
+              <h4>Achievements</h4>
+              <ul>
+                <li v-for="achievement in edu.achievements" v-text="achievement"></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+
+  <!-- Certifications Section -->
+  <div class="resume-section">
+    <h2>Certifications</h2>
+    <div class="certifications-container">
+      <div v-for="cert in certifications" class="certification-card">
+        <h3 v-text="cert.name"></h3>
+        <p class="cert-issuer" v-text="cert.issuer"></p>
+        <p class="cert-date" v-text="cert.date"></p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Personal Achievements Section -->
+  <div class="resume-section">
+    <h2>Personal Achievements</h2>
+    <div class="personal-achievement">
+      <div class="achievement-columns">
+        <ol v-for="(group, gIdx) in Math.ceil(personalAchievements.length / 10)" :key="gIdx" class="achievement-col">
+          <li v-for="achievement in personalAchievements.slice(gIdx * 10, (gIdx + 1) * 10)">
+            <template v-if="typeof achievement === 'string'" v-html="achievement"></template>
+            <template v-else>
+              <span v-if="achievement.link">
+                <a :href="achievement.link" v-html="achievement.text"></a>
+              </span>
+              <span v-else v-html="achievement.text"></span>
+              <ol v-if="achievement.subItems" class="disc-list">
+                <li v-for="subItem in achievement.subItems">
+                  <a :href="subItem.link" v-html="subItem.text"></a>
+                </li>
+              </ol>
+            </template>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- External resume.js script is being used instead of inline script -->
+
+
 
           </div>
           
@@ -390,7 +436,7 @@
 
         </div>
           
-  
+
   <div class="toggle sidebar-toggle">
     <span class="toggle-line toggle-line-first"></span>
     <span class="toggle-line toggle-line-middle"></span>
