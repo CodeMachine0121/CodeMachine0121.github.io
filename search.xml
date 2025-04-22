@@ -153,6 +153,41 @@
       </tags>
   </entry>
   <entry>
+    <title>Csharp HttpContextAccessor 使用</title>
+    <url>/posts/d432f0c5/</url>
+    <content><![CDATA[<p>Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 <code>HttpContextAccessor</code> ，覺得很酷所以留個筆記。</p>
+<h2 id="情境介紹">情境介紹</h2>
+<ul>
+<li>我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 <code>customerId</code>）</li>
+<li>我們本身業務邏輯會需要將 <code>customerId</code> 轉換過後再傳遞到業務邏輯層，</li>
+<li>這就導致我們每個 api 都需要寫相同的 request model 來取得 <code>customerId</code> 以及相同的轉換邏輯，</li>
+<li>我們想要避免這樣的做法，我們預期各層級可以 DI 一個物件 <code>statusContext</code>，在其中取得 <code>customerId</code> 以及轉換過的值 來做使用。</li>
+</ul>
+<span id="more"></span>
+<h2 id="solution">Solution</h2>
+<p>我們可以使用 <code>HttpContextAccessor</code> 來存取 HttpContext 的方法，進而拿到 request 參數資料。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">services.AddHttpContextAccessor();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line"><span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line"><span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">    <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接著我們拿到 <code>customerId</code> 以及轉換過的值，我們可以將其封裝到一個物件中，做完 DI 註冊後在需要使用的地方 DI 這個物件即可，所以整體的 code 就會長得像這樣：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StatusContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> CustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ConvertedCustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">services.AddScoped&lt;StatusContext&gt;(provider=&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line">    <span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line">    <span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">        <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StatusContext</span><br><span class="line">        &#123;</span><br><span class="line">            CustomerId = customerId,</span><br><span class="line">            ConvertedCustomerId = convertedCustomerId</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatusContext();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="conclusion">Conclusion</h2>
+<p>有點懶，我就請 agent 結論了。</p>
+<h3 id="agent-結論">Agent 結論</h3>
+<p>好啦！今天我們聊了一下 <code>HttpContextAccessor</code> 這個好用的東西。說真的，這招真的蠻方便的，可以幫我們解決很多重複寫程式碼的麻煩事。用了它之後，我們就可以：</p>
+<ul>
+<li>直接拿到 HTTP 請求的參數，不用每個 API 都重複寫一堆 request model，超省事的啦！</li>
+<li>把那些常用參數的轉換邏輯都放在同一個地方，程式碼整個乾淨多了，維護起來也輕鬆</li>
+<li>透過 DI 容器註冊我們的 <code>StatusContext</code>，各層級要用的時候直接注入就好，超方便的啦</li>
+</ul>
+<p>這招特別適合處理那種很多 API 都要用到同一堆參數的情況，可以讓程式碼少寫一大堆重複的東西。不過話說回來，也不要太依賴這招喔！如果用太兇，可能會讓你的業務邏輯層跟 HTTP 層黏在一起，架構就不清楚了，所以還是要斟酌使用啦。</p>
+]]></content>
+      <categories>
+        <category>.Net</category>
+      </categories>
+      <tags>
+        <tag>.Net</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>How to Apply APM on .NetCore</title>
     <url>/posts/1bd2c734/</url>
     <content><![CDATA[<h2 id="how-to-apply-apm-to-netcore">How to apply APM to .NetCore</h2>
@@ -2097,13 +2132,13 @@ Arrange<br>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
+    <title>categories</title>
+    <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
   <entry>
-    <title>categories</title>
-    <url>/categories/index.html</url>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>

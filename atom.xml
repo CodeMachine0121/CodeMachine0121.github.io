@@ -6,7 +6,7 @@
   <link href="https://codemachine0121.github.io/atom.xml" rel="self"/>
   
   <link href="https://codemachine0121.github.io/"/>
-  <updated>2025-02-03T09:03:56.718Z</updated>
+  <updated>2025-04-22T17:48:09.228Z</updated>
   <id>https://codemachine0121.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Csharp HttpContextAccessor 使用</title>
+    <link href="https://codemachine0121.github.io/posts/d432f0c5/"/>
+    <id>https://codemachine0121.github.io/posts/d432f0c5/</id>
+    <published>2025-04-22T17:19:48.000Z</published>
+    <updated>2025-04-22T17:48:09.228Z</updated>
+    
+    <content type="html"><![CDATA[<p>Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 <code>HttpContextAccessor</code> ，覺得很酷所以留個筆記。</p><h2 id="情境介紹">情境介紹</h2><ul><li>我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 <code>customerId</code>）</li><li>我們本身業務邏輯會需要將 <code>customerId</code> 轉換過後再傳遞到業務邏輯層，</li><li>這就導致我們每個 api 都需要寫相同的 request model 來取得 <code>customerId</code> 以及相同的轉換邏輯，</li><li>我們想要避免這樣的做法，我們預期各層級可以 DI 一個物件 <code>statusContext</code>，在其中取得 <code>customerId</code> 以及轉換過的值 來做使用。</li></ul><span id="more"></span><h2 id="solution">Solution</h2><p>我們可以使用 <code>HttpContextAccessor</code> 來存取 HttpContext 的方法，進而拿到 request 參數資料。</p><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">services.AddHttpContextAccessor();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line"><span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line"><span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">    <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>接著我們拿到 <code>customerId</code> 以及轉換過的值，我們可以將其封裝到一個物件中，做完 DI 註冊後在需要使用的地方 DI 這個物件即可，所以整體的 code 就會長得像這樣：</p><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StatusContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> CustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ConvertedCustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">services.AddScoped&lt;StatusContext&gt;(provider=&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line">    <span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line">    <span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">        <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StatusContext</span><br><span class="line">        &#123;</span><br><span class="line">            CustomerId = customerId,</span><br><span class="line">            ConvertedCustomerId = convertedCustomerId</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatusContext();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="conclusion">Conclusion</h2><p>有點懶，我就請 agent 結論了。</p><h3 id="agent-結論">Agent 結論</h3><p>好啦！今天我們聊了一下 <code>HttpContextAccessor</code> 這個好用的東西。說真的，這招真的蠻方便的，可以幫我們解決很多重複寫程式碼的麻煩事。用了它之後，我們就可以：</p><ul><li>直接拿到 HTTP 請求的參數，不用每個 API 都重複寫一堆 request model，超省事的啦！</li><li>把那些常用參數的轉換邏輯都放在同一個地方，程式碼整個乾淨多了，維護起來也輕鬆</li><li>透過 DI 容器註冊我們的 <code>StatusContext</code>，各層級要用的時候直接注入就好，超方便的啦</li></ul><p>這招特別適合處理那種很多 API 都要用到同一堆參數的情況，可以讓程式碼少寫一大堆重複的東西。不過話說回來，也不要太依賴這招喔！如果用太兇，可能會讓你的業務邏輯層跟 HTTP 層黏在一起，架構就不清楚了，所以還是要斟酌使用啦。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 &lt;code&gt;HttpContextAccessor&lt;/code&gt; ，覺得很酷所以留個筆記。&lt;/p&gt;
+&lt;h2 id=&quot;情境介紹&quot;&gt;情境介紹&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 &lt;code&gt;customerId&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;我們本身業務邏輯會需要將 &lt;code&gt;customerId&lt;/code&gt; 轉換過後再傳遞到業務邏輯層，&lt;/li&gt;
+&lt;li&gt;這就導致我們每個 api 都需要寫相同的 request model 來取得 &lt;code&gt;customerId&lt;/code&gt; 以及相同的轉換邏輯，&lt;/li&gt;
+&lt;li&gt;我們想要避免這樣的做法，我們預期各層級可以 DI 一個物件 &lt;code&gt;statusContext&lt;/code&gt;，在其中取得 &lt;code&gt;customerId&lt;/code&gt; 以及轉換過的值 來做使用。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term=".Net" scheme="https://codemachine0121.github.io/categories/Net/"/>
+    
+    
+    <category term=".Net" scheme="https://codemachine0121.github.io/tags/Net/"/>
+    
+  </entry>
   
   <entry>
     <title>How to Apply APM on .NetCore</title>
@@ -489,27 +517,6 @@ By Eric Evans&lt;/p&gt;
     
     
     <category term="clean-architecture" scheme="https://codemachine0121.github.io/tags/clean-architecture/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ithome 鐵人賽-2024-Day15 Store Key Data for EccSDK</title>
-    <link href="https://codemachine0121.github.io/posts/3f976c9/"/>
-    <id>https://codemachine0121.github.io/posts/3f976c9/</id>
-    <published>2024-08-21T17:05:50.000Z</published>
-    <updated>2024-09-30T16:34:28.066Z</updated>
-    
-    <content type="html"><![CDATA[<p>Hi all, 來到第15天，今天就來好好處理如何永久儲存 變色龍雜湊函數所需要使用的 key 吧</p><span id="more"></span><p>不多說直接呈現 code吧</p><ul><li>首先我們需要更動 DI 的部分，我們抽一個 KeyStorageService 來做 Key 載入/存放 這件事情。</li></ul><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> keyStorageService = <span class="keyword">new</span> KeyStorageService();</span><br><span class="line"><span class="keyword">var</span> keyData = keyStorageService.LoadKeyPair();</span><br><span class="line"></span><br><span class="line">builder.Services.AddSingleton(keyData.KeyPair);</span><br><span class="line">builder.Services.AddSingleton(keyData.SessionKey);</span><br></pre></td></tr></table></figure><ul><li>接著我們就可以來實作 KeyStorageService，code如下</li></ul><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">KeyStorageService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> KeysPath = <span class="string">&quot;~/keys.json&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KeyData <span class="title">LoadKeyPair</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (File.Exists(KeysPath))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> RestoreKeys(KeysPath);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> keyData = <span class="keyword">new</span> KeyData()</span><br><span class="line">        &#123;</span><br><span class="line">            KeyPair = EccGenerator.GenerateKeyPair(<span class="number">256</span>),</span><br><span class="line">            SessionKey = SessionKeyGenerator.GenerateSessionKey()</span><br><span class="line">        &#125;;</span><br><span class="line">        keyData.SaveKeys(KeysPath);</span><br><span class="line">        <span class="keyword">return</span> keyData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> KeyData <span class="title">RestoreKeys</span>(<span class="params"><span class="built_in">string</span> path</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> keyData = File.ReadAllText(path);</span><br><span class="line">        <span class="keyword">return</span> JsonSerializer.Deserialize&lt;KeyData&gt;(keyData)!;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>其中，我們使用了些檔案讀寫的方式來做存放，主要流程為:</p><ol><li>檢查key 是否存在</li><li>若存在，直接做 KeyRestore 的作業</li><li>若不存在，直接新增 key pair 及 session key</li><li>最後將 session key 及 key pair 多墊一層 KeyData 的 model 進行回傳</li></ol><h2 id="conlusion">Conlusion</h2><p>今天我們定義好了 key 要怎麼進行存放，且針對有無已存在key file 進行處理。 好了今天先到這。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;Hi all, 來到第15天，今天就來好好處理如何永久儲存 變色龍雜湊函數所需要使用的 key 吧&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="ithome 鐵人賽-2024" scheme="https://codemachine0121.github.io/categories/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/"/>
-    
-    
-    <category term="ithome 鐵人賽-2024" scheme="https://codemachine0121.github.io/tags/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/"/>
     
   </entry>
   
