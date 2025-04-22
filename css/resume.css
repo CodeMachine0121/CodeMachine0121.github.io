@@ -320,21 +320,34 @@ li, .disc-list li, .working-achievement-list li {
 
 
 
-.education li div {
-  padding: 1.5rem;
-  background-color: var(--bg-light);
-  border-left: 4px solid var(--secondary-color);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition);
+/* Education section styles */
+.education-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
   position: relative;
   z-index: 1;
 }
 
-.education li div:hover {
+.education-card {
+  background-color: var(--bg-light);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  border-top: 4px solid var(--secondary-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.education-card:hover {
+  transform: translateY(-5px);
   box-shadow: var(--shadow);
-  border-left-color: var(--accent-color);
-  transform: translateX(3px);
+  border-top-color: var(--accent-color);
 }
 
 .institution {

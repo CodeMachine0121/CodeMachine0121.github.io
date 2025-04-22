@@ -15,8 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           contact: {
             email: "asdfg55887@gmail.com",
-            github: "CodeMachine0121",
-            linkedin: "james-hsueh",
+            github: "https://github.com/CodeMachine0121",
+            instagram: "https://www.instagram.com/ksz54213",
+            linkedin: "https://www.linkedin.com/in/jameshsueh",
             location: "Taiwan",
           },
           skills: {
@@ -62,10 +63,10 @@ document.addEventListener("DOMContentLoaded", function () {
               ],
               achievements: [
                 "Refactor projects make it more maintainable",
-                "Provide SDK for projects Auto Tracing",
-                "Provide SDK for Servers Health Check",
+                "Provide SDK for projects auto tracing",
+                "Provide SDK for servers health check",
                 "Implemented comprehensive monitoring solutions",
-                "Reduced system downtime by 30% through proactive monitoring",
+                "Provide solution for project monitoring without changing code",
               ],
             },
             {
@@ -103,7 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Study on Blockchain and Network Security Research Area",
               achievements: [
                 "Thesis: Advanced Blockchain Security Mechanisms",
-                "Research Assistant for Network Security Lab",
+                "Assistant for Network Security Course",
+                "Assistant for Cryptography Course",
+                "Assistant for WebPage Development Course",
                 "Published paper on blockchain transaction security",
                 "Participated in network security competitions",
               ],
@@ -115,6 +118,8 @@ document.addEventListener("DOMContentLoaded", function () {
               period: "2016 ~ 2020",
               description: "Study on Network Security Research Area",
               achievements: [
+                "Assistant for Network Security Course",
+                "Assistant for Embedded System Course",
                 "Participated in network security competitions",
                 "Implement blockchain coldwallet module",
               ],

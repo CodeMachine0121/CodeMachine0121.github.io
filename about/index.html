@@ -212,6 +212,8 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script src="/js/resume/resume.js"></script>
 <link rel="stylesheet" href="/css/resume.css">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
 <!-- Vue.js Resume App -->
 <div id="resume-app" class="resume-container">
   <!-- Header Section -->
@@ -220,23 +222,34 @@
     <p class="resume-subtitle" v-text="profile.title"></p>
     <p class="resume-summary" v-text="profile.summary"></p>
 
-    <div class="contact-info">
-      <div class="contact-item">
-        <i class="fas fa-envelope"></i>
-        <span v-text="contact.email"></span>
+    <div class="contact-info flex gap-6 items-center justify-center mt-3">
+      <a :href="'mailto:' + contact.email"
+        class="contact-item flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition-colors"
+        title="Email">
+        <i class="fas fa-envelope text-xl"></i>
+      </a>
+      <a :href="contact.github" target="_blank"
+        class="contact-item flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 hover:text-black transition-colors"
+        title="GitHub">
+        <i class="fab fa-github text-xl"></i>
+      </a>
+      <a :href="contact.instagram" target="_blank"
+        class="contact-item flex items-center justify-center w-10 h-10 rounded-full bg-pink-100 text-pink-600 hover:bg-pink-200 hover:text-pink-800 transition-colors"
+        title="Instagram">
+        <i class="fab fa-instagram text-xl"></i>
+      </a>
+      <a :href="contact.linkedin" target="_blank"
+        class="contact-item flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-900 transition-colors"
+        title="LinkedIn">
+        <i class="fab fa-linkedin text-xl"></i>
+      </a>
+      <div class="contact-item flex items-center justify-center w-10 h-10 rounded-full bg-red-100 text-red-600"
+        title="Location">
+        <i class="fas fa-map-marker-alt text-xl"></i>
       </div>
-      <div class="contact-item">
-        <i class="fab fa-github"></i>
-        <span v-text="contact.github"></span>
-      </div>
-      <div class="contact-item">
-        <i class="fab fa-linkedin"></i>
-        <span v-text="contact.linkedin"></span>
-      </div>
-      <div class="contact-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <span v-text="contact.location"></span>
-      </div>
+    </div>
+    <div class="mt-2 text-center">
+      <span v-text="contact.location" class="text-gray-700"></span>
     </div>
   </div>
 
@@ -244,7 +257,9 @@
   <div class="resume-section profile-section">
     <div class="image-container">
       <div class="image-wrapper">
-        <img :src="profile.image" alt="personal-image" />
+        <img
+          src="https://cdn.discordapp.com/attachments/1317672709060034640/1364288421912252486/image.jpg?ex=6809201b&is=6807ce9b&hm=7bff5c3fb9fa1ba996b3b72c42c5ada64a33bf205cd21f5018083a07d06ffcb2&"
+          alt="personal-image" />
       </div>
 
       <div class="skills-container">
@@ -344,24 +359,20 @@
   <!-- Education Section -->
   <div class="resume-section">
     <h2>Education</h2>
-    <div class="education">
-      <ol class="numbered-list">
-        <li v-for="edu in education">
-          <div>
-            <h3 v-text="edu.field"></h3>
-            <p class="institution" v-text="edu.institution"></p>
-            <p class="degree" v-text="edu.degree"></p>
-            <p class="period" v-text="edu.period"></p>
-            <p class="t-2" v-text="edu.description"></p>
-            <div class="education-achievements" v-if="edu.achievements">
-              <h4>Achievements</h4>
-              <ul>
-                <li v-for="achievement in edu.achievements" v-text="achievement"></li>
-              </ul>
-            </div>
-          </div>
-        </li>
-      </ol>
+    <div class="education-container">
+      <div class="education-card" v-for="edu in education">
+        <h3 v-text="edu.field"></h3>
+        <p class="institution" v-text="edu.institution"></p>
+        <p class="degree" v-text="edu.degree"></p>
+        <p class="period" v-text="edu.period"></p>
+        <p class="t-2" v-text="edu.description"></p>
+        <div class="education-achievements" v-if="edu.achievements">
+          <h4>Achievements</h4>
+          <ul>
+            <li v-for="achievement in edu.achievements" v-text="achievement"></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 
