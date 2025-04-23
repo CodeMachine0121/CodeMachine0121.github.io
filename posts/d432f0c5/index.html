@@ -21,15 +21,15 @@
     var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 HttpContextAccessor ，覺得很酷所以留個筆記。 情境介紹  我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 customerId） 我們本身業務邏輯會需要將 customerId 轉換過後再傳遞到業務邏輯層， 這就導致我們每個 api 都需要寫相同的 request mod">
+  <meta name="description" content="Hi all，因應工作需求，我們使用了在日常開發中不太常用的 HttpContextAccessor，覺得很方便，特此做個筆記。 情境介紹  多個 API 需要共用相同參數（以下以 customerId 為例）。 業務邏輯層需先將 customerId 轉換後再使用。 如果在每個 API 都分別定義相同的 Request Model 並實現相同的轉換邏輯，程式碼會大量重複。 因此，我們希望透過依賴">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Csharp HttpContextAccessor 使用">
+<meta property="og:title" content="使用 HttpContextAccessor">
 <meta property="og:url" content="https://codemachine0121.github.io/posts/d432f0c5/index.html">
 <meta property="og:site_name" content="James.Hsueh.Dev">
-<meta property="og:description" content="Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 HttpContextAccessor ，覺得很酷所以留個筆記。 情境介紹  我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 customerId） 我們本身業務邏輯會需要將 customerId 轉換過後再傳遞到業務邏輯層， 這就導致我們每個 api 都需要寫相同的 request mod">
+<meta property="og:description" content="Hi all，因應工作需求，我們使用了在日常開發中不太常用的 HttpContextAccessor，覺得很方便，特此做個筆記。 情境介紹  多個 API 需要共用相同參數（以下以 customerId 為例）。 業務邏輯層需先將 customerId 轉換後再使用。 如果在每個 API 都分別定義相同的 Request Model 並實現相同的轉換邏輯，程式碼會大量重複。 因此，我們希望透過依賴">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2025-04-22T17:19:48.000Z">
-<meta property="article:modified_time" content="2025-04-22T17:48:09.228Z">
+<meta property="article:modified_time" content="2025-04-23T03:19:40.401Z">
 <meta property="article:author" content="James Hsueh">
 <meta property="article:tag" content=".Net">
 <meta name="twitter:card" content="summary">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>Csharp HttpContextAccessor 使用 | James.Hsueh.Dev</title>
+  <title>使用 HttpContextAccessor | James.Hsueh.Dev</title>
   
 
 
@@ -221,7 +221,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Csharp HttpContextAccessor 使用
+          使用 HttpContextAccessor
         </h1>
 
         <div class="post-meta">
@@ -232,7 +232,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2025-04-23 01:19:48 / 修改時間：01:48:09" itemprop="dateCreated datePublished" datetime="2025-04-23T01:19:48+08:00">2025-04-23</time>
+              <time title="創建時間：2025-04-23 01:19:48 / 修改時間：11:19:40" itemprop="dateCreated datePublished" datetime="2025-04-23T01:19:48+08:00">2025-04-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,30 +255,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 <code>HttpContextAccessor</code> ，覺得很酷所以留個筆記。</p>
+        <p>Hi all，因應工作需求，我們使用了在日常開發中不太常用的 <code>HttpContextAccessor</code>，覺得很方便，特此做個筆記。</p>
 <h2 id="情境介紹">情境介紹</h2>
 <ul>
-<li>我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 <code>customerId</code>）</li>
-<li>我們本身業務邏輯會需要將 <code>customerId</code> 轉換過後再傳遞到業務邏輯層，</li>
-<li>這就導致我們每個 api 都需要寫相同的 request model 來取得 <code>customerId</code> 以及相同的轉換邏輯，</li>
-<li>我們想要避免這樣的做法，我們預期各層級可以 DI 一個物件 <code>statusContext</code>，在其中取得 <code>customerId</code> 以及轉換過的值 來做使用。</li>
+<li>多個 API 需要共用相同參數（以下以 <code>customerId</code> 為例）。</li>
+<li>業務邏輯層需先將 <code>customerId</code> 轉換後再使用。</li>
+<li>如果在每個 API 都分別定義相同的 Request Model 並實現相同的轉換邏輯，程式碼會大量重複。</li>
+<li>因此，我們希望透過依賴注入（DI）注入一個 <code>StatusContext</code>，在其中統一取得並轉換 <code>customerId</code>，上層使用時只要注入即可。</li>
 </ul>
 <span id="more"></span>
-<h2 id="solution">Solution</h2>
-<p>我們可以使用 <code>HttpContextAccessor</code> 來存取 HttpContext 的方法，進而拿到 request 參數資料。</p>
+<h2 id="解決方案">解決方案</h2>
+<p>使用 <code>HttpContextAccessor</code> 來存取 <code>HttpContext</code>，並取得路由參數：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">services.AddHttpContextAccessor();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line"><span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line"><span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">    <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>接著我們拿到 <code>customerId</code> 以及轉換過的值，我們可以將其封裝到一個物件中，做完 DI 註冊後在需要使用的地方 DI 這個物件即可，所以整體的 code 就會長得像這樣：</p>
+<p>接著將 <code>customerId</code> 及轉換後的結果封裝成物件，並註冊到 DI 容器：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StatusContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> CustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ConvertedCustomerId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">services.AddScoped&lt;StatusContext&gt;(provider=&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> httpContextAccessor = provider.GetRequiredService&lt;IHttpContextAccessor&gt;();</span><br><span class="line">    <span class="keyword">var</span> httpContext = httpContextAccessor.HttpContext;</span><br><span class="line">    <span class="keyword">if</span> (httpContext.Request.RouteValues.TryGetValue(<span class="string">&quot;customerId&quot;</span>, <span class="keyword">out</span> <span class="keyword">var</span> routeValue))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> customerId = routeValue?.ToString();</span><br><span class="line">        <span class="keyword">var</span> convertedCustomerId = DoSomething(customerId);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StatusContext</span><br><span class="line">        &#123;</span><br><span class="line">            CustomerId = customerId,</span><br><span class="line">            ConvertedCustomerId = convertedCustomerId</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StatusContext();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="conclusion">Conclusion</h2>
-<p>有點懶，我就請 agent 結論了。</p>
-<h3 id="agent-結論">Agent 結論</h3>
-<p>好啦！今天我們聊了一下 <code>HttpContextAccessor</code> 這個好用的東西。說真的，這招真的蠻方便的，可以幫我們解決很多重複寫程式碼的麻煩事。用了它之後，我們就可以：</p>
-<ul>
-<li>直接拿到 HTTP 請求的參數，不用每個 API 都重複寫一堆 request model，超省事的啦！</li>
-<li>把那些常用參數的轉換邏輯都放在同一個地方，程式碼整個乾淨多了，維護起來也輕鬆</li>
-<li>透過 DI 容器註冊我們的 <code>StatusContext</code>，各層級要用的時候直接注入就好，超方便的啦</li>
-</ul>
-<p>這招特別適合處理那種很多 API 都要用到同一堆參數的情況，可以讓程式碼少寫一大堆重複的東西。不過話說回來，也不要太依賴這招喔！如果用太兇，可能會讓你的業務邏輯層跟 HTTP 層黏在一起，架構就不清楚了，所以還是要斟酌使用啦。</p>
+<h2 id="總結">總結</h2>
+<p>這邊就直接讓 agent 結論了。</p>
+<p>使用 <code>HttpContextAccessor</code> 可以：</p>
+<ol>
+<li>直接存取 HTTP 請求參數，免去在每個 API 重複定義 Request Model。</li>
+<li>將參數轉換邏輯集中在同一處，提升程式碼可讀性與可維護性。</li>
+<li>透過 DI 容器注入 <code>StatusContext</code>，在需要的地方直接注入，減少重複程式碼。</li>
+</ol>
+<p>此方案特別適合多個 API 共用參數的場景，但也要避免過度依賴，以免使業務邏輯層與 HTTP 層過度耦合。</p>
 
     </div>
 
@@ -360,7 +359,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%83%85%E5%A2%83%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.</span> <span class="nav-text">情境介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#agent-%E7%B5%90%E8%AB%96"><span class="nav-number">3.1.</span> <span class="nav-text">Agent 結論</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%83%85%E5%A2%83%E4%BB%8B%E7%B4%B9"><span class="nav-number">1.</span> <span class="nav-text">情境介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B1%BA%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解決方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B8%BD%E7%B5%90"><span class="nav-number">3.</span> <span class="nav-text">總結</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

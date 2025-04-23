@@ -304,7 +304,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/d432f0c5/" class="post-title-link" itemprop="url">Csharp HttpContextAccessor 使用</a>
+            <a href="/posts/d432f0c5/" class="post-title-link" itemprop="url">使用 HttpContextAccessor</a>
         </h2>
 
         <div class="post-meta">
@@ -315,7 +315,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2025-04-23 01:19:48 / 修改時間：01:48:09" itemprop="dateCreated datePublished" datetime="2025-04-23T01:19:48+08:00">2025-04-23</time>
+              <time title="創建時間：2025-04-23 01:19:48 / 修改時間：11:19:40" itemprop="dateCreated datePublished" datetime="2025-04-23T01:19:48+08:00">2025-04-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -338,13 +338,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Hi all, 由於工作上的某些情境需要，我們使用了平常開發上不太常用到的 <code>HttpContextAccessor</code> ，覺得很酷所以留個筆記。</p>
+          <p>Hi all，因應工作需求，我們使用了在日常開發中不太常用的 <code>HttpContextAccessor</code>，覺得很方便，特此做個筆記。</p>
 <h2 id="情境介紹">情境介紹</h2>
 <ul>
-<li>我們有多個 api 其中有大部分的 api 所使用到的參數大多相同（在此假設為 <code>customerId</code>）</li>
-<li>我們本身業務邏輯會需要將 <code>customerId</code> 轉換過後再傳遞到業務邏輯層，</li>
-<li>這就導致我們每個 api 都需要寫相同的 request model 來取得 <code>customerId</code> 以及相同的轉換邏輯，</li>
-<li>我們想要避免這樣的做法，我們預期各層級可以 DI 一個物件 <code>statusContext</code>，在其中取得 <code>customerId</code> 以及轉換過的值 來做使用。</li>
+<li>多個 API 需要共用相同參數（以下以 <code>customerId</code> 為例）。</li>
+<li>業務邏輯層需先將 <code>customerId</code> 轉換後再使用。</li>
+<li>如果在每個 API 都分別定義相同的 Request Model 並實現相同的轉換邏輯，程式碼會大量重複。</li>
+<li>因此，我們希望透過依賴注入（DI）注入一個 <code>StatusContext</code>，在其中統一取得並轉換 <code>customerId</code>，上層使用時只要注入即可。</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
