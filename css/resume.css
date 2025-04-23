@@ -230,9 +230,10 @@
 }
 
 .job .title h3 {
-  color: var(--accent-color);
   font-weight: 700;
+  color: #ff9aa2;
 }
+
 
 .job-title {
   font-weight: 600;
@@ -402,11 +403,13 @@ li, .disc-list li, .working-achievement-list li {
   text-decoration: none;
   transition: var(--transition);
 }
-
-.resume-container a:hover {
+.resume-container a:hover,
+.resume-container a:focus {
   color: var(--accent-color);
   text-decoration: underline;
 }
+
+
 
 /* Projects section styles */
 .projects-container {
@@ -604,5 +607,90 @@ li, .disc-list li, .working-achievement-list li {
     margin-left: 0;
     width: 100%;
     margin-top: 20px;
+  }
+}
+/* Print styles - Hide non-resume elements and maintain formatting */
+@media print {
+  /* Hide everything except the resume */
+  body .headband,
+  body .header,
+  body .site-brand-container,
+  body .site-nav,
+  body .sidebar,
+  body .sidebar-inner,
+  body .comments,
+  body .footer,
+  body .back-to-top {
+    display: none !important;
+  }
+  
+  /* Reset containers to full width */
+  body .container,
+  body .main,
+  body .main-inner,
+  body .content-wrap,
+  body .content {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Preserve resume formatting */
+  .resume-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 2.5rem !important;
+    background-color: var(--bg-color) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border-radius: var(--radius) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--primary-color) !important;
+  }
+  
+  /* Preserve all original colors and formatting */
+  .resume-header h1 {
+    color: var(--accent-color) !important;
+  }
+  
+  .resume-subtitle {
+    color: var(--primary-light) !important;
+  }
+  
+  .resume-section > h2 {
+    color: var(--secondary-color) !important;
+  }
+  
+  .resume-container h3 {
+    color: var(--secondary-color) !important;
+  }
+  
+  /* Preserve layout for elements that might need special display properties */
+  .skill-tags, .contact-info, .image-container, .achievement-columns {
+    display: flex !important;
+  }
+  
+  /* Ensure proper display for skill tags */
+  .skill-tag {
+    display: inline-flex !important;
+  }
+  
+  /* Fix potential issues with flex containers in print */
+  .job, .education-card, .certification-card {
+    page-break-inside: avoid;
+  }
+  
+  /* Center Education and Certifications sections with dynamic layout */
+  .education-container, .certifications-container {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+  }
+  
+  .education-card, .certification-card {
+    width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
   }
 }
