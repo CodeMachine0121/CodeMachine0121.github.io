@@ -524,6 +524,12 @@ li, .disc-list li, .working-achievement-list li {
   font-size: 0.9rem;
 }
 
+.resume-header h1 {
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
 /* Skills section styles */
 .skills-container {
   flex: 1;
