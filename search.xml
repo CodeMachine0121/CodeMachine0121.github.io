@@ -153,6 +153,80 @@
       </tags>
   </entry>
   <entry>
+    <title>CSharp dynamic 與 ExpandoObject</title>
+    <url>/posts/123d32b6/</url>
+    <content><![CDATA[<h2 id="前言">前言</h2>
+<p>Hi all, 今天在進行 code review 時，我們討論到一個有趣的問題：如何在 C# 中動態解析 JSON 字串，特別是當我們不確定 JSON 結構，或是結構過於複雜不值得建立完整模型時。</p>
+<p>傳統上，我們可能會使用 <code>Dictionary&lt;string, object&gt;</code> 或建立專用的類別來解析 JSON。但今天我想分享另一個更靈活的方法：使用 C# 的 <code>dynamic</code> 類型搭配 <code>ExpandoObject</code>。</p>
+<span id="more"></span>
+<h2 id="什麼是-dynamic-類型？">什麼是 dynamic 類型？</h2>
+<p><code>dynamic</code> 是 C# 4.0 引入的一種類型，它允許我們繞過編譯時的類型檢查，將類型檢查推遲到運行時進行。使用 <code>dynamic</code> 類型的物件，我們可以像在動態語言（如 JavaScript）中一樣操作物件，而不需要預先定義其屬性或方法。</p>
+<p>簡單來說，<code>dynamic</code> 告訴編譯器：「相信我，這個物件在運行時會有這些屬性和方法。」</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ExampleMethod</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">dynamic</span> dynamicObject = <span class="keyword">new</span> <span class="built_in">object</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 以下在編譯時不會報錯，但可能在運行時報錯</span></span><br><span class="line">    dynamicObject.SomeProperty = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">    dynamicObject.SomeMethod();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="什麼是-expandoobject？">什麼是 ExpandoObject？</h2>
+<p><code>ExpandoObject</code> 是 .NET 提供的一個實現，它允許我們在運行時動態地添加和移除物件的成員。當與 <code>dynamic</code> 關鍵字一起使用時，<code>ExpandoObject</code> 提供了一種建立可動態擴展物件的方法。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Dynamic;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ExpandoExample</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">dynamic</span> expando = <span class="keyword">new</span> ExpandoObject();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 動態添加屬性</span></span><br><span class="line">    expando.Name = <span class="string">&quot;James&quot;</span>;</span><br><span class="line">    expando.Age = <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 動態添加方法</span></span><br><span class="line">    expando.SayHello = (Action)(() =&gt; Console.WriteLine(<span class="string">$&quot;Hello, <span class="subst">&#123;expando.Name&#125;</span>&quot;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用動態添加的屬性和方法</span></span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;expando.Name&#125;</span>, Age: <span class="subst">&#123;expando.Age&#125;</span>&quot;</span>);</span><br><span class="line">    expando.SayHello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="動態解析-json-字串">動態解析 JSON 字串</h2>
+<p>現在讓我們來看看如何使用 <code>dynamic</code> 和 <code>ExpandoObject</code> 來解析 JSON 字串。</p>
+<h3 id="傳統方式解析-json">傳統方式解析 JSON</h3>
+<p>假設我們有以下 JSON 字串：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;James&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">30</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;city&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Taipei&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;country&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Taiwan&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;skills&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;C#&quot;</span><span class="punctuation">,</span> <span class="string">&quot;JavaScript&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Python&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>傳統上，我們可能會建立對應的類別：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Person</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Age &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Address Address &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> List&lt;<span class="built_in">string</span>&gt; Skills &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Address</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> City &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Country &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 System.Text.Json</span></span><br><span class="line">Person person = JsonSerializer.Deserialize&lt;Person&gt;(jsonString);</span><br><span class="line">Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;person.Name&#125;</span>, City: <span class="subst">&#123;person.Address.City&#125;</span>&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="使用-dynamic-和-expandoobject-解析-json">使用 dynamic 和 ExpandoObject 解析 JSON</h3>
+<p>現在，讓我們看看如何使用 <code>dynamic</code> 和 <code>ExpandoObject</code> 來解析同樣的 JSON 字串：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Dynamic;</span><br><span class="line"><span class="keyword">using</span> System.Text.Json;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ParseJsonDynamically</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> jsonString = <span class="string">@&quot;&#123;</span></span><br><span class="line"><span class="string">  &quot;&quot;name&quot;&quot;: &quot;&quot;James&quot;&quot;,</span></span><br><span class="line"><span class="string">  &quot;&quot;age&quot;&quot;: 30,</span></span><br><span class="line"><span class="string">  &quot;&quot;address&quot;&quot;: &#123;</span></span><br><span class="line"><span class="string">    &quot;&quot;city&quot;&quot;: &quot;&quot;Taipei&quot;&quot;,</span></span><br><span class="line"><span class="string">    &quot;&quot;country&quot;&quot;: &quot;&quot;Taiwan&quot;&quot;</span></span><br><span class="line"><span class="string">  &#125;,</span></span><br><span class="line"><span class="string">  &quot;&quot;skills&quot;&quot;: [&quot;&quot;C#&quot;&quot;, &quot;&quot;JavaScript&quot;&quot;, &quot;&quot;Python&quot;&quot;]</span></span><br><span class="line"><span class="string">&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 直接使用 JsonSerializer 將 JSON 字串反序列化為 dynamic ExpandoObject</span></span><br><span class="line">    <span class="comment">// 這比手動轉換簡單得多</span></span><br><span class="line">    <span class="keyword">var</span> options = <span class="keyword">new</span> JsonSerializerOptions</span><br><span class="line">    &#123;</span><br><span class="line">        PropertyNameCaseInsensitive = <span class="literal">true</span>,</span><br><span class="line">        ReadCommentHandling = JsonCommentHandling.Skip,</span><br><span class="line">        AllowTrailingCommas = <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dynamic</span> result = JsonSerializer.Deserialize&lt;ExpandoObject&gt;(jsonString, options);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 現在可以像操作強型別物件一樣操作 result</span></span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;Name: <span class="subst">&#123;result.name&#125;</span>, Age: <span class="subst">&#123;result.age&#125;</span>&quot;</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;City: <span class="subst">&#123;result.address.city&#125;</span>, Country: <span class="subst">&#123;result.address.country&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 操作陣列</span></span><br><span class="line">    Console.WriteLine(<span class="string">&quot;Skills:&quot;</span>);</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> skill <span class="keyword">in</span> result.skills)</span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;  - <span class="subst">&#123;skill&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用場景與優勢">使用場景與優勢</h2>
+<p>這種方法特別適合以下場景：</p>
+<ol>
+<li>
+<p><strong>未知或變動的 JSON 結構</strong>：當我們不確定 JSON 的確切結構，或者結構可能變化時。</p>
+</li>
+<li>
+<p><strong>一次性解析</strong>：當我們只需要從 JSON 中提取少量資訊，而不需要建立完整的強型別模型時。</p>
+</li>
+<li>
+<p><strong>動態 API response</strong>：處理第三方 API 的 response，尤其是當 API 的 response 格式可能變化或包含大量我們不關心的資訊時。</p>
+</li>
+<li>
+<p><strong>建立靈活的數據處理功能</strong>：可以讓使用者動態定義資料轉換規則，而不需要修改程式碼。</p>
+</li>
+</ol>
+<p>這種方法的優勢包括：</p>
+<ul>
+<li><strong>靈活性</strong>：不需要預先定義所有可能的屬性和結構。</li>
+<li><strong>簡潔性</strong>：減少了大量的類別定義程式碼。</li>
+<li><strong>易於使用</strong>：可以像使用強型別物件一樣使用動態物件。</li>
+</ul>
+<h2 id="注意事項與限制">注意事項與限制</h2>
+<p>儘管 <code>dynamic</code> 和 <code>ExpandoObject</code> 提供了靈活性，但也有一些需要注意的地方：</p>
+<ol>
+<li>
+<p><strong>效能開銷</strong>：動態類型的解析和操作比強型別解析慢，因為類型檢查被推遲到運行時。</p>
+</li>
+<li>
+<p><strong>缺少編譯時檢查</strong>：編譯器不會檢查動態物件的屬性和方法是否存在，這可能導致運行時錯誤。</p>
+</li>
+<li>
+<p><strong>Debug 困難</strong>：動態物件的錯誤通常在運行時才會被發現，這可能增加 Debug 的難度。</p>
+</li>
+</ol>
+<h2 id="總結">總結</h2>
+<p><code>dynamic</code> 和 <code>ExpandoObject</code> 為 C# 開發人員提供了處理動態數據的強大工具，特別是在處理未知或變化的 JSON 結構時。雖然這種方法有一些限制和性能開銷，但在適當的場景下，它可以大大簡化我們的程式碼並提高開發效率。</p>
+<p>在實際開發中，我建議根據具體需求選擇合適的方法：</p>
+<ul>
+<li>對於已知且不變的 JSON 結構，使用強型別類別可能更合適。</li>
+<li>對於未知或變化的 JSON 結構，或者只需要提取部分數據的情況，使用 <code>dynamic</code> 和 <code>ExpandoObject</code> 可能是更好的選擇。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C#</tag>
+        <tag>JSON</tag>
+        <tag>Dynamic Types</tag>
+        <tag>ExpandoObject</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 HttpContextAccessor</title>
     <url>/posts/d432f0c5/</url>
     <content><![CDATA[<p>Hi all，因應工作需求，我們使用了在日常開發中不太常用的 <code>HttpContextAccessor</code>，覺得很方便，特此做個筆記。</p>
@@ -2126,11 +2200,6 @@ Arrange<br>
       </tags>
   </entry>
   <entry>
-    <title>tags</title>
-    <url>/tags/index.html</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>categories</title>
     <url>/categories/index.html</url>
     <content><![CDATA[]]></content>
@@ -2138,6 +2207,11 @@ Arrange<br>
   <entry>
     <title>about</title>
     <url>/about/index.html</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>tags</title>
+    <url>/tags/index.html</url>
     <content><![CDATA[]]></content>
   </entry>
 </search>

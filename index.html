@@ -80,7 +80,7 @@
 </noscript>
 
 <link rel="alternate" href="/atom.xml" title="James.Hsueh.Dev" type="application/atom+xml">
-<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /><link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">16</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">20</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -144,7 +144,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">40</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">41</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -267,6 +267,74 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/posts/52f9f614/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/123d32b6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James.Hsueh.Dev">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/123d32b6/" class="post-title-link" itemprop="url">CSharp dynamic 與 ExpandoObject</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2025-04-25 22:55:19 / 修改時間：23:18:26" itemprop="dateCreated datePublished" datetime="2025-04-25T22:55:19+08:00">2025-04-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言">前言</h2>
+<p>Hi all, 今天在進行 code review 時，我們討論到一個有趣的問題：如何在 C# 中動態解析 JSON 字串，特別是當我們不確定 JSON 結構，或是結構過於複雜不值得建立完整模型時。</p>
+<p>傳統上，我們可能會使用 <code>Dictionary&lt;string, object&gt;</code> 或建立專用的類別來解析 JSON。但今天我想分享另一個更靈活的方法：使用 C# 的 <code>dynamic</code> 類型搭配 <code>ExpandoObject</code>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/123d32b6/#more" rel="contents">
                 閱讀全文 &raquo;
               </a>
             </div>
@@ -947,100 +1015,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/992d0373/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James.Hsueh.Dev">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/992d0373/" class="post-title-link" itemprop="url">LLM 教我啥是Kafka</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2024-11-06 14:07:43" itemprop="dateCreated datePublished" datetime="2024-11-06T14:07:43+08:00">2024-11-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-12-07 19:43:19" itemprop="dateModified" datetime="2024-12-07T19:43:19+08:00">2024-12-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">系統設計</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="這是一個使用-chatgpt-來教我怎麼認識及部屬-kafka的筆記-在下對於kafka的認知程度大概是只知道這是啥但沒碰過-如果有跟我一樣程度的大大們也能參考這篇筆記">這是一個使用 ChatGpt 來教我怎麼認識及部屬 Kafka的筆記，在下對於kafka的認知程度大概是只知道這是啥但沒碰過，如果有跟我一樣程度的大大們也能參考這篇筆記。</h2>
-<p>Kafka 是一個由 Apache 開發的分散式事件流平台，廣泛用於即時資料流處理和高效能的資料傳輸。以下是 Kafka 的核心概念和特性：</p>
-<ul>
-<li>消息系統：Kafka 是一種分散式的消息系統，支持發布（publish）和訂閱（subscribe）消息，常用於數據的即時流處理。</li>
-<li>分區（Partition）和容錯性：消息被分成多個分區儲存，允許橫向擴展來處理大規模資料。分區複製增加了容錯性，即便某個節點失效，其他複製節點仍可提供資料。</li>
-<li>高效能：Kafka 使用順序寫入和磁碟存儲結構來提供高吞吐量，適合高頻交易和資料流的大數據處理。</li>
-<li>消費者群組（Consumer Group）：多個消費者可以組成群組，共享讀取相同主題的不同分區的訊息，使得訊息能夠被平行處理，達到橫向擴展的效果。</li>
-<li>持久性：Kafka 可以將消息持久儲存在磁碟上，用戶可以配置消息的保留時間，因此即使消費者延遲也不會丟失消息。</li>
-<li>流處理（Stream Processing）：Kafka 提供 Kafka Streams API，支持將數據流作為實時的可持久查詢的數據源，允許進行資料的過濾、聚合和轉換。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/992d0373/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一頁"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一頁"></i></a>
   </nav>
 
 
@@ -1106,7 +1084,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -1119,7 +1097,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
