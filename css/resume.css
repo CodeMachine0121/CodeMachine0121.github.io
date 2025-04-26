@@ -351,6 +351,10 @@ li, .disc-list li, .working-achievement-list li {
   border-top-color: var(--accent-color);
 }
 
+.education-card .title {
+  color: #ff9aa2;
+}
+
 .institution {
   font-weight: 600;
   color: var(--primary-light);
@@ -508,7 +512,7 @@ li, .disc-list li, .working-achievement-list li {
 }
 
 .certification-card h3 {
-  color: var(--accent-color);
+  color: #ff9aa2;
   margin-bottom: 0.75rem;
   font-size: 1.2rem;
 }
