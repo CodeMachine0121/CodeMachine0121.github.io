@@ -21,24 +21,21 @@
     var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="接續上一篇 系統高可靠性 系統有了 resource 的規劃，還是無法保證不會有過載的情況發生。這時候就需要透過限流與熔斷來保護系統。 如果沒有做過載保護，當系統遇到過載時，可能會導致系統崩潰，甚至是整個系統的故障。如果有做過載保護，當系統遇到過載時，可以捨棄部分用戶，確保能為絕大部分用戶提供可使用的服務。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="過載保護：限流與熔斷">
-<meta property="og:url" content="https://codemachine0121.github.io/posts/e877b875/index.html">
+  <meta name="description" content="分享紀錄的地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="James.Hsueh.Dev">
+<meta property="og:url" content="https://codemachine0121.github.io/tags/Architecture/index.html">
 <meta property="og:site_name" content="James.Hsueh.Dev">
-<meta property="og:description" content="接續上一篇 系統高可靠性 系統有了 resource 的規劃，還是無法保證不會有過載的情況發生。這時候就需要透過限流與熔斷來保護系統。 如果沒有做過載保護，當系統遇到過載時，可能會導致系統崩潰，甚至是整個系統的故障。如果有做過載保護，當系統遇到過載時，可以捨棄部分用戶，確保能為絕大部分用戶提供可使用的服務。">
+<meta property="og:description" content="分享紀錄的地方">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="https://codemachine0121.github.io/images/leaking-bucket.png">
-<meta property="og:image" content="https://codemachine0121.github.io/images/token-bucket.png">
-<meta property="og:image" content="https://codemachine0121.github.io/images/mulitple-thread-module.png">
-<meta property="article:published_time" content="2024-10-19T17:44:45.000Z">
-<meta property="article:modified_time" content="2024-10-20T15:58:28.555Z">
 <meta property="article:author" content="James Hsueh">
-<meta property="article:tag" content="system-design">
+<meta property="article:tag" content="Dev">
+<meta property="article:tag" content="Tech">
+<meta property="article:tag" content="Share">
+<meta property="article:tag" content="Life">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://codemachine0121.github.io/images/leaking-bucket.png">
 
-<link rel="canonical" href="https://codemachine0121.github.io/posts/e877b875/">
+<link rel="canonical" href="https://codemachine0121.github.io/tags/Architecture/">
 
 
 <script id="page-configurations">
@@ -46,12 +43,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : true,
+    isPost : false,
     lang   : 'zh-TW'
   };
 </script>
 
-  <title>過載保護：限流與熔斷 | James.Hsueh.Dev</title>
+  <title>標籤: Architecture | James.Hsueh.Dev</title>
   
 
 
@@ -205,159 +202,57 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content tag">
             
 
-    
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/e877b875/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James.Hsueh.Dev">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          過載保護：限流與熔斷
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-              
-
-              <time title="創建時間：2024-10-20 01:44:45 / 修改時間：23:58:28" itemprop="dateCreated datePublished" datetime="2024-10-20T01:44:45+08:00">2024-10-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">系統設計</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <h2 class="collection-header">Architecture
+          <small>標籤</small>
+        </h2>
+      </div>
 
       
-        <p>接續上一篇 <a href="https://codemachine0121.github.io/posts/bcd9b3bc/">系統高可靠性</a></p>
-<p>系統有了 resource 的規劃，還是無法保證不會有過載的情況發生。這時候就需要透過限流與熔斷來保護系統。 如果沒有做過載保護，當系統遇到過載時，可能會導致系統崩潰，甚至是整個系統的故障。如果有做過載保護，當系統遇到過載時，可以捨棄部分用戶，確保能為絕大部分用戶提供可使用的服務。</p>
-<span id="more"></span>
-<h2 id="限流">限流</h2>
-<p>通常有兩種限制維度：</p>
-<ul>
-<li>
-<p><strong>限制系統的最大資源使用數</strong>:</p>
-<p>舉例來說：如在秒殺系統內，一個商品只能提供500件，當今天有100萬個用戶要搶購，系統是沒有必要放全部100萬用戶進來，只需要放500個即可，後面的人可以直接返回已售完的資訊即可。</p>
-</li>
-<li>
-<p><strong>限制速率</strong>(限制系統的QPS)</p>
-<p>速率限流又可以分作兩種：</p>
-<ul>
-<li><strong>單機限流</strong>:<br>
-設定每個機器的最高QPS，當超過這個QPS時，就會拒絕請求。</li>
-<li><strong>中央限流</strong>:<br>
-需要一個中央的服務系統，在上面給定一個總和最高QPS，這個中央服務就會自己派發請求到底下的機器。</li>
-</ul>
-</li>
-</ul>
-<h2 id="單機限流的算法">單機限流的算法</h2>
-<h3 id="漏桶算法">漏桶算法</h3>
-<p>特點如下：</p>
-<ul>
-<li>漏桶的容量是固定的， request 流出漏桶的速率是固定的。</li>
-<li>request 流入漏桶的速率是不固定的。</li>
-<li>如果漏桶空了，則不需要流出。</li>
-<li>如果 request 流入的數量超出了漏桶的容量，則會被拒絕。</li>
-</ul>
-<p><img src="/images/leaking-bucket.png" alt="img.png"></p>
-<h3 id="token-桶算法">Token 桶算法</h3>
-<p>特點如下：</p>
-<ul>
-<li>Token 桶的容量是固定的， request 流入Token 桶的速率是固定的。</li>
-<li>當 Token 桶裡面的 token 滿了，則不再放入 token。</li>
-<li>當 request 收到後，會先去 Token 桶裡面拿 token，如果拿不到 token，則會被拒絕。</li>
-</ul>
-<p><img src="/images/token-bucket.png" alt="img.png"></p>
-<h3 id="比較">比較</h3>
-<ul>
-<li>漏桶算法是固定的速率流出，不固定的速率流入。
-<ul>
-<li>比較適合用在request 會瞬間爆發的情況。</li>
-</ul>
-</li>
-<li>Token 桶算法是固定的速率流入，不固定的速率流出。
-<ul>
-<li>比較適合用在request 會持續爆發的情況。</li>
-</ul>
-</li>
-</ul>
-<h2 id="單機限流的實現">單機限流的實現</h2>
-<h3 id="限制-request-queue-的長度">限制 request queue 的長度</h3>
-<p>以下為，一個多線程request的處理示意圖。<br>
-<img src="/images/mulitple-thread-module.png" alt="img.png"></p>
-<p>依照上面的圖，會有個問題點： request/response queue 的長度該如何配置呢？<br>
-大致上的公式如下：</p>
-<blockquote>
-<p>Request Queue = (Request Timeout <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span></span></span></span> Worker Thread 處理一個 request 的時間) <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>×</mo></mrow><annotation encoding="application/x-tex">\times</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">×</span></span></span></span> Worker Thread 數量</p>
-</blockquote>
-
+    <div class="collection-year">
+      <span class="collection-header">2025</span>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/system-design/" rel="tag"># system-design</a>
-          </div>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2025-04-27T22:20:35+08:00"
+              content="2025-04-27">
+          04-27
+        </time>
+      </div>
 
-        
+      <div class="post-title">
+          <a class="post-title-link" href="/posts/968a5679/" itemprop="url">
+            <span itemprop="name">Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)</span>
+          </a>
+      </div>
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/posts/bcd9b3bc/" rel="prev" title="系統高可靠性">
-      <i class="fa fa-chevron-left"></i> 系統高可靠性
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/37475265/" rel="next" title="NeoVim 自定義Code Action, Custom Code Action in NeoVim">
-      NeoVim 自定義Code Action, Custom Code Action in NeoVim <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+    </header>
   </article>
+
+    </div>
+  </div>
   
   
+  
+
   
 
 
 
           </div>
           
-    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -404,7 +299,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%90%E6%B5%81"><span class="nav-number">1.</span> <span class="nav-text">限流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E6%A9%9F%E9%99%90%E6%B5%81%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">單機限流的算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">漏桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">Token 桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BC%83"><span class="nav-number">2.3.</span> <span class="nav-text">比較</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E6%A9%9F%E9%99%90%E6%B5%81%E7%9A%84%E5%AF%A6%E7%8F%BE"><span class="nav-number">3.</span> <span class="nav-text">單機限流的實現</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%90%E5%88%B6-request-queue-%E7%9A%84%E9%95%B7%E5%BA%A6"><span class="nav-number">3.1.</span> <span class="nav-text">限制 request queue 的長度</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -533,25 +427,6 @@
 
   
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : 'Ov23liZSugP3smWSPwy6',
-      clientSecret: '3f6dbd0bfa0e03240d41aca18b4226f8a9713f51',
-      repo        : 'codemachine0121.github.io',
-      owner       : 'Codemachine0121',
-      admin       : ['CodeMachine0121'],
-      id          : '8013f0dc1ebdbe55cf37d1412d080d73',
-        language: 'zh-TW',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
 
 </body>
 </html>

@@ -21,20 +21,22 @@
     var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰 假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。">
+  <meta name="description" content="什麼是服務導向架構 (Service-Oriented Architecture, SOA)？ Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。 簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C# Unit Test 如何驗證多次呼叫">
-<meta property="og:url" content="https://codemachine0121.github.io/posts/43a9b739/index.html">
+<meta property="og:title" content="Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/968a5679/index.html">
 <meta property="og:site_name" content="James.Hsueh.Dev">
-<meta property="og:description" content="Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰 假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。">
+<meta property="og:description" content="什麼是服務導向架構 (Service-Oriented Architecture, SOA)？ Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。 簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2024-08-11T23:46:13.000Z">
-<meta property="article:modified_time" content="2024-09-30T16:34:28.064Z">
+<meta property="article:published_time" content="2025-04-27T14:20:35.000Z">
+<meta property="article:modified_time" content="2025-04-29T23:33:59.510Z">
 <meta property="article:author" content="James Hsueh">
-<meta property="article:tag" content="UnitTest">
+<meta property="article:tag" content="Architecture">
+<meta property="article:tag" content="SOA">
+<meta property="article:tag" content="系統架構">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://codemachine0121.github.io/posts/43a9b739/">
+<link rel="canonical" href="https://codemachine0121.github.io/posts/968a5679/">
 
 
 <script id="page-configurations">
@@ -47,7 +49,7 @@
   };
 </script>
 
-  <title>C# Unit Test 如何驗證多次呼叫 | James.Hsueh.Dev</title>
+  <title>Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA) | James.Hsueh.Dev</title>
   
 
 
@@ -208,7 +210,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/43a9b739/">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/968a5679/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -221,7 +223,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          C# Unit Test 如何驗證多次呼叫
+          Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)
         </h1>
 
         <div class="post-meta">
@@ -231,24 +233,15 @@
               </span>
               <span class="post-meta-item-text">發表於</span>
 
-              <time title="創建時間：2024-08-12 07:46:13" itemprop="dateCreated datePublished" datetime="2024-08-12T07:46:13+08:00">2024-08-12</time>
+              <time title="創建時間：2025-04-27 22:20:35" itemprop="dateCreated datePublished" datetime="2025-04-27T22:20:35+08:00">2025-04-27</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2024-10-01 00:34:28" itemprop="dateModified" datetime="2024-10-01T00:34:28+08:00">2024-10-01</time>
+                <time title="修改時間：2025-04-30 07:33:59" itemprop="dateModified" datetime="2025-04-30T07:33:59+08:00">2025-04-30</time>
               </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6/" itemprop="url" rel="index"><span itemprop="name">單元測試</span></a>
-                </span>
-            </span>
 
           
 
@@ -261,24 +254,168 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰<br>
-假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。</p>
+        <h2 id="什麼是服務導向架構-service-oriented-architecture-soa-？">什麼是服務導向架構 (Service-Oriented Architecture, SOA)？</h2>
+<p>Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。</p>
+<p>簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆分成多個獨立的小積木，每個積木都能獨立運作，還能和其他積木組合在一起完成更複雜的功能，這就是 SOA 的核心思想。</p>
 <span id="more"></span>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Run</span>(<span class="params"><span class="built_in">int</span> batch</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> students = studentRepository.FetchByBatch(batch);</span><br><span class="line">        <span class="keyword">if</span> (!students.Any())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        studentRepository.Insert(students);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>那這樣問題來了，我們該如何驗證呢?</p>
-<h2 id="寫測試囉">寫測試囉</h2>
-<p>這個問題其實苦惱了我們一下子，但透過 你的好同事 Chat GPT 後，我們發現其實我們使用的Assert 框架及 Mock框架提供了這樣的寫法 (BTW 這裡使用的 package分別為: NSubstitute 及 FluentAssertions )。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">[<span class="meta">Test</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">should_get_data_by_batch</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">            <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    _batchService.Run(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>).ToList();</span><br><span class="line">    argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的 test code 雖然看起來又長又臭的，但其實可以蠻明確地看出 test 3A( Arrange, Action, Assert)。<br>
-Arrange<br>
-一般來說，我們會使用 Returns 來mock 這個被呼叫的函數回傳特定的值，但其實有的隱藏版用法就是可以透過逗號來區分第幾次呼叫要回傳的值，以這次的例子舉例，我們指定了第一次呼叫時要回傳 3個 Id為1~3的student 資料。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">_studentRepository.FetchByBatch(Arg.Any&lt;<span class="built_in">int</span>&gt;()).Returns(</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">        <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    <span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<h2 id="assert">Assert</h2>
-<p>在 Assert這一段，我們用了個人比較不常用到的方式來驗證。我們透過 ReceivedCalls() 取得我們整段測試針對此mock 物件接收到的呼叫請求，並再一步拿到 呼叫函數的資訊把方法名為 “Insert” 提取出來。<br>
-提取出來的物件會是一個List物件，其中每個成員都是每次呼叫方法的請求物件。在這個物件中，我們可以透過 GetArguments 取得該次請求所送出的參數，因此我們就可以來驗證不同呼叫時所帶的參數是否正確。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> argumentList = _studentRepository.ReceivedCalls().Where(x =&gt; x.GetMethodInfo().Name == <span class="string">&quot;Insert&quot;</span>)</span><br><span class="line">.ToList();</span><br><span class="line">argumentList[<span class="number">0</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">1</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">2</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">3</span> &#125;</span><br><span class="line">&#125;);</span><br><span class="line">argumentList[<span class="number">1</span>].GetArguments()[<span class="number">0</span>].Should().BeEquivalentTo(<span class="keyword">new</span> List&lt;Student&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">4</span> &#125;,</span><br><span class="line">    <span class="keyword">new</span>() &#123; id = <span class="number">5</span> &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="conclusion">Conclusion</h2>
-<p>以上為如何驗證多次呼叫的實作，單純個人筆記。</p>
+<h2 id="soa-的核心概念">SOA 的核心概念</h2>
+<p>在 SOA 中，有幾個關鍵概念需要理解：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>服務 (Service)</strong></td>
+<td>這是 SOA 的基本單位，代表一個明確定義的業務功能，可以獨立運行和被重複使用</td>
+</tr>
+<tr>
+<td><strong>服務提供者 (Service Provider)</strong></td>
+<td>負責實現服務並對外提供接口</td>
+</tr>
+<tr>
+<td><strong>服務消費者 (Service Consumer)</strong></td>
+<td>使用服務的客戶端或其他應用程式</td>
+</tr>
+<tr>
+<td><strong>服務註冊表 (Service Registry)</strong></td>
+<td>類似於一個目錄，記錄所有可用的服務資訊，幫助服務消費者發現所需的服務</td>
+</tr>
+<tr>
+<td><strong>服務契約 (Service Contract)</strong></td>
+<td>定義服務的接口、功能和使用方式，是服務提供者和消費者之間的約定</td>
+</tr>
+<tr>
+<td><strong>服務總線 (Enterprise Service Bus, ESB)</strong></td>
+<td>SOA 的核心組件，負責服務之間的通訊、路由和轉換</td>
+</tr>
+</tbody>
+</table>
+<h2 id="soa-的八大設計原則">SOA 的八大設計原則</h2>
+<p>SOA 架構遵循以下八大設計原則，這些原則引導服務的設計、開發和使用：</p>
+<table>
+<thead>
+<tr>
+<th>原則</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>服務契約 (Service Contract)</strong></td>
+<td>服務需要遵循明確定義的契約和標準，確保接口一致性和互操作性</td>
+</tr>
+<tr>
+<td><strong>服務鬆散耦合 (Service Loose Coupling)</strong></td>
+<td>服務之間應盡量減少相依關係，可獨立演化而不影響其他服務</td>
+</tr>
+<tr>
+<td><strong>服務抽象 (Service Abstraction)</strong></td>
+<td>服務應隱藏其實現細節，只曝露功能性接口，增強封裝性</td>
+</tr>
+<tr>
+<td><strong>服務可重用性 (Service Reusability)</strong></td>
+<td>服務應設計為可重複使用的資產，能在不同場景中產生價值</td>
+</tr>
+<tr>
+<td><strong>服務自治 (Service Autonomy)</strong></td>
+<td>服務應具有高度控制自己環境和資源的能力，以確保可預測性和效能</td>
+</tr>
+<tr>
+<td><strong>服務無狀態 (Service Statelessness)</strong></td>
+<td>服務應盡量降低狀態管理的需求，以提高可擴展性和可靠性</td>
+</tr>
+<tr>
+<td><strong>服務可發現性 (Service Discoverability)</strong></td>
+<td>服務應容易被發現和理解，包含充分的資訊</td>
+</tr>
+<tr>
+<td><strong>服務可組合性 (Service Composability)</strong></td>
+<td>服務應能被組合成更大、更複雜的服務</td>
+</tr>
+</tbody>
+</table>
+<h2 id="soa-的主要特性">SOA 的主要特性</h2>
+<h3 id="鬆散耦合-loose-coupling">鬆散耦合 (Loose Coupling)</h3>
+<p>在 SOA 中，服務之間是鬆散耦合的，意味著服務可以獨立演化而不影響其他服務。這就像我們的手機可以更換 SIM 卡而不需要更換整支手機一樣。服務只需知道彼此的接口，而不需要了解內部實現細節。</p>
+<h3 id="可重用性-reusability">可重用性 (Reusability)</h3>
+<p>服務設計為可重複使用的組件，不同的業務流程可以組合這些服務來實現不同的功能。這就像樂高積木，同一個積木可以用於建造不同的模型。</p>
+<h3 id="標準化協議-standardized-protocols">標準化協議 (Standardized Protocols)</h3>
+<p>SOA 通常使用標準的通訊協議，如 SOAP、REST 或 JSON-RPC 等，確保不同系統之間能夠順暢地通訊。</p>
+<h3 id="服務抽象-service-abstraction">服務抽象 (Service Abstraction)</h3>
+<p>服務隱藏了其實現細節，只對外公開必要的接口，就像我們使用電視遙控器時，只需知道按鈕的功能，而不需要了解內部電路是如何工作的。</p>
+<h2 id="soa-的優點">SOA 的優點</h2>
+<ol>
+<li>
+<p><strong>提高靈活性</strong>：由於服務是獨立的，系統可以更容易地適應變化。</p>
+</li>
+<li>
+<p><strong>減少開發時間</strong>：可以重用現有服務，不必重複造輪子。</p>
+</li>
+<li>
+<p><strong>改善系統整合</strong>：標準化的接口使不同系統之間的整合變得更簡單。</p>
+</li>
+<li>
+<p><strong>增強擴展性</strong>：可以根據需要添加或替換服務，而不影響整體系統。</p>
+</li>
+<li>
+<p><strong>降低成本</strong>：透過重用現有服務和減少維護成本來降低總體擁有成本 (TCO)。</p>
+</li>
+</ol>
+<h2 id="soa-的挑戰">SOA 的挑戰</h2>
+<p>當然，SOA 也不是沒有挑戰：</p>
+<ol>
+<li>
+<p><strong>複雜性</strong>：設計良好的 SOA 需要周密規劃和設計，初期投入較大。</p>
+</li>
+<li>
+<p><strong>效能開銷</strong>：服務之間的通訊可能會引入額外的延遲和效能開銷。</p>
+</li>
+<li>
+<p><strong>治理難度</strong>：隨著服務數量的增加，管理和監控變得更加困難。</p>
+</li>
+<li>
+<p><strong>安全考量</strong>：分散式系統帶來額外的安全挑戰，需要更完善的安全策略。</p>
+</li>
+</ol>
+<h2 id="soa-與微服務架構-microservices-的比較">SOA 與微服務架構 (Microservices) 的比較</h2>
+<p>現在很多人會問，SOA 和近年來流行的微服務架構 (Microservices) 有什麼區別？</p>
+<p>兩者確實有許多相似之處，都強調服務的獨立性和鬆散耦合。但主要區別在於：</p>
+<ol>
+<li>
+<p><strong>粒度</strong>：微服務通常比 SOA 中的服務粒度更小，更專注於單一職責。</p>
+</li>
+<li>
+<p><strong>通訊方式</strong>：SOA 常依賴 ESB 進行服務間通訊，而微服務傾向於直接通訊或使用輕量級的消息佇列。</p>
+</li>
+<li>
+<p><strong>部署</strong>：微服務強調獨立部署，每個服務可以有自己的部署週期，而 SOA 可能依賴於較大的部署單元。</p>
+</li>
+</ol>
+<h2 id="soa-實施的最佳實踐">SOA 實施的最佳實踐</h2>
+<ol>
+<li>
+<p><strong>從業務角度設計服務</strong>：服務應該對應業務功能，而不僅僅是技術功能。</p>
+</li>
+<li>
+<p><strong>定義清晰的服務契約</strong>：明確定義服務的接口、輸入、輸出和行為。</p>
+</li>
+<li>
+<p><strong>實施有效的服務治理</strong>：建立服務的生命週期管理、版本控制和監控策略。</p>
+</li>
+<li>
+<p><strong>考慮服務粒度</strong>：太粗的服務難以重用，太細的服務管理成本高，需要找到平衡點。</p>
+</li>
+<li>
+<p><strong>注重安全性</strong>：實施適當的身份驗證、授權和加密機制。</p>
+</li>
+</ol>
+<h2 id="結語">結語</h2>
+<p>SOA 作為一種架構風格，雖然不像幾年前那麼熱門，但其核心理念仍然影響著現代系統設計。無論是傳統的 SOA 還是現代的微服務架構，都體現了將系統分解為可管理、可重用服務的思想。</p>
+<p>在選擇架構時，最重要的是根據業務需求和組織情況做出適合的選擇，沒有一種架構是普遍適用的。理解 SOA 的概念和原則，可以幫助我們做出更明智的架構決策。</p>
 
     </div>
 
@@ -288,7 +425,9 @@ Arrange<br>
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/UnitTest/" rel="tag"># UnitTest</a>
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+              <a href="/tags/SOA/" rel="tag"># SOA</a>
+              <a href="/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/" rel="tag"># 系統架構</a>
           </div>
 
         
@@ -297,13 +436,10 @@ Arrange<br>
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/c35b4088/" rel="prev" title="ithome鐵人賽-2024 Day09 Insert New Block To SQL">
-      <i class="fa fa-chevron-left"></i> ithome鐵人賽-2024 Day09 Insert New Block To SQL
+    <a href="/posts/123d32b6/" rel="prev" title="CSharp dynamic 與 ExpandoObject">
+      <i class="fa fa-chevron-left"></i> CSharp dynamic 與 ExpandoObject
     </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/8cba6edc/" rel="next" title="[重構] 策略模式 Strategy by C#">
-      [重構] 策略模式 Strategy by C# <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -363,7 +499,7 @@ Arrange<br>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%AB%E6%B8%AC%E8%A9%A6%E5%9B%89"><span class="nav-number">1.</span> <span class="nav-text">寫測試囉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#assert"><span class="nav-number">2.</span> <span class="nav-text">Assert</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E6%9C%8D%E5%8B%99%E5%B0%8E%E5%90%91%E6%9E%B6%E6%A7%8B-service-oriented-architecture-soa-%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什麼是服務導向架構 (Service-Oriented Architecture, SOA)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">SOA 的核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E5%85%AB%E5%A4%A7%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="nav-number">3.</span> <span class="nav-text">SOA 的八大設計原則</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">SOA 的主要特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AC%86%E6%95%A3%E8%80%A6%E5%90%88-loose-coupling"><span class="nav-number">4.1.</span> <span class="nav-text">鬆散耦合 (Loose Coupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E7%94%A8%E6%80%A7-reusability"><span class="nav-number">4.2.</span> <span class="nav-text">可重用性 (Reusability)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%99%E6%BA%96%E5%8C%96%E5%8D%94%E8%AD%B0-standardized-protocols"><span class="nav-number">4.3.</span> <span class="nav-text">標準化協議 (Standardized Protocols)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8B%99%E6%8A%BD%E8%B1%A1-service-abstraction"><span class="nav-number">4.4.</span> <span class="nav-text">服務抽象 (Service Abstraction)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E5%84%AA%E9%BB%9E"><span class="nav-number">5.</span> <span class="nav-text">SOA 的優點</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E6%8C%91%E6%88%B0"><span class="nav-number">6.</span> <span class="nav-text">SOA 的挑戰</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E8%88%87%E5%BE%AE%E6%9C%8D%E5%8B%99%E6%9E%B6%E6%A7%8B-microservices-%E7%9A%84%E6%AF%94%E8%BC%83"><span class="nav-number">7.</span> <span class="nav-text">SOA 與微服務架構 (Microservices) 的比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E5%AF%A6%E6%96%BD%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AF%A6%E8%B8%90"><span class="nav-number">8.</span> <span class="nav-text">SOA 實施的最佳實踐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">9.</span> <span class="nav-text">結語</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -503,7 +639,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'codemachine0121.github.io',
       owner       : 'Codemachine0121',
       admin       : ['CodeMachine0121'],
-      id          : '5506e54fd701d98570c35c9b741ca0d4',
+      id          : '96a9c94dca369f9b86ab4f33660158d2',
         language: 'zh-TW',
       distractionFreeMode: true
     });
