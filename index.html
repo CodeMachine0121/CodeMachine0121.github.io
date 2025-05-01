@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">23</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -144,7 +144,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">42</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">43</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -290,6 +290,80 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/88f2aebd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James.Hsueh.Dev">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/88f2aebd/" class="post-title-link" itemprop="url">.Net: 快速生成 http client Kiota</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2025-05-02 01:25:26 / 修改時間：02:08:01" itemprop="dateCreated datePublished" datetime="2025-05-02T01:25:26+08:00">2025-05-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言">前言</h2>
+<p>Hi all, 最近在團隊開發過程中，經常需要為 API 撰寫 client SDK，這是一項重複性高且耗時的工作。如果手動撰寫，不僅效率低下，而且容易出錯。最近，我們團隊(<a target="_blank" rel="noopener" href="https://github.com/zz0108">Jake</a>、Kevin)發現了 Microsoft 開發的 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/openapi/kiota/overview">Kiota</a> 工具，它可以根據 OpenAPI 規範自動生成強類型的 HTTP client SDK，大幅提升了我們的開發效率，覺得蠻好玩的 ，故做個筆記紀錄紀錄。</p>
+<h2 id="kiota-是什麼？">Kiota 是什麼？</h2>
+<p>Kiota (Keee-oh-tah) 是 Microsoft 開發的開源工具，專門用於根據 OpenAPI 描述生成類型安全的 API client。它的名稱來源於希臘語中的「κοιτά」，意為「看」或「觀察」，象徵著它能夠「觀察」API 描述並生成相應的 client code。</p>
+<h2 id="安裝-kiota">安裝 Kiota</h2>
+<p>要使用 Kiota，首先需要安裝 .NET SDK 7.0 或更高版本，然後通過 .NET CLI 安裝 Kiota：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.OpenApi.Kiota</span><br></pre></td></tr></table></figure>
+<p>安裝完成後，可以通過以下命令驗證安裝：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kiota --version</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/88f2aebd/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/968a5679/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -321,7 +395,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2025-04-30 07:33:59" itemprop="dateModified" datetime="2025-04-30T07:33:59+08:00">2025-04-30</time>
+                <time title="修改時間：2025-05-02 01:24:02" itemprop="dateModified" datetime="2025-05-02T01:24:02+08:00">2025-05-02</time>
               </span>
 
           
@@ -939,81 +1013,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/4022bb93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James.Hsueh.Dev">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/4022bb93/" class="post-title-link" itemprop="url">ECS Log Standard</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-              
-
-              <time title="創建時間：2025-01-07 22:31:40 / 修改時間：23:39:22" itemprop="dateCreated datePublished" datetime="2025-01-07T22:31:40+08:00">2025-01-07</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1>ECS Log Standard</h1>
-<p>ECS（Elastic Common Schema）是一個開放的標準，用於統一和簡化不同來源的日誌資料。以下是一些關於ECS log standard的重要資訊：</p>
-<h2 id="為什麼使用ecs？">為什麼使用ECS？</h2>
-<p>ECS 提供了一個統一的結構，使得來自不同來源的日誌資料可以更容易地被解析和分析。這有助於提高日誌資料的可用性和可理解性。</p>
-<h2 id="ecs-的主要特點">ECS 的主要特點</h2>
-<ul>
-<li><strong>一致性</strong>：ECS 定義了一組標準欄位，使得不同來源的日誌資料可以使用相同的欄位名稱。</li>
-<li><strong>擴展性</strong>：ECS 允許使用者根據需要擴展欄位。</li>
-<li><strong>相容性</strong>：ECS 與多種日誌管理工具和函式庫相容。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/4022bb93/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1083,7 +1082,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -1096,7 +1095,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>

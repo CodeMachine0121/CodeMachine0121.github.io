@@ -153,6 +153,87 @@
       </tags>
   </entry>
   <entry>
+    <title>.Net: 快速生成 http client Kiota</title>
+    <url>/posts/88f2aebd/</url>
+    <content><![CDATA[<h2 id="前言">前言</h2>
+<p>Hi all, 最近在團隊開發過程中，經常需要為 API 撰寫 client SDK，這是一項重複性高且耗時的工作。如果手動撰寫，不僅效率低下，而且容易出錯。最近，我們團隊(<a href="https://github.com/zz0108">Jake</a>、Kevin)發現了 Microsoft 開發的 <a href="https://learn.microsoft.com/zh-tw/openapi/kiota/overview">Kiota</a> 工具，它可以根據 OpenAPI 規範自動生成強類型的 HTTP client SDK，大幅提升了我們的開發效率，覺得蠻好玩的 ，故做個筆記紀錄紀錄。</p>
+<h2 id="kiota-是什麼？">Kiota 是什麼？</h2>
+<p>Kiota (Keee-oh-tah) 是 Microsoft 開發的開源工具，專門用於根據 OpenAPI 描述生成類型安全的 API client。它的名稱來源於希臘語中的「κοιτά」，意為「看」或「觀察」，象徵著它能夠「觀察」API 描述並生成相應的 client code。</p>
+<h2 id="安裝-kiota">安裝 Kiota</h2>
+<p>要使用 Kiota，首先需要安裝 .NET SDK 7.0 或更高版本，然後通過 .NET CLI 安裝 Kiota：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dotnet tool install --global Microsoft.OpenApi.Kiota</span><br></pre></td></tr></table></figure>
+<p>安裝完成後，可以通過以下命令驗證安裝：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kiota --version</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="使用-kiota-生成-http-client">使用 Kiota 生成 HTTP Client</h2>
+<h3 id="基本使用流程">基本使用流程</h3>
+<ol>
+<li><strong>準備 OpenAPI 描述文件</strong>：確保你有一個有效的 OpenAPI 描述檔（JSON 或 YAML 格式）</li>
+<li><strong>Generate Client</strong>：使用 Kiota 命令行工具生成 Client Code</li>
+<li><strong>Apply 到專案</strong>：將生成的 Client Code 套用進專案中，並加以 DI</li>
+</ol>
+<h3 id="實際操作範例">實際操作範例</h3>
+<p>假設目前已經有一個 Test API ， 且套用 Swagger，因此我們可以從以下 url 取得 OpenAPI 描述檔</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http://&#123;test-api-url&#125;/swagger/v1/swagger.json</span><br></pre></td></tr></table></figure>
+<p>接著，在這邊提供一個 Kiota 指令的 template 往後可以 base on template 繼續使用</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kiota generate \</span><br><span class="line">    -d http://&#123;test-api-url&#125;/swagger/v1/swagger.json \</span><br><span class="line">    -l csharp \</span><br><span class="line">    -o ./TestAPI.Client \</span><br><span class="line">    -n TestAPI.Client \</span><br><span class="line">    -c TestAPIClient \</span><br><span class="line">    --include-path <span class="string">&quot;/api/v1/test-api/**&quot;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>參數說明
+<ul>
+<li><code>-d</code>：OpenAPI 描述檔的 URL</li>
+<li><code>-l</code>：生成 Client 的語言，例如 C#、Java、TypeScript 等</li>
+<li><code>-o</code>：生成 Client 的目錄</li>
+<li><code>-n</code>：生成 Client 的命名空間</li>
+<li><code>-c</code>：生成 Client 的類別名稱</li>
+<li><code>--include-path</code>：要包含在 Client 中的 API 路由，例如 <code>&quot;/api/v1/test-api/**&quot;</code></li>
+</ul>
+</li>
+</ul>
+<p>這將在 <code>./TestAPI.Client</code> 目錄下生成 C# Client code，並使用 <code>TestAPI.Client</code> 命名空間。</p>
+<h3 id="專案集成">專案集成</h3>
+<p>在引用 Http Client 的專案中，需要添加以下 NuGet 套件：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dotnet add package Microsoft.Kiota.Abstractions</span><br><span class="line">dotnet add package Microsoft.Kiota.Http.HttpClientLibrary</span><br></pre></td></tr></table></figure>
+<h3 id="di-http-client">DI Http Client</h3>
+<p>在這邊主要就是讓 Kiota 生成的 client 能夠與 http client 進行整合，並註冊到 DI 容器中</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">services.AddScoped&lt;TKiotaHttpClient&gt;(sp =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> clientFactory = sp.GetRequiredService&lt;IHttpClientFactory&gt;();</span><br><span class="line">    <span class="keyword">var</span> httpClient = clientFactory.CreateClient(<span class="keyword">nameof</span>(TKiotaHttpClient));</span><br><span class="line">    <span class="keyword">var</span> authProvider = sp.GetRequiredService&lt;IAuthenticationProvider&gt;(); <span class="comment">// 注意使用者需要自行實作</span></span><br><span class="line">    <span class="keyword">var</span> adapter = <span class="keyword">new</span> HttpClientRequestAdapter(authProvider, httpClient: httpClient);</span><br><span class="line">    <span class="keyword">return</span> (TKiotaHttpClient)Activator.CreateInstance(<span class="keyword">typeof</span>(TKiotaHttpClient), adapter)!;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="使用生成的客戶端">使用生成的客戶端</h3>
+<p>下面是一個使用生成的客戶端訪問 Test API 的簡單示例：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestApiClient</span>(<span class="params">TKiotaHttpClient client</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">async</span> Task&lt;<span class="built_in">string</span>&gt; <span class="title">GetDataAsync</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> response = <span class="keyword">await</span> client.Api.V1.Test.GetSomeData.GetAsync();</span><br><span class="line">        <span class="keyword">return</span> response.Body;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用-kiota-的優勢">使用 Kiota 的優勢</h2>
+<p>在我們團隊的實際使用過程中，Kiota 帶來了以下明顯優勢：</p>
+<ol>
+<li><strong>開發效率提升</strong>：不再需要手動寫 client code，可以專注於業務邏輯</li>
+<li><strong>減少錯誤</strong>：自動生成的 code 減少了手動寫 client code 時可能出現的錯誤</li>
+<li><strong>易於維護</strong>：當 API 規範更新時，只需重新生成 client code 即可</li>
+<li><strong>一致性</strong>：生成的 code 遵循一致的模式和命名約定</li>
+</ol>
+<h2 id="注意事項與限制">注意事項與限制</h2>
+<p>雖然 Kiota 非常方便，但在使用過程中我們也發現了一些限制：</p>
+<ol>
+<li><strong>OpenAPI 規範要求</strong>：需要有規範且完整的 OpenAPI 文檔</li>
+<li><strong>生成 code 的大小</strong>：對於大型 API，生成的 code 可能會很大</li>
+<li><strong>學習曲線</strong>：需要一些時間來熟悉 Kiota 的工作流程和生成的 code 結構</li>
+<li><strong>自定義擴展</strong>：某些特殊需求可能需要手動修改生成的 code</li>
+</ol>
+<h2 id="總結">總結</h2>
+<p>Kiota 是一個方便的工具，可以簡化我們手寫 client code 的過程，並兼具類型安全和一致的效果。</p>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/zh-tw/openapi/kiota/">Kiota 官方文檔</a></li>
+<li><a href="https://github.com/microsoft/kiota">Kiota GitHub 倉庫</a></li>
+<li><a href="https://swagger.io/specification/">OpenAPI 規範</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C#</tag>
+        <tag>.NET</tag>
+        <tag>API</tag>
+        <tag>HTTP Client</tag>
+        <tag>Kiota</tag>
+        <tag>SDK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)</title>
     <url>/posts/968a5679/</url>
     <content><![CDATA[<h2 id="什麼是服務導向架構-service-oriented-architecture-soa-？">什麼是服務導向架構 (Service-Oriented Architecture, SOA)？</h2>
