@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">32</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -144,7 +144,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">43</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">44</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -290,6 +290,92 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/98c43c51/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James.Hsueh.Dev">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/98c43c51/" class="post-title-link" itemprop="url">TDD: 倫敦學派 (London TDD)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2025-05-11 01:28:15 / 修改時間：01:57:36" itemprop="dateCreated datePublished" datetime="2025-05-11T01:28:15+08:00">2025-05-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近在讀 Uncle Bob 的書籍：Clean Craftsmanship，其中有解說到倫敦學派 TDD，覺得挺有趣想寫份筆記解說。<br>
+其中不只有倫敦學派的 TDD，還有芝加哥學派的 TDD，往後再特別寫一篇文章紀錄之。</p>
+<h2 id="倫敦學派-tdd-的核心原則">倫敦學派 TDD 的核心原則</h2>
+<p>倫敦學派 TDD（也稱為「模擬派」或「外部-內部開發」）是由倫敦的開發者群體發展而來的 TDD 方法論。其核心原則包括：</p>
+<ol>
+<li>
+<p><strong>外部-內部（Outside-In）開發</strong>：從系統的外部界面開始，逐步向內部實現。首先定義高層次的行為和介面，然後再實做底層細節。</p>
+</li>
+<li>
+<p><strong>關注交互而非狀態</strong>：倫敦學派更關注 component 之間的交互和協作，而不僅僅是單個 component 的狀態變化(如果和我一樣是後端開發者，可以想像成是關注 <strong>層級</strong> 之間的協作，而不是單個 <strong>方法</strong> 的狀態變化)。</p>
+</li>
+<li>
+<p><strong>大量使用 Mock</strong>：為了隔離被測試者，倫敦學派廣泛使用 Mock 物件來取代真實依賴。這使得測試可以專注於特定單元的行為，而不受其依賴項的影響。</p>
+</li>
+<li>
+<p><strong>行為驗證</strong>：通過驗證被測試者與其依賴之間的交互行為來確保系統正確性，而不僅僅是驗證最終結果。</p>
+</li>
+<li>
+<p><strong>設計優先</strong>：倫敦學派強調在實現之前先設計良好的介面和使用方式，測試驅動設計（TDD）同時也是設計的過程。</p>
+</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/98c43c51/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/88f2aebd/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -313,10 +399,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2025-05-02 01:25:26 / 修改時間：02:08:01" itemprop="dateCreated datePublished" datetime="2025-05-02T01:25:26+08:00">2025-05-02</time>
+              <time title="創建時間：2025-05-02 01:25:26" itemprop="dateCreated datePublished" datetime="2025-05-02T01:25:26+08:00">2025-05-02</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2025-05-11 01:26:19" itemprop="dateModified" datetime="2025-05-11T01:26:19+08:00">2025-05-11</time>
+              </span>
 
           
 
@@ -927,92 +1019,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/a249f144/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="James Hsueh">
-      <meta itemprop="description" content="分享紀錄的地方">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="James.Hsueh.Dev">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/a249f144/" class="post-title-link" itemprop="url">怎麼切微服務架構，從吃牛排開始</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2025-01-10 21:26:34" itemprop="dateCreated datePublished" datetime="2025-01-10T21:26:34+08:00">2025-01-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2025-01-20 00:30:54" itemprop="dateModified" datetime="2025-01-20T00:30:54+08:00">2025-01-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分類於</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B/" itemprop="url" rel="index"><span itemprop="name">軟體架構</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>到底怎麼切微服務這是個蠻好發起的問題，以下是我跟我的前同事 <a target="_blank" rel="noopener" href="https://medium.com/@yuijzeon">丁丁</a> 在吃晚餐時隨口聊的，覺得蠻有趣的所以寫寫文章。</p>
-<h2 id="為什麼要切微服務">為什麼要切微服務</h2>
-<ul>
-<li>當一個組織想做一些架構重構的時候，首先要想的並不是服務怎麼切，應該要想為什麼要切。</li>
-</ul>
-<p>對於一個對技術有相對熱忱的工程師來說，我知道遇到問題不去想解法是件很難的事情。但就自己在經歷了前公司的微服務後，加上前前後後看到的一些架構後，回頭反思一下，得到了一個啟發：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/posts/a249f144/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1082,7 +1088,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -1095,7 +1101,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">32</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
