@@ -1,155 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>原子習慣- note</title>
-    <url>/posts/52f9f614/</url>
-    <content><![CDATA[<p>hi all, 小弟最近在讀本書，叫做原子習慣，那這本書主要在講如何透過建立習慣，來達到自己的目標，這篇文章主要會用來記錄這本書的內容，預防針打一下，不一定是每個知識點都會紀錄。</p>
-<p>所有的筆記都會紀錄在這一篇，所以這是一篇連載筆記？</p>
+    <title>決策框架 Cynefin</title>
+    <url>/posts/bef46114/</url>
+    <content><![CDATA[<h1>Cynefin 決策框架</h1>
+<h2 id="簡介">簡介</h2>
+<p>Cynefin（發音為 ku-nev-in）是一個由 Dave Snowden 開發的決策框架，用於幫助理解不同類型的情境，並採取適當的行動。Cynefin 框架將決策環境分為五個領域：清晰（已知）、困難（未知）、複雜（未知的未知）、混亂和失序，且不同的領域皆有一套處理的流程。</p>
+<p>作為決策支援工具，Cynefin 只是幫助我們怎麼做出決策而非替我們做決策。</p>
 <span id="more"></span>
-<h1>原子習慣</h1>
-<p>習慣的四階段模型：提示、渴望、回應、獎賞</p>
-<h2 id="改變習慣">改變習慣</h2>
-<p>舉個例子<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 戒菸： 我不抽煙 vs 我正在戒煙</p>
-<p>想要改變可以分兩種：</p>
+<h2 id="五種決策情境">五種決策情境</h2>
+<h3 id="清晰-clear">清晰 (Clear)</h3>
+<p>在清晰領域中，因果關係是顯而易見的，一個行為對系統的影響非常清楚可預測。這是「已知的已知」的領域。</p>
+<p><strong>決策流程</strong>：</p>
+<ul>
+<li><strong>感知</strong>：收集可用資訊確定相關事實</li>
+<li><strong>分類</strong>：用這些事實找出相關的規則或是最佳實作</li>
+<li><strong>回應</strong>：依照選定的規則或是實作做決策</li>
+</ul>
+<p><strong>適用情境</strong>：標準操作程序、最佳實踐、重複性任務</p>
+<h3 id="困難-complicated">困難 (Complicated)</h3>
+<p>在困難領域中，因果關係存在但不明顯，需要專業知識來分析。這是「已知的未知」的領域。</p>
+<p><strong>決策流程</strong>：</p>
+<ul>
+<li><strong>感知</strong>：收集可用資訊確定相關事實</li>
+<li><strong>分類</strong>：辦識缺少的資訊，諮詢相關專家</li>
+<li><strong>回應</strong>：依照專家意見做決策</li>
+</ul>
+<p><strong>適用情境</strong>：需要專業分析的問題、工程挑戰、醫療診斷</p>
+<h3 id="複雜-complex">複雜 (Complex)</h3>
+<p>在複雜領域中，因果關係只能在事後理解，無法預測。這是「未知的未知」的領域，也意味著可以嘗試各種不同的做法。</p>
+<p><strong>決策流程</strong>：</p>
+<ul>
+<li><strong>試探</strong>：進行安全實驗（常見的實驗為：A/B Testing），觀察不同決策的結果</li>
+<li><strong>感知</strong>：收集可用資訊，確定相關事實，從中辨識規律／模式</li>
+<li><strong>回應</strong>：根據實驗結果做出決策</li>
+</ul>
+<p><strong>適用情境</strong>：市場變化、文化轉型、社會動態</p>
+<h3 id="混亂-chaotic">混亂 (Chaotic)</h3>
+<p>在混亂領域中，因果關係無法確定，系統處於動盪狀態。這是事情完全失控的狀態，誰有方法誰說的算。</p>
+<p><strong>情境舉例</strong>：預測骰子會骰出幾點、預測天災等不可預測事件</p>
+<p><strong>決策流程</strong>：</p>
+<ul>
+<li><strong>採取行動 (act)</strong>：採取任何覺得合理，有機會成功的行動</li>
+<li><strong>感知</strong>：收集該行動的結果的所有資訊</li>
+<li><strong>回應</strong>：如果事情尚未結束，就採取另一個方法，直到結束</li>
+</ul>
+<p><strong>適用情境</strong>：危機管理、緊急應變、災難處理</p>
+<h3 id="失序-disorder">失序 (Disorder)</h3>
+<p>失序代表完全不知道當前在應付哪一個階段，因此在這個階段最好的做法是：釐清當前所在的階段。這是框架的中心區域，表示尚未確定問題屬於哪個領域。</p>
+<h2 id="應用-cynefin-框架">應用 Cynefin 框架</h2>
+<p>使用 Cynefin 框架時，關鍵是正確識別問題所處的領域，然後應用相應的決策方法：</p>
 <ol>
-<li>以身份認同作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我是個不抽煙的人</li>
-<li>以結果作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我要戒菸</li>
+<li><strong>清晰領域</strong>：應用最佳實踐和標準流程</li>
+<li><strong>困難領域</strong>：尋求專家意見和分析</li>
+<li><strong>複雜領域</strong>：進行實驗和探索</li>
+<li><strong>混亂領域</strong>：立即行動，穩定局勢</li>
+<li><strong>失序</strong>：收集更多資訊，確定問題屬於哪個領域</li>
 </ol>
-<blockquote>
-<p>一開始就把重點放在：希望自己變成什麼樣的人 （身份認同）</p>
-</blockquote>
-<h3 id="改變身份認同">改變身份認同</h3>
-<p>其實 身份認同是從習慣演變而來，舉個例子： 你每天固定運動，那你就是個運動的人</p>
-<blockquote>
-<p>每個習慣都像在暗示自己：嘿我好像就是這樣子的人</p>
-</blockquote>
-<p>新的身份認同就需要新的證據，以下兩步驟</p>
-<ol>
-<li>決定想要成為什麼樣的人</li>
-<li>透過生活中的小勝利來向自己證明 （可以嘗試提問自己一個 xxx 會怎麼做，自己找出答案）</li>
-</ol>
-<blockquote>
-<p>焦點永遠放在成為某一種人，而不是達到某件事情</p>
-</blockquote>
-<h1>習慣四大步驟</h1>
-<table>
-<thead>
-<tr>
-<th>步驟</th>
-<th>內容</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>提示</td>
-<td>促使我們去執行的一個提示，會以透漏一點獎賞資訊的方式告訴大腦需要執行某一特定的作業</td>
-</tr>
-<tr>
-<td>渴望</td>
-<td>所有習慣背後的動力( 為什麼要做這件事情 )。 舉個例子，抽菸不是只是為了抽菸，而是抽菸帶來的爽感。</td>
-</tr>
-<tr>
-<td>回應</td>
-<td>確實執行習慣，回應會不會持續發生，取決於自己受到的刺激以及做這件事情的阻力。</td>
-</tr>
-<tr>
-<td>獎賞</td>
-<td>每個習慣他背後的終極目標。舉個例子，運動的獎賞就是身材變好及提高約異性出門的機率</td>
-</tr>
-</tbody>
-</table>
-<p>以上四個步驟缺一不可。</p>
-<h1>讓習慣顯而易見</h1>
-<h2 id="習慣計分卡">習慣計分卡</h2>
-<p>簡單來說，就是把要做的事情寫成步驟會是memo 貼再醒目的地方提醒自己，另外在執行步驟時需要透過嘴巴要事項說出來。</p>
-<h2 id="習慣堆疊">習慣堆疊</h2>
-<p>將要做的事情以幾點幾分在哪做什麼的方式預先條列出來，告訴自己要做哪些事情。</p>
-<blockquote>
-<p>對何時何地執行一向新習慣做出確切計畫的人，比較可能真的去執行。</p>
-</blockquote>
-<p>習慣堆疊強調的是：<strong>先找出目前的每日習慣，在把新習慣堆疊上去。</strong></p>
-<blockquote>
-<p>做完 [目前的習慣] 後，我要做 [ 新習慣 ]</p>
-</blockquote>
-<ul>
-<li>以下舉個例子
-<ul>
-<li>為了習慣靜心：
-<ul>
-<li>每天早上把咖啡倒入杯中後，我會靜心一分鐘。</li>
-</ul>
-</li>
-<li>不同習慣的習慣堆疊
-<ul>
-<li>倒好咖啡後，我會靜心 10分鐘。靜心完畢後，我會寫下今日的待辦事項…</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1>習慣與環境</h1>
-<p>書上講述到，習慣與我們的感覺能力十分有關，且人類最強的感官能力為視覺，所以可能推敲出一個理論:</p>
-<blockquote>
-<p><strong>所見</strong>稍有不同，就可能造成<strong>所為</strong>的巨大變動<br>
-意即<br>
-<strong>創造明顯的視覺提示</strong> 把我們的注意力引至想要的習慣上**</p>
-</blockquote>
-<p>舉個例子：</p>
-<ul>
-<li>想要每天吃一顆蘋果，我們可以嘗試把蘋果放在客廳桌上的透明玻璃碗中，這樣每次經過客廳時，都會看到蘋果，這樣就會提醒自己要吃蘋果。</li>
-<li>想要多喝水，就每天早上起床後把幾個瓶子裝滿水，放在自己經常待的幾個地方。</li>
-</ul>
-<blockquote>
-<p>想要讓習慣成為生活的一大部分，就讓提示成為環境的一大部分。</p>
-</blockquote>
-<h2 id="情境觸發習慣">情境觸發習慣</h2>
-<p>一開始，觸發某個習慣的提示可能是特定的（東西放在明顯地方)，但時間久了之後，習慣可能不只會跟單一提示關聯在一起，而是與圍繞該行為的<strong>情境</strong>連結。</p>
-<blockquote>
-<p>我們會在心理上把習慣指派給發生的場域。</p>
-</blockquote>
-<p>舉個例子：</p>
-<ul>
-<li>我們經常再某一張桌子進行讀書的行為，那我們再使用這張桌子的時候就會開始想讀書。</li>
-<li>如果我們很常在客廳裡打電動，那麼我們在這個地方就會想打電動，不適合讀書了。</li>
-</ul>
-<p>另外書上也有提到：</p>
-<blockquote>
-<p>在新環境中比較容易改變習慣。</p>
-</blockquote>
-<h3 id="情境難題">情境難題</h3>
-<p>其實到這邊的時候，就應該發現一件事，如果客廳for 放鬆，書房for 讀書，那麼那些沒有書房或是客廳的人怎麼辦(意即，一個房間必須扮演多重角色) ?</p>
-<p>書上有提到:</p>
-<blockquote>
-<p>那我們也可以把一個空間分成不同的活動區塊(例如：寫作用的桌子、吃飯用的餐桌等等)，每個區域都有自己的功能，這樣就可以避免情境難題。</p>
-</blockquote>
-<p>章節的最後有一句話：</p>
-<blockquote>
-<p>一個凡是各安其位、各司其職的穩定環境，就是可以輕鬆養成習慣的環境。</p>
-</blockquote>
-<h2 id="讓習慣有吸引力">讓習慣有吸引力</h2>
-<p>書上提到，生物中做什麼事情幾乎都是因為有<strong>多巴胺</strong>的存在，多巴胺是一種神經傳導物質，當我們做了一件事情，大腦就會釋放多巴胺，這樣我們就會覺得很爽，這樣我們就會想要再做一次。其中:</p>
-<blockquote>
-<p>多巴胺的分泌反而是在<strong>預期</strong>的時候最多，而不是在<strong>獲得</strong>的時候。</p>
-</blockquote>
-<p>舉個例子： 我們再等待禮物的時候是最為興奮的時候，而不是拆開禮物的時候。</p>
-<h3 id="誘惑綑綁-普氏原則的應用">誘惑綑綁 -&gt; 普氏原則的應用</h3>
-<p>既然知道，我們會因為多巴胺的關係而想要做一件事情，那麼我們就可以利用這個特性來讓習慣變得有吸引力。</p>
-<p>普氏原則：</p>
-<blockquote>
-<p>較高可能性的行為會強化叫低可能性的行為。<br>
-換句話說，就是我們可以再做一件不太想做的事情的過程中，加入一個想做的事情，自己就會訓練自己去做。</p>
-</blockquote>
-<p>舉個例子：</p>
-<ul>
-<li>我需要讀書，但我想打電動，那我就可以設定一個規則，讀書一小時後，我可以打電動一小時。</li>
-<li>我需要運動，但我想看電視，那我就可以設定一個規則，做10次波比跳後可以看一集劇。</li>
-</ul>
+<h2 id="結論">結論</h2>
+<p>Cynefin 框架提供了一種強大的方法來理解和應對不同類型的問題。通過識別問題所處的領域，決策者可以採用最適合的策略，避免將複雜問題簡單化或將簡單問題複雜化的陷阱。</p>
 ]]></content>
       <categories>
-        <category>閱讀</category>
+        <category>管理</category>
       </categories>
       <tags>
-        <tag>閱讀小記</tag>
+        <tag>決策</tag>
+        <tag>管理</tag>
+        <tag>框架</tag>
+        <tag>Cynefin</tag>
       </tags>
   </entry>
   <entry>
@@ -1400,6 +1318,159 @@ Take 方法是一個自定義的擴展方法，它模仿了 LINQ 中的 Take 方
       </categories>
       <tags>
         <tag>system-design</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>原子習慣- note</title>
+    <url>/posts/52f9f614/</url>
+    <content><![CDATA[<p>hi all, 小弟最近在讀本書，叫做原子習慣，那這本書主要在講如何透過建立習慣，來達到自己的目標，這篇文章主要會用來記錄這本書的內容，預防針打一下，不一定是每個知識點都會紀錄。</p>
+<p>所有的筆記都會紀錄在這一篇，所以這是一篇連載筆記？</p>
+<span id="more"></span>
+<h1>原子習慣</h1>
+<p>習慣的四階段模型：提示、渴望、回應、獎賞</p>
+<h2 id="改變習慣">改變習慣</h2>
+<p>舉個例子<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 戒菸： 我不抽煙 vs 我正在戒煙</p>
+<p>想要改變可以分兩種：</p>
+<ol>
+<li>以身份認同作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我是個不抽煙的人</li>
+<li>以結果作為出發點 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span> 我要戒菸</li>
+</ol>
+<blockquote>
+<p>一開始就把重點放在：希望自己變成什麼樣的人 （身份認同）</p>
+</blockquote>
+<h3 id="改變身份認同">改變身份認同</h3>
+<p>其實 身份認同是從習慣演變而來，舉個例子： 你每天固定運動，那你就是個運動的人</p>
+<blockquote>
+<p>每個習慣都像在暗示自己：嘿我好像就是這樣子的人</p>
+</blockquote>
+<p>新的身份認同就需要新的證據，以下兩步驟</p>
+<ol>
+<li>決定想要成為什麼樣的人</li>
+<li>透過生活中的小勝利來向自己證明 （可以嘗試提問自己一個 xxx 會怎麼做，自己找出答案）</li>
+</ol>
+<blockquote>
+<p>焦點永遠放在成為某一種人，而不是達到某件事情</p>
+</blockquote>
+<h1>習慣四大步驟</h1>
+<table>
+<thead>
+<tr>
+<th>步驟</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提示</td>
+<td>促使我們去執行的一個提示，會以透漏一點獎賞資訊的方式告訴大腦需要執行某一特定的作業</td>
+</tr>
+<tr>
+<td>渴望</td>
+<td>所有習慣背後的動力( 為什麼要做這件事情 )。 舉個例子，抽菸不是只是為了抽菸，而是抽菸帶來的爽感。</td>
+</tr>
+<tr>
+<td>回應</td>
+<td>確實執行習慣，回應會不會持續發生，取決於自己受到的刺激以及做這件事情的阻力。</td>
+</tr>
+<tr>
+<td>獎賞</td>
+<td>每個習慣他背後的終極目標。舉個例子，運動的獎賞就是身材變好及提高約異性出門的機率</td>
+</tr>
+</tbody>
+</table>
+<p>以上四個步驟缺一不可。</p>
+<h1>讓習慣顯而易見</h1>
+<h2 id="習慣計分卡">習慣計分卡</h2>
+<p>簡單來說，就是把要做的事情寫成步驟會是 memo 貼再醒目的地方提醒自己，另外在執行步驟時需要透過嘴巴要事項說出來。</p>
+<h2 id="習慣堆疊">習慣堆疊</h2>
+<p>將要做的事情以幾點幾分在哪做什麼的方式預先條列出來，告訴自己要做哪些事情。</p>
+<blockquote>
+<p>對何時何地執行一向新習慣做出確切計畫的人，比較可能真的去執行。</p>
+</blockquote>
+<p>習慣堆疊強調的是：<strong>先找出目前的每日習慣，在把新習慣堆疊上去。</strong></p>
+<blockquote>
+<p>做完 [目前的習慣] 後，我要做 [ 新習慣 ]</p>
+</blockquote>
+<ul>
+<li>以下舉個例子
+<ul>
+<li>為了習慣靜心：
+<ul>
+<li>每天早上把咖啡倒入杯中後，我會靜心一分鐘。</li>
+</ul>
+</li>
+<li>不同習慣的習慣堆疊
+<ul>
+<li>倒好咖啡後，我會靜心 10 分鐘。靜心完畢後，我會寫下今日的待辦事項…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1>習慣與環境</h1>
+<p>書上講述到，習慣與我們的感覺能力十分有關，且人類最強的感官能力為視覺，所以可能推敲出一個理論:</p>
+<blockquote>
+<p><strong>所見</strong>稍有不同，就可能造成<strong>所為</strong>的巨大變動<br>
+意即<br>
+<strong>創造明顯的視覺提示</strong> 把我們的注意力引至想要的習慣上**</p>
+</blockquote>
+<p>舉個例子：</p>
+<ul>
+<li>想要每天吃一顆蘋果，我們可以嘗試把蘋果放在客廳桌上的透明玻璃碗中，這樣每次經過客廳時，都會看到蘋果，這樣就會提醒自己要吃蘋果。</li>
+<li>想要多喝水，就每天早上起床後把幾個瓶子裝滿水，放在自己經常待的幾個地方。
+<blockquote>
+<p>想要讓習慣成為生活的一大部分，就讓提示成為環境的一大部分。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="情境觸發習慣">情境觸發習慣</h2>
+<p>一開始，觸發某個習慣的提示可能是特定的（東西放在明顯地方)，但時間久了之後，習慣可能不只會跟單一提示關聯在一起，而是與圍繞該行為的<strong>情境</strong>連結。</p>
+<blockquote>
+<p>我們會在心理上把習慣指派給發生的場域。</p>
+</blockquote>
+<p>舉個例子：</p>
+<ul>
+<li>我們經常再某一張桌子進行讀書的行為，那我們再使用這張桌子的時候就會開始想讀書。</li>
+<li>如果我們很常在客廳裡打電動，那麼我們在這個地方就會想打電動，不適合讀書了。</li>
+</ul>
+<p>另外書上也有提到：</p>
+<blockquote>
+<p>在新環境中比較容易改變習慣。</p>
+</blockquote>
+<h3 id="情境難題">情境難題</h3>
+<p>其實到這邊的時候，就應該發現一件事，如果客廳 for 放鬆，書房 for 讀書，那麼那些沒有書房或是客廳的人怎麼辦(意即，一個房間必須扮演多重角色) ?</p>
+<p>書上有提到:</p>
+<blockquote>
+<p>那我們也可以把一個空間分成不同的活動區塊(例如：寫作用的桌子、吃飯用的餐桌等等)，每個區域都有自己的功能，這樣就可以避免情境難題。</p>
+</blockquote>
+<p>章節的最後有一句話：</p>
+<blockquote>
+<p>一個凡是各安其位、各司其職的穩定環境，就是可以輕鬆養成習慣的環境。</p>
+</blockquote>
+<h2 id="讓習慣有吸引力">讓習慣有吸引力</h2>
+<p>書上提到，生物中做什麼事情幾乎都是因為有<strong>多巴胺</strong>的存在，多巴胺是一種神經傳導物質，當我們做了一件事情，大腦就會釋放多巴胺，這樣我們就會覺得很爽，這樣我們就會想要再做一次。其中:</p>
+<blockquote>
+<p>多巴胺的分泌反而是在<strong>預期</strong>的時候最多，而不是在<strong>獲得</strong>的時候。</p>
+</blockquote>
+<p>舉個例子： 我們再等待禮物的時候是最為興奮的時候，而不是拆開禮物的時候。</p>
+<h3 id="誘惑綑綁-普氏原則的應用">誘惑綑綁 -&gt; 普氏原則的應用</h3>
+<p>既然知道，我們會因為多巴胺的關係而想要做一件事情，那麼我們就可以利用這個特性來讓習慣變得有吸引力。</p>
+<p>普氏原則：</p>
+<blockquote>
+<p>較高可能性的行為會強化叫低可能性的行為。<br>
+換句話說，就是我們可以再做一件不太想做的事情的過程中，加入一個想做的事情，自己就會訓練自己去做。</p>
+</blockquote>
+<p>舉個例子：</p>
+<ul>
+<li>我需要讀書，但我想打電動，那我就可以設定一個規則，讀書一小時後，我可以打電動一小時。</li>
+<li>我需要運動，但我想看電視，那我就可以設定一個規則，做 10 次波比跳後可以看一集劇。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>閱讀</category>
+      </categories>
+      <tags>
+        <tag>閱讀小記</tag>
       </tags>
   </entry>
   <entry>
