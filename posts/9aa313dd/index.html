@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+<meta name="google-site-verification" content="8oYideSWQCvbdBG-VEICQWGm2VtW77kAtqw7XP2Wl88" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|JetBrains Mono:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ithome鐵人賽-2024-Day10 Introduce Chameleon Hash">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/9aa313dd/index.html">
+<meta property="og:site_name" content="James.Hsueh.Dev">
+<meta property="og:description" content="Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2024-08-12T15:04:54.000Z">
+<meta property="article:modified_time" content="2025-06-29T05:33:01.746Z">
+<meta property="article:author" content="James Hsueh">
+<meta property="article:tag" content="ithome 鐵人賽-2024">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://codemachine0121.github.io/posts/9aa313dd/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>ithome鐵人賽-2024-Day10 Introduce Chameleon Hash | James.Hsueh.Dev</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="James.Hsueh.Dev" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism.css" type="text/css"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">James.Hsueh.Dev</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">地域列車車長</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+
+
+  </ul>
+</nav>
+
+<div class="coffee" style="display:flex;justify-content:center;padding:10px;">
+  <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="James.Hsueh" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+</div>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜尋..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/9aa313dd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James.Hsueh.Dev">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ithome鐵人賽-2024-Day10 Introduce Chameleon Hash
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2024-08-12 23:04:54" itemprop="dateCreated datePublished" datetime="2024-08-12T23:04:54+08:00">2024-08-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2025-06-29 13:33:01" itemprop="dateModified" datetime="2025-06-29T13:33:01+08:00">2025-06-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分類於</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/" itemprop="url" rel="index"><span itemprop="name">ithome 鐵人賽-2024</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Hi all 今天第十天，我們來稍微介紹下 變色龍雜湊函數 ( Chameleon Hash) 為何物吧!</p>
+<span id="more"></span>
+<h2 id="how-chat-gpt-introduce">How Chat GPT Introduce</h2>
+<blockquote>
+<p>Chameleon Hash 是一種密鑰控制的可碰撞雜湊函數（keyed collision-resistant hash function）。這意味著給定一個密鑰，使用者可以控制雜湊值的碰撞，即可以找到不同的輸入消息，讓它們產生相同的雜湊值。</p>
+</blockquote>
+<h2 id="自己的總結">自己的總結</h2>
+<p>想想看以往常見的雜湊函數: md5、sha1、sha256… 等等的特性都是秉持著不同輸入皆會得到不同的輸出，即不可碰撞性。而變色龍雜湊函數卻是反其道而行，在特定的情況下 ( 擁有相同的 key ) 可以使演算法遵循不同的輸入得到相同輸入的特性。</p>
+<h2 id="how">How</h2>
+<p>以下為小弟在碩士時提出之演算法公式 ，簽章計算如下:</p>
+<p><code>sign = (sessionKey - dn) mod n</code><br>
+<code>dn = H(m) * kn</code></p>
+<p>Chameleon Hash 計算方式如下:</p>
+<p><code>chameleonHash = [Kn x H(m)] + [P x sign]</code></p>
+<p>最後我們只需要將收到的 requests 資訊透過上述公式，即可得出一個 Chameleon Hash，在跟自己的 Chameleon Hash比對是否一致即可。</p>
+<p>變數對應如下</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(Kn, kn)</td>
+<td>對稱式金鑰對</td>
+</tr>
+<tr>
+<td>H(m)</td>
+<td>訊息的雜湊值</td>
+</tr>
+<tr>
+<td>P</td>
+<td>橢圓曲線之基點</td>
+</tr>
+<tr>
+<td>SessionKey</td>
+<td>一次性的金鑰</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>以上就是這次專案會使用到的雜湊演算法，上述只是很簡單的介紹簽章公式，更細節的可以翻找下論文，這邊附上任意門: <a target="_blank" rel="noopener" href="https://ndltd.ncl.edu.tw/cgi-bin/gs32/gsweb.cgi/login?o=dnclcdr&amp;s=id=%22110YUNT0392023%22.&amp;searchmode=basic">論文網址</a></p>
+<p>接著我們就可以來想想怎麼透過 code 將其實作囉，那一樣是明天的事情了~~~</p>
+<p>結語:  夢迴研究生嗚嗚</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ithome-%E9%90%B5%E4%BA%BA%E8%B3%BD-2024/" rel="tag"># ithome 鐵人賽-2024</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/f0cbbe44/" rel="prev" title="[重構] 工廠裏頭的策略 Startegy in Factory by C#">
+      <i class="fa fa-chevron-left"></i> [重構] 工廠裏頭的策略 Startegy in Factory by C#
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/5edf55db/" rel="next" title="ithome鐵人賽-2024-Day11-Use SDK for Chameleon Hash">
+      ithome鐵人賽-2024-Day11-Use SDK for Chameleon Hash <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#how-chat-gpt-introduce"><span class="nav-number">1.</span> <span class="nav-text">How Chat GPT Introduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E7%9A%84%E7%B8%BD%E7%B5%90"><span class="nav-number">2.</span> <span class="nav-text">自己的總結</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how"><span class="nav-number">3.</span> <span class="nav-text">How</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">James Hsueh</p>
+  <div class="site-description" itemprop="description">分享紀錄的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/codeMachine0121" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;codeMachine0121" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:asdfg55887@gmail.com" title="E-Mail → mailto:asdfg55887@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/ksz54213" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;ksz54213" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2024 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">James Hsueh</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'Ov23liZSugP3smWSPwy6',
+      clientSecret: '3f6dbd0bfa0e03240d41aca18b4226f8a9713f51',
+      repo        : 'codemachine0121.github.io',
+      owner       : 'Codemachine0121',
+      admin       : ['CodeMachine0121'],
+      id          : '3418281da6d0332eacfb448569ea9b9a',
+        language: 'zh-TW',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

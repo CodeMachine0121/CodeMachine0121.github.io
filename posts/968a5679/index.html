@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+<meta name="google-site-verification" content="8oYideSWQCvbdBG-VEICQWGm2VtW77kAtqw7XP2Wl88" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|JetBrains Mono:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"codemachine0121.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"buttons","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="什麼是服務導向架構 (Service-Oriented Architecture, SOA)？ Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。 簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)">
+<meta property="og:url" content="https://codemachine0121.github.io/posts/968a5679/index.html">
+<meta property="og:site_name" content="James.Hsueh.Dev">
+<meta property="og:description" content="什麼是服務導向架構 (Service-Oriented Architecture, SOA)？ Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。 簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2025-04-27T14:20:35.000Z">
+<meta property="article:modified_time" content="2025-06-29T05:33:01.745Z">
+<meta property="article:author" content="James Hsueh">
+<meta property="article:tag" content="Architecture">
+<meta property="article:tag" content="SOA">
+<meta property="article:tag" content="系統架構">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://codemachine0121.github.io/posts/968a5679/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA) | James.Hsueh.Dev</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="James.Hsueh.Dev" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism.css" type="text/css"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">James.Hsueh.Dev</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">地域列車車長</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>關於</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">45</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a>
+
+  </li>
+
+
+  </ul>
+</nav>
+
+<div class="coffee" style="display:flex;justify-content:center;padding:10px;">
+  <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="James.Hsueh" data-color="#FFDD00" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+</div>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜尋..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://codemachine0121.github.io/posts/968a5679/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="James Hsueh">
+      <meta itemprop="description" content="分享紀錄的地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="James.Hsueh.Dev">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Architecture：  淺談服務導向架構 ( Service-Oriented Architecture, SOA)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+
+              <time title="創建時間：2025-04-27 22:20:35" itemprop="dateCreated datePublished" datetime="2025-04-27T22:20:35+08:00">2025-04-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2025-06-29 13:33:01" itemprop="dateModified" datetime="2025-06-29T13:33:01+08:00">2025-06-29</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="什麼是服務導向架構-service-oriented-architecture-soa-？">什麼是服務導向架構 (Service-Oriented Architecture, SOA)？</h2>
+<p>Hi all, 今天想聊聊在系統架構中的一個概念——服務導向架構 (Service-Oriented Architecture, SOA)。</p>
+<p>簡單來說，SOA 是一種設計方法，它將應用程式功能以服務 (Service) 的形式提供出來，讓這些服務可以被其他應用程式使用。想像一下，如果把一個大型應用程式拆分成多個獨立的小積木，每個積木都能獨立運作，還能和其他積木組合在一起完成更複雜的功能，這就是 SOA 的核心思想。</p>
+<span id="more"></span>
+<h2 id="soa-的核心概念">SOA 的核心概念</h2>
+<p>在 SOA 中，有幾個關鍵概念需要理解：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>服務 (Service)</strong></td>
+<td>這是 SOA 的基本單位，代表一個明確定義的業務功能，可以獨立運行和被重複使用</td>
+</tr>
+<tr>
+<td><strong>服務提供者 (Service Provider)</strong></td>
+<td>負責實現服務並對外提供接口</td>
+</tr>
+<tr>
+<td><strong>服務消費者 (Service Consumer)</strong></td>
+<td>使用服務的客戶端或其他應用程式</td>
+</tr>
+<tr>
+<td><strong>服務註冊表 (Service Registry)</strong></td>
+<td>類似於一個目錄，記錄所有可用的服務資訊，幫助服務消費者發現所需的服務</td>
+</tr>
+<tr>
+<td><strong>服務契約 (Service Contract)</strong></td>
+<td>定義服務的接口、功能和使用方式，是服務提供者和消費者之間的約定</td>
+</tr>
+<tr>
+<td><strong>服務總線 (Enterprise Service Bus, ESB)</strong></td>
+<td>SOA 的核心組件，負責服務之間的通訊、路由和轉換</td>
+</tr>
+</tbody>
+</table>
+<h2 id="soa-的八大設計原則">SOA 的八大設計原則</h2>
+<p>SOA 架構遵循以下八大設計原則，這些原則引導服務的設計、開發和使用：</p>
+<table>
+<thead>
+<tr>
+<th>原則</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>服務契約 (Service Contract)</strong></td>
+<td>服務需要遵循明確定義的契約和標準，確保接口一致性和互操作性</td>
+</tr>
+<tr>
+<td><strong>服務鬆散耦合 (Service Loose Coupling)</strong></td>
+<td>服務之間應盡量減少相依關係，可獨立演化而不影響其他服務</td>
+</tr>
+<tr>
+<td><strong>服務抽象 (Service Abstraction)</strong></td>
+<td>服務應隱藏其實現細節，只曝露功能性接口，增強封裝性</td>
+</tr>
+<tr>
+<td><strong>服務可重用性 (Service Reusability)</strong></td>
+<td>服務應設計為可重複使用的資產，能在不同場景中產生價值</td>
+</tr>
+<tr>
+<td><strong>服務自治 (Service Autonomy)</strong></td>
+<td>服務應具有高度控制自己環境和資源的能力，以確保可預測性和效能</td>
+</tr>
+<tr>
+<td><strong>服務無狀態 (Service Statelessness)</strong></td>
+<td>服務應盡量降低狀態管理的需求，以提高可擴展性和可靠性</td>
+</tr>
+<tr>
+<td><strong>服務可發現性 (Service Discoverability)</strong></td>
+<td>服務應容易被發現和理解，包含充分的資訊</td>
+</tr>
+<tr>
+<td><strong>服務可組合性 (Service Composability)</strong></td>
+<td>服務應能被組合成更大、更複雜的服務</td>
+</tr>
+</tbody>
+</table>
+<h2 id="soa-的主要特性">SOA 的主要特性</h2>
+<h3 id="鬆散耦合-loose-coupling">鬆散耦合 (Loose Coupling)</h3>
+<p>在 SOA 中，服務之間是鬆散耦合的，意味著服務可以獨立演化而不影響其他服務。這就像我們的手機可以更換 SIM 卡而不需要更換整支手機一樣。服務只需知道彼此的接口，而不需要了解內部實現細節。</p>
+<h3 id="可重用性-reusability">可重用性 (Reusability)</h3>
+<p>服務設計為可重複使用的組件，不同的業務流程可以組合這些服務來實現不同的功能。這就像樂高積木，同一個積木可以用於建造不同的模型。</p>
+<h3 id="標準化協議-standardized-protocols">標準化協議 (Standardized Protocols)</h3>
+<p>SOA 通常使用標準的通訊協議，如 SOAP、REST 或 JSON-RPC 等，確保不同系統之間能夠順暢地通訊。</p>
+<h3 id="服務抽象-service-abstraction">服務抽象 (Service Abstraction)</h3>
+<p>服務隱藏了其實現細節，只對外公開必要的接口，就像我們使用電視遙控器時，只需知道按鈕的功能，而不需要了解內部電路是如何工作的。</p>
+<h2 id="soa-的優點">SOA 的優點</h2>
+<ol>
+<li>
+<p><strong>提高靈活性</strong>：由於服務是獨立的，系統可以更容易地適應變化。</p>
+</li>
+<li>
+<p><strong>減少開發時間</strong>：可以重用現有服務，不必重複造輪子。</p>
+</li>
+<li>
+<p><strong>改善系統整合</strong>：標準化的接口使不同系統之間的整合變得更簡單。</p>
+</li>
+<li>
+<p><strong>增強擴展性</strong>：可以根據需要添加或替換服務，而不影響整體系統。</p>
+</li>
+<li>
+<p><strong>降低成本</strong>：透過重用現有服務和減少維護成本來降低總體擁有成本 (TCO)。</p>
+</li>
+</ol>
+<h2 id="soa-的挑戰">SOA 的挑戰</h2>
+<p>當然，SOA 也不是沒有挑戰：</p>
+<ol>
+<li>
+<p><strong>複雜性</strong>：設計良好的 SOA 需要周密規劃和設計，初期投入較大。</p>
+</li>
+<li>
+<p><strong>效能開銷</strong>：服務之間的通訊可能會引入額外的延遲和效能開銷。</p>
+</li>
+<li>
+<p><strong>治理難度</strong>：隨著服務數量的增加，管理和監控變得更加困難。</p>
+</li>
+<li>
+<p><strong>安全考量</strong>：分散式系統帶來額外的安全挑戰，需要更完善的安全策略。</p>
+</li>
+</ol>
+<h2 id="soa-與微服務架構-microservices-的比較">SOA 與微服務架構 (Microservices) 的比較</h2>
+<p>現在很多人會問，SOA 和近年來流行的微服務架構 (Microservices) 有什麼區別？</p>
+<p>兩者確實有許多相似之處，都強調服務的獨立性和鬆散耦合。但主要區別在於：</p>
+<ol>
+<li>
+<p><strong>粒度</strong>：微服務通常比 SOA 中的服務粒度更小，更專注於單一職責。</p>
+</li>
+<li>
+<p><strong>通訊方式</strong>：SOA 常依賴 ESB 進行服務間通訊，而微服務傾向於直接通訊或使用輕量級的消息佇列。</p>
+</li>
+<li>
+<p><strong>部署</strong>：微服務強調獨立部署，每個服務可以有自己的部署週期，而 SOA 可能依賴於較大的部署單元。</p>
+</li>
+</ol>
+<h2 id="soa-實施的最佳實踐">SOA 實施的最佳實踐</h2>
+<ol>
+<li>
+<p><strong>從業務角度設計服務</strong>：服務應該對應業務功能，而不僅僅是技術功能。</p>
+</li>
+<li>
+<p><strong>定義清晰的服務契約</strong>：明確定義服務的接口、輸入、輸出和行為。</p>
+</li>
+<li>
+<p><strong>實施有效的服務治理</strong>：建立服務的生命週期管理、版本控制和監控策略。</p>
+</li>
+<li>
+<p><strong>考慮服務粒度</strong>：太粗的服務難以重用，太細的服務管理成本高，需要找到平衡點。</p>
+</li>
+<li>
+<p><strong>注重安全性</strong>：實施適當的身份驗證、授權和加密機制。</p>
+</li>
+</ol>
+<h2 id="結語">結語</h2>
+<p>SOA 作為一種架構風格，雖然不像幾年前那麼熱門，但其核心理念仍然影響著現代系統設計。無論是傳統的 SOA 還是現代的微服務架構，都體現了將系統分解為可管理、可重用服務的思想。</p>
+<p>在選擇架構時，最重要的是根據業務需求和組織情況做出適合的選擇，沒有一種架構是普遍適用的。理解 SOA 的概念和原則，可以幫助我們做出更明智的架構決策。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+              <a href="/tags/SOA/" rel="tag"># SOA</a>
+              <a href="/tags/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B/" rel="tag"># 系統架構</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/123d32b6/" rel="prev" title="CSharp dynamic 與 ExpandoObject">
+      <i class="fa fa-chevron-left"></i> CSharp dynamic 與 ExpandoObject
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/88f2aebd/" rel="next" title=".Net: 快速生成 http client Kiota">
+      .Net: 快速生成 http client Kiota <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E6%9C%8D%E5%8B%99%E5%B0%8E%E5%90%91%E6%9E%B6%E6%A7%8B-service-oriented-architecture-soa-%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什麼是服務導向架構 (Service-Oriented Architecture, SOA)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">SOA 的核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E5%85%AB%E5%A4%A7%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="nav-number">3.</span> <span class="nav-text">SOA 的八大設計原則</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">SOA 的主要特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AC%86%E6%95%A3%E8%80%A6%E5%90%88-loose-coupling"><span class="nav-number">4.1.</span> <span class="nav-text">鬆散耦合 (Loose Coupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E7%94%A8%E6%80%A7-reusability"><span class="nav-number">4.2.</span> <span class="nav-text">可重用性 (Reusability)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%99%E6%BA%96%E5%8C%96%E5%8D%94%E8%AD%B0-standardized-protocols"><span class="nav-number">4.3.</span> <span class="nav-text">標準化協議 (Standardized Protocols)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8B%99%E6%8A%BD%E8%B1%A1-service-abstraction"><span class="nav-number">4.4.</span> <span class="nav-text">服務抽象 (Service Abstraction)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E5%84%AA%E9%BB%9E"><span class="nav-number">5.</span> <span class="nav-text">SOA 的優點</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E7%9A%84%E6%8C%91%E6%88%B0"><span class="nav-number">6.</span> <span class="nav-text">SOA 的挑戰</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E8%88%87%E5%BE%AE%E6%9C%8D%E5%8B%99%E6%9E%B6%E6%A7%8B-microservices-%E7%9A%84%E6%AF%94%E8%BC%83"><span class="nav-number">7.</span> <span class="nav-text">SOA 與微服務架構 (Microservices) 的比較</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#soa-%E5%AF%A6%E6%96%BD%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AF%A6%E8%B8%90"><span class="nav-number">8.</span> <span class="nav-text">SOA 實施的最佳實踐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">9.</span> <span class="nav-text">結語</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">James Hsueh</p>
+  <div class="site-description" itemprop="description">分享紀錄的地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/codeMachine0121" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;codeMachine0121" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:asdfg55887@gmail.com" title="E-Mail → mailto:asdfg55887@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/ksz54213" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;ksz54213" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2024 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">James Hsueh</span>
+</div>
+
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'Ov23liZSugP3smWSPwy6',
+      clientSecret: '3f6dbd0bfa0e03240d41aca18b4226f8a9713f51',
+      repo        : 'codemachine0121.github.io',
+      owner       : 'Codemachine0121',
+      admin       : ['CodeMachine0121'],
+      id          : '96a9c94dca369f9b86ab4f33660158d2',
+        language: 'zh-TW',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
