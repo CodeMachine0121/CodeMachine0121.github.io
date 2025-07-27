@@ -28,7 +28,7 @@ const { id, title, achievements } = Astro.props;
       <!-- 成就列表 -->
       <div class="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
         <ul class="space-y-3">
-          {achievements && achievements.map((achievement: string, index: number) => (
+          {achievements && achievements.map((achievement: string) => (
             <li class="flex items-start gap-3 p-3 rounded-lg hover:bg-background-offset transition-colors duration-200">
                {achievement}
             </li>
