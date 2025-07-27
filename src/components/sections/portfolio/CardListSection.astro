@@ -6,6 +6,7 @@ interface Item {
   sub_title: string;
   years: string;
   details?: string;
+  achievements?: string[];
 }
 
 const { title, items } = Astro.props;
@@ -24,6 +25,7 @@ const { title, items } = Astro.props;
           sub_title={item.sub_title}
           years={item.years}
           details={item?.details}
+          achievements={item.achievements}
         />
       ))}
     </ul>

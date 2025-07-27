@@ -10,13 +10,34 @@
 	  "title": "Backend Software Engineer",
 	  "sub_title": "Doutify Tech",
 	  "years": "2024 - Present",
-	  "details": "Deveploped and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability."
+	  "details": "Deveploped and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability.",
+	  "achievements": [
+		"Re-Construct Credit Loan（信⽤貸款）System",
+		"Re-Construct Strategy Module",
+		"Implement Login System with SSO/OAuth",
+		"Setup Azure Devops CI/CD",
+		"Setup OCP Deployment",
+		"Setup Test Environment for Projects （Esso, UserInfo, OracleDb, Redis)"
+	  ]
 	},
 	{
 	  "title": "Full Stack Software Engineer",
 	  "sub_title": "TitainSoft",
 	  "years": "2022 - 2024",
-	  "details": "Developed payment processing systems and integrated third-party APIs. Led a team of developers to enhance system performance and reliability."
+	  "details": "Developed payment processing systems and integrated third-party APIs. Led a team of developers to enhance system performance and reliability.",
+	  "achievements": [
+		"Import hexagonal architecture knowledge for members",
+		"Acting as the outlink in the Team",
+		"Act as Frontend TM for Intern Team",
+		"Act as Scrum Master for Intern Team",
+		"Host refactor workshop for Intern Team",
+		"Pass CKAD (Certified Kubernetes Application Developer)",
+		"Host DevOps workshop, teaching about Docker and K8s",
+		"As a speaker at GDG for twice",
+		"Representing Titansoft at the GDG dinner",
+		"Construct ELK for K8s projects",
+		"Refactoring legacy code and fix the 2-year-old bugs"
+	  ]
 	}
   ],
   "education": [

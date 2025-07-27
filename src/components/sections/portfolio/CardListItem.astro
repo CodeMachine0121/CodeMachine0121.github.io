@@ -1,8 +1,10 @@
 ---
-const { title, sub_title, years, details } = Astro.props;
+import AchievementsModal from './AchievementsModal.astro';
+
+const { title, sub_title, years, details, achievements } = Astro.props;
 ---
 
-<li class="p-5 bg-background-offset shadow-lg rounded-xl border border-default">
+<li class="p-5 bg-background-offset shadow-lg rounded-xl border border-default group cursor-pointer" data-modal-target={`modal-${title}`}>
   <div class="flex flex-col sm:flex-row justify-between items-start">
     <div class="mb-4 sm:mb-0">
       <h3 class="text-2xl font-semibold">{title}</h3>
@@ -12,3 +14,21 @@ const { title, sub_title, years, details } = Astro.props;
   </div>
   <p class="mt-4 text-offset leading-relaxed">{details}</p>
 </li>
+
+{achievements && achievements.length > 0 &&
+  <AchievementsModal id={`modal-${title}`} title={title} achievements={achievements} />
+}
+
+<script>
+  document.querySelectorAll('[data-modal-target]').forEach(item => {
+    item.addEventListener('click', () => {
+      const target = item.getAttribute('data-modal-target');
+      if (target) {
+        const modal = document.getElementById(target);
+        if (modal) {
+          modal.classList.remove('hidden');
+        }
+      }
+    });
+  });
+</script>
