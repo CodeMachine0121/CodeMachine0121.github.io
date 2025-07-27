@@ -16,7 +16,7 @@ const { title, sub_title, years, details, achievements } = Astro.props;
 </li>
 
 {achievements && achievements.length > 0 &&
-  <AchievementsModal id={`modal-${title}`} title={title} achievements={achievements} />
+  <AchievementsModal id={`modal-${title}`} title={sub_title} achievements={achievements} />
 }
 
 <script>
