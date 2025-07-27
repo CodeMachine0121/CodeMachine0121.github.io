@@ -1,0 +1,147 @@
+{
+  "basic": {
+	"name": "James Hsueh",
+	"job": "Software Engineer",
+	"summary": "Deeper in the code, further in the world. Passionate about building scalable software solutions and enhancing user experiences.",
+	"cv_file_name": "james_cv.pdf"
+  },
+  "experiences": [
+	{
+	  "title": "Backend Software Engineer",
+	  "sub_title": "Doutify Tech",
+	  "years": "2024 - Present",
+	  "details": "Deveploped and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability."
+	},
+	{
+	  "title": "Full Stack Software Engineer",
+	  "sub_title": "TitainSoft",
+	  "years": "2022 - 2024",
+	  "details": "Developed payment processing systems and integrated third-party APIs. Led a team of developers to enhance system performance and reliability."
+	}
+  ],
+  "education": [
+	{
+	  "title": "Bachelor of Science in Computer Science",
+	  "sub_title": "National Yunlin University of Science and Technology, YunTech",
+	  "years": "2020 - 2022",
+	  "details": "Graduated with honors. Researched on Blockchain technology and Network Security. Developed a thesis on secure payment transmission protocol."
+	},
+	{
+	  "title": "Master of Information and Telecommunication Engineering",
+	  "sub_title": "Ming Chaun University, MCU",
+	  "years": "2016 - 2020",
+	  "details": "Study on Blockchain and Network Security Research Area"
+	}
+  ],
+  "projects": [
+    {
+      "imageUrl": "",
+      "title": "Sharing Tech Knowledge on Blog",
+      "type": "Blog",
+      "link": ""
+    },
+
+    {
+      "imageUrl": "",
+      "title": "Using Arch Linux as main OS",
+      "type": "Operating System",
+      "link": ""
+    },
+    {
+      "imageUrl": "",
+      "title": "Sharing AI things with team members Code Agent Prompt Skills",
+      "type": "Knowledge Sharing",
+      "link": ""
+    },
+    {
+      "imageUrl": "",
+      "title": "Sharing Domain Design Driven",
+      "type": "Knowledge Sharing",
+      "link": ""
+    },
+	{
+	  "imageUrl": "https://images.unsplash.com/photo-1634979149798-e9a118734e93?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+	  "title": "Password Manager with Vault",
+	  "type": "Application",
+	  "link": "https://github.com/CodeMachine0121/PasswordManager"
+	},
+	{
+	  "imageUrl": "",
+	  "title": "Side-Project: 為自己打造個可編輯的區塊鏈",
+	  "type": "Blog Post",
+	  "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
+	},
+	{
+	  "imageUrl": "",
+	  "title": "Open Source SDK for nuget: EccSDK",
+	  "type": "SDK",
+	  "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
+	},
+	{
+	  "imageUrl": "",
+	  "title": "Host Refactor WorkShop for Intern Team in TitanSoft",
+	  "type": "Workshop",
+	  "link": ""
+	},
+	{
+	  "imageUrl": "",
+	  "title": "Department Sharing: Clean Architecture",
+	  "type": "Knowledge Sharing",
+	  "link": ""
+	},
+	{
+	  "imageUrl": "https://images.credly.com/size/340x340/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob",
+	  "title": "Pass CKAD License",
+	  "type": "Certification",
+	  "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
+	},
+	{
+	  "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*UA3a1oJsu7Yut0ToKMVduA.png",
+	  "title": "Monitoring Discord latency with Golang Bot",
+	  "type": "GDG Kaohsiung Speaker",
+	  "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/"
+	},
+	{
+	  "imageUrl": "https://github.com/Narmis-E/onedark-wallpapers/blob/main/programs/od_vim.png?raw=true",
+	  "title": "Tun Vim to be IDE",
+	  "type": "GDG Kaohsiung Speaker",
+	  "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/"
+	},
+	{
+	  "imageUrl": "",
+	  "title": "Host DevOps WorkShop in TitanSoft",
+	  "type": "Workshop",
+	  "link": ""
+	},
+	{
+	  "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*uUpJRdN6ztiUC6SBafjgJQ.jpeg",
+	  "title": "30 Design Patterns with Golang in 30 Days",
+	  "type": "Blog Post",
+	  "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
+	}
+  ],
+  "menuItems": [
+	{
+	  "name": "About",
+	  "link": "/"
+	},
+	{
+	  "name": "Blog",
+	  "link": "/blogs"
+	}
+  ],
+  "socialLinks": [
+	{
+	  "iconName": "Github",
+	  "link": "https://github.com/CodeMachine0121"
+	},
+	{
+	  "iconName": "Email",
+	  "link": "mailto:james.afternoon.dev@gmail.com"
+	},
+	{
+	  "iconName": "Instagram",
+	  "link": "https://www.instagram.com/coding.afternoon"
+	}
+  ]
+}
