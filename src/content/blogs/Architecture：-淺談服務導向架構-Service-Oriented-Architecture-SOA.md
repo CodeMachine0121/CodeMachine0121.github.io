@@ -1,10 +1,5 @@
 ---
 title: "Architecture： 淺談服務導向架構 ( Service-Oriented Architecture, SOA)"
-tags:
-  - Architecture
-  - SOA
-  - 系統架構
-abbrlink: 968a5679
 datetime: "2025-04-27"
 description: "服務導向架構 (SOA) 是一種設計方法，將應用程式功能以服務的形式提供，讓這些服務可以被其他應用程式使用。本文介紹 SOA 的核心概念、設計原則、特性、優點和挑戰，以及與微服務架構的比較。"
 image: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
