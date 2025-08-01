@@ -162,4 +162,4 @@ public class TraceRepository
 
 2. Check tracing in dashboard
 
-![image.png](/images/tracing-with-span.png)
+![image.png](/src/content/images/tracing-with-span.png)

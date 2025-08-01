@@ -30,7 +30,7 @@ Hi all, 由於工作上的的需要撰寫單元測試(雖然小弟我是TDD派�
 - 發現隱藏的耦合問題
 
 那不免俗的還是得放上這張測試金字塔(Test-Automation-Pyramid)
-![img.png](/images/Test-Automation-Pyramid.png)
+![img.png](/src/content/images/Test-Automation-Pyramid.png)
 
 測試金字塔是一個視覺化的概念，用來描述不同層級的測試以及它們之間的比例關係。
 
