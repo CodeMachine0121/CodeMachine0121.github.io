@@ -1,6 +1,7 @@
 ---
 import type { Blog } from '../../../types/BlogType';
 import BlogItem from './BlogItem.astro';
+import SearchBar from '../../common/SearchBar.astro';
 
 const { blogs } = Astro.props;
 ---
@@ -8,10 +9,71 @@ const { blogs } = Astro.props;
 <section class="py-12 bg-background">
   <div class="container mx-auto px-4 max-w-4xl">
     <h1 class="text-center text-3xl mb-10">Recent posts</h1>
-    <div class="space-y-6">
+
+    <!-- 搜尋列 -->
+    <div class="mb-8">
+      <SearchBar placeholder="搜尋文章標題或內容..." />
+    </div>
+
+    <!-- 文章列表 -->
+    <div id="blog-list" class="space-y-6">
       {blogs.map((blog: Blog, index: number) => (
-        <BlogItem blog={blog} isFirst={index === 0} />
+        <div class="blog-item">
+          <BlogItem blog={blog} isFirst={index === 0} />
+        </div>
       ))}
+    </div>
+
+    <!-- 無搜尋結果提示 -->
+    <div id="no-results" class="hidden text-center py-8">
+      <p class="text-gray-500 text-lg">沒有找到符合的文章</p>
+      <p class="text-gray-400 text-sm mt-2">試試其他關鍵字</p>
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('blog-search') as HTMLInputElement;
+    const blogItems = document.querySelectorAll('.blog-item');
+    const noResults = document.getElementById('no-results');
+
+    if (!searchInput || !blogItems.length || !noResults) return;
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      blogItems.forEach((item) => {
+        const title = item.querySelector('h2')?.textContent?.toLowerCase() || '';
+
+        const isMatch = searchTerm === '' || 
+                       title.includes(searchTerm);
+
+        if (isMatch) {
+          (item as HTMLElement).style.display = 'block';
+          visibleCount++;
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // 顯示或隱藏 "無結果" 訊息
+      if (visibleCount === 0 && searchTerm !== '') {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    });
+
+    // 清除按鈕功能
+    searchInput.addEventListener('search', function() {
+      if (this.value === '') {
+        blogItems.forEach((item) => {
+          (item as HTMLElement).style.display = 'block';
+        });
+        noResults.classList.add('hidden');
+      }
+    });
+  });
+</script>
