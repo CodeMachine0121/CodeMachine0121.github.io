@@ -18,7 +18,6 @@ const { blogs } = Astro.props;
     <!-- 文章列表 -->
     <div id="blog-list" class="space-y-6">
       {blogs
-          .filter((blog: Blog) => blog.data.isEnabled)
           .map((blog: Blog, index: number) => (
         <div class="blog-item">
           <BlogItem blog={blog} isFirst={index === 0} />

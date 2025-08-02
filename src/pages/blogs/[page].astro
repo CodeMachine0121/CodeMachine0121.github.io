@@ -8,7 +8,9 @@ import Pagination from '../../components/common/Pagination.astro';
 
 export async function getStaticPaths({ paginate }) {
     const blogs = await getCollection("blogs");
-    const latestBlogs = blogs.sort((a, b) =>
+    const latestBlogs = blogs
+        .filter(blog => blog.data.image) // Filter out blogs without images
+        .sort((a, b) =>
         new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime()
     );
 
@@ -22,6 +24,7 @@ export interface Props {
 }
 
 const { page } = Astro.props;
+page.data = page.data.filter(b => b.data.image);
 ---
 
 <Layout title={`Blogs`}>

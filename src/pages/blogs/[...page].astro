@@ -7,7 +7,9 @@ import BlogList from '../../components/sections/blog/BlogList.astro';
 import Pagination from '../../components/common/Pagination.astro';
 
 export async function getStaticPaths({ paginate }) {
-    const blogs = await getCollection("blogs");
+    const blogs =
+        (await getCollection("blogs"))
+            .filter(blog => blog.data.image) // Filter out blogs without images;
 
     return paginate(blogs, {
         pageSize: 5,
