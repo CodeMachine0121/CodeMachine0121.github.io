@@ -22,7 +22,7 @@
 
     // 監聽自定義事件以打開模態視窗
     document.addEventListener('open-image-modal', (e) => {
-      const { src, alt } = e.detail;
+      const { src, alt } = (e as CustomEvent).detail;
       if (modalImage && modal) {
         modalImage.setAttribute('src', src);
         modalImage.setAttribute('alt', alt || '');

@@ -90,7 +90,7 @@
         `;
         indicator.textContent = '向右滑動查看更多';
 
-        wrapper.style.position = 'relative';
+        (wrapper as HTMLElement).style.position = 'relative';
         wrapper.appendChild(indicator);
 
         // 當用戶滾動時隱藏指示器

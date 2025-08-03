@@ -1,5 +1,4 @@
 ﻿---
-import { Icon } from 'astro-icon';
 
 interface Props {
   content: any;
@@ -27,7 +26,9 @@ const { content: Content, title, datetime } = Astro.props;
       class="bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary-600 transition-colors"
       aria-label="回到頂部"
     >
-      <Icon name="ion:arrow-up" class="w-5 h-5" />
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
     </button>
   </div>
 </article>
@@ -101,7 +102,7 @@ const { content: Content, title, datetime } = Astro.props;
       // 在移動設備上，確保代碼塊可以水平滾動
       if (window.innerWidth < 640) {
         block.style.overflowX = 'auto';
-        block.style.WebkitOverflowScrolling = 'touch';
+        (block as any).style.WebkitOverflowScrolling = 'touch';
       }
     });
   });

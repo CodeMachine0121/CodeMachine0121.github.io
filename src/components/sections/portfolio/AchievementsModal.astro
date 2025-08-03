@@ -41,7 +41,7 @@ const { id, title, achievements } = Astro.props;
 
 <script>
   // 显示模态框的动画
-  const showModal = (modal) => {
+  const showModal = (modal: HTMLElement | null) => {
     if (!modal) return;
 
     // 移除隐藏类
@@ -64,7 +64,7 @@ const { id, title, achievements } = Astro.props;
   };
 
   // 隐藏模态框的动画
-  const hideModal = (modal) => {
+  const hideModal = (modal: HTMLElement | null) => {
     if (!modal) return;
 
     const content = modal.querySelector('[data-modal-container]');
@@ -87,10 +87,10 @@ const { id, title, achievements } = Astro.props;
   };
 
   // 处理ESC键关闭模态框
-  const handleEscKey = (e) => {
+  const handleEscKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       const modal = document.querySelector('[id^="modal-"]:not([hidden])');
-      if (modal) hideModal(modal);
+      if (modal) hideModal(modal as HTMLElement);
     }
   };
 
@@ -109,7 +109,7 @@ const { id, title, achievements } = Astro.props;
   document.querySelectorAll('[data-close-button]').forEach(button => {
     button.addEventListener('click', () => {
       const modal = button.closest('[id^="modal-"]');
-      if (modal) hideModal(modal);
+      if (modal) hideModal(modal as HTMLElement);
     });
   });
 
@@ -118,7 +118,7 @@ const { id, title, achievements } = Astro.props;
     backdrop.addEventListener('click', (e) => {
       if (e.target === backdrop) {
         const modal = backdrop.closest('[id^="modal-"]');
-        if (modal) hideModal(modal);
+        if (modal) hideModal(modal as HTMLElement);
       }
     });
   });

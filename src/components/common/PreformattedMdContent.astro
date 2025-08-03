@@ -1,5 +1,8 @@
 ﻿---
-import { renderMarkdown } from '@astrojs/markdown-remark';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
 import CodeHighlight from '../sections/blog/CodeHighlight.astro';
 
 interface Props {
@@ -9,9 +12,9 @@ interface Props {
 const { content } = Astro.props;
 
 // 處理Markdown內容中的代碼塊
-const processCodeBlocks = async (markdown) => {
+const processCodeBlocks = async (markdown: string) => {
   const codeBlockRegex = /```([a-zA-Z0-9]+)(?:\s+(.+?))?\n([\s\S]*?)```/g;
-  let match;
+  let match: RegExpExecArray | null;
   let lastIndex = 0;
   const fragments = [];
 
@@ -19,8 +22,12 @@ const processCodeBlocks = async (markdown) => {
     // 添加代碼塊前的內容
     if (match.index > lastIndex) {
       const textBefore = markdown.substring(lastIndex, match.index);
-      const { code: htmlBefore } = await renderMarkdown(textBefore, {});
-      fragments.push({ type: 'html', content: htmlBefore });
+      const file = await unified()
+        .use(remarkParse)
+        .use(remarkRehype)
+        .use(rehypeStringify)
+        .process(textBefore);
+      fragments.push({ type: 'html', content: String(file) });
     }
 
     // 提取代碼塊信息
@@ -28,11 +35,11 @@ const processCodeBlocks = async (markdown) => {
     const filename = match[2] || null;
     const code = match[3];
 
-    fragments.push({ 
-      type: 'codeblock', 
-      lang, 
-      code, 
-      filename 
+    fragments.push({
+      type: 'codeblock',
+      lang,
+      code,
+      filename
     });
 
     lastIndex = match.index + match[0].length;
@@ -41,12 +48,17 @@ const processCodeBlocks = async (markdown) => {
   // 添加最後一段內容
   if (lastIndex < markdown.length) {
     const textAfter = markdown.substring(lastIndex);
-    const { code: htmlAfter } = await renderMarkdown(textAfter, {});
-    fragments.push({ type: 'html', content: htmlAfter });
+    const file = await unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeStringify)
+      .process(textAfter);
+    fragments.push({ type: 'html', content: String(file) });
   }
 
   return fragments;
 };
+
 
 const contentFragments = await processCodeBlocks(content);
 ---

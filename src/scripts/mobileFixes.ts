@@ -39,13 +39,13 @@ function enhanceCodeBlocks() {
 
   codeBlocks.forEach(block => {
     // 確保代碼塊可以滾動
-    block.style.overflowX = 'auto';
-    block.style.maxWidth = '100%';
-    block.style.WebkitOverflowScrolling = 'touch';
+    (block as HTMLElement).style.overflowX = 'auto';
+    (block as HTMLElement).style.maxWidth = '100%';
+    ((block as HTMLElement).style as any).WebkitOverflowScrolling = 'touch';
 
     // 在小屏幕上調整字體大小
     if (window.innerWidth <= 640) {
-      block.style.fontSize = '0.875rem';
+      (block as HTMLElement).style.fontSize = '0.875rem';
     }
   });
 }
@@ -61,16 +61,16 @@ function enhanceTables() {
     // 將表格包裝在滾動容器中
     const wrapper = document.createElement('div');
     wrapper.className = 'overflow-x-auto my-6 -mx-4 sm:mx-0';
-    wrapper.style.maxWidth = 'calc(100% + 2rem)';
-    wrapper.style.WebkitOverflowScrolling = 'touch';
+    (wrapper.style as any).maxWidth = 'calc(100% + 2rem)';
+    (wrapper.style as any).WebkitOverflowScrolling = 'touch';
 
     // 複製表格並將其放入包裝器
     table.parentNode?.insertBefore(wrapper, table);
     wrapper.appendChild(table);
 
     // 確保表格在容器中有合適的樣式
-    table.style.minWidth = '100%';
-    table.style.width = 'auto';
+    (table as HTMLElement).style.minWidth = '100%';
+    (table as HTMLElement).style.width = 'auto';
   });
 }
 
@@ -83,8 +83,8 @@ function fixImageDisplay() {
 
   images.forEach(img => {
     // 確保圖片不會溢出容器
-    img.style.maxWidth = '100%';
-    img.style.height = 'auto';
+    (img as HTMLElement).style.maxWidth = '100%';
+    (img as HTMLElement).style.height = 'auto';
     img.setAttribute('loading', 'lazy');
 
     // 添加圓角和陰影效果
@@ -92,8 +92,8 @@ function fixImageDisplay() {
 
     // 在小屏幕上處理圖片邊距
     if (window.innerWidth <= 640) {
-      img.style.marginLeft = 'auto';
-      img.style.marginRight = 'auto';
+      (img as HTMLElement).style.marginLeft = 'auto';
+      (img as HTMLElement).style.marginRight = 'auto';
     }
 
     // 將圖片包裝在容器中以更好控制佈局

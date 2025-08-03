@@ -7,7 +7,7 @@ interface Props {
   class?: string;
 }
 
-const { src, alt, width, height, class: className = '' } = Astro.props;
+const { src, alt, width, height } = Astro.props;
 ---
 
 <div class="responsive-image-container my-4 {className}">
