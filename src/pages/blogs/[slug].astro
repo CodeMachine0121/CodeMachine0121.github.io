@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
+import MarkdownContent from '../../components/common/MarkdownContent.astro';
+import PreformattedMdContent from '../../components/common/PreformattedMdContent.astro';
 
 export const getStaticPaths = async () => {
     const blogs = await getCollection("blogs");
@@ -29,17 +31,67 @@ const {Content} = await blog.render();
 ---
 
 <Layout title={blog.data.title}>
-    <section class="flex justify-center mt-12">
-        <div id="markdown" class="prose prose-lg overflow-visible relative mb-5">
+    <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <header class="mb-8 text-center md:text-left">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight">{blog.data.title}</h1>
+            <time datetime={blog.data.datetime} class="text-sm text-offset block">
+                {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+        </header>
+
+        <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-3xl mx-auto">
             <Content />
         </div>
-    </section>
+
+        <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
+            <button 
+                id="back-to-top-button"
+                class="bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary-600 transition-colors"
+                aria-label="回到頂部"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </article>
 
     <script>
         import { toggleMarkdownTheme } from "../../scripts/theme";
+        import "../../scripts/mobileFixes";
 
         const theme = document.documentElement.dataset.theme;
+        toggleMarkdownTheme(theme);
 
-        toggleMarkdownTheme(theme)
+        // 處理回到頂部按鈕
+        document.addEventListener('DOMContentLoaded', () => {
+            const backToTopButton = document.getElementById('back-to-top-button');
+            const backToTopContainer = document.querySelector('.back-to-top');
+
+            if (backToTopButton && backToTopContainer) {
+                // 顯示或隱藏按鈕
+                const toggleBackToTopButton = () => {
+                    if (window.scrollY > 300) {
+                        backToTopContainer.classList.add('visible');
+                    } else {
+                        backToTopContainer.classList.remove('visible');
+                    }
+                };
+
+                // 初始檢查
+                toggleBackToTopButton();
+
+                // 滾動事件
+                window.addEventListener('scroll', toggleBackToTopButton);
+
+                // 點擊事件
+                backToTopButton.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
     </script>
 </Layout>

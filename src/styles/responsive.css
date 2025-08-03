@@ -1,0 +1,58 @@
+﻿/* 響應式設計優化 */
+
+/* 全局基礎設置 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 文本優化 */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem !important;
+    line-height: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  p, li {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+}
+
+/* 程式碼區塊在移動設備上的優化 */
+@media (max-width: 768px) {
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 1rem 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  code {
+    font-size: 0.875rem !important;
+  }
+
+  /* 圖片響應式優化 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* 表格在移動設備上的優化 */
+@media (max-width: 640px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+}

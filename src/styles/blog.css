@@ -1,0 +1,117 @@
+﻿/* 博客文章專用樣式 */
+
+/* 基本文章容器 */
+.blog-content {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 程式碼區塊優化 */
+.blog-content pre {
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+.blog-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  background-color: rgba(226, 232, 240, 0.1);
+}
+
+.blog-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* 圖片優化 */
+.blog-content img {
+  margin: 2rem auto;
+  border-radius: 0.5rem;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* 表格優化 */
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  overflow-x: auto;
+  display: block;
+}
+
+.blog-content table thead {
+  background-color: rgba(226, 232, 240, 0.2);
+  border-bottom: 2px solid rgba(203, 213, 225, 0.5);
+}
+
+.blog-content table th,
+.blog-content table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(203, 213, 225, 0.5);
+}
+
+/* 移動設備優化 */
+@media (max-width: 640px) {
+  .blog-content {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .blog-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .blog-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .blog-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .blog-content pre {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding: 1rem;
+    border-radius: 0;
+  }
+
+  .blog-content pre code {
+    font-size: 0.8125rem;
+  }
+
+  .blog-content img {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    max-width: calc(100% + 2rem);
+    border-radius: 0;
+  }
+
+  .blog-content blockquote {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* 回到頂部按鈕 */
+#back-to-top-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}

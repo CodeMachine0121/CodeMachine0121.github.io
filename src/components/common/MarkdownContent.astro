@@ -1,0 +1,108 @@
+﻿---
+import { Icon } from 'astro-icon';
+
+interface Props {
+  content: any;
+  title: string;
+  datetime: string;
+}
+
+const { content: Content, title, datetime } = Astro.props;
+---
+
+<article class="markdown-article w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-0">
+  <header class="mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight">{title}</h1>
+    <time datetime={datetime} class="text-sm text-offset block">
+      {new Date(datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </time>
+  </header>
+
+  <div class="markdown-content prose prose-lg dark:prose-invert prose-headings:scroll-mt-16 prose-img:rounded-lg prose-img:shadow-md max-w-none">
+    <Content />
+  </div>
+
+  <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
+    <button 
+      class="bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary-600 transition-colors"
+      aria-label="回到頂部"
+    >
+      <Icon name="ion:arrow-up" class="w-5 h-5" />
+    </button>
+  </div>
+</article>
+
+<style>
+  /* 文章樣式優化 */
+  .markdown-article {
+    position: relative;
+  }
+
+  /* 回到頂部按鈕 */
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 640px) {
+    .markdown-content :global(pre) {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      border-radius: 0;
+      padding: 1rem;
+    }
+
+    .markdown-content :global(pre code) {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .markdown-content :global(p), 
+    .markdown-content :global(li) {
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .markdown-content :global(img) {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      max-width: calc(100% + 2rem);
+      border-radius: 0;
+    }
+  }
+</style>
+
+<script>
+  // 處理回到頂部按鈕的顯示與隱藏
+  document.addEventListener('DOMContentLoaded', () => {
+    const backToTopButton = document.querySelector('.back-to-top');
+
+    const toggleBackToTopButton = () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
+    };
+
+    window.addEventListener('scroll', toggleBackToTopButton);
+
+    // 點擊回到頂部
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // 處理程式碼區塊自動溢出滾動
+    const codeBlocks = document.querySelectorAll('pre');
+    codeBlocks.forEach(block => {
+      // 在移動設備上，確保代碼塊可以水平滾動
+      if (window.innerWidth < 640) {
+        block.style.overflowX = 'auto';
+        block.style.WebkitOverflowScrolling = 'touch';
+      }
+    });
+  });
+</script>

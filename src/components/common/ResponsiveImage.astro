@@ -1,0 +1,64 @@
+﻿---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+
+const { src, alt, width, height, class: className = '' } = Astro.props;
+---
+
+<div class="responsive-image-container my-4 {className}">
+  <img 
+    src={src} 
+    alt={alt} 
+    width={width} 
+    height={height} 
+    loading="lazy"
+    class="mx-auto rounded-lg shadow-md max-w-full h-auto"
+  />
+</div>
+
+<style>
+  .responsive-image-container {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  img {
+    transition: transform 0.3s ease;
+  }
+
+  /* 在移動設備上禁用懸停效果 */
+  @media (min-width: 768px) {
+    img:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  /* 確保在小屏幕上圖片不會太大 */
+  @media (max-width: 640px) {
+    img {
+      max-height: 80vh;
+    }
+  }
+</style>
+
+<script>
+  // 增加點擊放大圖片的功能
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.responsive-image-container img');
+
+    images.forEach(img => {
+      img.addEventListener('click', () => {
+        // 將事件資料傳送給模態視窗元件
+        const event = new CustomEvent('open-image-modal', {
+          detail: { src: img.getAttribute('src'), alt: img.getAttribute('alt') }
+        });
+        document.dispatchEvent(event);
+      });
+    });
+  });
+</script>

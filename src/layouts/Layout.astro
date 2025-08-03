@@ -17,7 +17,7 @@ const { title } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<meta name="generator" content={Astro.generator} />
@@ -50,8 +50,10 @@ const { title } = Astro.props;
 	<body class="h-full flex flex-col overflow-x-hidden bg-default
 		text-default text-base selection:bg-secondary">
 		<Header />
-		<section class="flex-grow">
-			<slot />
+		<section class="flex-grow w-full max-w-full px-4 sm:px-6 md:px-8 mx-auto">
+			<div class="w-full max-w-screen-xl mx-auto">
+				<slot />
+			</div>
 		</section>
 		<Footer />
 	</body>

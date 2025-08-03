@@ -1,0 +1,63 @@
+﻿---
+interface Props {
+  language: string;
+  code: string;
+}
+
+const { language, code } = Astro.props;
+---
+
+<div class="code-container my-4 overflow-hidden rounded-lg shadow-md">
+  <div class="code-header bg-gray-800 text-gray-200 py-2 px-4 text-sm flex justify-between items-center">
+    <span>{language}</span>
+    <button class="copy-button text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">
+      複製
+    </button>
+  </div>
+  <pre class="language-{language} p-4 overflow-x-auto"><code class="text-sm sm:text-base">{code}</code></pre>
+</div>
+
+<style>
+  .code-container {
+    max-width: 100%;
+    position: relative;
+  }
+
+  pre {
+    margin: 0;
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    pre {
+      font-size: 0.875rem;
+      padding: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  // 為程式碼區塊添加複製功能
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+
+    copyButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const pre = button.closest('.code-container')?.querySelector('pre');
+        if (pre) {
+          navigator.clipboard.writeText(pre.textContent || '');
+
+          // 顯示複製成功狀態
+          const originalText = button.textContent;
+          button.textContent = '已複製!';
+          button.classList.add('bg-green-600');
+
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('bg-green-600');
+          }, 2000);
+        }
+      });
+    });
+  });
+</script>

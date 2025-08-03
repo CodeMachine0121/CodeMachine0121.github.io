@@ -1,0 +1,101 @@
+﻿---
+import { renderMarkdown } from '@astrojs/markdown-remark';
+import CodeHighlight from '../sections/blog/CodeHighlight.astro';
+
+interface Props {
+  content: string;
+}
+
+const { content } = Astro.props;
+
+// 處理Markdown內容中的代碼塊
+const processCodeBlocks = async (markdown) => {
+  const codeBlockRegex = /```([a-zA-Z0-9]+)(?:\s+(.+?))?\n([\s\S]*?)```/g;
+  let match;
+  let lastIndex = 0;
+  const fragments = [];
+
+  while ((match = codeBlockRegex.exec(markdown)) !== null) {
+    // 添加代碼塊前的內容
+    if (match.index > lastIndex) {
+      const textBefore = markdown.substring(lastIndex, match.index);
+      const { code: htmlBefore } = await renderMarkdown(textBefore, {});
+      fragments.push({ type: 'html', content: htmlBefore });
+    }
+
+    // 提取代碼塊信息
+    const lang = match[1] || 'text';
+    const filename = match[2] || null;
+    const code = match[3];
+
+    fragments.push({ 
+      type: 'codeblock', 
+      lang, 
+      code, 
+      filename 
+    });
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // 添加最後一段內容
+  if (lastIndex < markdown.length) {
+    const textAfter = markdown.substring(lastIndex);
+    const { code: htmlAfter } = await renderMarkdown(textAfter, {});
+    fragments.push({ type: 'html', content: htmlAfter });
+  }
+
+  return fragments;
+};
+
+const contentFragments = await processCodeBlocks(content);
+---
+
+<div class="preformatted-content">
+  {contentFragments.map(fragment => {
+    if (fragment.type === 'html') {
+      return <div class="markdown-html" set:html={fragment.content} />;
+    } else if (fragment.type === 'codeblock') {
+      return <CodeHighlight 
+        code={fragment.code} 
+        lang={fragment.lang} 
+        filename={fragment.filename} 
+      />;
+    }
+  })}
+</div>
+
+<style>
+  .markdown-html :global(pre) {
+    /* 隱藏原始的代碼塊，因為我們使用自定義的CodeHighlight組件 */
+    display: none;
+  }
+
+  .markdown-html :global(p),
+  .markdown-html :global(h1),
+  .markdown-html :global(h2),
+  .markdown-html :global(h3),
+  .markdown-html :global(h4),
+  .markdown-html :global(h5),
+  .markdown-html :global(h6),
+  .markdown-html :global(ul),
+  .markdown-html :global(ol),
+  .markdown-html :global(blockquote) {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  .markdown-html :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+  }
+
+  @media (max-width: 640px) {
+    .markdown-html :global(table) {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+    }
+  }
+</style>

@@ -1,0 +1,107 @@
+﻿---
+// 表格包裝組件，提升移動設備上的表格可用性
+---
+
+<div class="table-wrapper my-6 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+  <slot />
+</div>
+
+<style>
+  .table-wrapper {
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrapper :global(table) {
+    width: 100%;
+    min-width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  .table-wrapper :global(th) {
+    background-color: rgba(229, 231, 235, 0.5);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(209, 213, 219, 1);
+  }
+
+  .table-wrapper :global(td) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  }
+
+  .table-wrapper :global(tr:last-child td) {
+    border-bottom: none;
+  }
+
+  /* 深色模式 */
+  :global(.dark) .table-wrapper :global(th) {
+    background-color: rgba(55, 65, 81, 0.5);
+    border-bottom: 1px solid rgba(75, 85, 99, 1);
+  }
+
+  :global(.dark) .table-wrapper :global(td) {
+    border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+  }
+
+  /* 移動設備優化 */
+  @media (max-width: 640px) {
+    .table-wrapper {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+
+    .table-wrapper :global(th),
+    .table-wrapper :global(td) {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<script>
+  // 處理表格的交互邏輯
+  document.addEventListener('DOMContentLoaded', () => {
+    // 為所有表格添加提示指示器，當表格可以水平滾動時
+    const tableWrappers = document.querySelectorAll('.table-wrapper');
+
+    tableWrappers.forEach(wrapper => {
+      if (wrapper.scrollWidth > wrapper.clientWidth) {
+        // 表格可以滾動，添加視覺指示
+        const indicator = document.createElement('div');
+        indicator.className = 'scroll-indicator';
+        indicator.style.cssText = `
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          background-color: rgba(99, 102, 241, 0.8);
+          color: white;
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem 0 0 0;
+          pointer-events: none;
+          opacity: 0.8;
+          transition: opacity 0.3s;
+        `;
+        indicator.textContent = '向右滑動查看更多';
+
+        wrapper.style.position = 'relative';
+        wrapper.appendChild(indicator);
+
+        // 當用戶滾動時隱藏指示器
+        wrapper.addEventListener('scroll', () => {
+          if (wrapper.scrollLeft > 0) {
+            indicator.style.opacity = '0';
+          } else {
+            indicator.style.opacity = '0.8';
+          }
+        });
+      }
+    });
+  });
+</script>
