@@ -2,7 +2,7 @@
 title: "C# Unit Test\_如何驗證多次呼叫"
 datetime: "2025-08-03"
 description: "在 C# 單元測試中，如何驗證多次呼叫的情況？本文提供了一個實際範例，展示如何使用 NSubstitute 和 FluentAssertions 來驗證多次呼叫的參數。"
-image: "src/content/images/titles/CSharp-Multiple-Assertion.png"
+image: "/images/titles/CSharp-Multiple-Assertion.png"
 ---
 Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰
 假設我們在DB有張用來存放學生資訊的table，但我們需要當這張table的資料轉移至另一張新的 table (俗稱 Archive)。但由於其資料量問題我們必須分批次的進行 Read 及 Insert，所以我們預期中的production會是長成這樣子。
