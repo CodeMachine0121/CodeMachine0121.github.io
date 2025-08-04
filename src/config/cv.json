@@ -144,7 +144,7 @@
   "menuItems": [
 	{
 	  "name": "About",
-	  "link": "/"
+	  "link": "/about"
 	},
 	{
 	  "name": "Blog",
