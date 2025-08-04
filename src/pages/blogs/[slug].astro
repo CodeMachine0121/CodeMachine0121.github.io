@@ -32,7 +32,7 @@ const {Content} = await blog.render();
 <Layout title={blog.data.title}>
     <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <header class="mb-8 text-center md:text-left">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight">{blog.data.title}</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
             <time datetime={blog.data.datetime} class="text-sm text-offset block">
                 {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
