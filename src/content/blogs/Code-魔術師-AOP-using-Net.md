@@ -91,7 +91,7 @@ public class DemoRepository : IDemoRepository
 
 #### MethodLogger
 此為，攔截 method
-```csharp
+```chsharp
 public static class MethodLogger
 {
     public static void Log(string methodName)
