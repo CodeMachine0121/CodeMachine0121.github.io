@@ -19,6 +19,7 @@ export default {
 						typography: (theme) => ({
 							DEFAULT: {
 								css: {
+									color: 'var(--color-text)',
 									pre: {
 										padding: '1rem',
 										borderRadius: '0.375rem',
@@ -64,7 +65,7 @@ export default {
 							},
 							dark: {
 								css: {
-									color: theme('colors.gray.300'),
+									color: 'var(--color-text)',
 									h1: {
 										color: theme('colors.white'),
 									},

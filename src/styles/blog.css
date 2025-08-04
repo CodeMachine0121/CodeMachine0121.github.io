@@ -1,9 +1,10 @@
-﻿/* 博客文章專用樣式 */
+/* 博客文章專用樣式 */
 
 /* 基本文章容器 */
 .blog-content {
   width: 100%;
   max-width: 100%;
+  color: var(--color-text);
 }
 
 /* 程式碼區塊優化 */
@@ -12,8 +13,8 @@
   margin: 1.5rem 0;
   padding: 1rem;
   overflow-x: auto;
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: var(--color-background-offset);
+  color: var(--color-text);
 }
 
 .blog-content code {
@@ -21,7 +22,7 @@
   font-size: 0.875em;
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
-  background-color: rgba(226, 232, 240, 0.1);
+  background-color: var(--color-background-offset);
 }
 
 .blog-content pre code {
@@ -49,14 +50,14 @@
 }
 
 .blog-content table thead {
-  background-color: rgba(226, 232, 240, 0.2);
-  border-bottom: 2px solid rgba(203, 213, 225, 0.5);
+  background-color: var(--color-background-offset);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .blog-content table th,
 .blog-content table td {
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(203, 213, 225, 0.5);
+  border: 1px solid var(--color-border);
 }
 
 /* 移動設備優化 */
