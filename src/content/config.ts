@@ -10,6 +10,12 @@ const blogsCollection = defineCollection({
 
 });
 
+const imagesCollection = defineCollection({
+  type: 'data',
+  schema: z.object({})
+});
+
 export const collections = {
   'blogs': blogsCollection,
+  'images': imagesCollection,
 };
