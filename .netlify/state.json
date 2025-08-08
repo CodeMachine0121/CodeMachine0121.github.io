@@ -1,0 +1,19 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "New Taipei City",
+			"country": {
+				"code": "TW",
+				"name": "Taiwan"
+			},
+			"subdivision": {
+				"code": "NWT",
+				"name": "New Taipei City"
+			},
+			"timezone": "Asia/Taipei",
+			"latitude": 25.0693,
+			"longitude": 121.4626
+		},
+		"timestamp": 1754332585491
+	}
+}

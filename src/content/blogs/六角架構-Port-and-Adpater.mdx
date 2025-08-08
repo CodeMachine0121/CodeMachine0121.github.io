@@ -1,14 +1,15 @@
 ---
-title: 六角架構 (Port and Adpater)
+title: 淺談六角架構中的 Port 但 Adpater
 datetime: "2024-09-02"
+description: "六角架構 (Port and Adapter) 是一種軟體架構模式，旨在將應用程式的核心邏輯與外部系統隔離。本文介紹了六角架構的基本概念和實際應用。"
+image: "/images/titles/hexagonal-architecture.jpg"
 ---
 
 
 現今許多開發團隊表面上採用分層架構，但實際上更接近六角架構，這是因為許多專案或多或少都會使用依賴注入的緣故。
 採用依賴注入後，架構的開發自然而然地更傾向於這種 Port 對 Adapter 的設計風格。
 
-![img.png](https://tse1.mm.bing.net/th/id/OIP.qLoZNml3irtoBkUT9q7K5wHaFw?rs=1&pid=ImgDetMain&o=7&rm=3)
-## 畫圖說故事 
+![img.png](/src/content/blogs/hexagonal-architecture.png)
 
 以上圖為例， 外層的大六角形的每個邊都代表不同類型的 **Port**，可以是輸入或是輸出。 不同的用戶端都會有屬於自己的**轉接器 (Adapter)**，接著這些轉接器會將輸入轉為跟應用程式相符合的輸入(即 request轉 dto 或是 response/Entity 轉 Domain)。
 
