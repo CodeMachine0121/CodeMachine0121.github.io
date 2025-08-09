@@ -43,9 +43,9 @@ image: "/images/titles/hexagonal-architecture.jpg"
 
 這種分離帶來以下關鍵優勢：
 
-### 1. 依賴倒置原則的應用
+### 1. 依賴反轉原則的應用
 
-通過 Adapter 的引入，我們實現了依賴倒置原則（Dependency Inversion Principle）。業務核心不再依賴具體的資料存取實現，而是依賴於 Adapter 介面， Repository 則是依賴於這些介面，形成依賴方向的反轉。
+通過 Adapter 的引入，我們實現了依賴反轉原則（Dependency Inversion Principle）。業務核心不再依賴具體的資料存取實現，而是依賴於 Adapter 介面， Repository 則是依賴於這些介面，形成依賴方向的反轉。
 
 ```
 傳統三層架構：Business Logic Layer → Repository → Database
