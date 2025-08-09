@@ -1,7 +1,7 @@
 ---
 title: 淺談六角架構中的 Port 與 Adpater
 datetime: "2024-09-02"
-description: "六角架構 (Port and Adapter) 是一種軟體架構模式，旨在將應用程式的核心邏輯與外部系統隔離。本文介紹了六角架構的基本概念和實際應用。"
+description: "以實務經驗來探討如何解決傳統三層架構的耦合問題，深入分析 Repository 模式的重新設計，以及 Entity 到 Domain 轉換邏輯的關鍵作用。說明單元測試如何推動架構向六角架構自然演進，實現更好的關注點分離和系統可維護性。"
 image: "/images/titles/hexagonal-architecture.jpg"
 ---
 
