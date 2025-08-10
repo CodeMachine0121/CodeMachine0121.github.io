@@ -1,6 +1,6 @@
 ---
 title: "Day 1 TDD 濃縮精華 一日搞懂 What, Why, How"
-datetime: "2025-08-03"
+datetime: "2025-08-04"
 description: "安安，今年的鐵人賽，我想寫幾篇文章來說明TDD 這件事情，且用 TDD KATA 來入門 Golang 並在最後探索出如何和AI一起做TDD。"
 image: "https://raw.githubusercontent.com/CodeMachine0121/gophers-images/refs/heads/master/sketch/adventure/poking-fire.png"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"

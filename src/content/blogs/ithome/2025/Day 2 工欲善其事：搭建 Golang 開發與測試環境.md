@@ -1,4 +1,10 @@
-# Day 2 - 工欲善其事：搭建 Golang 開發與測試環境
+---
+title: "Day 2 - 工欲善其事：搭建 Golang 開發與測試環境"
+datetime: "2025-08-05"
+description: "在 Day 2，我們將為 Golang TDD 實戰做好準備，搭建開發環境，安裝 Go 語言、VS Code 編輯器及必要的擴充套件，並撰寫第一個測試來驗證環境是否就緒。"
+image: "https://github.com/CodeMachine0121/gophers-images/blob/master/sketch/adventure/pirate-sword.png?raw=true"
+parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
+---
 
 ## 昨日回顧與今日目標
 

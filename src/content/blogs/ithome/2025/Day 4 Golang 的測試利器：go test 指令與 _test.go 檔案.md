@@ -1,4 +1,11 @@
-# Day 4 - Golang 的測試利器：go test 指令與 _test.go 檔案
+---
+title: "Day 4 - Golang 的測試利器：go test 指令與 _test.go 檔案"
+datetime: "2025-08-07"
+description: "在 Day 4，我們將深入 Golang 的測試框架，學習如何撰寫測試檔案 `_test.go`，並使用 `go test` 指令來執行和管理測試。掌握這些基礎後，我們就能開始實踐 TDD 循環了！"
+image: "https://github.com/CodeMachine0121/gophers-images/blob/master/sketch/science/welding.png?raw=true"
+parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
+---
+
 
 ## 昨日回顧與今日目標
 

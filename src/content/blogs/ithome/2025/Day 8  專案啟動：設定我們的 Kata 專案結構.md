@@ -1,4 +1,9 @@
-# Day 8 專案啟動：設定我們的 Kata 專案結構
+---
+title: "Day 8 專案啟動：設定我們的 Kata 專案結構"
+datetime: "2025-08-11"
+description: "在 Day 8，我們將建立一個結構清晰、可擴充的 Go Modules 專案，為我們的 TDD Kata 練習做好準備。這個專案將成為我們未來所有 Kata 練習的家。"
+parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
+---
 
 ## 昨日回顧與今日目標
 
