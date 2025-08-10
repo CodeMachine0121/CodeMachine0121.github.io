@@ -1,7 +1,7 @@
 ---
 title: "Day 7 - 處理依賴：測試中的 Mock 與 Stub 基礎"
 datetime: "2025-08-10"
-description: "在 Day 4，我們將深入 Golang 的測試框架，學習如何撰寫測試檔案 `_test.go`，並使用 `go test` 指令來執行和管理測試。掌握這些基礎後，我們就能開始實踐 TDD 循環了！"
+description: "在 Day 7，我們將學習如何處理測試中的外部依賴，使用 Mock 和 Stub 來隔離測試環境，確保我們的單元測試能夠專注於商業邏輯，而不受外部因素影響。掌握這些技巧後，你將能夠撰寫更穩定、更可靠的測試案例。"
 image: "https://go.dev/blog/gopher/header.jpg"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
 ---
