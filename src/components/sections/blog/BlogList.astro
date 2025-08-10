@@ -1,28 +1,77 @@
 ---
 import type { Blog } from '../../../types/BlogType';
 import BlogItem from './BlogItem.astro';
+import ParentItem from './ParentItem.astro';
 import SearchBar from '../../common/SearchBar.astro';
 
 const { blogs } = Astro.props;
+
+// 分離有 parent 和沒有 parent 的文章
+const standaloneBlogs = blogs.filter((blog: Blog) => !blog.data.parent);
+const childBlogs = blogs.filter((blog: Blog) => blog.data.parent);
+
+// 統計每個 parent 的文章數量
+const parentGroups = childBlogs.reduce((acc: Record<string, Blog[]>, blog: Blog) => {
+  const parentName = blog.data.parent!;
+  if (!acc[parentName]) {
+    acc[parentName] = [];
+  }
+  acc[parentName].push(blog);
+  return acc;
+}, {});
+
+// 創建 parent 項目數據
+const parentItems = Object.keys(parentGroups).map(parentName => ({
+  name: parentName,
+  count: parentGroups[parentName].length,
+  children: parentGroups[parentName]
+}));
 ---
 
 <section class="py-12 bg-background">
   <div class="container mx-auto px-4 max-w-4xl">
-    <h1 class="text-center text-3xl mb-10">Recent posts</h1>
+    <h1 id="main-title" class="text-center text-3xl mb-10">Recent posts</h1>
+
+    <!-- 返回按鈕 -->
+    <div id="back-button" class="mb-6 hidden">
+      <button class="flex items-center text-primary hover:text-primary/80 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        返回文章列表
+      </button>
+    </div>
 
     <!-- 搜尋列 -->
     <div class="mb-8">
       <SearchBar placeholder="搜尋文章標題或內容..." />
     </div>
 
+    <!-- Parent 項目列表 -->
+    <div id="parent-list" class="mb-6">
+      {parentItems.map((parent) => (
+        <div class="parent-item-container" data-parent={parent.name}>
+          <ParentItem parentName={parent.name} childrenCount={parent.count} />
+        </div>
+      ))}
+    </div>
+
     <!-- 文章列表 -->
     <div id="blog-list" class="space-y-6">
-      {blogs
+      {standaloneBlogs
           .map((blog: Blog, index: number) => (
-        <div class="blog-item">
+        <div class="blog-item" data-parent="">
           <BlogItem blog={blog} isFirst={index === 0} />
         </div>
       ))}
+      {/* 隱藏的子文章 */}
+      {Object.entries(parentGroups).map(([parentName, children]) => 
+        children.map((blog: Blog, index: number) => (
+          <div class="blog-item hidden" data-parent={parentName}>
+            <BlogItem blog={blog} isFirst={index === 0} />
+          </div>
+        ))
+      )}
     </div>
 
     <!-- 無搜尋結果提示 -->
@@ -37,21 +86,92 @@ const { blogs } = Astro.props;
   document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('blog-search') as HTMLInputElement;
     const blogItems = document.querySelectorAll('.blog-item');
+    const parentItems = document.querySelectorAll('.parent-item-container');
+    const parentList = document.getElementById('parent-list');
+    const backButton = document.getElementById('back-button');
+    const backButtonElement = backButton?.querySelector('button');
+    const mainTitle = document.getElementById('main-title');
     const noResults = document.getElementById('no-results');
 
-    if (!searchInput || !blogItems.length || !noResults) return;
+    if (!searchInput || !blogItems.length || !noResults || !parentList || !backButton || !mainTitle) return;
 
+    let currentFilter = ''; // 當前篩選的 parent，空字串表示顯示主列表
+
+    // 顯示主列表
+    function showMainList() {
+      currentFilter = '';
+      mainTitle.textContent = 'Recent posts';
+      parentList.classList.remove('hidden');
+      backButton.classList.add('hidden');
+      
+      // 顯示獨立文章，隱藏有 parent 的文章
+      blogItems.forEach((item) => {
+        const parent = (item as HTMLElement).dataset.parent || '';
+        if (parent === '') {
+          (item as HTMLElement).style.display = 'block';
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // 清空搜尋
+      searchInput.value = '';
+      noResults.classList.add('hidden');
+    }
+
+    // 顯示特定 parent 的文章
+    function showParentArticles(parentName: string) {
+      currentFilter = parentName;
+      mainTitle.textContent = parentName;
+      parentList.classList.add('hidden');
+      backButton.classList.remove('hidden');
+
+      // 只顯示該 parent 的文章
+      blogItems.forEach((item) => {
+        const parent = (item as HTMLElement).dataset.parent || '';
+        if (parent === parentName) {
+          (item as HTMLElement).style.display = 'block';
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+
+      // 清空搜尋
+      searchInput.value = '';
+      noResults.classList.add('hidden');
+    }
+
+    // Parent 項目點擊事件
+    parentItems.forEach((parentItem) => {
+      parentItem.addEventListener('click', function() {
+        const parentName = (this as HTMLElement).dataset.parent || '';
+        if (parentName) {
+          showParentArticles(parentName);
+        }
+      });
+    });
+
+    // 返回按鈕點擊事件
+    backButtonElement?.addEventListener('click', showMainList);
+
+    // 搜尋功能
     searchInput.addEventListener('input', function() {
       const searchTerm = this.value.toLowerCase().trim();
       let visibleCount = 0;
 
+      // 根據當前篩選狀態決定要搜尋哪些文章
       blogItems.forEach((item) => {
+        const parent = (item as HTMLElement).dataset.parent || '';
         const title = item.querySelector('h2')?.textContent?.toLowerCase() || '';
+        
+        // 檢查是否應該在當前篩選狀態下顯示這篇文章
+        const shouldShowBasedOnFilter = currentFilter === '' 
+          ? parent === '' // 主列表只顯示沒有 parent 的文章
+          : parent === currentFilter; // 篩選狀態下只顯示該 parent 的文章
 
-        const isMatch = searchTerm === '' || 
-                       title.includes(searchTerm);
+        const isMatch = searchTerm === '' || title.includes(searchTerm);
 
-        if (isMatch) {
+        if (shouldShowBasedOnFilter && isMatch) {
           (item as HTMLElement).style.display = 'block';
           visibleCount++;
         } else {
@@ -67,14 +187,23 @@ const { blogs } = Astro.props;
       }
     });
 
-    // 清除按鈕功能
+    // 清除搜尋按鈕功能
     searchInput.addEventListener('search', function() {
       if (this.value === '') {
+        // 根據當前篩選狀態重新顯示文章
         blogItems.forEach((item) => {
-          (item as HTMLElement).style.display = 'block';
+          const parent = (item as HTMLElement).dataset.parent || '';
+          const shouldShow = currentFilter === '' 
+            ? parent === ''
+            : parent === currentFilter;
+          
+          (item as HTMLElement).style.display = shouldShow ? 'block' : 'none';
         });
         noResults.classList.add('hidden');
       }
     });
+
+    // 初始化：顯示主列表
+    showMainList();
   });
 </script>

@@ -1,0 +1,35 @@
+---
+const { parentName, childrenCount } = Astro.props;
+
+
+---
+
+<div class="parent-item mb-6 cursor-pointer" data-parent={parentName}>
+    <div class="group flex flex-col items-start bg-primary/5 p-5 rounded-lg shadow-md
+        border-2 border-primary/20 hover:border-primary/40 hover:shadow-lg transition-all">
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+                <div class="bg-primary/20 rounded-full p-2 mr-3">
+                    <iframe
+                            src="https://lottie.host/embed/82bf497d-979d-4ff1-8b34-9c082d7c24da/F43F25SAme.lottie"
+                            style="width: 30px; height: 30px;"
+                            class="mr-2"
+                    ></iframe>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold text-primary group-hover:text-primary/80 transition-colors">
+                        {parentName}
+                    </h2>
+                    <p class="text-sm text-offset mt-1">
+                        {childrenCount} 篇文章
+                    </p>
+                </div>
+            </div>
+            <div class="text-primary/60 group-hover:text-primary transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>

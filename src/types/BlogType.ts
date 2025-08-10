@@ -8,5 +8,6 @@ export interface Blog {
         datetime: string;
         image?: string;
         isEnabled: boolean;
+        parent?: string;
     }
 }
