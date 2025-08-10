@@ -2,7 +2,7 @@
 title: "Day 3 - Golang 語法速成：打造「可測試」的函式、結構與介面"
 datetime: "2025-08-06"
 description: "在 Day 3，我們將深入 Golang 語法，學習如何設計「可測試」的程式碼。重點包括函式、結構與介面的使用，並透過實際範例來理解它們在 TDD 中的重要性。"
-image: "https://github.com/CodeMachine0121/gophers-images/blob/master/sketch/fairy-tale/witch-too-much-candy.png?raw=true"
+image: "https://www.pinclipart.com/picdir/big/400-4000243_addthis-sharing-buttons-gophers-golang-clipart.png"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
 ---
 

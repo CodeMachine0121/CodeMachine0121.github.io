@@ -2,7 +2,7 @@
 title: "Day 5 - 寫出優雅的 Assertion:  使用 testing 套件與  stretchr/testify"
 datetime: "2025-08-08"
 description: "在 Day 4，我們將深入 Golang 的測試框架，學習如何撰寫測試檔案 `_test.go`，並使用 `go test` 指令來執行和管理測試。掌握這些基礎後，我們就能開始實踐 TDD 循環了！"
-image: "https://golang.org/doc/gopher/fiveyears.jpg"
+image: "https://github.com/CodeMachine0121/gophers-images/blob/master/sketch/fairy-tale/witch-too-much-candy.png?raw=true"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
 ---
 

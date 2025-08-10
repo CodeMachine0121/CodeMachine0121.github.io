@@ -10,7 +10,7 @@ const { blogs } = Astro.props;
 const standaloneBlogs = blogs.filter((blog: Blog) => !blog.data.parent);
 const childBlogs = blogs.filter((blog: Blog) => blog.data.parent);
 
-// 統計每個 parent 的文章數量
+// 統計每個 parent 的文章數量並排序
 const parentGroups = childBlogs.reduce((acc: Record<string, Blog[]>, blog: Blog) => {
   const parentName = blog.data.parent!;
   if (!acc[parentName]) {
@@ -19,6 +19,13 @@ const parentGroups = childBlogs.reduce((acc: Record<string, Blog[]>, blog: Blog)
   acc[parentName].push(blog);
   return acc;
 }, {});
+
+// 對每個 parent 群組的文章按日期排序（由舊至新）
+Object.keys(parentGroups).forEach(parentName => {
+  parentGroups[parentName].sort((a, b) => 
+    new Date(a.data.datetime).getTime() - new Date(b.data.datetime).getTime()
+  );
+});
 
 // 創建 parent 項目數據
 const parentItems = Object.keys(parentGroups).map(parentName => ({
