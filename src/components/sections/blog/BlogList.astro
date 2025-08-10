@@ -65,7 +65,7 @@ const parentItems = Object.keys(parentGroups).map(parentName => ({
         </div>
       ))}
       {/* 隱藏的子文章 */}
-      {Object.entries(parentGroups).map(([parentName, children]) => 
+      {Object.entries(parentGroups).map(([parentName, children]: [string, Blog[]]) => 
         children.map((blog: Blog, index: number) => (
           <div class="blog-item hidden" data-parent={parentName}>
             <BlogItem blog={blog} isFirst={index === 0} />
