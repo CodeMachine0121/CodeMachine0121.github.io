@@ -191,7 +191,7 @@ public class ModuleWeaver : BaseModuleWeaver
 ### Run Project
 在這邊就可以嘗試把專案跑起來看看，如果一切順利的話，Console畫面會跟下圖一樣。
 
-![img.png](/src/content/images/AOP.png)
+![img.png](/images/AOP.png)
 
 ## Conclusion
 以上就是使用 Fody 作為AOP框架的應用實作，但其實AOP 還有另一個框架工具：`Castle.Core`，那兩者雖然都是AOP框架，但使用上的方式截然不同，若有空的話我再來寫一篇 `Castle.Core`的應用實作，今天先到這。
