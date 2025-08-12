@@ -1,6 +1,9 @@
 ---
 title: Code 魔術師 - AOP using Fody
-datetime: "2024-12-07"
+datetime: "2025-08-12"
+description: "這篇文章介紹了使用 Fody 框架來實作 AOP（面向切面程式設計）的實務經驗。從實際工作需求出發，詳細說明了 AOP 的核心概念：把跟業務邏輯沒有直接關係、但又不可缺少的橫切關注點（像是日誌記錄、身份驗證、效能監控等等）從主要的業務程式碼中抽離出來處理"
+image: "/images/titles/code-wizard.png"
+class: "responsive-blog-post"
 ---
 
 Hi all, 因為工作上的關係接觸到了所謂的 AOP 框架, 覺得挺有趣的故藉此文章分享。
