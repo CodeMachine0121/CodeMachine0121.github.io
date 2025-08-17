@@ -2,7 +2,7 @@
 title: "Day 6  表格驅動測試 (Table Driven Tests) : Go 語言的測試慣用法"
 datetime: "2025-08-09"
 description: "在 Day 6，我們將深入 Golang 的表格驅動測試 (Table Driven Tests) 慣用法，學習如何使用表格來組織測試案例，讓測試程式碼更清晰、易於擴充。掌握這個模式後，你將能夠以最優雅的方式撰寫測試，並輕鬆應對各種情境。"
-image: "https://golang.org/doc/gopher/fiveyears.jpg"
+image: "/images/titles/golang-boxer.jpg"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
 ---
 

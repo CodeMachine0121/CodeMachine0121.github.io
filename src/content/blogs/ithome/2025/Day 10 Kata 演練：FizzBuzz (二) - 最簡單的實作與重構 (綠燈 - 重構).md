@@ -3,6 +3,7 @@ title: "Day 10 - Kata 演練：FizzBuzz (二) - 最簡單的實作與重構 (綠
 datetime: "2025-08-13"
 description: "在 Day 10，我們將完成我們的第一個 TDD 循環，從紅燈到綠燈，並進行必要的重構。這是 TDD 的核心實踐，讓我們的程式碼在測試的保護下逐步成長。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
+image: "/images/titles/golang-strong.png"
 ---
 
 ## 昨日回顧與今日目標

@@ -3,6 +3,7 @@ title: "Day 9  Kata 演練：FizzBuzz (一) - 寫下第一個失敗的測試 (�
 datetime: "2025-08-11"
 description: "在 Day 9，我們將正式開始我們的第一個 TDD Kata 練習。我們將完全遵循 TDD 的節奏，從最小的需求出發，為 FizzBuzz 問題寫下第一個「注定會失敗」的測試。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
+image: "/images/titles/golang-coffee.png"
 ---
 
 ## 昨日回顧與今日目標
