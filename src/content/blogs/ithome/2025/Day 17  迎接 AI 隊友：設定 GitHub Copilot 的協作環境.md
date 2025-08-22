@@ -3,7 +3,7 @@ title: "Day 17 - 迎接 AI 隊友：設定 GitHub Copilot 的協作環境"
 datetime: "2025-08-20"
 description:  "正式邀請我們的 AI 隊友——GitHub Copilot——加入專案，並為我們的人機協作搭建好舞台。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-space.png"
+image: "/images/titles/golang-space.jpg"
 ---
  
 

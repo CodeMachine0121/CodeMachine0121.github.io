@@ -3,7 +3,7 @@ title: "Day 19 - AI 輔助重構與測試覆蓋：讓 AI 成為你的 Code Revie
 datetime: "2025-08-22"
 description:  "學習如何利用 AI，來強化我們 TDD 循環中的「重構」與「測試完備性」。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-starwar.png"
+image: "/images/titles/golang-starwar.jpg"
 ---
 
 ## 昨日回顧與今日目標

@@ -3,7 +3,7 @@ title: "Day 18 - AI 詠唱術：從需求到產品的完整 TDD 演練"
 datetime: "2025-08-21"
 description:  "掌握 TDD 流程中的「AI 詠唱術」(Prompt Engineering)，並透過一個全新的微型 Kata，完整地演練一次從需求發想到開發完成的 AI 協作 TDD 流程。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-space-2.png"
+image: "/images/titles/golang-space-2.jpg"
 ---
 ## 昨日回顧與今日目標
 

@@ -3,7 +3,7 @@ title: "Day 16 何時不該用 TDD？誠實面對其限制與權衡"
 datetime: "2025-08-19"
 description:  "從 TDD 的熱情中抽離，以一種務實、客觀的態度，探討 TDD 的限制與權衡，學會做出明智的技術決策。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-dota.png"
+image: "/images/titles/golang-dota.jpg"
 ---
 
 ## 昨日回顧與今日目標

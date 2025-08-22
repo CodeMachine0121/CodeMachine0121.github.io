@@ -3,7 +3,7 @@ title: "Day 15 TDD 實戰回顧與核心問答"
 datetime: "2025-08-18"
 description:  "不寫任何程式碼，而是進行一次深度的復盤與問答，我們到底從手動 TDD Kata 中學到了什麼？"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-git.png"
+image: "/images/titles/golang-git.jpg"
 ---
 
 ## 昨日回顧與今日目標
