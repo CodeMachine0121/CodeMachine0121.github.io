@@ -56,6 +56,18 @@
   ],
   "projects": [
     {
+      "imageUrl": "/images/titles/golang-strong.png",
+      "title": "從 0 到 1：與 AI 協作的 Golang TDD 實戰",
+      "type": "Application",
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
+    },
+    {
+      "imageUrl": "",
+      "title": "go-kubernetes-command-tool",
+      "type": "Application",
+      "link": "https://github.com/CodeMachine0121/go-kubernetes-command-tool"
+    },
+    {
       "imageUrl": "",
       "title": "Sharing Tech Knowledge on Blog",
       "type": "Blog",
