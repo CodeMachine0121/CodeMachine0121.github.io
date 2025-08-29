@@ -56,7 +56,7 @@
   ],
   "projects": [
     {
-      "imageUrl": "/images/titles/golang-space.png",
+      "imageUrl": "/images/titles/golang-space.jpg",
       "title": "Golang Trading Strategy",
       "type": "Application",
       "link": "https://github.com/CodeMachine0121/go-trading-strategy"
