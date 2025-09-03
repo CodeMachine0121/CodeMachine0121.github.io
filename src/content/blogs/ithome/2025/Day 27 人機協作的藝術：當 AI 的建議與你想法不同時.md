@@ -3,7 +3,7 @@ title: "Day 27 - 人機協作的藝術：當 AI 的建議與你想法不同時"
 datetime: "2025-08-27"
 description:  "完成 ATDD 的後半部分，將業務描述與真實的程式碼邏輯連接起來，並點亮最終的綠燈！"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-couch-header.jpg"
+image: "/images/titles/golang-header.jpg"
 ---
 
 ## 昨日回顧與今日目標
