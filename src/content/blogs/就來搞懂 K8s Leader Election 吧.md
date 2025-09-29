@@ -8,7 +8,13 @@ class: "responsive-blog-post"
 
 ## 前因後果
 
-安安, 由於工作上有遇到一個情境會需要使用到分散式鎖的概念進行解題，雖然最後不是透過這篇文章要說明的方法解決的，但我覺得這方法也蠻好玩的，故寫篇文章來做個紀錄。
+安安, 由於工作上有遇到一個情境會需要使用到分散式鎖的概念進行解## 結論
+
+Kubernetes Leader Election 是一種分散式鎖的機制，可以在分散式應用程式中實現高可用性和協調性。透過 client-go 庫，開發者可以相對輕鬆地將 Leader Election 功能整合到自己的程式中。
+
+不過有一點需要特別注意，就是當部署到 Kubernetes 叢集時，需要確保 Pod 擁有正確的權限來操作 Leader Election 的資源（像是 Lease 或 ConfigMap），而且每個 Pod 都要使用唯一的 ID 來參與整個選舉過程。
+
+好的，就是這樣啦。希望這篇文章能夠幫助到正在閱讀的你。不是透過這篇文章要說明的方法解決的，但我覺得這方法也蠻好玩的，故寫篇文章來做個紀錄。
 
 好的，上面說到情境需要使用分散式鎖，我們就先來定義一下這篇文章的情境吧！
 
@@ -16,14 +22,14 @@ class: "responsive-blog-post"
 
 ## 什麼是 Kubernetes Leader Election？
 
-在分散式系統中，Leader Election 是一種協調機制，它確保在任何給定時間只有一個實例（或 Pod）被選為 **Leader** 來執行特定的任務。這對於防止重複工作、確保資料一致性以及協調多個服務副本等場景非常重要。
+在分散式系統中，Leader Election 是一種協調機制，簡單來說就是讓多個服務副本（Pod）中，只有一個被選為 **Leader** 來執行特定的任務。這樣做可以防止重複工作、確保資料一致性，在需要協調多個服務副本的場景下非常重要。
 
 ### 在 Kubernetes 中，Leader Election 通常用於以下情況
 
 以我目前工作上遇到的案例來說，有以下幾種：
 
-- 當有多個replica時，可能只有一個 replica 被允許處理寫入請求。
-- 如果有一個每隔一段時間需要執行的任務，Leader Election 可以確保只有一個 pod 執行該任務。
+- 當有多個 replica 時，可能只有一個 replica 被允許處理寫入請求
+- 如果有一個每隔一段時間需要執行的任務，Leader Election 可以確保只有一個 Pod 執行該任務
 
 ### Leader Election 的工作原理
 
@@ -33,28 +39,28 @@ Kubernetes 的 Leader Election 通常依賴於以下機制：
 
 Leader Election 需要一個共享的資源來進行協調。在 Kubernetes 中，這通常是：
 
-- **ConfigMap**: 這是最常見的方式。一個特定的 ConfigMap 會被用來儲存當前leader的資訊（例如 Leader 的 ID、租約到期時間等）。
-- **Lease (租約) 對象**: coordination.k8s.io/v1 API 引入了 Lease 對象，它是專為 Leader Election 設計的，比 ConfigMap 效率更高，並且有內建的租約過期機制。
-- **Endpoints**: 在早期版本中也曾被使用，但現在較少見。
+- **ConfigMap**：這是最常見的方式。會用一個特定的 ConfigMap 來儲存當前 Leader 的資訊（例如 Leader 的 ID、租約到期時間等）
+- **Lease (租約) 對象**：coordination.k8s.io/v1 API 引入了 Lease 對象，它是專為 Leader Election 設計的，比 ConfigMap 效率更高，而且有內建的租約過期機制
+- **Endpoints**：在早期版本中也曾被使用，但現在比較少見了
 
 
 #### 競爭和續約 (Contention and Renewal)
 
-所有參與 Leader Election 的 pod 都會嘗試獲取（或更新）這個協調資源，將自己標記為leader，成功獲取或更新資源的實例成為leader。
+所有參與 Leader Election 的 Pod 都會嘗試獲取（或更新）這個協調資源，把自己標記為 Leader，成功獲取或更新資源的那個就成為 Leader。
 
-此外，leader會定期「續約」（更新資源），以表明它仍然是 active 的 leader。如果leader未能續約（例如因為Exception 或 IO問題），其租約會過期，其他pods就會競爭成為新的leader。
+另外，Leader 會定期「續約」（更新資源），來表明它還活著，仍然是 active 的 Leader。如果 Leader 沒能續約（比如因為程式異常或 IO 問題），租約就會過期，其他 Pod 就會開始競爭成為新的 Leader。
 
 #### Client-go
 
-Kubernetes 應用程式通常使用 **client-go** 庫中提供的 Leader Election 相關工具，例如 leaderelection.LeaderElectionConfig 和 leaderelection.LeaderElector，來簡化 Leader Election 的實作。
+Kubernetes 應用程式通常會使用 **client-go** 庫中提供的 Leader Election 相關工具，像是 `leaderelection.LeaderElectionConfig` 和 `leaderelection.LeaderElector`，來簡化 Leader Election 的實作。
 
 ----
 
-## 實做部份 使用Golang (引用 client-go 庫)
+## 實做部份：使用 Golang (引用 client-go 庫)
 
-實做部份，我會透過 程式碼的方式來呈現，語言的部份我選用 Golang，(因為這是我最近私下在玩的) 相關的 library 會使用 [client-go](https://github.com/kubernetes/client-go)
+實作部份我會直接用程式碼來呈現，語言選擇 Golang（因為這是我最近私下在玩的語言），相關的 library 會使用 [client-go](https://github.com/kubernetes/client-go)。
 
-這是官方提供的 library，覺得挺好的，尤其對於開發 Kubernetes 相關 application 而言。
+這是官方提供的 library，覺得挺不錯的，特別是在開發 Kubernetes 相關應用程式時很好用。
 
 ### 引入必要的 library
 
@@ -77,9 +83,9 @@ import (
 
 ### 設定 Leader Election 相關參數
 
-- leaseLockName: 用於 Leader Election 的 Lease 對象的名稱。
-- leaseLockNamespace: Lease 對象所在的命名空間。
-- id: 當前參與者的唯一 ID，通常是 Pod 的名稱。
+- `leaseLockName`：用於 Leader Election 的 Lease 對象名稱
+- `leaseLockNamespace`：Lease 對象所在的 namespace
+- `id`：當前參與者的唯一 ID，通常是 Pod 的名稱
 
 ```golang
 var (
@@ -109,7 +115,7 @@ func buildConfig(kubeconfig string) (*rest.Config, error) {
 }
 ```
 
-// ... 在 main 中 就可以這樣做啟動
+### 啟動 Kubernet client
 
 ```go
 config, err := buildConfig(*kubeconfig)
@@ -120,20 +126,20 @@ if err != nil {
 client := kubernetes.NewForConfigOrDie(config)
 ```
 
-### 設定 Leader Election method
+### 設定 Leader Election 相關函數
 
-這些 method 定義了當 pod 成為 leader 或失去 leader 權限時該做什麼。
+這些函數定義了當 Pod 成為 Leader 或失去 Leader 權限時該做什麼事情。
 
 ```go
 ctx, cancel := context.WithCancel(context.Background())
 defer cancel()
 
-// 這裡是你作為leader要執行的邏輯
+// 這裡是當你成為 Leader 時要執行的主要邏輯
 run := func(ctx context.Context) {
     klog.Infof("%s: I am the leader! Performing my duties...", *id)
 
-    // 在這裡執行只有leader才應該執行的業務邏輯
-    // 例如：啟動控制器、處理任務等
+    // 在這裡執行只有 Leader 才應該執行的業務邏輯
+    // 例如：啟動控制器、處理特定任務等
 
     for {
         select {
@@ -160,17 +166,17 @@ lock := &resourcelock.LeaseLock{
 
 leaderElectionConfig := leaderelection.LeaderElectionConfig{
     Lock:            lock,
-    // 這個pod成為leader後，執行 `run` 函數
+    // 這個 Pod 成為 Leader 後，執行 `run` 函數
     Callbacks: leaderelection.LeaderCallbacks{
         OnStartedLeading: func(ctx context.Context) {
             run(ctx)
         },
-        // pod
+        // 當 Pod 失去 Leader 身份時執行
         OnStoppedLeading: func() {
             klog.Infof("%s: Lost leadership, exiting.", *id)
-            cancel() // 終止上下文，退出程序
+            cancel() // 終止上下文，退出程式
         },
-        // 當這個實例被選舉為leader時，執行這個函數
+        // 當有新的 Leader 被選出時執行
         OnNewLeader: func(identity string) {
             if identity == *id {
                 return
@@ -178,9 +184,9 @@ leaderElectionConfig := leaderelection.LeaderElectionConfig{
             klog.Infof("%s: New leader elected: %s", *id, identity)
         },
     },
-    // 續約間隔：leader會每隔多久更新 Lease 資源
+    // 續約間隔：Leader 會每隔多久更新 Lease 資源
     LeaseDuration: 15 * time.Second,
-    // 續約失敗後，多久會嘗試再次成為leader (非leader才會競爭)
+    // 續約失敗後，多久會嘗試再次成為 Leader（非 Leader 才會競爭）
     RenewDeadline: 10 * time.Second,
     // 在失去領導權後，多久會釋放領導權
     RetryPeriod:   2 * time.Second,
@@ -199,15 +205,15 @@ if err != nil {
 leaderElector.Run(ctx) // 啟動 Leader Election 循環
 ```
 
-### 如何編譯和運行 (在 Kubernetes 叢集外部進行測試)
+### 如何編譯和運行（在 Kubernetes 叢集外部進行測試）
 
-- **編譯**
+**編譯：**
 
 ```bash
 go build -o my-leader-app main.go
 ```
 
-- **運行 (提供 kubeconfig)**:
+**運行（提供 kubeconfig）：**
 
 ```bash
 # 開啟第一個終端機
@@ -219,20 +225,21 @@ go build -o my-leader-app main.go
 ```
 
 > [!NOTE]
-> 那由於整段code我覺得偏長，於是我放在這邊 [main.go](https://github.com/CodeMachine0121/go-k8s-leader-election/blob/main/main.go)
+> 由於整段程式碼我覺得比較長，所以我放在這邊：[main.go](https://github.com/CodeMachine0121/go-k8s-leader-election/blob/main/main.go)
 
-再把整個專案跑起來後，我們會看到其中一個終端機被選舉為 leader 並印 ***"I am the leader!"***，其他的則會印 ***"New leader elected: instance-X"***。如果我們把 leader 按個 ctrl-c 做關閉，其他還在跑程式的終端會競爭並選出新的 leader。
+把整個專案跑起來後，我們會看到其中一個終端機被選舉為 Leader 並印出 ***"I am the leader!"***，其他的則會印出 ***"New leader elected: instance-X"***。如果我們把作為 Leader 的程式按 Ctrl+C 關閉，其他還在運行的程式就會開始競爭並選出新的 Leader。
 
-我們也可以通過 kubectl 指令來觀察 Lease 的變化， 指令如下：
+我們也可以通過 kubectl 指令來觀察 Lease 的變化，指令如下：
 
 ```bash
 kubectl get lease my-leader-election-lock
 ```
 
-以下圖片是我自己的運行結果圖，讓我來做點說明： 首先我透過 tmux 切分出三個 teminal 視窗，作為三個 pod　來爭奪 leader　的位置。
+以下圖片是我自己的運行結果圖，讓我來簡單說明一下：我透過 tmux 切分出三個 terminal 視窗，模擬三個 Pod 來爭奪 Leader 的位置。
 
-途中可以看見，instance-1 首先取得了 leader　的角色，同時，instance-2, instance-3　也會同步得知當前的 leader 為 instance-1。
-接著，我把身為 leader　的 instance-1 結束，並透過指令將 k8s 的 lease 資訊給 print 出來，可以發現當前的 leader 還是 instance-1，但在過幾秒鐘再看一次就會發現 leader 變成了 instnce-3，同時也能看到 instnce-3 得知自己變成 leader，instance-2 也同步得知　instnace-3 變成 leader。
+過程中可以看到，instance-1 首先取得了 Leader 的角色，同時 instance-2 和 instance-3 也會同步得知當前的 Leader 是 instance-1。
+
+接著，我把作為 Leader 的 instance-1 結束，並透過指令將 K8s 的 Lease 資訊印出來，可以發現當前的 Leader 還是 instance-1，但過幾秒再看一次就會發現 Leader 變成了 instance-3，同時也能看到 instance-3 得知自己變成 Leader，instance-2 也同步得知 instance-3 變成 Leader。
 
 ![img.png](/images/go-leader-election.png)
 
