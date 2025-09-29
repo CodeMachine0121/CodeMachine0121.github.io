@@ -4,7 +4,7 @@
 
 <div id="image-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 hidden">
   <div class="relative max-w-screen-lg max-h-screen p-4">
-    <button id="close-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 z-10">
+    <button id="close-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 z-10 hover:bg-gray-700">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -15,46 +15,73 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function setupImageModal() {
     const modal = document.getElementById('image-modal');
     const modalImage = document.getElementById('modal-image');
     const closeButton = document.getElementById('close-modal');
 
-    // 監聽自定義事件以打開模態視窗
-    document.addEventListener('open-image-modal', (e) => {
-      const { src, alt } = (e as CustomEvent).detail;
-      if (modalImage && modal) {
-        modalImage.setAttribute('src', src);
-        modalImage.setAttribute('alt', alt || '');
+    if (!modal || !modalImage || !closeButton) return;
+
+    // 為所有圖片添加點擊事件（排除已經在模態視窗中的圖片）
+    const images = document.querySelectorAll('img:not(#modal-image)');
+    
+    images.forEach(img => {
+      img.style.cursor = 'pointer';
+      img.style.transition = 'transform 0.3s ease';
+      
+      img.addEventListener('mouseenter', () => {
+        img.style.transform = 'scale(1.02)';
+      });
+      
+      img.addEventListener('mouseleave', () => {
+        img.style.transform = 'scale(1)';
+      });
+      
+      img.addEventListener('click', () => {
+        // 設置模態視窗中的圖片源和alt文字
+        modalImage.src = img.src;
+        modalImage.alt = img.alt || '';
+        
+        // 顯示模態視窗
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // 關閉模態視窗的函數
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // 點擊關閉按鈕
+    closeButton.addEventListener('click', closeModal);
+
+    // 點擊背景關閉
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
       }
     });
 
-    // 關閉模態視窗
-    if (closeButton && modal) {
-      closeButton.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-      });
+    // ESC 鍵關閉
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
 
-      // 點擊背景也可以關閉
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.add('hidden');
-          document.body.style.overflow = '';
-        }
-      });
+    // 防止模態視窗中的圖片點擊事件冒泡
+    modalImage.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
 
-      // ESC 鍵關閉
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-          modal.classList.add('hidden');
-          document.body.style.overflow = '';
-        }
-      });
-    }
-  });
+  // 初始化
+  document.addEventListener('DOMContentLoaded', setupImageModal);
+  
+  // 支持 Astro 動態加載的內容
+  document.addEventListener('astro:page-load', setupImageModal);
 </script>
 
 <style>
@@ -74,76 +101,9 @@
       top: 1rem;
       right: 1rem;
     }
+    
+    #modal-image {
+      max-height: 85vh !important;
+    }
   }
 </style>
-<div class="modal-overlay" id="imageModal">
-    <img id="modalImage" class="modal-image" alt="Zoomed image" />
-</div>
-
-<style>
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-image {
-        max-width: 90%;
-        max-height: 90vh;
-        object-fit: contain;
-        cursor: pointer;
-    }
-
-    :global(img) {
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-
-    :global(img:hover) {
-        transform: scale(1.02);
-    }
-</style>
-
-<script>
-    function setupImageZoom() {
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImage');
-
-        if (!modal || !modalImg) return;
-
-        const images = document.querySelectorAll('img:not(.modal-image)');
-
-        images.forEach(img => {
-            img.addEventListener('click', () => {
-                modal.style.display = 'flex';
-            });
-        });
-
-        modal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        modalImg.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                modal.style.display = 'none';
-            }
-        });
-    }
-
-    // 初始化
-    setupImageZoom();
-
-    // 支持动态加载的内容
-    document.addEventListener('astro:page-load', setupImageZoom);
-</script>
