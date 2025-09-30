@@ -22,7 +22,7 @@ const parentGroups = childBlogs.reduce((acc: Record<string, Blog[]>, blog: Blog)
 
 // 對每個 parent 群組的文章按日期排序（由舊至新）
 Object.keys(parentGroups).forEach(parentName => {
-  parentGroups[parentName].sort((a, b) => 
+  parentGroups[parentName].sort((a: Blog, b: Blog) => 
     new Date(a.data.datetime).getTime() - new Date(b.data.datetime).getTime()
   );
 });

@@ -23,7 +23,7 @@
     if (!modal || !modalImage || !closeButton) return;
 
     // 為所有圖片添加點擊事件（排除已經在模態視窗中的圖片）
-    const images = document.querySelectorAll('img:not(#modal-image)');
+    const images = document.querySelectorAll('img:not(#modal-image)') as NodeListOf<HTMLImageElement>;
     
     images.forEach(img => {
       img.style.cursor = 'pointer';
@@ -39,8 +39,8 @@
       
       img.addEventListener('click', () => {
         // 設置模態視窗中的圖片源和alt文字
-        modalImage.src = img.src;
-        modalImage.alt = img.alt || '';
+        (modalImage as HTMLImageElement).src = img.src;
+        (modalImage as HTMLImageElement).alt = img.alt || '';
         
         // 顯示模態視窗
         modal.classList.remove('hidden');
