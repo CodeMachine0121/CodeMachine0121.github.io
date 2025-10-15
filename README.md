@@ -72,3 +72,34 @@ Open http://localhost:4321 in your browser to view the result 🚀
 Licensed under the MIT License, Copyright © Wasut Panyawiphat.
 
 See [LICENSE](/LICENSE) for more information.
+
+## 系列文章頁（/series）
+
+本專案提供「系列文章」聚合頁，將具有 Frontmatter `parent` 的文章以系列分組顯示。
+
+- 路徑與導覽：
+  - 頁面路徑：`/series`
+  - Header 選單已新增「系列文章」，首頁亦提供入口連結
+- 文章標記（Frontmatter 範例）：
+  ```md
+  ---
+  title: "文章標題"
+  datetime: "YYYY-MM-DD"
+  description: "可選"
+  image: "可選"
+  parent: "系列主題名稱"     # 指定所屬系列
+  seriesIndex: 1              # 可選：系列內排序（小 → 大）
+  ---
+  ```
+- 排序規則：
+  - 系列卡片：依系列名稱字母序（locale：zh-TW）
+  - 系列內文章：先依 `seriesIndex` 升冪；若相同或未設定，依 `datetime` 由早到晚（舊 → 新）
+- 可近性：系列卡片可展開/收合，支援鍵盤（Enter/Space），ARIA 標註包含 `aria-controls`/`aria-expanded` 與 `role="region"`
+
+### 驗證（可選）
+
+執行以下指令列出各系列與文章數，並檢查排序是否符合規範：
+
+```
+node scripts/verify-series.mjs
+```
