@@ -47,8 +47,6 @@ function parseFrontmatter(file) {
   return data;
 }
 
-function cmpAsc(a, b) { return a - b; }
-
 const files = listFiles(blogsRoot);
 if (!files.length) {
   console.log('[verify-series] No blog files found under', blogsRoot);
