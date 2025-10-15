@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from 'astro:content';
+
+// 讀取所有 blogs，聚合出有 parent 的系列清單
+const allBlogs = await getCollection('blogs');
+
+type BlogEntry = typeof allBlogs[number];
+
+// 過濾出有 parent 的文章
+const withParent = allBlogs.filter(b => typeof b.data.parent === 'string' && b.data.parent?.trim());
+
+// 依 parent 聚合
+const seriesMap = new Map<string, BlogEntry[]>();
+for (const entry of withParent) {
+  const key = (entry.data.parent as string).trim();
+  const list = seriesMap.get(key) ?? [];
+  list.push(entry);
+  seriesMap.set(key, list);
+}
+
+// 依系列名稱字母序排序系列
+const seriesList = Array.from(seriesMap.entries())
+  .sort(([a], [b]) => a.localeCompare(b, 'zh-TW'))
+  .map(([name, entries]) => {
+    // 系列內文章排序：seriesIndex 升冪（未定義者置後），其次 datetime 新到舊
+    const sorted = entries.slice().sort((a, b) => {
+      const ai = Number.isFinite(a.data.seriesIndex as any) ? Number(a.data.seriesIndex) : Number.POSITIVE_INFINITY;
+      const bi = Number.isFinite(b.data.seriesIndex as any) ? Number(b.data.seriesIndex) : Number.POSITIVE_INFINITY;
+      if (ai !== bi) return ai - bi;
+      // datetime 新到舊
+      const at = new Date(a.data.datetime).getTime();
+      const bt = new Date(b.data.datetime).getTime();
+      return bt - at;
+    });
+    return { name, entries: sorted };
+  });
+
+// Phase 2 檢查：於開發時輸出聚合結果（名稱與數量）
+console.log('[series] total series =', seriesList.length);
+for (const s of seriesList) {
+  console.log(` - ${s.name}: ${s.entries.length} 篇`);
+}
+---
+
+<Layout title="系列文章">
+  <section class="py-8">
+    <h1 class="text-3xl font-bold mb-6">系列文章</h1>
+
+    {seriesList.length === 0 && (
+      <p class="text-offset">目前沒有任何系列文章。</p>
+    )}
+
+    <ul class="space-y-4">
+      {seriesList.map((series) => (
+        <li class="border border-default rounded-lg p-4 bg-background">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-text">{series.name}</h2>
+            <span class="text-sm text-offset">{series.entries.length} 篇</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+
+<style>
+  .border-default { border-color: rgba(125, 125, 125, 0.2); }
+  .bg-background { background: transparent; }
+  .text-text { color: inherit; }
+  .text-offset { opacity: 0.75; }
+</style>
+
