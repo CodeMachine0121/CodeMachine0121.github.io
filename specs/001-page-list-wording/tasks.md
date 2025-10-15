@@ -25,7 +25,7 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 **目的**：完成所有故事前必備的共用能力
 
 - [x] T005 建立系列聚合與排序邏輯於 `src/pages/series.astro`（以 `getCollection('blogs')` 讀取，依 `parent` 聚合）
-- [x] T006 定義排序規則：系列依名稱字母序；系列內文章以 `seriesIndex` 升冪，缺省則回退 `datetime` 新到舊（寫於頁內註解）
+- [x] T006 定義排序規則：系列依名稱字母序；系列內文章以 `seriesIndex` 升冪，缺省則回退 `datetime` 由早到晚（寫於頁內註解）
 - [x] T007 驗證前置：在本機以假資料（或既有內容）印出系列名稱與文章數於 console（開發時）
 
 **檢查點**：聚合與排序正確，頁面可載入，無型別錯誤。
@@ -56,9 +56,9 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 
 ### 實作任務
 
-- [ ] T020 [US2] 在 `src/pages/series.astro` 實作展開/收合行為（可用原生 JS；多卡片同時展開）
-- [ ] T021 [US2] 加入 ARIA 屬性與鍵盤操作（Enter/Space 切換；聚焦樣式）於 `src/pages/series.astro`
-- [ ] T022 [US2] 處理空系列提示：「此系列尚無文章」
+- [x] T020 [US2] 在 `src/pages/series.astro` 實作展開/收合行為（可用原生 JS；多卡片同時展開）
+- [x] T021 [US2] 加入 ARIA 屬性與鍵盤操作（Enter/Space 切換；聚焦樣式）於 `src/pages/series.astro`
+- [x] T022 [US2] 處理空系列提示：「此系列尚無文章」
 
 **檢查點**：展開/收合在 1 秒內完成並有狀態指示；可鍵盤操作。
 
@@ -72,8 +72,8 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 
 ### 實作任務
 
-- [ ] T026 [US3] 於 `src/pages/series.astro` 的展開清單中為每篇文章建立連結（`/blogs/${entry.slug}`）
-- [ ] T027 [US3] 確認對應頁（`src/pages/blogs/[slug].astro` 與 `src/pages/blogs/[...slug].astro`）可正常載入內容
+- [x] T026 [US3] 於 `src/pages/series.astro` 的展開清單中為每篇文章建立連結（`/blogs/${entry.slug}`）
+- [x] T027 [US3] 確認對應頁（`src/pages/blogs/[slug].astro` 與 `src/pages/blogs/[...slug].astro`）可正常載入內容
 
 **檢查點**：95% 連結點擊可正確導向文章頁。
 
