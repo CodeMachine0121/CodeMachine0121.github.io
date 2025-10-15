@@ -117,7 +117,7 @@ for (const s of seriesList) {
   const toggles = document.querySelectorAll('[data-series-toggle]');
   toggles.forEach((btn) => {
     btn.addEventListener('click', () => toggle(btn));
-    btn.addEventListener('keydown', (e) => {
+    btn.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         toggle(btn);
@@ -125,7 +125,7 @@ for (const s of seriesList) {
     });
   });
 
-  function toggle(btn) {
+  function toggle(btn: Element) {
     const panelId = btn.getAttribute('aria-controls');
     if (!panelId) return;
     const panel = document.getElementById(panelId);
