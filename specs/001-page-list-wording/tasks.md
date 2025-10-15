@@ -40,9 +40,9 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 
 ### 實作任務
 
-- [ ] T010 [P] [US1] 於 `src/pages/series.astro` 渲染系列清單（僅顯示主標題與計數）
-- [ ] T011 [P] [US1] 在 `src/config/cv.json` 的 `menuItems` 加入 `{ name: "系列文章", link: "/series" }`
-- [ ] T012 [US1] 於 `src/pages/index.astro` 新增前往 `/series` 的入口（按鈕或連結，極簡即可）
+- [x] T010 [P] [US1] 於 `src/pages/series.astro` 渲染系列清單（僅顯示主標題與計數）
+- [x] T011 [P] [US1] 在 `src/config/cv.json` 的 `menuItems` 加入 `{ name: "系列文章", link: "/series" }`
+- [x] T012 [US1] 於 `src/pages/index.astro` 新增前往 `/series` 的入口（按鈕或連結，極簡即可）
 
 **檢查點**：系列清單可見；主導覽與首頁皆可到達 `/series`。
 
