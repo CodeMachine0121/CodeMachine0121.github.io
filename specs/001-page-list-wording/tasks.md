@@ -13,10 +13,10 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 
 **目的**：建立必要檔案與品質檢查流程
 
-- [ ] T001 在 `src/pages/series.astro` 建立頁面檔（骨架與標題）
-- [ ] T002 於 `src/content/config.ts` 新增選用欄位 `seriesIndex: z.number().int().nonnegative().optional()` 並確保 `parent` 允許為可選字串
-- [ ] T003 [P] 於 `package.json` 新增腳本 `lint`（例如：`eslint .`）與 `check`（`astro check` 已在 build 觸發）
-- [ ] T004 [P] 新增 `.eslintrc.cjs`（基本規則即可，對齊 TypeScript/Astro）與 `.eslintignore`
+- [x] T001 在 `src/pages/series.astro` 建立頁面檔（骨架與標題）
+- [x] T002 於 `src/content/config.ts` 新增選用欄位 `seriesIndex: z.number().int().nonnegative().optional()` 並確保 `parent` 允許為可選字串
+- [x] T003 [P] 於 `package.json` 新增腳本 `lint`（例如：`eslint .`）與 `check`（`astro check` 已在 build 觸發）
+- [x] T004 [P] 新增 `.eslintrc.cjs`（基本規則即可，對齊 TypeScript/Astro）與 `.eslintignore`
 
 ---
 
@@ -24,9 +24,9 @@ description: "Task list for feature: 系列文章頁面與標記規範"
 
 **目的**：完成所有故事前必備的共用能力
 
-- [ ] T005 建立系列聚合與排序邏輯於 `src/pages/series.astro`（以 `getCollection('blogs')` 讀取，依 `parent` 聚合）
-- [ ] T006 定義排序規則：系列依名稱字母序；系列內文章以 `seriesIndex` 升冪，缺省則回退 `datetime` 新到舊（寫於頁內註解）
-- [ ] T007 驗證前置：在本機以假資料（或既有內容）印出系列名稱與文章數於 console（開發時）
+- [x] T005 建立系列聚合與排序邏輯於 `src/pages/series.astro`（以 `getCollection('blogs')` 讀取，依 `parent` 聚合）
+- [x] T006 定義排序規則：系列依名稱字母序；系列內文章以 `seriesIndex` 升冪，缺省則回退 `datetime` 新到舊（寫於頁內註解）
+- [x] T007 驗證前置：在本機以假資料（或既有內容）印出系列名稱與文章數於 console（開發時）
 
 **檢查點**：聚合與排序正確，頁面可載入，無型別錯誤。
 

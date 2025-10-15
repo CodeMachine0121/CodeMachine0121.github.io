@@ -167,6 +167,10 @@
 	{
 	  "name": "Blog",
 	  "link": "/blogs"
+	},
+	{
+	  "name": "系列文章",
+	  "link": "/series"
 	}
   ],
   "socialLinks": [
