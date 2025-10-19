@@ -161,11 +161,11 @@
   ],
   "menuItems": [
 	{
-	  "name": "About",
+	  "name": "關於我",
 	  "link": "/"
 	},
 	{
-	  "name": "Blog",
+	  "name": "技術文章",
 	  "link": "/blogs"
 	},
 	{
