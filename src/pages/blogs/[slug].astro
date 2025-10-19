@@ -32,7 +32,7 @@ const {Content} = await blog.render();
 ---
 
 <Layout title={blog.data.title}>
-    <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <article class="w-full max-w-none md:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <header class="mb-8 text-center md:text-left">
             <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
             <time datetime={blog.data.datetime} class="text-sm text-offset block">
@@ -40,12 +40,12 @@ const {Content} = await blog.render();
             </time>
         </header>
 
-        <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-3xl mx-auto">
+        <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-5xl mx-auto">
             <Content />
         </div>
 
         <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
-            <button 
+            <button
                 id="back-to-top-button"
                 class="bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary-600 transition-colors"
                 aria-label="回到頂部"
