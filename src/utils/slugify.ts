@@ -49,21 +49,3 @@ export function createSlug(
   return processed
 }
 
-/**
- * 驗證 slug 格式是否有效
- * 
- * @param slug 要驗證的 slug
- * @returns 是否為有效格式
- */
-export function validateSlug(slug: string): boolean {
-  if (!slug || typeof slug !== 'string') {
-    return false;
-  }
-
-  try {
-    const decoded = decodeURIComponent(slug);
-    return decoded.length > 0 && decoded.length <= 150;
-  } catch {
-    return false;
-  }
-}
