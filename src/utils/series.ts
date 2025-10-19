@@ -132,3 +132,50 @@ export function getSeriesSummary(series: Series) {
     firstDate: firstDate.toISOString()
   };
 }
+
+/**
+ * 取得指定**單篇**文章的相鄰文章
+ * 
+ * @param currentSlug 目前文章的 slug
+ * @returns 前一篇與後一篇文章的物件
+ */
+export async function getAdjacentPosts(currentSlug: string): Promise<{ prevPost: BlogEntry | null; nextPost: BlogEntry | null }> {
+  const allBlogs = await getCollection('blogs');
+  const standaloneBlogs = allBlogs.filter(blog => !blog.data.parent);
+  const sortedBlogs = standaloneBlogs.sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
+  
+  const currentIndex = sortedBlogs.findIndex(blog => blog.slug === currentSlug);
+  
+  if (currentIndex === -1) {
+    return { prevPost: null, nextPost: null };
+  }
+  
+  const prevPost = currentIndex > 0 ? sortedBlogs[currentIndex - 1] : null;
+  const nextPost = currentIndex < sortedBlogs.length - 1 ? sortedBlogs[currentIndex + 1] : null;
+  
+  return { prevPost, nextPost };
+}
+
+/**
+ * 取得指定**系列**文章的相鄰文章
+ * 
+ * @param currentSlug 目前文章的 slug
+ * @param seriesName 系列名稱
+ * @returns 前一篇與後一篇文章的物件
+ */
+export async function getAdjacentSeriesPosts(currentSlug: string, seriesName: string): Promise<{ prevPost: BlogEntry | null; nextPost: BlogEntry | null }> {
+  const allBlogs = await getCollection('blogs');
+  const seriesBlogs = allBlogs.filter(blog => blog.data.parent === seriesName);
+  const sortedBlogs = sortArticlesBySeries(seriesBlogs);
+
+  const currentIndex = sortedBlogs.findIndex(blog => blog.slug === currentSlug);
+
+  if (currentIndex === -1) {
+    return { prevPost: null, nextPost: null };
+  }
+
+  const prevPost = currentIndex > 0 ? sortedBlogs[currentIndex - 1] : null;
+  const nextPost = currentIndex < sortedBlogs.length - 1 ? sortedBlogs[currentIndex + 1] : null;
+
+  return { prevPost, nextPost };
+}

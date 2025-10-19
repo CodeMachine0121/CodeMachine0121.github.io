@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
+import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
+import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 
 
 export const getStaticPaths = async () => {
@@ -29,6 +31,19 @@ type Props = {
 
 const {blog} = Astro.props;
 const {Content} = await blog.render();
+
+let prevPost, nextPost;
+
+if (blog.data.parent) {
+    const adjacent = await getAdjacentSeriesPosts(blog.slug, blog.data.parent);
+    prevPost = adjacent.prevPost;
+    nextPost = adjacent.nextPost;
+} else {
+    const adjacent = await getAdjacentPosts(blog.slug);
+    // For standalone posts, "previous" is newer, "next" is older.
+    prevPost = adjacent.prevPost;
+    nextPost = adjacent.nextPost;
+}
 ---
 
 <Layout title={blog.data.title}>
@@ -43,6 +58,8 @@ const {Content} = await blog.render();
         <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-5xl mx-auto">
             <Content />
         </div>
+
+        <PostNavigation prevPost={prevPost} nextPost={nextPost} />
 
         <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
             <button

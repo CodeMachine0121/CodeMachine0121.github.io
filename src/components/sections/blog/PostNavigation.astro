@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  prevPost: CollectionEntry<'blogs'> | null;
+  nextPost: CollectionEntry<'blogs'> | null;
+}
+
+const { prevPost, nextPost } = Astro.props;
+---
+
+<nav class="flex flex-col sm:flex-row justify-between gap-4 mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+  <div class="flex-1">
+    {prevPost && (
+      <a href={`/blogs/${prevPost.slug}`} class="block p-4 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-700 h-full">
+        <p class="text-sm text-gray-500 dark:text-gray-400">« 上一篇</p>
+        <h4 class="font-bold mt-1">{prevPost.data.title}</h4>
+      </a>
+    )}
+  </div>
+  <div class="flex-1 text-right">
+    {nextPost && (
+      <a href={`/blogs/${nextPost.slug}`} class="block p-4 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-700 h-full">
+        <p class="text-sm text-gray-500 dark:text-gray-400">下一篇 »</p>
+        <h4 class="font-bold mt-1">{nextPost.data.title}</h4>
+      </a>
+    )}
+  </div>
+</nav>
