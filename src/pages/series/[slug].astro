@@ -1,0 +1,264 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Layout from "../../layouts/Layout.astro";
+import BlogItem from "../../components/sections/blog/BlogItem.astro";
+import { generateSeriesList, findSeriesBySlug } from "../../utils/series";
+import { createPagination, parsePageFromUrl, createPageUrl, isValidPage } from "../../utils/pagination";
+import { SERIES_CONSTANTS, type Series } from "../../types/series";
+
+// 生成靜態路徑
+export const getStaticPaths: GetStaticPaths = async () => {
+  const seriesList = await generateSeriesList();
+
+  return seriesList.map((series) => ({
+    params: {
+      slug: series.slug
+    },
+    props: {
+      series,
+    }
+  }));
+};
+
+// 取得路徑參數
+const { slug } = Astro.params;
+const { series } = Astro.props;
+
+// 如果 props 中沒有 series，嘗試動態查找
+let currentSeries = series as Series;
+
+currentSeries = await findSeriesBySlug(currentSeries.slug);
+
+if (!currentSeries) {
+  return Astro.redirect('/404', 404);
+}
+
+// 處理分頁 - 靜態生成時準備所有數據，客戶端 JavaScript 會處理分頁
+const itemsPerPage = SERIES_CONSTANTS.DEFAULT_ITEMS_PER_PAGE;
+const totalPages = Math.ceil(currentSeries.count / itemsPerPage);
+
+// 準備所有分頁數據，讓客戶端 JavaScript 可以使用
+const allArticles = currentSeries.articles;
+
+// 建立麵包屑導覽
+const breadcrumb = [
+  { text: '系列文章', url: '/series', active: false },
+  { text: currentSeries.name, active: true }
+];
+
+// 分頁 URLs 將由客戶端 JavaScript 動態生成
+
+// 頁面標題
+const pageTitle = `${currentSeries.name} - 系列文章`;
+---
+
+<Layout title={pageTitle}>
+  <section class="py-8">
+    <!-- 麵包屑導覽 -->
+    <nav class="mb-6" aria-label="麵包屑導覽">
+      <ol class="flex items-center text-sm text-offset">
+        {breadcrumb.map((item, index) => (
+          <li class="flex items-center">
+            {index > 0 && <span class="mx-2 text-offset" aria-hidden="true">></span>}
+            {item.url ? (
+              <a
+                href={item.url}
+                class="hover:text-text transition-colors underline decoration-transparent hover:decoration-current"
+              >
+                {item.text}
+              </a>
+            ) : (
+              <span class={item.active ? 'text-text font-medium' : 'text-offset'}>
+                {item.text}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <!-- 系列標題與資訊 -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2">{currentSeries.name}</h1>
+      <div class="flex items-center text-offset space-x-4">
+        <span>共 {currentSeries.count} 篇文章</span>
+        {totalPages > 1 && (
+          <>
+            <span>•</span>
+            <span id="page-info">第 1 / {totalPages} 頁</span>
+          </>
+        )}
+      </div>
+    </div>
+
+    <!-- 文章清單 -->
+    {allArticles.length === 0 ? (
+      <div class="text-center py-12">
+        <p class="text-offset text-lg">此系列尚無文章。</p>
+        <p class="text-offset text-sm mt-2">請稍後再回來查看更新。</p>
+      </div>
+    ) : (
+      <div id="articles-container" class="space-y-6 mb-8">
+        {allArticles.map((blog, index) => (
+          <div class="blog-item" data-page={Math.floor(index / itemsPerPage) + 1} style={index >= itemsPerPage ? 'display: none;' : ''}>
+            <BlogItem blog={blog} isFirst={index === 0} />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <!-- 分頁導覽 -->
+    {totalPages > 1 && (
+      <nav id="pagination-nav" class="flex justify-center items-center mt-12" aria-label="分頁導覽">
+        <div class="flex items-center space-x-4">
+          <button
+            id="prev-page"
+            class="px-4 py-2 border border-default rounded hover:bg-background-offset transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="前一頁"
+            disabled
+          >
+            ← 上一頁
+          </button>
+
+          <span id="pagination-info" class="text-offset px-2">
+            第 1 頁，共 {totalPages} 頁
+          </span>
+
+          <button
+            id="next-page"
+            class="px-4 py-2 border border-default rounded hover:bg-background-offset transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="下一頁"
+          >
+            下一頁 →
+          </button>
+        </div>
+      </nav>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .border-default { border-color: rgba(125, 125, 125, 0.2); }
+  .bg-background-offset { background: rgba(125, 125, 125, 0.08); }
+  .text-text { color: inherit; }
+  .text-offset { opacity: 0.75; }
+  .text-primary { color: var(--primary-color, #0066cc); }
+
+  /* Focus ring styles */
+  .focus\:ring-primary:focus {
+    --tw-ring-color: var(--primary-color, #0066cc);
+  }
+
+  .focus\:ring-opacity-50:focus {
+    --tw-ring-opacity: 0.5;
+  }
+
+  /* 響應式分頁 */
+  @media (max-width: 640px) {
+    nav[aria-label="分頁導覽"] .flex {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    nav[aria-label="分頁導覽"] span {
+      order: -1;
+    }
+  }
+</style>
+
+<script define:vars={{ totalPages, itemsPerPage, seriesSlug: slug }}>
+  // 客戶端分頁邏輯
+  let currentPage = 1;
+
+  // 從 URL 獲取頁碼
+  function getCurrentPageFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(urlParams.get('page') || '1', 10);
+    return isNaN(page) || page < 1 ? 1 : Math.min(page, totalPages);
+  }
+
+  // 更新 URL 的頁碼參數
+  function updateUrl(page) {
+    const url = new URL(window.location);
+    if (page <= 1) {
+      url.searchParams.delete('page');
+    } else {
+      url.searchParams.set('page', page.toString());
+    }
+    window.history.pushState({}, '', url.toString());
+  }
+
+  // 顯示指定頁面的文章
+  function showPage(page) {
+    const articles = document.querySelectorAll('.blog-item');
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    articles.forEach((article, index) => {
+      const shouldShow = index >= startIndex && index < endIndex;
+      article.style.display = shouldShow ? '' : 'none';
+    });
+
+    // 更新頁面資訊顯示
+    const pageInfo = document.getElementById('page-info');
+    const paginationInfo = document.getElementById('pagination-info');
+    if (pageInfo) {
+      pageInfo.textContent = `第 ${page} / ${totalPages} 頁`;
+    }
+    if (paginationInfo) {
+      paginationInfo.textContent = `第 ${page} 頁，共 ${totalPages} 頁`;
+    }
+
+    // 更新按鈕狀態
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    if (prevBtn) {
+      prevBtn.disabled = page <= 1;
+    }
+    if (nextBtn) {
+      nextBtn.disabled = page >= totalPages;
+    }
+
+    // 滾動到頂部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 初始化分頁
+  function initPagination() {
+    currentPage = getCurrentPageFromUrl();
+    showPage(currentPage);
+
+    // 綁定按鈕事件
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          updateUrl(currentPage);
+          showPage(currentPage);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          updateUrl(currentPage);
+          showPage(currentPage);
+        }
+      });
+    }
+  }
+
+  // 處理瀏覽器前進/後退按鈕
+  window.addEventListener('popstate', () => {
+    currentPage = getCurrentPageFromUrl();
+    showPage(currentPage);
+  });
+
+  // 頁面載入完成後初始化
+  document.addEventListener('DOMContentLoaded', initPagination);
+</script>

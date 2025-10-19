@@ -1,46 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getCollection } from 'astro:content';
-import BlogItem from "../components/sections/blog/BlogItem.astro";
+import { generateSeriesList } from "../utils/series";
 
-// 讀取所有 blogs，聚合出有 parent 的系列清單
-const allBlogs = await getCollection('blogs');
+// 使用新的系列聚合工具
+const seriesList = await generateSeriesList();
 
-type BlogEntry = typeof allBlogs[number];
-
-// 過濾出有 parent 的文章
-const withParent = allBlogs.filter(b => typeof b.data.parent === 'string' && b.data.parent?.trim());
-
-// 依 parent 聚合
-const seriesMap = new Map<string, BlogEntry[]>();
-for (const entry of withParent) {
-  const key = (entry.data.parent as string).trim();
-  const list = seriesMap.get(key) ?? [];
-  list.push(entry);
-  seriesMap.set(key, list);
-}
-
-// 依系列名稱字母序排序系列
-const seriesList = Array.from(seriesMap.entries())
-  .sort(([a], [b]) => a.localeCompare(b, 'zh-TW'))
-  .map(([name, entries]) => {
-    // 系列內文章排序：seriesIndex 升冪（未定義者置後），其次 datetime 由早到晚（舊 → 新）
-    const sorted = entries.slice().sort((a, b) => {
-      const ai = Number.isFinite(a.data.seriesIndex as any) ? Number(a.data.seriesIndex) : Number.POSITIVE_INFINITY;
-      const bi = Number.isFinite(b.data.seriesIndex as any) ? Number(b.data.seriesIndex) : Number.POSITIVE_INFINITY;
-      if (ai !== bi) return ai - bi;
-      // datetime 由早到晚（升冪）
-      const at = new Date(a.data.datetime).getTime();
-      const bt = new Date(b.data.datetime).getTime();
-      return at - bt;
-    });
-    return { name, entries: sorted };
-  });
-
-// Phase 2 檢查：於開發時輸出聚合結果（名稱與數量）
+// 開發時輸出系列資訊
 console.log('[series] total series =', seriesList.length);
-for (const s of seriesList) {
-  console.log(` - ${s.name}: ${s.entries.length} 篇`);
+for (const series of seriesList) {
+  console.log(` - ${series.name}: ${series.count} 篇`);
 }
 ---
 
@@ -52,86 +20,51 @@ for (const s of seriesList) {
       <p class="text-offset">目前沒有任何系列文章。</p>
     )}
 
-    <ul class="space-y-4">
-      {seriesList.map((series, idx) => {
-        const contentId = `series-panel-${idx}`;
-        const buttonId = `series-button-${idx}`;
-        return (
-          <li class="border border-default rounded-lg bg-background">
-            <div class="flex items-center justify-between p-4">
-              <h2 id={`series-title-${idx}`} class="text-xl font-semibold text-text">
-                {series.name}
-              </h2>
-              <span class="text-sm text-offset">{series.entries.length} 篇</span>
-            </div>
-
-            <div class="px-4 pb-4">
-              <button
-                id={buttonId}
-                class="w-full text-left px-4 py-2 rounded-md border border-default hover:bg-background-offset focus:outline-none focus:ring"
-                aria-controls={contentId}
-                aria-expanded="false"
-                aria-labelledby={`series-title-${idx}`}
-                data-series-toggle
-              >
-                展開/收合文章清單
-              </button>
-
-              <div
-                id={contentId}
-                role="region"
-                aria-labelledby={`series-title-${idx}`}
-                hidden
-                class="mt-3"
-              >
-                {series.entries.length === 0 ? (
-                  <p class="text-offset">此系列尚無文章。</p>
-                ) : (
-                  <div class="space-y-4">
-                    {series.entries.map((e, i) => (
-                      <div class="blog-item">
-                        <BlogItem blog={e} isFirst={i === 0} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+    <div class="grid gap-4 max-w-4xl">
+      {seriesList.map((series) => (
+        <a 
+          href={`/series/${series.slug}`}
+          class="block p-6 border border-default rounded-lg bg-background hover:shadow-md transition-all duration-200 group"
+        >
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-text group-hover:text-primary transition-colors">
+              {series.name}
+            </h2>
+            <span class="text-sm text-offset bg-background-offset px-3 py-1 rounded-full">
+              {series.count} 篇
+            </span>
+          </div>
+          <div class="mt-2 text-sm text-offset">
+            <span>系列文章</span>
+            <span class="mx-2">•</span>
+            <span>點擊查看全部文章</span>
+          </div>
+        </a>
+      ))}
+    </div>
   </section>
 </Layout>
 
 <style>
   .border-default { border-color: rgba(125, 125, 125, 0.2); }
   .bg-background { background: transparent; }
+  .bg-background-offset { background: rgba(125, 125, 125, 0.1); }
   .text-text { color: inherit; }
   .text-offset { opacity: 0.75; }
-  .hover\:bg-background-offset:hover { background: rgba(125, 125, 125, 0.08); }
-</style>
-
-<script>
-  // 多卡片同時展開；使用 button + aria 屬性
-  const toggles = document.querySelectorAll('[data-series-toggle]');
-  toggles.forEach((btn) => {
-    btn.addEventListener('click', () => toggle(btn));
-    btn.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggle(btn);
-      }
-    });
-  });
-
-  function toggle(btn: Element) {
-    const panelId = btn.getAttribute('aria-controls');
-    if (!panelId) return;
-    const panel = document.getElementById(panelId);
-    if (!panel) return;
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!expanded));
-    panel.hidden = expanded;
+  .text-primary { color: var(--primary-color, #0066cc); }
+  
+  /* 響應式設計 */
+  @media (max-width: 768px) {
+    .grid {
+      gap: 0.75rem;
+    }
+    
+    a {
+      padding: 1rem;
+    }
+    
+    h2 {
+      font-size: 1.125rem;
+    }
   }
-</script>
+</style>
