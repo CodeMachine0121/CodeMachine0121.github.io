@@ -3,7 +3,6 @@ import type { GetStaticPaths } from 'astro';
 import Layout from "../../layouts/Layout.astro";
 import BlogItem from "../../components/sections/blog/BlogItem.astro";
 import { generateSeriesList, findSeriesBySlug } from "../../utils/series";
-import { validateSlug } from "../../utils/slugify";
 import { createPagination, parsePageFromUrl, createPageUrl, isValidPage } from "../../utils/pagination";
 import { SERIES_CONSTANTS, type Series } from "../../types/series";
 
@@ -25,15 +24,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { slug } = Astro.params;
 const { series } = Astro.props;
 
-// 驗證 slug 有效性
-if (!slug || typeof slug !== 'string' || !validateSlug(slug)) {
-  return Astro.redirect('/404', 404);
-}
-
 // 如果 props 中沒有 series，嘗試動態查找
 let currentSeries = series as Series;
+
+currentSeries = await findSeriesBySlug(currentSeries.slug);
 if (!currentSeries) {
-  currentSeries = await findSeriesBySlug(slug);
   if (!currentSeries) {
     return Astro.redirect('/404', 404);
   }

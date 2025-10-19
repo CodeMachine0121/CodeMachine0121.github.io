@@ -21,7 +21,7 @@ export interface SlugifyOptions {
  * @returns URL 安全的 slug
  */
 export function createSlug(
-  seriesName: string, 
+  seriesName: string,
   options: Partial<SlugifyOptions> = {}
 ): string {
   const config = {
@@ -32,21 +32,21 @@ export function createSlug(
   };
 
   let processed = seriesName.trim();
-  
+
   if (config.lowercase) {
     processed = processed.toLowerCase();
   }
-  
+
   // 替換空格為分隔符
   processed = processed.replace(/\s+/g, config.separator);
-  
+
   // 移除特殊字元（保留中文、英文、數字、連字號）
   if (config.removeSpecialChars) {
     processed = processed.replace(/[^\w\u4e00-\u9fff-]/g, '');
   }
-  
+
   // URL 編碼處理
-  return encodeURIComponent(processed);
+  return processed
 }
 
 /**
@@ -59,25 +59,11 @@ export function validateSlug(slug: string): boolean {
   if (!slug || typeof slug !== 'string') {
     return false;
   }
-  
+
   try {
     const decoded = decodeURIComponent(slug);
     return decoded.length > 0 && decoded.length <= 150;
   } catch {
     return false;
-  }
-}
-
-/**
- * 解碼 slug 回原始系列名稱
- * 
- * @param slug URL slug
- * @returns 解碼後的系列名稱，失敗時返回 null
- */
-export function decodeSlug(slug: string): string | null {
-  try {
-    return decodeURIComponent(slug);
-  } catch {
-    return null;
   }
 }
