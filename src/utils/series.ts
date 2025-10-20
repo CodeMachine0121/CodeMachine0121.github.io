@@ -18,9 +18,9 @@ export type BlogEntry = CollectionEntry<'blogs'>;
 export async function generateSeriesList(): Promise<Series[]> {
   const allBlogs = await getCollection('blogs');
   const withParent = allBlogs.filter(blog => blog.data.parent?.trim());
-  
+
   const seriesMap = new Map<string, BlogEntry[]>();
-  
+
   // 依系列名稱分組
   for (const blog of withParent) {
     const seriesName = blog.data.parent!.trim();
@@ -28,7 +28,7 @@ export async function generateSeriesList(): Promise<Series[]> {
     articles.push(blog);
     seriesMap.set(seriesName, articles);
   }
-  
+
   // 轉換為系列物件陣列
   const seriesList = Array.from(seriesMap.entries())
     .map(([name, articles]) => ({
@@ -37,8 +37,13 @@ export async function generateSeriesList(): Promise<Series[]> {
       articles: sortArticlesBySeries(articles),
       count: articles.length
     }))
-    .sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
-    
+    .sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'))
+    .sort((a, b) => { // 用ID排序表示時間
+      const latestA = a.articles[0]?.id ?? '';
+      const latestB = b.articles[0]?.id ?? '';
+      return latestA.localeCompare(latestB);
+    });
+
   return seriesList;
 }
 
@@ -61,7 +66,7 @@ export async function findSeriesBySlug(slug: string): Promise<Series | null> {
  * @returns 排序後的文章陣列
  */
 export function sortArticlesBySeries(
-  articles: BlogEntry[], 
+  articles: BlogEntry[],
   order: ArticleSortOrder = 'seriesIndex-asc'
 ): BlogEntry[] {
   return articles.slice().sort((a, b) => {
@@ -89,17 +94,17 @@ export function sortArticlesBySeries(
  * seriesIndex 升序，未定義者置後，其次按發布時間升序
  */
 function sortBySeriesIndexAsc(a: BlogEntry, b: BlogEntry): number {
-  const aIndex = Number.isFinite(a.data.seriesIndex) 
-    ? Number(a.data.seriesIndex) 
+  const aIndex = Number.isFinite(a.data.seriesIndex)
+    ? Number(a.data.seriesIndex)
     : Number.POSITIVE_INFINITY;
-  const bIndex = Number.isFinite(b.data.seriesIndex) 
-    ? Number(b.data.seriesIndex) 
+  const bIndex = Number.isFinite(b.data.seriesIndex)
+    ? Number(b.data.seriesIndex)
     : Number.POSITIVE_INFINITY;
-  
+
   if (aIndex !== bIndex) {
     return aIndex - bIndex;
   }
-  
+
   // 相同 seriesIndex 時按發布時間升序
   return sortByDateAsc(a, b);
 }
@@ -123,7 +128,7 @@ export function getSeriesSummary(series: Series) {
   const dates = series.articles.map(article => new Date(article.data.datetime));
   const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
   const firstDate = new Date(Math.min(...dates.map(d => d.getTime())));
-  
+
   return {
     name: series.name,
     slug: series.slug,
@@ -143,16 +148,16 @@ export async function getAdjacentPosts(currentSlug: string): Promise<{ prevPost:
   const allBlogs = await getCollection('blogs');
   const standaloneBlogs = allBlogs.filter(blog => !blog.data.parent);
   const sortedBlogs = standaloneBlogs.sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
-  
+
   const currentIndex = sortedBlogs.findIndex(blog => blog.slug === currentSlug);
-  
+
   if (currentIndex === -1) {
     return { prevPost: null, nextPost: null };
   }
-  
+
   const prevPost = currentIndex > 0 ? sortedBlogs[currentIndex - 1] : null;
   const nextPost = currentIndex < sortedBlogs.length - 1 ? sortedBlogs[currentIndex + 1] : null;
-  
+
   return { prevPost, nextPost };
 }
 
