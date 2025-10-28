@@ -1,5 +1,5 @@
 ---
-title: "Day11: Goroutine的 life controller, context 優雅地發出取消訊號"
+title: "Day11: 使用 Context 優雅地發出取消訊號"
 datetime: "2025-10-28"
 description: "在 Day 10，我們探討了由於 channel 永久阻塞導致的 goroutine 洩漏問題，並得出結論：必須為每個 goroutine 提供一個明確的退出路徑。但是，如果一個 goroutine 正在執行一個耗時的任務，比如資料庫查詢或 API 請求，我們該如何從外部通知它：「嘿，不用再等了，上游請求已經被用戶取消了！」"
 parent: "Goroutine 最佳入門姿勢"
