@@ -134,3 +134,9 @@
   opacity: 1;
   visibility: visible;
 }
+
+/* Inline code should appear light gray */
+.blog-content :not(pre) > code,
+.blog-content :not(pre) code {
+  color: var(--color-text-offset);
+}
