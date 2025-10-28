@@ -1,11 +1,11 @@
 ---
-title: "Day11: Goroutine的 life controller, context 優雅地發出取消訊號
-datetime: "2025-10-19"
+title: "Day11: Goroutine的 life controller, context 優雅地發出取消訊號"
+datetime: "2025-10-28"
 description: "在 [Day 10]，我們探討了由於 `channel` 永久阻塞導致的 `goroutine` 洩漏問題，並得出結論：**必須為每個 `goroutine` 提供一個明確的退出路徑**。但是，如果一個 `goroutine` 正在執行一個耗時的任務，比如資料庫查詢或 API 請求，我們該如何從外部通知它：「嘿，不用再等了，上游請求已經被用戶取消了！」"
 parent: "Goroutine 最佳入門姿勢"
 ---
 
-#### **前言**
+### **前言**
 
 在 Day 10，我們探討了由於 `channel` 永久阻塞導致的 `goroutine` 洩漏問題，並得出結論：**必須為每個 `goroutine` 提供一個明確的退出路徑**。但是，如果一個 `goroutine` 正在執行一個耗時的任務，比如資料庫查詢或 API 請求，我們該如何從外部通知它：「嘿，不用再等了，上游請求已經被用戶取消了！」
 
@@ -29,7 +29,7 @@ type Context interface {
 *   **`Err()`**: 在 `Done()` 的 `channel` 被關閉後，`Err()` 會回傳一個非 `nil` 的錯誤，解釋 `Context` 被關閉的原因（例如，`context.Canceled` 或 `context.DeadlineExceeded`）。
 *   `Value()`：允許你在 `Context` 中附加一些鍵值對數據，這些數據可以在整個請求鏈中向下傳遞。
 
-#### **如何建立和使用 `Context`？**
+### **如何建立和使用 `Context`？**
 
 你永遠不會自己去實作 `Context` `interface`。`Golang` 提供了兩個最基礎的 `Context` 作為根節點：`context.Background()` 和 `context.TODO()`。
 
@@ -40,7 +40,7 @@ type Context interface {
 3.  **`context.WithTimeout(parent Context, timeout time.Duration)`**: 回傳一個子 `Context`, 子 `Context` 會在經過指定的**相對時間** `timeout` 後自動被取消。這是最常用的超時控制函式。
 4.  **`context.WithValue(parent Context, key, val any)`**: 附加鍵值對。
 
-#### **實戰：用 `context.WithCancel` 優雅地停止 Goroutine**
+### **實戰：用 `context.WithCancel` 優雅地停止 Goroutine**
 
 讓我們用 `Context` 來賦予 `main` `goroutine` 提前「叫停」工作的能力。
 
@@ -89,7 +89,7 @@ func main() {
 }
 ```
 
-#### **今日總結**
+### **今日總結**
 
 今天我們掌握了 `Golang` 併發開發中最重要的工具之一：`context`。
 1.  我們理解了 `Context` 的核心是 `Done()` `channel`，它被用來廣播取消信號。
