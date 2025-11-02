@@ -1,5 +1,5 @@
 ---
-title:  "Day 7: 【並行的十字路口】`select` 在多個Channel之間做出選擇"
+title:  "Day 7: select 在多個Channel之間做出選擇"
 datetime: "2025-10-16"
 description: "在 [Day 6](https://your-link-to-day-6)，我們學會了如何使用 `close()` 和 `for...range` 來優雅地處理來自單一 Channel 的數據流。這解決了生產者-消費者模型中的一個核心問題。但是，如果一個 Goroutine 需要同時應對**多個** Channel 呢？想像一個更複雜的場景：一個 Worker Goroutine 不僅要從任務 Channel (`tasks`) 接收工作，還要同時監聽一個來自系統的停止信號 Channel (`stopSignal`)。如果它傻傻地先 `<-tasks`，它可能會永遠阻塞在那裡，而錯過了重要的停止信號。這時，我們就需要一個更強大的工具，一個能讓我們在並行的十字路口做出選擇的工具。它就是 Go 語言的 `select` 陳述式。"
 parent: "Goroutine 最佳入門姿勢"

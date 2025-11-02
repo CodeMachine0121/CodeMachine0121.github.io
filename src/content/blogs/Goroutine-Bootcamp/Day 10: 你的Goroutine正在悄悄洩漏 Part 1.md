@@ -1,5 +1,5 @@
 ---
-title: "Day10:【記憶體的小偷】你的Goroutine正在悄悄洩漏嗎?"
+title: "Day10: 你的Goroutine正在悄悄洩漏嗎? Part 1"
 datetime: "2025-10-19"
 description: "在 Day9 的結尾，我們提到了「Goroutine 洩漏 (Goroutine Leak)」，並警告說忘記停止 `Ticker` 是導致洩漏的原因之一。今天，我們要正式面對這個併發程式中極其隱蔽且危險的敵人"
 parent: "Goroutine 最佳入門姿勢"

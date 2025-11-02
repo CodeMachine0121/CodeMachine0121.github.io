@@ -1,7 +1,8 @@
 ---
-title: "Day 12: 你的Goroutine正在悄悄洩漏嗎？（下）"
+title: "Day 12: 你的Goroutine正在悄悄洩漏 Part 2"
 datetime: "2025-11-2"
-description: "在 Day 11，我們學會了使用 context 套件來從外部優雅地取消一個 goroutine，解決了因等待外部事件（如用戶取消請求）而可能導致的洩漏問題。context 提供了一個強大的、跨越 `goroutine` 邊界的信號傳遞機制。今天，我們要回到 Day 10 提出的另一個問題：如何避免因 channel 操作本身被阻塞而導致的 goroutine 洩漏？比如，一個 goroutine 嘗試向一個緩衝區已滿且沒有接收者的 channel 發送數據。在這種情況下，沒有外部的 `cancel()` 函式會被調用，洩漏的根源在於 goroutine 內部的通信僵局。
+description: >
+  在 Day 11，我們學會了使用 context 套件來從外部優雅地取消一個 goroutine，解決了因等待外部事件（如用戶取消請求）而可能導致的洩漏問題。context 提供了一個強大的、跨越 `goroutine` 邊界的信號傳遞機制。今天，我們要回到 Day 10 提出的另一個問題：如何避免因 channel 操作本身被阻塞而導致的 goroutine 洩漏？比如，一個 goroutine 嘗試向一個緩衝區已滿且沒有接收者的 channel 發送數據。在這種情況下，沒有外部的 `cancel()` 函式會被調用，洩漏的根源在於 goroutine 內部的通信僵局。
 parent: "Goroutine 最佳入門姿勢"
 ---
 

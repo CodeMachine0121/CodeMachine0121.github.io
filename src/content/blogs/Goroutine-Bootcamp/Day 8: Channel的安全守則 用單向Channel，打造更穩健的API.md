@@ -1,5 +1,5 @@
 ---
-title: "Day 8 Channel的安全守則 用單向Channel，打造更穩健的API"
+title: "Day 8: Channel的安全守則 用單向Channel，打造更穩健的API"
 datetime: "2025-10-17"
 description: "在過去的幾天裡，我們使用的 Channel 都是**雙向 (Bidirectional)** 的。也就是說，我們用 `make(chan T)` 創建的 Channel，既可以往裡面發送資料(`ch <- data`)，也可以從裡面接收資料(`data := <-ch`)。在 Goroutine 內部自由使用雙向 Channel 是完全沒問題的。但是，當我們開始將 Channel 作為 method 參數，在不同的 Goroutine 之間傳遞時，一個關於「程式碼健壯性」和「API 設計」的問題就出現了："
 parent: "Goroutine 最佳入門姿勢"
