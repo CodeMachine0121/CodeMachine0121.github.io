@@ -11,6 +11,7 @@ const standaloneBlogs = blogs.filter((blog: Blog) => !blog.data.parent);
 const childBlogs = blogs.filter((blog: Blog) => blog.data.parent);
 
 // 統計每個 parent 的文章數量並排序
+// parentGroups: 一個 parent name : child blogs 的 mapping
 const parentGroups = childBlogs.reduce((acc: Record<string, Blog[]>, blog: Blog) => {
   const parentName = blog.data.parent!;
   if (!acc[parentName]) {
