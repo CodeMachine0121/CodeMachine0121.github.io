@@ -78,8 +78,8 @@ dotnet new clean-arch -o <Project-Name>
 
 ### 實作上的挑戰：垂直切片架構 (Vertical Slice Architecture)
 
-Clean Architecture 的一個常見批評是，當開發者新增一個功能時，必須在多個專案之間跳轉（Web、Use Cases、Core）。
-**垂直切片架構（VSA）**是 Feature Folder 的重新命名，它將程式碼按「功能」（feature）組織。VSA 的問題在於，若所有程式碼都在一個專案中，開發者很容易在某個功能中直接依賴於基礎設施（例如直接使用 DbContext），從而破壞了 Clean Architecture 的依賴規則。
+Clean Architecture 的一個常見批評是，當開發者新增一個功能時，必須在多個專案之間跳轉（Web、Use Cases、Core)。
+**垂直切片架構（VSA）** 是 Feature Folder 的重新命名，它將程式碼按「功能」（feature）組織。VSA 的問題在於，若所有程式碼都在一個專案中，開發者很容易在某個功能中直接依賴於基礎設施（例如直接使用 DbContext），從而破壞了 Clean Architecture 的依賴規則。
 
 ### 解決方案：NSECOP (Namespace Dependency Cop)
 
