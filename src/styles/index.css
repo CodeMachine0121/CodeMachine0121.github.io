@@ -1,1 +1,19 @@
 @import "theme.css";
+
+/* Language Toggle Logic */
+
+/* Default State (English) */
+.lang-zh-content {
+    display: none;
+}
+.lang-en-content {
+    display: block;
+}
+
+/* Chinese State */
+html.lang-zh .lang-zh-content {
+    display: block;
+}
+html.lang-zh .lang-en-content {
+    display: none;
+}

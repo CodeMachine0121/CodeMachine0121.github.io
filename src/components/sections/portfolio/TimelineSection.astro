@@ -1,0 +1,38 @@
+---
+import TimelineItem from './TimelineItem.astro';
+
+interface Item {
+  title: string;
+  sub_title: string;
+  years: string;
+  details?: { en: string; zh: string };
+  achievements?: { en: string; zh: string }[];
+}
+
+interface Props {
+  title: string;
+  items: Item[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section class="py-10 bg-background">
+  <div class="container mx-auto px-4 max-w-5xl">
+    <h2 class="text-3xl lg:text-4xl font-bold text-default mb-12 border-b border-default pb-4">
+        {title}
+    </h2>
+
+    <div class="space-y-0">
+      {items.map((item) => (
+        <TimelineItem
+          title={item.title}
+          sub_title={item.sub_title}
+          years={item.years}
+          details={item?.details}
+          achievements={item.achievements}
+        />
+      ))}
+    </div>
+  </div>
+</section>

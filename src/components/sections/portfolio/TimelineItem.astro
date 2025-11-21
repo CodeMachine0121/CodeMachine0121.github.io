@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  sub_title: string;
+  years: string;
+  details?: { en: string; zh: string };
+  achievements?: { en: string; zh: string }[];
+}
+
+const { title, sub_title, years, details, achievements } = Astro.props;
+---
+
+<div class="relative pl-8 sm:pl-32 py-6 group">
+  <!-- Vertical Line -->
+  <div class="flex flex-col sm:flex-row items-start mb-1 
+              group-last:before:hidden 
+              before:absolute before:left-2 sm:before:left-0 before:h-full before:w-px 
+              before:bg-gray-300 dark:before:bg-gray-700 sm:before:ml-[6.5rem] before:self-start before:-translate-x-1/2 before:translate-y-3 
+              after:absolute after:left-2 sm:after:left-0 after:w-3 after:h-3 after:bg-primary 
+              after:rounded-full sm:after:ml-[6.5rem] after:-translate-x-1/2 after:translate-y-1.5
+              after:ring-4 after:ring-default after:box-content">
+    
+    <time class="sm:absolute left-0 translate-y-1 inline-flex items-center justify-end 
+                 text-sm font-mono font-semibold uppercase w-24 mb-3 sm:mb-0 text-offset pr-4">
+      {years}
+    </time>
+    
+    <div class="text-xl font-bold text-default leading-tight">{title}</div>
+  </div>
+
+  <div class="text-lg font-medium text-primary mb-2">{sub_title}</div>
+  
+  {details && (
+      <p class="text-offset mb-4 leading-relaxed">
+          <span class="lang-en-content">{details.en}</span>
+          <span class="lang-zh-content">{details.zh}</span>
+      </p>
+  )}
+  
+  {achievements && achievements.length > 0 && (
+    <ul class="list-disc list-outside ml-4 space-y-1 text-offset marker:text-primary">
+      {achievements.map((achievement) => (
+        <li class="pl-1 text-base">
+            <span class="lang-en-content">{achievement.en}</span>
+            <span class="lang-zh-content">{achievement.zh}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>

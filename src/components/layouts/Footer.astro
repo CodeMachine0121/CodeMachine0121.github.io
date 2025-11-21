@@ -10,8 +10,9 @@ import { menuItems, socialLinks } from "../../config/cv.json";
                 <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 xl:justify-end">
                     {menuItems.map(menu => (
                         <li>
-                            <a href={menu.link} title={menu.name} class="text-sm transition-all duration-300 hover:text-offset focus:text-offset">
-                                {menu.name}
+                            <a href={menu.link} title={menu.name.en} class="text-sm transition-all duration-300 hover:text-offset focus:text-offset">
+                                <span class="lang-en-content">{menu.name.en}</span>
+                                <span class="lang-zh-content">{menu.name.zh}</span>
                             </a>
                         </li>
                     ))}

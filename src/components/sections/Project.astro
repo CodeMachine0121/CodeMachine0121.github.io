@@ -5,18 +5,40 @@ const finalImageUrl = imageUrl ===  ""
     : imageUrl;
 ---
 
-<a href={link} target="_blank" rel="noopener noreferrer">
-    <div class="relative overflow-hidden rounded-lg cursor-pointer h-64 group">
-        <div 
-            class="absolute inset-0 bg-cover transition-transform duration-700 group-hover:scale-110" 
-            style={`background-image: url('${finalImageUrl}');`}>
+<a href={link} target="_blank" rel="noopener noreferrer" class="block group h-full">
+    <div class="flex flex-col h-full overflow-hidden rounded-xl bg-offset border border-default transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <!-- Image Container -->
+        <div class="relative h-48 overflow-hidden shrink-0">
+            <div 
+                class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                style={`background-image: url('${finalImageUrl}');`}>
+            </div>
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
         </div>
 
-        <div
-            class="flex flex-col justify-center w-full h-full px-8 py-4 transition-opacity duration-700
-                opacity-50 backdrop-blur-sm bg-gray-900/85 group-hover:opacity-100">
-            <h2 class="mt-4 text-xl font-semibold text-white">{title}</h2>
-            <p class="mt-2 text-lg font-bold tracking-wider text-primary uppercase">{type}</p>
+        <!-- Content Container -->
+        <div class="flex flex-col flex-grow p-6">
+            <!-- Type Badge -->
+            <div class="mb-3">
+                <span class="inline-block px-3 py-1 text-xs font-medium tracking-wider text-primary uppercase border border-primary/20 rounded-full">
+                    <span class="lang-en-content">{type.en}</span>
+                    <span class="lang-zh-content">{type.zh}</span>
+                </span>
+            </div>
+            
+            <!-- Title -->
+            <h3 class="text-xl font-bold text-default group-hover:text-primary transition-colors line-clamp-2 mb-auto">
+                <span class="lang-en-content">{title.en}</span>
+                <span class="lang-zh-content">{title.zh}</span>
+            </h3>
+            
+            <!-- View Project Link -->
+            <div class="mt-4 flex items-center text-sm font-medium text-offset group-hover:text-primary transition-colors">
+                <span>View Project</span>
+                <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </div>
         </div>
     </div>
 </a>
