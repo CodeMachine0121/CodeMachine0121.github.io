@@ -1,5 +1,5 @@
 ---
-title: "Day 15: 併發任務管理，Worker Pool 模式 (上) - 打造你的 Goroutine 大軍"
+title: "Day 15: 併發任務管理，Worker Pool 模式 Part1 - 打造你的 Goroutine 大軍"
 datetime: "2025-11-16"
 description: > 
  在過去的兩週裡，我們已經掌握了 `Golang` 併發編程的基礎元件：`goroutine` 的啟動、`channel` 的通信以及 `Mutex` 的同步。我們現在可以輕易地為每一個傳入的任務都啟動一個新的 `goroutine` 來處理。
