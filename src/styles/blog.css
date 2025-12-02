@@ -63,8 +63,7 @@
   width: 100%;
   border-collapse: collapse;
   margin: 2rem 0;
-  overflow-x: auto;
-  display: block;
+  display: table;
 }
 
 .blog-content table thead {
@@ -118,6 +117,18 @@
   .blog-content blockquote {
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .blog-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .blog-content table th,
+  .blog-content table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
   }
 }
 
