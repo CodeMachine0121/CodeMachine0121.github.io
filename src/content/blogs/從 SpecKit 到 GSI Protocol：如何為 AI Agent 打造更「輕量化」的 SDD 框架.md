@@ -14,7 +14,7 @@ class: "responsive-blog-post"
 
 ---
 
-### GSI, Gherkin -> Structure -> Implementation
+### 📚 GSI, Gherkin -> Structure -> Implementation
 
 GSI 是一套專為 AI Agent 設計的 規格驅動開發 (SDD) 協議。它將開發流程拆解為三個核心階段，強迫 AI 遵循 「先定義、再設計、後實作」 的紀律，就像是為軟體注入生命的三個步驟：
 
