@@ -1,5 +1,5 @@
 ---
-title: "系統思考 30 天學習地圖：Day 1"
+title: "Day 1: 系統視角：從「事件」到「結構」的典範轉移"
 datetime: "2025-12-17"
 description: "介紹系統思考如何幫助我們應對日益複雜的世界，並解釋系統如何產生其自身的行為模式"
 parent: "Thinking in System"
