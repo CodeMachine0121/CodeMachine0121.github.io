@@ -1,0 +1,700 @@
+---
+// GSI-Protocol Landing Page - No external links to this page
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSI-Protocol - Specification-Driven Development Workflow</title>
+    <meta name="description" content="Transform user requirements into production-ready code through a structured 4-phase process: Specification → Architecture → Implementation → Verification.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <script is:inline>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#3B82F6',
+                        cta: '#F97316',
+                        background: '#F8FAFC',
+                        text: '#1E293B',
+                        border: '#E2E8F0'
+                    },
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['Open Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+
+    <!-- Dark Mode Script - Prevents flash of wrong theme -->
+    <script is:inline>
+        (function() {
+            const theme = localStorage.getItem('theme') ||
+                         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 antialiased transition-colors duration-200">
+
+    <!-- Navigation -->
+    <nav class="fixed top-4 left-4 right-4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="text-xl font-heading font-bold text-gray-900 dark:text-white">GSI-Protocol</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors duration-200">Features</a>
+                    <a href="#workflow" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors duration-200">Workflow</a>
+                    <a href="#documentation" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors duration-200">Docs</a>
+                    <a href="https://github.com/CodeMachine0121/GSI-Protocol" target="_blank" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary transition-colors duration-200">GitHub</a>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer" aria-label="Toggle dark mode">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+
+                <!-- CTA Button -->
+                <a href="#get-started" class="hidden md:inline-flex items-center px-4 py-2 bg-cta text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition-colors duration-200 cursor-pointer">
+                    Get Started
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div class="space-y-6">
+                    <div class="inline-flex items-center px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-primary dark:text-blue-400 text-sm font-medium rounded-full">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Specification-Driven Development
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-gray-900 dark:text-white leading-tight">
+                        Transform Requirements into
+                        <span class="text-primary dark:text-blue-400"> Production Code</span>
+                    </h1>
+
+                    <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                        GSI-Protocol is an automated SDD workflow system that converts user requirements into production-ready code through a structured 4-phase process powered by AI.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <a href="#get-started" class="inline-flex items-center justify-center px-6 py-3 bg-cta text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors duration-200 cursor-pointer">
+                            Get Started Now
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/CodeMachine0121/GSI-Protocol" target="_blank" class="inline-flex items-center justify-center px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-semibold rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary transition-colors duration-200 cursor-pointer">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            View on GitHub
+                        </a>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+                        <div>
+                            <div class="text-2xl font-heading font-bold text-primary dark:text-blue-400">4</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Phases</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-heading font-bold text-primary dark:text-blue-400">3+</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">AI Platforms</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-heading font-bold text-primary dark:text-blue-400">100%</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Automated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Visual -->
+                <div class="hidden lg:block">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
+                        <div class="space-y-4">
+                            <!-- Code Block Simulation -->
+                            <div class="flex items-center space-x-2 pb-4 border-b border-gray-200 dark:border-gray-700">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 ml-4 font-mono">workflow.sh</span>
+                            </div>
+
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-gray-400 dark:text-gray-500">$</span>
+                                    <span class="text-primary dark:text-blue-400">/sdd-auto</span>
+                                    <span class="text-gray-600 dark:text-gray-300">"Add user authentication"</span>
+                                </div>
+                                <div class="pl-4 space-y-2 text-gray-600 dark:text-gray-300">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span>Phase 1: Specification generated</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span>Phase 2: Architecture designed</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span>Phase 3: Code implemented</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-blue-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                        </svg>
+                                        <span>Phase 4: Verifying implementation...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
+                    Powerful Features for Modern Development
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300">
+                    Everything you need to transform requirements into production-ready code
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Multi-Platform Support</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Works seamlessly with Claude Code, Codex (OpenAI), and GitHub Copilot for maximum flexibility.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Language Agnostic</h3>
+                    <p class="text-gray-600">Architecture design independent of programming language. Adapt to any tech stack effortlessly.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Automated Workflow</h3>
+                    <p class="text-gray-600">Execute complete development cycle with a single command. From spec to implementation in minutes.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">BDD Integration</h3>
+                    <p class="text-gray-600">Built-in support for Gherkin specifications and automated integration test generation.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Project-Aware</h3>
+                    <p class="text-gray-600">Automatically detects and adapts to your project's tech stack and structure.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Role-Based Phases</h3>
+                    <p class="text-gray-600">PM → Architect → Engineer → QA workflow ensures comprehensive development coverage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section id="workflow" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
+                    4-Phase Development Workflow
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300">
+                    A structured approach from requirements to production-ready code
+                </p>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="space-y-8">
+                <!-- Phase 1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white text-2xl font-heading font-bold">
+                                1
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-2xl font-heading font-semibold text-gray-900 dark:text-white">Specification</h3>
+                                <span class="px-3 py-1 bg-blue-100 text-primary text-sm font-medium rounded-full">PM Role</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Generate Gherkin specifications from user requirements. Define clear acceptance criteria and business scenarios.
+                            </p>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">$</span> <span class="text-primary dark:text-blue-400">/sdd-spec</span> <span class="text-gray-600 dark:text-gray-300">&lt;requirement&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white text-2xl font-heading font-bold">
+                                2
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-2xl font-heading font-semibold text-gray-900 dark:text-white">Architecture</h3>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-600 text-sm font-medium rounded-full">Architect Role</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Design high-level architecture from Gherkin specs. Define data models and service interfaces.
+                            </p>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">$</span> <span class="text-primary dark:text-blue-400">/sdd-arch</span> <span class="text-gray-600 dark:text-gray-300">&lt;feature_file_path&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white text-2xl font-heading font-bold">
+                                3
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-2xl font-heading font-semibold text-gray-900 dark:text-white">Implementation</h3>
+                                <span class="px-3 py-1 bg-green-100 text-green-600 text-sm font-medium rounded-full">Engineer Role</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Implement code based on architecture design. Satisfy all Gherkin specifications automatically.
+                            </p>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">$</span> <span class="text-primary dark:text-blue-400">/sdd-impl</span> <span class="text-gray-600 dark:text-gray-300">&lt;feature_file_path&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white text-2xl font-heading font-bold">
+                                4
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center gap-3 mb-3">
+                                <h3 class="text-2xl font-heading font-semibold text-gray-900 dark:text-white">Verification</h3>
+                                <span class="px-3 py-1 bg-orange-100 text-orange-600 text-sm font-medium rounded-full">QA Role</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                Verify implementation against specifications. Generate comprehensive verification reports.
+                            </p>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">$</span> <span class="text-primary dark:text-blue-400">/sdd-verify</span> <span class="text-gray-600 dark:text-gray-300">&lt;feature_file_path&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Automatic Mode Highlight -->
+            <div class="mt-12 bg-gradient-to-r from-cta to-orange-600 rounded-2xl p-8 text-white">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h3 class="text-2xl font-heading font-bold mb-2">Automatic Mode</h3>
+                        <p class="text-white/90">Execute all 4 phases with a single command</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 font-mono text-lg">
+                        <span class="text-white/70">$</span> <span class="font-semibold">/sdd-auto</span> <span class="text-white/90">&lt;requirement&gt;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-heading font-bold text-gray-900 dark:text-white mb-6">
+                        Why Choose GSI-Protocol?
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-1">Reduce Development Time</h4>
+                                <p class="text-gray-600">Transform requirements into production code in minutes, not days.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-1">Consistent Quality</h4>
+                                <p class="text-gray-600">Follow best practices with structured, role-based development phases.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-1">Clear Documentation</h4>
+                                <p class="text-gray-600">Automatic generation of specs, architecture docs, and verification reports.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-heading font-semibold text-gray-900 dark:text-white mb-1">Easy Integration</h4>
+                                <p class="text-gray-600">Works with your existing tools and workflow seamlessly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Stats -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                        <div class="text-4xl font-heading font-bold text-primary dark:text-blue-400 mb-2">10x</div>
+                        <div class="text-gray-700 dark:text-gray-300 font-medium">Faster Development</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                        <div class="text-4xl font-heading font-bold text-green-600 dark:text-green-400 mb-2">100%</div>
+                        <div class="text-gray-700 dark:text-gray-300 font-medium">Spec Coverage</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+                        <div class="text-4xl font-heading font-bold text-purple-600 dark:text-purple-400 mb-2">Zero</div>
+                        <div class="text-gray-700 dark:text-gray-300 font-medium">Manual Errors</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800">
+                        <div class="text-4xl font-heading font-bold text-cta dark:text-orange-400 mb-2">3+</div>
+                        <div class="text-gray-700 dark:text-gray-300 font-medium">AI Platforms</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl sm:text-4xl font-heading font-bold text-gray-900 dark:text-white mb-4">
+                    Learn More
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300">
+                    Explore our comprehensive documentation and guides
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <a href="https://github.com/CodeMachine0121/GSI-Protocol/blob/main/docs/gsi-theory.md" target="_blank" class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">GSI Theory & Methodology</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Deep dive into the Gherkin-Structure-Implement methodology and understand the core concepts.</p>
+                </a>
+
+                <a href="https://github.com/CodeMachine0121/GSI-Protocol/blob/main/docs/quickstart.md" target="_blank" class="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-semibold text-gray-900 dark:text-white mb-2">Quick Start Guide</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Step-by-step tutorial to build your first feature with GSI-Protocol in minutes.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="get-started" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-blue-700 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-heading font-bold mb-6">
+                Ready to Transform Your Development Workflow?
+            </h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Get started with GSI-Protocol in minutes. Choose your preferred installation method.
+            </p>
+
+            <!-- Installation Options -->
+            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h3 class="text-xl font-heading font-semibold mb-4">Using uvx (Recommended)</h3>
+                    <div class="bg-black/30 rounded-lg p-4 font-mono text-sm text-left overflow-x-auto">
+                        <code>uvx --from gsi-protocol-installer gsi-install</code>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h3 class="text-xl font-heading font-semibold mb-4">Using pipx</h3>
+                    <div class="bg-black/30 rounded-lg p-4 font-mono text-sm text-left overflow-x-auto">
+                        <code>pipx run gsi-protocol-installer</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://github.com/CodeMachine0121/GSI-Protocol#quick-start" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    Read Full Documentation
+                </a>
+                <a href="https://github.com/CodeMachine0121/GSI-Protocol" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white hover:text-primary transition-all duration-200 cursor-pointer">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="text-xl font-heading font-bold text-white">GSI-Protocol</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Specification-Driven Development Workflow for AI-powered Development
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/CodeMachine0121/GSI-Protocol" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://github.com/CodeMachine0121/GSI-Protocol/blob/main/docs/gsi-theory.md" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">GSI Theory</a></li>
+                        <li><a href="https://github.com/CodeMachine0121/GSI-Protocol/blob/main/docs/quickstart.md" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">Quick Start</a></li>
+                        <li><a href="https://github.com/CodeMachine0121/GSI-Protocol" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">Documentation</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-heading font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://github.com/CodeMachine0121/GSI-Protocol/issues" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">Issues</a></li>
+                        <li><a href="mailto:asdfg55887@gmail.com" class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">Email</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2026 GSI-Protocol. Licensed under MIT License. Created by James Hsueh.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dark Mode Toggle Script -->
+    <script is:inline>
+        // Get elements
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Get theme from localStorage or use system preference
+        function getTheme() {
+            if (localStorage.getItem('theme')) {
+                return localStorage.getItem('theme');
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        // Set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Initialize theme
+        setTheme(getTheme());
+
+        // Toggle theme on button click
+        themeToggleBtn.addEventListener('click', function() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+    </script>
+
+</body>
+</html>
