@@ -1,10 +1,9 @@
 {
   "basic": {
     "name": "James Hsueh",
-    "job": "Software Engineer",
+    "job": "Full Stack Software Engineer",
     "summary": {
-      "en": "Experienced Software Engineer with expertise in backend systems, microservices architecture, and DevOps. Passionate about building scalable solutions and sharing technical knowledge. Certified in Kubernetes and actively involved in open-source contributions",
-      "zh": "具備後端系統、微服務架構與 DevOps 專業的軟體工程師。擅長設計可擴展的系統，熱衷於分享技術知識。持有 Kubernetes 認證，積極參與開源貢獻。"
+      "en": "Experienced Software Engineer with expertise in backend systems, microservices architecture, and TDD."
     },
     "cv_file_name": "james_cv.pdf"
   },
@@ -14,77 +13,36 @@
       "sub_title": "Doutify Tech",
       "years": "2024 - Present",
       "details": {
-        "en": "Deveploped and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability.",
-        "zh": "開發並優化貸款系統後端服務。實作微服務架構以提升擴展性與可維護性。"
+        "en": "Developed and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability."
       },
       "achievements": [
-        {
-          "en": "Re-Construct Credit Loan（信⽤貸款）System",
-          "zh": "重構 Credit Loan（信⽤貸款）系統"
-        },
-        {
-          "en": "Re-Construct Strategy Module",
-          "zh": "重構 Strategy Module (策略模組)"
-        },
-        {
-          "en": "Implement Login System with SSO/OAuth",
-          "zh": "實作 SSO/OAuth 登入系統"
-        },
-        { "en": "Setup Azure Devops CI/CD", "zh": "建置 Azure Devops CI/CD" },
-        { "en": "Setup OCP Deployment", "zh": "建置 OCP (OpenShift) 部署" },
-        {
-          "en": "Setup Test Environment for Projects （Esso, UserInfo, OracleDb, Redis)",
-          "zh": "建置專案測試環境（Esso, UserInfo, OracleDb, Redis)"
-        }
+        { "en": "Re-Construct Credit Loan System" },
+        { "en": "Re-Construct Strategy Module" },
+        { "en": "Implement Login System with SSO/OAuth" },
+        { "en": "Setup Azure DevOps CI/CD" },
+        { "en": "Setup OCP (OpenShift) Deployment" },
+        { "en": "Setup Test Environment for Projects (Esso, UserInfo, OracleDb, Redis)" }
       ]
     },
     {
       "title": "Full Stack Software Engineer",
-      "sub_title": "TitainSoft",
+      "sub_title": "TitanSoft",
       "years": "2022 - 2024",
       "details": {
-        "en": "Developed payment processing systems and integrated third-party APIs. Led a team of developers to enhance system performance and reliability.",
-        "zh": "開發支付處理系統並整合第三方 API。帶領開發團隊提升系統效能與可靠性。"
+        "en": "Developed payment processing systems and integrated third-party APIs. Led a team of developers to enhance system performance and reliability."
       },
       "achievements": [
-        {
-          "en": "Import hexagonal architecture knowledge for members",
-          "zh": "引入 Hexagonal Architecture (六角架構) 知識"
-        },
-        {
-          "en": "Acting as the outlink in the Team",
-          "zh": "擔任團隊對外聯繫窗口"
-        },
-        {
-          "en": "Act as Frontend TM for Intern Team",
-          "zh": "擔任實習團隊前端技術導師 (TM)"
-        },
-        {
-          "en": "Act as Scrum Master for Intern Team",
-          "zh": "擔任實習團隊 Scrum Master"
-        },
-        {
-          "en": "Host refactor workshop for Intern Team",
-          "zh": "為實習團隊舉辦 Refactor Workshop (重構工作坊)"
-        },
-        {
-          "en": "Pass CKAD (Certified Kubernetes Application Developer)",
-          "zh": "考取 CKAD (Certified Kubernetes Application Developer) 證照"
-        },
-        {
-          "en": "Host DevOps workshop, teaching about Docker and K8s",
-          "zh": "舉辦 DevOps Workshop，教學 Docker 與 K8s"
-        },
-        { "en": "As a speaker at GDG for twice", "zh": "擔任 GDG 講者兩次" },
-        {
-          "en": "Representing Titansoft at the GDG dinner",
-          "zh": "代表 Titansoft 參加 GDG 晚宴"
-        },
-        { "en": "Construct ELK for K8s projects", "zh": "為 K8s 專案建置 ELK" },
-        {
-          "en": "Refactoring legacy code and fix the 2-year-old bugs",
-          "zh": "重構 Legacy Code 並修復存在兩年的 Bug"
-        }
+        { "en": "Import hexagonal architecture knowledge for team members" },
+        { "en": "Acting as the outlink in the team" },
+        { "en": "Act as Frontend Technical Mentor for Intern Team" },
+        { "en": "Act as Scrum Master for Intern Team" },
+        { "en": "Host refactor workshop for Intern Team" },
+        { "en": "Pass CKAD (Certified Kubernetes Application Developer)" },
+        { "en": "Host DevOps workshop, teaching about Docker and K8s" },
+        { "en": "Speaker at GDG Kaohsiung (twice)" },
+        { "en": "Representing TitanSoft at the GDG dinner" },
+        { "en": "Construct ELK for K8s projects" },
+        { "en": "Refactoring legacy code and fixed 2-year-old bugs" }
       ]
     }
   ],
@@ -94,135 +52,85 @@
       "sub_title": "National Yunlin University of Science and Technology, YunTech",
       "years": "2020 - 2022",
       "details": {
-        "en": "Graduated with honors. Researched on Blockchain technology and Network Security. Developed a thesis on secure payment transmission protocol.",
-        "zh": "榮譽畢業。研究區塊鏈技術與網路安全。開發安全支付傳輸協議之論文。"
+        "en": "Graduated with honors. Researched on Blockchain technology and Network Security. Developed a thesis on secure payment transmission protocol."
       }
     },
     {
       "title": "Master of Information and Telecommunication Engineering",
-      "sub_title": "Ming Chaun University, MCU",
+      "sub_title": "Ming Chuan University, MCU",
       "years": "2016 - 2020",
       "details": {
-        "en": "Study on Blockchain and Network Security Research Area",
-        "zh": "主修區塊鏈與網路安全研究領域"
+        "en": "Study on Blockchain and Network Security Research Area"
       }
     }
   ],
   "projects": [
     {
       "imageUrl": "/images/titles/GSI.png",
-      "title": {
-        "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD",
-        "zh": "GSI 協議：提升 AI 驅動 SDD 的效率與敏捷性"
-      },
-      "type": { "en": "Blog", "zh": "部落格" },
+      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD" },
+      "type": { "en": "Blog" },
       "link": "https://github.com/CodeMachine0121/GSI-Protocol#"
     },
     {
       "imageUrl": "/images/titles/golang-strong.png",
-      "title": {
-        "en": "From 0 to 1: Golang TDD with AI",
-        "zh": "從 0 到 1：與 AI 協作的 Golang TDD 實戰"
-      },
-      "type": { "en": "Blog", "zh": "部落格" },
+      "title": { "en": "From 0 to 1: Golang TDD with AI" },
+      "type": { "en": "Blog Series" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
     },
     {
       "imageUrl": "",
-      "title": {
-        "en": "Sharing Tech Knowledge on Blog",
-        "zh": "在部落格分享技術知識"
-      },
-      "type": { "en": "Blog", "zh": "部落格" },
+      "title": { "en": "Sharing Tech Knowledge on Blog" },
+      "type": { "en": "Blog" },
       "link": ""
     },
     {
       "imageUrl": "",
-      "title": {
-        "en": "Side-Project: Build a verifiable blockchain",
-        "zh": "Side-Project: 為自己打造個可編輯的區塊鏈"
-      },
-      "type": { "en": "Blog Post", "zh": "部落格文章" },
+      "title": { "en": "Side-Project: Build a Editable Blockchain" },
+      "type": { "en": "Blog Series" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
     },
     {
       "imageUrl": "",
-      "title": {
-        "en": "Open Source SDK for nuget: EccSDK",
-        "zh": "Open Source SDK for nuget: EccSDK"
-      },
-      "type": { "en": "SDK", "zh": "SDK" },
+      "title": { "en": "Open Source SDK for NuGet: EccSDK" },
+      "type": { "en": "SDK" },
       "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
     },
     {
-      "imageUrl": "",
-      "title": {
-        "en": "Host Refactor WorkShop for Intern Team in TitanSoft",
-        "zh": "在 TitanSoft 為實習團隊舉辦重構工作坊"
-      },
-      "type": { "en": "Workshop", "zh": "工作坊" },
-      "link": ""
-    },
-    {
-      "imageUrl": "",
-      "title": {
-        "en": "Department Sharing: Clean Architecture",
-        "zh": "部門分享：Clean Architecture (整潔架構)"
-      },
-      "type": { "en": "Knowledge Sharing", "zh": "知識分享" },
-      "link": ""
-    },
-    {
       "imageUrl": "https://images.credly.com/size/340x340/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob",
-      "title": { "en": "Pass CKAD License", "zh": "考取 CKAD 證照" },
-      "type": { "en": "Certification", "zh": "證照" },
+      "title": { "en": "CKAD Certification" },
+      "type": { "en": "Certification" },
       "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
     },
     {
       "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*UA3a1oJsu7Yut0ToKMVduA.png",
-      "title": {
-        "en": "Monitoring Discord latency with Golang Bot",
-        "zh": "使用 Golang Bot 監控 Discord 延遲"
-      },
-      "type": { "en": "GDG Kaohsiung Speaker", "zh": "GDG Kaohsiung 講者" },
+      "title": { "en": "Monitoring Discord Latency with Golang Bot" },
+      "type": { "en": "GDG Kaohsiung Speaker" },
       "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/"
     },
     {
       "imageUrl": "https://github.com/Narmis-E/onedark-wallpapers/blob/main/programs/od_vim.png?raw=true",
-      "title": { "en": "Tun Vim to be IDE", "zh": "將 Vim 打造為 IDE" },
-      "type": { "en": "GDG Kaohsiung Speaker", "zh": "GDG Kaohsiung 講者" },
+      "title": { "en": "Turn Vim into an IDE" },
+      "type": { "en": "GDG Kaohsiung Speaker" },
       "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/"
     },
     {
-      "imageUrl": "",
-      "title": {
-        "en": "Host DevOps WorkShop in TitanSoft",
-        "zh": "在 TitanSoft 舉辦 DevOps 工作坊"
-      },
-      "type": { "en": "Workshop", "zh": "工作坊" },
-      "link": ""
-    },
-    {
       "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*uUpJRdN6ztiUC6SBafjgJQ.jpeg",
-      "title": {
-        "en": "30 Design Patterns with Golang in 30 Days",
-        "zh": "30 天 30 個 Golang 設計模式"
-      },
-      "type": { "en": "Blog Post", "zh": "部落格文章" },
+      "title": { "en": "30 Design Patterns with Golang in 30 Days" },
+      "type": { "en": "Blog Series" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
     }
   ],
   "menuItems": [
     {
-      "name": { "en": "About Me", "zh": "關於我" },
+      "name": { "en": "About Me" },
       "link": "/"
     },
     {
-      "name": { "en": "Blog", "zh": "技術文章" },
+      "name": { "en": "Blog" },
       "link": "/blogs"
     },
     {
-      "name": { "en": "Series", "zh": "系列文章" },
+      "name": { "en": "Series" },
       "link": "/series"
     }
   ],

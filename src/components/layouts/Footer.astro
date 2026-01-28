@@ -11,8 +11,7 @@ import { menuItems, socialLinks } from "../../config/cv.json";
                     {menuItems.map(menu => (
                         <li>
                             <a href={menu.link} title={menu.name.en} class="text-sm transition-all duration-300 hover:text-offset focus:text-offset">
-                                <span class="lang-en-content">{menu.name.en}</span>
-                                <span class="lang-zh-content">{menu.name.zh}</span>
+                                {menu.name.en}
                             </a>
                         </li>
                     ))}

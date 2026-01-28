@@ -3,17 +3,28 @@ import Project from '../Project.astro';
 import { projects } from '../../../config/cv.json';
 ---
 
-<section class="bg-background">
-    <div class="container px-6 py-8 mx-auto">
-        <h1 class="text-3xl font-semibold text-center capitalize lg:text-4xl">
-            My Portfolio
-        </h1>
+<section class="relative bg-background py-16 sm:py-20">
+    <div class="container px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
+        <!-- Section Header -->
+        <div class="text-center mb-12 sm:mb-16">
+            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4">
+                My Portfolio
+            </h2>
 
-        <p class="mt-4 text-center text-offset">
-            Discover my range of projects that highlight my expertise in design, development, and innovative solutions.
-        </p>
+            <p class="mt-4 text-lg sm:text-xl text-offset max-w-3xl mx-auto leading-relaxed">
+                Discover my range of projects that highlight my expertise in design, development, and innovative solutions.
+            </p>
 
-        <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-12 xl:gap-12 md:grid-cols-2 xl:grid-cols-3">
+            <!-- Decorative line -->
+            <div class="flex items-center justify-center mt-6">
+                <div class="w-16 h-1 bg-primary rounded-full"></div>
+                <div class="w-2 h-2 bg-primary rounded-full mx-2"></div>
+                <div class="w-16 h-1 bg-primary rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
             {projects.map(project => (
                 <Project
                     imageUrl={project.imageUrl}

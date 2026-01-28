@@ -1,10 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import ThemeToggle from "../common/ThemeToggle.astro";
-import LanguageToggle from "../common/LanguageToggle.astro";
 import { basic, menuItems } from "../../config/cv.json";
-
-const isResumePage = Astro.url.pathname === '/';
 ---
 
 <header class="bg-background py-4">
@@ -19,8 +16,7 @@ const isResumePage = Astro.url.pathname === '/';
       <nav class="hidden sm:flex space-x-6 items-center">
         {menuItems.map((item) => (
           <a href={item.link} class="hover:text-offset">
-            <span class="lang-en-content">{item.name.en}</span>
-            <span class="lang-zh-content">{item.name.zh}</span>
+            {item.name.en}
           </a>
         ))}
       </nav>
@@ -31,8 +27,7 @@ const isResumePage = Astro.url.pathname === '/';
           <Icon name="Menu" class="size-6"/>
         </button>
       </div>
-      
-      {isResumePage && <LanguageToggle />}
+
       <ThemeToggle />
     </div>
   </div>
@@ -41,8 +36,7 @@ const isResumePage = Astro.url.pathname === '/';
   <div id="mobile-menu" class="hidden sm:hidden">
     {menuItems.map((item) => (
       <a href={item.link} class="block px-4 py-2 hover:bg-background-offset">
-        <span class="lang-en-content">{item.name.en}</span>
-        <span class="lang-zh-content">{item.name.zh}</span>
+        {item.name.en}
       </a>
     ))}
   </div>

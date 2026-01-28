@@ -5,8 +5,8 @@ interface Item {
   title: string;
   sub_title: string;
   years: string;
-  details?: { en: string; zh: string };
-  achievements?: { en: string; zh: string }[];
+  details?: { en: string };
+  achievements?: { en: string }[];
 }
 
 interface Props {
@@ -17,20 +17,32 @@ interface Props {
 const { title, items } = Astro.props;
 ---
 
-<section class="py-10 bg-background">
-  <div class="container mx-auto px-4 max-w-5xl">
-    <h2 class="text-3xl lg:text-4xl font-bold text-default mb-12 border-b border-default pb-4">
+<section class="relative py-16 sm:py-20 bg-background">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    <!-- Section Header -->
+    <div class="mb-12 sm:mb-16">
+      <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4">
         {title}
-    </h2>
+      </h2>
 
+      <!-- Decorative line -->
+      <div class="flex items-center mt-6">
+        <div class="w-16 h-1 bg-primary rounded-full"></div>
+        <div class="w-2 h-2 bg-primary rounded-full mx-2"></div>
+        <div class="flex-grow h-px bg-border"></div>
+      </div>
+    </div>
+
+    <!-- Timeline Items -->
     <div class="space-y-0">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <TimelineItem
           title={item.title}
           sub_title={item.sub_title}
           years={item.years}
           details={item?.details}
           achievements={item.achievements}
+          isLast={index === items.length - 1}
         />
       ))}
     </div>
