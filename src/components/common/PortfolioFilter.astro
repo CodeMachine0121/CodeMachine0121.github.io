@@ -100,30 +100,54 @@ const uniqueTypes = Object.keys(typeCounts).sort();
  * Filter projects by category
  */
 function filterProjects(category: string) {
+    console.log('=== FILTER DEBUG START ===');
+    console.log('Filter category:', category);
+
     const projects = document.querySelectorAll('[data-project-type]');
+    console.log('Found projects:', projects.length);
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     projects.forEach((project, index) => {
         const projectType = project.getAttribute('data-project-type');
         const shouldShow = category === 'all' || projectType === category;
 
+        console.log(`Project ${index}:`, {
+            projectType,
+            category,
+            shouldShow,
+            comparison: `"${projectType}" === "${category}"`,
+            result: projectType === category
+        });
+
         if (shouldShow) {
             // Show project with staggered animation
-            if (prefersReducedMotion) {
+            const showProject = () => {
+                (project as HTMLElement).style.display = '';
                 project.classList.remove('filtered-out');
                 project.classList.add('filtered-in');
+            };
+
+            if (prefersReducedMotion) {
+                showProject();
             } else {
-                setTimeout(() => {
-                    project.classList.remove('filtered-out');
-                    project.classList.add('filtered-in');
-                }, index * 50); // Stagger by 50ms per item
+                setTimeout(showProject, index * 30); // Stagger by 30ms per item (faster)
             }
         } else {
-            // Hide project immediately
+            // Hide project with animation
             project.classList.add('filtered-out');
             project.classList.remove('filtered-in');
+
+            // Hide from layout after animation completes
+            setTimeout(() => {
+                if (project.classList.contains('filtered-out')) {
+                    (project as HTMLElement).style.display = 'none';
+                }
+            }, 150); // Faster hide animation
         }
     });
+
+    console.log('=== FILTER DEBUG END ===');
 }
 
 /**
@@ -146,13 +170,22 @@ function updateActiveTag(clickedTag: HTMLElement) {
  */
 function initPortfolioFilter() {
     const filterTags = document.querySelectorAll('.filter-tag');
+    console.log('Initializing portfolio filter, found tags:', filterTags.length);
 
     filterTags.forEach(tag => {
+        const filterValue = tag.getAttribute('data-filter');
+        console.log('Registering filter tag:', filterValue);
+
         tag.addEventListener('click', (e: Event) => {
             const target = e.currentTarget as HTMLElement;
             const category = target.getAttribute('data-filter');
 
-            if (!category) return;
+            console.log('Filter tag clicked:', category);
+
+            if (!category) {
+                console.warn('No category found for clicked tag');
+                return;
+            }
 
             // Update active state
             updateActiveTag(target);
@@ -166,6 +199,7 @@ function initPortfolioFilter() {
     const allTag = document.querySelector('.filter-tag[data-filter="all"]') as HTMLElement;
     if (allTag) {
         allTag.setAttribute('aria-pressed', 'true');
+        console.log('Initial state set to "all"');
     }
 }
 

@@ -176,13 +176,13 @@
     opacity: 1;
     transform: scale(1);
     display: block;
-    transition: opacity 250ms ease-out, transform 250ms ease-out;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
 }
 
 .filtered-out {
     opacity: 0;
     transform: scale(0.95);
-    transition: opacity 250ms ease-out, transform 250ms ease-out;
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
 }
 
 /* Hide filtered out items after animation */
