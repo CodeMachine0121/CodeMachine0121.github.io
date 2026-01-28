@@ -21,12 +21,12 @@ const { title, items } = Astro.props;
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
     <!-- Section Header -->
     <div class="mb-12 sm:mb-16">
-      <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4">
+      <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4" data-reveal="fade-up">
         {title}
       </h2>
 
       <!-- Decorative line -->
-      <div class="flex items-center mt-6">
+      <div class="flex items-center mt-6" data-reveal="fade-in" data-reveal-delay="100">
         <div class="w-16 h-1 bg-primary rounded-full"></div>
         <div class="w-2 h-2 bg-primary rounded-full mx-2"></div>
         <div class="flex-grow h-px bg-border"></div>
@@ -36,14 +36,16 @@ const { title, items } = Astro.props;
     <!-- Timeline Items -->
     <div class="space-y-0">
       {items.map((item, index) => (
-        <TimelineItem
-          title={item.title}
-          sub_title={item.sub_title}
-          years={item.years}
-          details={item?.details}
-          achievements={item.achievements}
-          isLast={index === items.length - 1}
-        />
+        <div data-reveal={index % 2 === 0 ? "slide-left" : "slide-right"} data-reveal-delay={100 * index}>
+          <TimelineItem
+            title={item.title}
+            sub_title={item.sub_title}
+            years={item.years}
+            details={item?.details}
+            achievements={item.achievements}
+            isLast={index === items.length - 1}
+          />
+        </div>
       ))}
     </div>
   </div>

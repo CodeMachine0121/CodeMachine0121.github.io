@@ -15,7 +15,7 @@ import { basic, menuItems } from "../../config/cv.json";
       <!-- PC Menu -->
       <nav class="hidden sm:flex space-x-6 items-center">
         {menuItems.map((item) => (
-          <a href={item.link} class="hover:text-offset">
+          <a href={item.link} class="nav-link hover:text-primary font-medium">
             {item.name.en}
           </a>
         ))}
@@ -23,7 +23,7 @@ import { basic, menuItems } from "../../config/cv.json";
 
       <!-- Mobile Menu Button -->
       <div class="sm:hidden flex">
-        <button id="menu-btn" class="focus:outline-none" aria-label="Mobile open menu">
+        <button id="menu-btn" class="focus:outline-none interactive-scale" aria-label="Mobile open menu">
           <Icon name="Menu" class="size-6"/>
         </button>
       </div>
@@ -35,7 +35,7 @@ import { basic, menuItems } from "../../config/cv.json";
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden sm:hidden">
     {menuItems.map((item) => (
-      <a href={item.link} class="block px-4 py-2 hover:bg-background-offset">
+      <a href={item.link} class="block px-4 py-2 hover:bg-background-offset hover:text-primary transition-all duration-200 font-medium">
         {item.name.en}
       </a>
     ))}

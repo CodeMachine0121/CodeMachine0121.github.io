@@ -1,5 +1,6 @@
 ---
 import Project from '../Project.astro';
+import PortfolioFilter from '../../common/PortfolioFilter.astro';
 import { projects } from '../../../config/cv.json';
 ---
 
@@ -7,31 +8,41 @@ import { projects } from '../../../config/cv.json';
     <div class="container px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
         <!-- Section Header -->
         <div class="text-center mb-12 sm:mb-16">
-            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4">
+            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4" data-reveal="fade-up">
                 My Portfolio
             </h2>
 
-            <p class="mt-4 text-lg sm:text-xl text-offset max-w-3xl mx-auto leading-relaxed">
+            <p class="mt-4 text-lg sm:text-xl text-offset max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-reveal-delay="100">
                 Discover my range of projects that highlight my expertise in design, development, and innovative solutions.
             </p>
 
             <!-- Decorative line -->
-            <div class="flex items-center justify-center mt-6">
+            <div class="flex items-center justify-center mt-6" data-reveal="fade-in" data-reveal-delay="150">
                 <div class="w-16 h-1 bg-primary rounded-full"></div>
                 <div class="w-2 h-2 bg-primary rounded-full mx-2"></div>
                 <div class="w-16 h-1 bg-primary rounded-full"></div>
             </div>
         </div>
 
+        <!-- Portfolio Filter -->
+        <PortfolioFilter />
+
         <!-- Projects Grid -->
-        <div class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {projects.map(project => (
-                <Project
-                    imageUrl={project.imageUrl}
-                    title={project.title}
-                    type={project.type}
-                    link={project.link}
-                />
+        <div id="portfolio-grid" class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {projects.map((project, index) => (
+                <div
+                    class="filtered-in"
+                    data-reveal="fade-up"
+                    data-reveal-delay={50 * (index % 6)}
+                    data-project-type={project.type.en}
+                >
+                    <Project
+                        imageUrl={project.imageUrl}
+                        title={project.title}
+                        type={project.type}
+                        link={project.link}
+                    />
+                </div>
             ))}
         </div>
     </div>

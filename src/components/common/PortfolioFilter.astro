@@ -1,0 +1,178 @@
+---
+import { projects } from '../../config/cv.json';
+
+// Extract unique project types and count them
+const typeCounts = projects.reduce((acc, project) => {
+    const type = project.type.en;
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+}, {} as Record<string, number>);
+
+// Get unique types sorted alphabetically
+const uniqueTypes = Object.keys(typeCounts).sort();
+---
+
+<div class="mb-12" data-reveal="fade-up" data-reveal-delay="200">
+    <div class="filter-bar flex flex-wrap justify-center gap-3">
+        <!-- All filter (active by default) -->
+        <button
+            class="filter-tag active"
+            data-filter="all"
+            aria-label="Show all projects"
+        >
+            All <span class="count">({projects.length})</span>
+        </button>
+
+        <!-- Individual type filters -->
+        {uniqueTypes.map((type) => (
+            <button
+                class="filter-tag"
+                data-filter={type}
+                aria-label={`Show ${type} projects`}
+            >
+                {type} <span class="count">({typeCounts[type]})</span>
+            </button>
+        ))}
+    </div>
+</div>
+
+<style>
+    .filter-bar {
+        padding: 0.5rem;
+    }
+
+    .filter-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        border: 2px solid var(--color-border);
+        background-color: var(--color-background-offset);
+        color: var(--color-text-offset);
+        transition: all 200ms ease-out;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .filter-tag:hover:not(.active) {
+        background-color: var(--color-background);
+        border-color: var(--color-primary);
+        transform: scale(1.02);
+    }
+
+    .filter-tag:active:not(.active) {
+        transform: scale(0.98);
+    }
+
+    .filter-tag.active {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .filter-tag:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
+    .count {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .filter-tag {
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+
+<script>
+/**
+ * Portfolio Filter System - Inline for better Astro integration
+ */
+
+/**
+ * Filter projects by category
+ */
+function filterProjects(category: string) {
+    const projects = document.querySelectorAll('[data-project-type]');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    projects.forEach((project, index) => {
+        const projectType = project.getAttribute('data-project-type');
+        const shouldShow = category === 'all' || projectType === category;
+
+        if (shouldShow) {
+            // Show project with staggered animation
+            if (prefersReducedMotion) {
+                project.classList.remove('filtered-out');
+                project.classList.add('filtered-in');
+            } else {
+                setTimeout(() => {
+                    project.classList.remove('filtered-out');
+                    project.classList.add('filtered-in');
+                }, index * 50); // Stagger by 50ms per item
+            }
+        } else {
+            // Hide project immediately
+            project.classList.add('filtered-out');
+            project.classList.remove('filtered-in');
+        }
+    });
+}
+
+/**
+ * Update active filter tag
+ */
+function updateActiveTag(clickedTag: HTMLElement) {
+    const allTags = document.querySelectorAll('.filter-tag');
+
+    allTags.forEach(tag => {
+        tag.classList.remove('active');
+        tag.setAttribute('aria-pressed', 'false');
+    });
+
+    clickedTag.classList.add('active');
+    clickedTag.setAttribute('aria-pressed', 'true');
+}
+
+/**
+ * Initialize filter functionality
+ */
+function initPortfolioFilter() {
+    const filterTags = document.querySelectorAll('.filter-tag');
+
+    filterTags.forEach(tag => {
+        tag.addEventListener('click', (e: Event) => {
+            const target = e.currentTarget as HTMLElement;
+            const category = target.getAttribute('data-filter');
+
+            if (!category) return;
+
+            // Update active state
+            updateActiveTag(target);
+
+            // Filter projects
+            filterProjects(category);
+        });
+    });
+
+    // Set initial state (all active)
+    const allTag = document.querySelector('.filter-tag[data-filter="all"]') as HTMLElement;
+    if (allTag) {
+        allTag.setAttribute('aria-pressed', 'true');
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortfolioFilter);
+} else {
+    initPortfolioFilter();
+}
+</script>

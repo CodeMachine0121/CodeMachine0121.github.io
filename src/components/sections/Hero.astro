@@ -20,7 +20,7 @@ const skills = [
     <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
             <!-- Image Section with enhanced styling -->
-            <div class="relative flex justify-center lg:order-2">
+            <div class="relative flex justify-center lg:order-2" data-reveal="fade-in" data-reveal-delay="200">
                 <div class="relative group">
                     <!-- Decorative background circle -->
                     <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
@@ -42,7 +42,7 @@ const skills = [
             <!-- Content Section -->
             <div class="lg:order-1 space-y-6">
                 <!-- Job title badge -->
-                <div class="inline-flex items-center px-4 py-2 bg-background-offset border border-border rounded-full">
+                <div class="inline-flex items-center px-4 py-2 bg-background-offset border border-border rounded-full" data-reveal="fade-up">
                     <div class="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></div>
                     <p class="text-sm sm:text-base font-medium text-offset">
                         {basic?.job}
@@ -50,17 +50,17 @@ const skills = [
                 </div>
 
                 <!-- Name with gradient -->
-                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl leading-tight bg-gradient-to-r from-default to-offset bg-clip-text text-transparent">
+                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl leading-tight bg-gradient-to-r from-default to-offset bg-clip-text text-transparent" data-reveal="fade-up" data-reveal-delay="100">
                     {basic?.name}
                 </h1>
 
                 <!-- Summary -->
-                <div class="text-lg sm:text-xl text-offset leading-relaxed">
+                <div class="text-lg sm:text-xl text-offset leading-relaxed" data-reveal="fade-up" data-reveal-delay="150">
                     <p>{basic?.summary?.en}</p>
                 </div>
 
                 <!-- Skills tags -->
-                <div class="flex flex-wrap gap-2 pt-2">
+                <div class="flex flex-wrap gap-2 pt-2" data-reveal="fade-up" data-reveal-delay="200">
                     {skills.map((skill) => (
                         <span class="px-3 py-1.5 text-sm font-medium bg-background-offset text-default border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 cursor-default">
                             {skill.en}
@@ -69,12 +69,12 @@ const skills = [
                 </div>
 
                 <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                <div class="flex flex-col sm:flex-row gap-4 pt-4" data-reveal="fade-up" data-reveal-delay="250">
                     <a
                         href=`/cv/${basic?.cv_file_name}`
                         title="Download CV"
                         download
-                        class="group inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-primary hover:bg-secondary focus:bg-secondary rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        class="interactive-scale group inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-primary hover:bg-secondary focus:bg-secondary rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         role="button"
                     >
                         <svg class="w-5 h-5 mr-2 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@ const skills = [
 
                     <a
                         href="#contact"
-                        class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-default bg-background-offset hover:bg-border border border-border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        class="interactive-scale inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-default bg-background-offset hover:bg-border border border-border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         role="button"
                     >
                         Contact Me
@@ -96,7 +96,7 @@ const skills = [
                 </div>
 
                 <!-- Social proof / Quick stats -->
-                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-border">
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-border" data-reveal="fade-up" data-reveal-delay="300">
                     <div class="text-center">
                         <div class="text-2xl font-bold text-primary">3+</div>
                         <div class="text-sm text-offset">Years Exp.</div>

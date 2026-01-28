@@ -1,6 +1,7 @@
 ---
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
+import LoadingScreen from '../components/common/LoadingScreen.astro';
 
 import '../styles/index.css';
 import '../styles/blog.css';
@@ -57,6 +58,7 @@ const { title } = Astro.props;
 	<ImageModal />
 	<body class="h-full flex flex-col overflow-x-hidden bg-default
 		text-default text-base selection:bg-secondary">
+		<LoadingScreen />
 		<Header />
 		<section class="flex-grow w-full max-w-full px-4 sm:px-6 md:px-8 mx-auto">
 			<div class="w-full max-w-7xl mx-auto">
@@ -65,4 +67,7 @@ const { title } = Astro.props;
 		</section>
 		<Footer />
 	</body>
+	<script>
+		import '../scripts/animations.ts';
+	</script>
 </html>

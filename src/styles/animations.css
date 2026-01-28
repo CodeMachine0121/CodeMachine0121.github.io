@@ -1,0 +1,214 @@
+/* ===================================
+   Scroll Reveal Animations
+   ================================= */
+
+/* Base state for elements before reveal */
+[data-reveal] {
+    opacity: 0;
+}
+
+/* Revealed state */
+[data-reveal].revealed {
+    opacity: 1;
+}
+
+/* Fade Up Animation */
+[data-reveal="fade-up"] {
+    transform: translateY(20px);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+[data-reveal="fade-up"].revealed {
+    transform: translateY(0);
+}
+
+/* Fade In Animation (subtle) */
+[data-reveal="fade-in"] {
+    transition: opacity 200ms ease-out;
+}
+
+/* Slide In from Left */
+[data-reveal="slide-left"] {
+    transform: translateX(-30px);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+[data-reveal="slide-left"].revealed {
+    transform: translateX(0);
+}
+
+/* Slide In from Right */
+[data-reveal="slide-right"] {
+    transform: translateX(30px);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+[data-reveal="slide-right"].revealed {
+    transform: translateX(0);
+}
+
+/* Scale In Animation */
+[data-reveal="scale-in"] {
+    transform: scale(0.95);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+[data-reveal="scale-in"].revealed {
+    transform: scale(1);
+}
+
+/* Stagger Delay Utility */
+[data-reveal-delay="50"] {
+    transition-delay: 50ms;
+}
+
+[data-reveal-delay="100"] {
+    transition-delay: 100ms;
+}
+
+[data-reveal-delay="150"] {
+    transition-delay: 150ms;
+}
+
+[data-reveal-delay="200"] {
+    transition-delay: 200ms;
+}
+
+[data-reveal-delay="250"] {
+    transition-delay: 250ms;
+}
+
+[data-reveal-delay="300"] {
+    transition-delay: 300ms;
+}
+
+[data-reveal-delay="350"] {
+    transition-delay: 350ms;
+}
+
+[data-reveal-delay="400"] {
+    transition-delay: 400ms;
+}
+
+[data-reveal-delay="450"] {
+    transition-delay: 450ms;
+}
+
+[data-reveal-delay="500"] {
+    transition-delay: 500ms;
+}
+
+/* ===================================
+   Micro-interaction Utilities
+   ================================= */
+
+.interactive-scale {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.interactive-scale:hover {
+    transform: scale(1.02);
+}
+
+.interactive-scale:active {
+    transform: scale(0.98);
+}
+
+.interactive-lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.interactive-lift:hover {
+    transform: translateY(-2px);
+}
+
+.interactive-lift:active {
+    transform: translateY(0);
+}
+
+.interactive-glow {
+    transition: box-shadow 200ms ease-out;
+}
+
+.interactive-glow:hover {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Social Link Interaction */
+.social-link {
+    transition: transform 200ms ease-out, color 200ms ease-out;
+}
+
+.social-link:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.social-link:active {
+    transform: scale(0.9) rotate(0deg);
+}
+
+/* Navigation Link Underline Effect */
+.nav-link {
+    position: relative;
+    transition: color 200ms ease-out;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 200ms ease-out;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* ===================================
+   Portfolio Filter Animations
+   ================================= */
+
+.filtered-in {
+    opacity: 1;
+    transform: scale(1);
+    display: block;
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+.filtered-out {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+}
+
+/* Hide filtered out items after animation */
+.filtered-out {
+    pointer-events: none;
+}
+
+/* ===================================
+   Reduced Motion Support
+   ================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal],
+    [data-reveal].revealed,
+    .interactive-scale,
+    .interactive-lift,
+    .interactive-glow,
+    .social-link,
+    .nav-link,
+    .nav-link::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+
+    [data-reveal] {
+        opacity: 1;
+        transform: none !important;
+    }
+}

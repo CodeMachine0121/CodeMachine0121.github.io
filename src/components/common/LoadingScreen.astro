@@ -1,0 +1,91 @@
+---
+// Loading screen component for smooth page transitions
+---
+
+<div id="loading-screen" class="loading-screen" aria-live="polite" aria-label="Page loading">
+    <div class="spinner" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<style>
+    .loading-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--color-background);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 400ms ease-out, transform 400ms ease-out;
+    }
+
+    .loading-screen.hidden {
+        opacity: 0;
+        transform: scale(1.05);
+        pointer-events: none;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--color-border);
+        border-top-color: var(--color-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Screen reader only text */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .loading-screen {
+            transition-duration: 0.01ms !important;
+        }
+
+        .spinner {
+            animation-duration: 2s;
+        }
+    }
+</style>
+
+<script>
+    // Hide loading screen when page is fully loaded
+    function hideLoadingScreen() {
+        const loader = document.getElementById('loading-screen');
+        if (!loader) return;
+
+        // Add hidden class to trigger fade-out animation
+        loader.classList.add('hidden');
+
+        // Remove from DOM after animation completes
+        setTimeout(() => {
+            loader.remove();
+        }, 400);
+    }
+
+    // Wait for both DOM and all resources (images, fonts, etc.) to load
+    if (document.readyState === 'complete') {
+        // If already loaded (e.g., cached), hide immediately
+        hideLoadingScreen();
+    } else {
+        // Otherwise, wait for load event
+        window.addEventListener('load', hideLoadingScreen);
+    }
+</script>

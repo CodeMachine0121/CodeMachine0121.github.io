@@ -4,18 +4,68 @@ import { Icon } from 'astro-icon/components'
 
 <button id="toggle-theme-button"
     aria-label="Toggle dark mode"
-    class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border bg-background
-        text-text shadow-sm hover:bg-background-offset focus:outline-none focus:bg-background-offset">
-    <div id="icon-theme-light">
+    class="theme-toggle-btn py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border bg-background
+        text-text shadow-sm hover:bg-background-offset focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:bg-background-offset
+        transition-all duration-200">
+    <div id="icon-theme-light" class="theme-icon">
         <Icon id='toggle-theme-icon' name={'Sun'} />
     </div>
-    <div id="icon-theme-dark">
+    <div id="icon-theme-dark" class="theme-icon">
         <Icon id='toggle-theme-icon' name={'Moon'} />
     </div>
 </button>
 
+<style>
+    .theme-toggle-btn {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .theme-toggle-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .theme-toggle-btn:active {
+        transform: scale(0.95);
+    }
+
+    .theme-icon {
+        transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+    }
+
+    .theme-icon.theme-icon-exit {
+        opacity: 0;
+        transform: rotate(180deg);
+    }
+
+    .theme-icon.theme-icon-enter {
+        animation: iconEnter 200ms ease-out;
+    }
+
+    @keyframes iconEnter {
+        from {
+            opacity: 0;
+            transform: rotate(-180deg);
+        }
+        to {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .theme-toggle-btn,
+        .theme-icon,
+        .theme-icon.theme-icon-exit,
+        .theme-icon.theme-icon-enter {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+        }
+    }
+</style>
+
 <script>
-    import { toggleMarkdownTheme, updateToggleThemeIcon } from "../../scripts/theme";
+    import { toggleMarkdownTheme, updateToggleThemeIcon, enableThemeTransition, disableThemeTransition } from "../../scripts/theme";
 
     const button = document.getElementById('toggle-theme-button');
     const getCurrentTheme = () => document.documentElement.dataset.theme;
@@ -23,10 +73,19 @@ import { Icon } from 'astro-icon/components'
     button?.addEventListener('click', () => {
         const newTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
 
+        // Enable smooth color transitions
+        enableThemeTransition();
+
+        // Change theme
         document.documentElement.dataset.theme = newTheme;
         localStorage.setItem('theme', newTheme);
+
+        // Update icon with animation
         updateToggleThemeIcon();
         toggleMarkdownTheme(newTheme);
+
+        // Disable transitions after animation completes
+        disableThemeTransition();
     });
 
     updateToggleThemeIcon();

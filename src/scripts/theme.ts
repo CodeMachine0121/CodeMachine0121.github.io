@@ -11,10 +11,35 @@ export const getNextTheme = () => {
 
 export const updateToggleThemeIcon = () => {
     const currentTheme = getCurrentTheme();
-    document.querySelector(`#icon-theme-${currentTheme}`)?.classList.add("hidden");
-
+    const currentIcon = document.querySelector(`#icon-theme-${currentTheme}`);
     const themeNext = getNextTheme();
-    document.querySelector(`#icon-theme-${themeNext}`)?.classList.remove("hidden");
+    const nextIcon = document.querySelector(`#icon-theme-${themeNext}`);
+
+    // Add fade-out animation to current icon
+    currentIcon?.classList.add("theme-icon-exit");
+
+    // After animation, hide current and show next with fade-in
+    setTimeout(() => {
+        currentIcon?.classList.add("hidden");
+        currentIcon?.classList.remove("theme-icon-exit");
+        nextIcon?.classList.remove("hidden");
+        nextIcon?.classList.add("theme-icon-enter");
+
+        // Remove enter class after animation completes
+        setTimeout(() => {
+            nextIcon?.classList.remove("theme-icon-enter");
+        }, 200);
+    }, 200);
+};
+
+export const enableThemeTransition = () => {
+    document.documentElement.classList.add('theme-transitioning');
+};
+
+export const disableThemeTransition = () => {
+    setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning');
+    }, 300);
 };
 
 export const toggleMarkdownTheme = (newTheme: string) => {
