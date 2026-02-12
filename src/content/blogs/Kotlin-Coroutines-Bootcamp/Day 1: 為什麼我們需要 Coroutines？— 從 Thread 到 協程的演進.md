@@ -5,8 +5,6 @@ description: "在第一天，我們先不急著寫複雜的程式碼，而是先
 parent: "Kotlin Coroutines Bootcamp"
 ---
 
-# Day 1: 為什麼我們需要 Coroutines？— 從 Thread 到協程的演進
-
 在 Kotlin Coroutine 出現之前，Android 或 Java 後端開發處理「非同步任務」（例如：網路請求、讀寫資料庫）主要有兩種方式：
 1.  **直接開 Thread** ( `new Thread()`, `AsyncTask`, `ExecutorService` )
 2.  **回呼地獄 (Callback Hell)**
