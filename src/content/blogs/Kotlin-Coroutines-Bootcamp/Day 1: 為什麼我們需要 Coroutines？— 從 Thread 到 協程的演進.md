@@ -89,7 +89,7 @@ fun main() = runBlocking {
 ## 2. 邏輯的痛點：回呼地獄 (Callback Hell)
 
 即使我們使用 Thread Pool 來解決記憶體問題，我們還要面對程式碼邏輯的問題。
-在處理依賴關係時（例如：先登入 $\rightarrow$ 再拿 User ID $\rightarrow$ 再拿 User Profile），傳統程式碼會變成這樣：
+在處理依賴關係時（例如：先登入 -> 再拿 User ID -> 再拿 User Profile），傳統程式碼會變成這樣：
 
 #### ❌ 傳統 Callback 風格
 
