@@ -47,12 +47,3 @@ html {
     height: auto;
   }
 }
-
-/* 表格在移動設備上的優化 */
-@media (max-width: 640px) {
-  table {
-    display: block;
-    overflow-x: auto;
-    width: 100%;
-  }
-}
