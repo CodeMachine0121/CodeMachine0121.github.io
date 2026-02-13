@@ -37,11 +37,17 @@ export async function generateSeriesList(): Promise<Series[]> {
       articles: sortArticlesBySeries(articles),
       count: articles.length
     }))
-    .sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'))
-    .sort((a, b) => { // 用ID排序表示時間
-      const latestA = a.articles[0]?.id ?? '';
-      const latestB = b.articles[0]?.id ?? '';
-      return latestA.localeCompare(latestB);
+    .sort((a, b) => {
+      // 按照系列中最新文章的時間排序（由新到舊）
+      const getLatestDate = (series: { articles: BlogEntry[] }) => {
+        const dates = series.articles.map(article => new Date(article.data.datetime).getTime());
+        return Math.max(...dates);
+      };
+
+      const latestA = getLatestDate(a);
+      const latestB = getLatestDate(b);
+
+      return latestB - latestA; // 降序：新的在前
     });
 
   return seriesList;
