@@ -7,7 +7,7 @@
 function initMobileFixes() {
   fixMarkdownContent();
   enhanceCodeBlocks();
-  initTableCards();
+
   fixImageDisplay();
 }
 
@@ -56,34 +56,6 @@ function enhanceCodeBlocks() {
   });
 }
 
-/**
- * Initialize table card labels for mobile card layout.
- * Sets data-label attributes on <td> cells from <thead> text.
- * Runs once — CSS handles the responsive breakpoint.
- */
-function initTableCards() {
-  const tables = document.querySelectorAll('.prose table');
-
-  tables.forEach(table => {
-    if ((table as HTMLElement).dataset.cardsInit) return;
-    (table as HTMLElement).dataset.cardsInit = 'true';
-
-    const headers: string[] = [];
-    table.querySelectorAll('thead th').forEach(th => {
-      headers.push((th as HTMLElement).textContent?.trim() || '');
-    });
-
-    if (headers.length === 0) return;
-
-    table.querySelectorAll('tbody tr').forEach(row => {
-      row.querySelectorAll('td').forEach((cell, i) => {
-        if (i > 0 && headers[i]) {
-          (cell as HTMLElement).setAttribute('data-label', headers[i]);
-        }
-      });
-    });
-  });
-}
 
 /**
  * 修復圖片顯示問題

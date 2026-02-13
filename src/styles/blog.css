@@ -233,69 +233,6 @@
     padding: 1rem 1.25rem;
     border-left-width: 2px;
   }
-
-  /* Table → Card layout on mobile */
-  .blog-content table {
-    display: block;
-    border: none;
-  }
-
-  .blog-content table thead {
-    display: none;
-  }
-
-  .blog-content table tbody {
-    display: block;
-  }
-
-  .blog-content table tbody tr {
-    display: block;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    margin-bottom: 0.75rem;
-    overflow: hidden;
-    background-color: transparent;
-  }
-
-  .blog-content table tbody tr:nth-child(even) {
-    background-color: transparent;
-  }
-
-  .blog-content table tbody tr:last-child {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  /* First cell = card header */
-  .blog-content table tbody td:first-child {
-    display: block;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    padding: 0.625rem 0.75rem;
-    background-color: var(--color-background-offset);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  /* Remaining cells = label-value pairs */
-  .blog-content table tbody td:not(:first-child) {
-    display: block;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    border-bottom: 1px dashed var(--color-border);
-  }
-
-  .blog-content table tbody td:last-child {
-    border-bottom: none;
-  }
-
-  /* data-label shown as small muted label above the value */
-  .blog-content table tbody td:not(:first-child)::before {
-    content: attr(data-label);
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--color-text-offset);
-    margin-bottom: 0.125rem;
-  }
 }
 
 /* 回到頂部按鈕 */
