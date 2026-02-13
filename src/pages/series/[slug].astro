@@ -38,8 +38,8 @@ const itemsPerPage = SERIES_CONSTANTS.DEFAULT_ITEMS_PER_PAGE;
 const totalPages = Math.ceil(currentSeries.count / itemsPerPage);
 
 // 準備所有分頁數據，讓客戶端 JavaScript 可以使用
-// 按建立時間由新到舊排序
-const allArticles = sortArticlesBySeries(currentSeries.articles, 'date-desc');
+// 按建立時間由舊到新排序
+const allArticles = sortArticlesBySeries(currentSeries.articles, 'date-asc');
 
 // 建立麵包屑導覽
 const breadcrumb = [
