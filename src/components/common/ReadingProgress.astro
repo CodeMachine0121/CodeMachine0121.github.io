@@ -1,0 +1,42 @@
+---
+---
+
+<div id="reading-progress-container" class="fixed top-0 left-0 w-full h-[3px] z-50 pointer-events-none">
+  <div id="reading-progress-bar" class="h-full w-0 bg-primary transition-[width] duration-150 ease-out"></div>
+</div>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    #reading-progress-bar {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initReadingProgress() {
+    const bar = document.getElementById('reading-progress-bar');
+    const article = document.querySelector('article');
+    if (!bar || !article) return;
+
+    const update = () => {
+      const rect = article.getBoundingClientRect();
+      const articleTop = rect.top + window.scrollY;
+      const articleHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      const start = articleTop;
+      const end = articleTop + articleHeight - viewportHeight;
+      const progress = Math.min(Math.max((scrollY - start) / (end - start), 0), 1);
+
+      bar.style.width = `${progress * 100}%`;
+    };
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  document.addEventListener('DOMContentLoaded', initReadingProgress);
+  document.addEventListener('astro:page-load', initReadingProgress);
+</script>

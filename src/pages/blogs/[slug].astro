@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
 import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
+import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 
 
@@ -47,19 +48,23 @@ if (blog.data.parent) {
 ---
 
 <Layout title={blog.data.title}>
-    <article class="w-full max-w-none md:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <header class="mb-8 text-center md:text-left">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
+    <ReadingProgress />
+    <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <header class="mb-12 text-center md:text-left pb-8 border-b border-[var(--color-border)]">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
+            {blog.data.description && (
+                <p class="text-base md:text-lg text-offset mb-4 leading-relaxed">{blog.data.description}</p>
+            )}
             <time datetime={blog.data.datetime} class="text-sm text-offset block">
                 {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
         </header>
 
-        <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-5xl mx-auto">
+        <div class="blog-content prose prose-lg dark:prose-invert">
             <Content />
         </div>
 
-        <PostNavigation prevPost={prevPost} nextPost={nextPost} />
+        <PostNavigation {prevPost} {nextPost} />
 
         <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
             <button

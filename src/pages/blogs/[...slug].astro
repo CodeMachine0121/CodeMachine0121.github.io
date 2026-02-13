@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
 import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
+import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import { getAdjacentSeriesPosts } from '../../utils/series';
 
 export const getStaticPaths = async () => {
@@ -34,15 +35,19 @@ const { prevPost, nextPost } = await getAdjacentSeriesPosts(blog.slug, blog.data
 ---
 
 <Layout title={blog.data.title}>
-    <article class="w-full max-w-none md:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <header class="mb-8 text-center md:text-left">
-            <h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
+    <ReadingProgress />
+    <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <header class="mb-12 text-center md:text-left pb-8 border-b border-[var(--color-border)]">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
+            {blog.data.description && (
+                <p class="text-base md:text-lg text-offset mb-4 leading-relaxed">{blog.data.description}</p>
+            )}
             <time datetime={blog.data.datetime} class="text-sm text-offset block">
                 {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
         </header>
 
-        <div class="blog-content prose prose-lg dark:prose-invert md:prose-xl max-w-none md:max-w-6xl mx-auto">
+        <div class="blog-content prose prose-lg dark:prose-invert">
             <Content />
         </div>
 
@@ -101,80 +106,3 @@ const { prevPost, nextPost } = await getAdjacentSeriesPosts(blog.slug, blog.data
     </script>
 </Layout>
 
-<style>
-    .back-to-top.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .blog-content {
-        line-height: 1.8;
-    }
-
-    .blog-content h1, .blog-content h2, .blog-content h3, .blog-content h4, .blog-content h5, .blog-content h6 {
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    .blog-content p {
-        margin-bottom: 1.5rem;
-    }
-
-    .blog-content ul, .blog-content ol {
-        margin-bottom: 1.5rem;
-        padding-left: 1.5rem;
-    }
-
-    .blog-content li {
-        margin-bottom: 0.5rem;
-    }
-
-    .blog-content pre {
-        margin: 1.5rem 0;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        overflow-x: auto;
-    }
-
-    .blog-content code {
-        padding: 0.125rem 0.25rem;
-        border-radius: 0.25rem;
-        font-size: 0.875em;
-    }
-
-    .blog-content pre code {
-        padding: 0;
-        background: transparent;
-    }
-
-    .blog-content blockquote {
-        margin: 1.5rem 0;
-        padding-left: 1rem;
-        border-left: 4px solid;
-        font-style: italic;
-    }
-
-    .blog-content img {
-        max-width: 100%;
-        height: auto;
-        margin: 1.5rem auto;
-        display: block;
-        border-radius: 0.5rem;
-    }
-
-    .blog-content table {
-        width: 100%;
-        margin: 1.5rem 0;
-        border-collapse: collapse;
-    }
-
-    .blog-content th, .blog-content td {
-        padding: 0.75rem;
-        text-align: left;
-        border-bottom: 1px solid;
-    }
-
-    .blog-content th {
-        font-weight: 600;
-    }
-</style>
