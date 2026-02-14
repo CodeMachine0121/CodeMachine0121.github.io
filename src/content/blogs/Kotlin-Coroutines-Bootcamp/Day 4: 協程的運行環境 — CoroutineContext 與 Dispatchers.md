@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Day 4: 協程的運行環境 — CoroutineContext 與 Dispatchers 詳解"
 datetime: "2026-02-14"
 description: "如果你的 App 畫面卡住（ANR），通常是因為你在 Main Thread 做了太重的工作。如果你的 App 崩潰報錯 NetworkOnMainThreadException，是因為你在 Main Thread 連網路。如果你的 App 崩潰報錯 CalledFromWrongThreadException，是因為你在 Background Thread 更新 UI。今天我們要學習如何用 Dispatchers 來指揮協程去正確的地方工作。"
 parent: "Kotlin Coroutines Bootcamp"
@@ -71,7 +71,7 @@ fun loadUserData() {
     scope.launch(Dispatchers.Main) {
         showLoading() // UI 操作 (Main)
         
-        // 魔法發生在這裡：切換到 IO 執行緒去抓資料
+        // 切換到 IO 執行緒去抓資料
         // 下一行代碼會 "掛起" 等待，直到 IO 跑完並返回結果
         val user = withContext(Dispatchers.IO) {
             println("正在 IO 執行緒: ${Thread.currentThread().name}")
@@ -99,10 +99,10 @@ fun loadUserData() {
 
 ### Context 是一個 Map (集合)
 `CoroutineContext` 其實是一個包含不同元素的集合。它可以包含：
-1.  **Job**：控制協程生命週期 (Day 3 學過)。
+1.  **Job**：控制協程生命週期
 2.  **Dispatcher**：控制執行緒調度 (今天學的)。
 3.  **CoroutineName**：給協程取名字 (方便 Debug)。
-4.  **CoroutineExceptionHandler**：處理崩潰 (Day 6 會講)。
+4.  **CoroutineExceptionHandler**：處理崩潰 (後續會再提到)。
 
 ### ➕ 運算符重載：Context 的加法
 
