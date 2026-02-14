@@ -120,11 +120,16 @@
 }
 
 /* 表格優化 — Swiss Modernism: 無外框、斑馬紋、粗表頭底線 */
+.blog-content .table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
 .blog-content table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
   font-size: 0.9375rem;
 }
 
@@ -137,7 +142,7 @@
   font-weight: 700;
   text-align: left;
   letter-spacing: -0.01em;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .blog-content table td {

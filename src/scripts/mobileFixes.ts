@@ -25,13 +25,23 @@ function fixMarkdownContent() {
   const markdownContainers = document.querySelectorAll('.prose');
 
   markdownContainers.forEach(container => {
-    // 確保內容不會溢出容器
-    container.classList.add('max-w-full', 'overflow-hidden');
+    // 確保內容不會溢出容器（不使用 overflow-hidden 以免截斷表格）
+    container.classList.add('max-w-full');
 
     // 為所有段落和列表項添加合適的斷詞
     const textElements = container.querySelectorAll('p, li');
     textElements.forEach(el => {
       el.classList.add('break-words');
+    });
+
+    // 為表格加上可捲動的 wrapper，避免文字被截斷
+    const tables = container.querySelectorAll('table');
+    tables.forEach(table => {
+      if ((table.parentNode as HTMLElement)?.classList?.contains('table-scroll-wrapper')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'table-scroll-wrapper';
+      table.parentNode!.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
     });
   });
 }
