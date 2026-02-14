@@ -6,7 +6,7 @@ import SearchBar from '../../common/SearchBar.astro';
 
 const { blogs } = Astro.props;
 // 正在進行中的系列文章名字
-const parentNameInProgress = "Goroutine 最佳入門姿勢"
+const parentNameInProgress = "Kotlin Coroutines Bootcamp"
 
 // 分離有 parent 和沒有 parent 的文章
 const standaloneBlogs = blogs.filter((blog: Blog) => !blog.data.parent);
