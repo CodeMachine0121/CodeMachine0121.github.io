@@ -15,7 +15,7 @@ Kotlin 提供了四種標準的 Dispatcher，涵蓋了絕大多數的使用場�
 | **Dispatchers.Main** | **UI 操作** | Android 的 Main Looper (UI Thread)。<br>*(需引入 `kotlinx-coroutines-android`)* |
 | **Dispatchers.IO** | **I/O 操作** | 讀寫檔案、資料庫、網路請求。<br>這是一個彈性的 Thread Pool，可以自動擴展（最多 64 個執行緒）。 |
 | **Dispatchers.Default** | **CPU 密集型** | 複雜運算、JSON 解析、排序算法。<br>執行緒數量等於 CPU 核心數（例如 8 核手機就是 8 個執行緒）。 |
-| **Dispatchers.Unconfined**| **不限制** | **(少用)** 啟動時跑在當前執行緒，掛起恢復後可能跑在別的執行緒。<br>通常只用於測試或極特殊的底層邏輯。 |
+| **Dispatchers.Unconfined**| **不限制** | **(少用)** 啟動時跑在當前執行緒，暫停恢復後可能跑在別的執行緒。<br>通常只用於測試或極特殊的底層邏輯。 |
 
 ### 🛠️ 實戰：選擇正確的 Dispatcher
 
@@ -62,7 +62,7 @@ fun loadData() {
 `withContext` 是一個 suspend 函數，它會：
 1.  **切換** 到指定的 Dispatcher。
 2.  **執行** 代碼塊。
-3.  **等待** 執行完畢（掛起外部協程）。
+3.  **等待** 執行完畢（暫停外部協程）。
 4.  **切回** 原來的 Dispatcher，並返回結果。
 
 ```kotlin
@@ -72,7 +72,7 @@ fun loadUserData() {
         showLoading() // UI 操作 (Main)
         
         // 切換到 IO 執行緒去抓資料
-        // 下一行代碼會 "掛起" 等待，直到 IO 跑完並返回結果
+        // 下一行代碼會 "暫停" 等待，直到 IO 跑完並返回結果
         val user = withContext(Dispatchers.IO) {
             println("正在 IO 執行緒: ${Thread.currentThread().name}")
             api.fetchUser() // 這是一個耗時操作
@@ -150,7 +150,7 @@ launch(Dispatchers.Main) { // 父協程在 Main
 1.  **Dispatchers.Main**：UI 專用（Android）。
 2.  **Dispatchers.IO**：讀寫操作專用（網路/DB）。
 3.  **Dispatchers.Default**：運算密集專用（排序/解析）。
-4.  **`withContext`**：是切換執行緒的神器，它會掛起當前協程，執行完後自動切回來。
+4.  **`withContext`**：是切換執行緒的神器，它會暫停當前協程，執行完後自動切回來。
 5.  **Context 組合**：`Dispatcher + Name + Job` 可以組合成完整的運行環境。
 
 ---

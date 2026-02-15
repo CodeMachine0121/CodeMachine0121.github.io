@@ -1,7 +1,7 @@
 ---
 title: "Day 2: 關鍵字大解密 — suspend, runBlocking, coroutineScope, launch"
 datetime: "2026-02-13"
-description: "今天我們不談深奧的理論，而是專注於掃除新手最常見的誤區。你是否曾經困惑：為什麼加了 suspend 程式碼還是卡住？runBlocking 到底該不該用？它跟 coroutineScope 又有什麼差別？在這一天，我們將深入拆解 suspend、launch、runBlocking 與 coroutineScope。透過程式碼實戰，你將徹底釐清 「阻塞 (Blocking)」 與 「掛起 (Suspending)」 的本質區別，學會如何正確地啟動協程，建立連接「同步世界」與「非同步世界」的橋樑。"
+description: "今天我們不談深奧的理論，而是專注於掃除新手最常見的誤區。你是否曾經困惑：為什麼加了 suspend 程式碼還是卡住？runBlocking 到底該不該用？它跟 coroutineScope 又有什麼差別？在這一天，我們將深入拆解 suspend、launch、runBlocking 與 coroutineScope。透過程式碼實戰，你將徹底釐清 「阻塞 (Blocking)」 與 「暫停 (Suspending)」 的本質區別，學會如何正確地啟動協程，建立連接「同步世界」與「非同步世界」的橋樑。"
 parent: "Kotlin Coroutines Bootcamp"
 ---
 
@@ -13,7 +13,7 @@ parent: "Kotlin Coroutines Bootcamp"
 **誤區**：很多人以為加上 `suspend`，函數就會自動跑到背景執行緒去執行。
 **真相**：`suspend` **不會** 切換執行緒。它只是一個「標記」，告訴編譯器：「這個函數可能會被**暫停 (suspend)**，請幫我準備好暫停和恢復的機制」。
 
-*   **功能**：標記該函數具有「掛起」的能力。
+*   **功能**：標記該函數具有「暫停」的能力。
 *   **限制**：`suspend` 函數只能被 **別的 suspend 函數** 或者 **協程構建器 (Coroutine Builder)** 呼叫。
 
 ```kotlin
@@ -22,7 +22,7 @@ fun regularFunction() {
     println("Hello")
 }
 
-// 掛起函數
+// 暫停函數
 suspend fun slowFunction() {
     println("Start")
     delay(1000) // delay 是一個 suspend 函數，它會暫停程式碼，但不會阻塞執行緒
@@ -96,10 +96,10 @@ fun main() = runBlocking {
 
 這是初學者最容易跟 `runBlocking` 搞混的關鍵字。
 
-*   **功能**：創建一個新的作用域，並在**所有子協程**完成之前，**掛起 (Suspend)** 外部的協程。
+*   **功能**：創建一個新的作用域，並在**所有子協程**完成之前，**暫停 (Suspend)** 外部的協程。
 *   **關鍵區別**：
     *   `runBlocking` 會 **阻塞 (Block)** 執行緒（Thread 停下來死等）。
-    *   `coroutineScope` 會 **掛起 (Suspend)** 協程（Thread 沒事做，可以去執行別的協程任務，等這邊好了再回來）。
+    *   `coroutineScope` 會 **暫停 (Suspend)** 協程（Thread 沒事做，可以去執行別的協程任務，等這邊好了再回來）。
 *   **用途**：用來實現「並行分解」。比如你需要同時下載 A 和 下載 B，兩個都好了才能繼續往下走。
 
 ### ⚔️ 關鍵對決：`runBlocking` vs `coroutineScope`
@@ -168,7 +168,7 @@ fun main() = runBlocking { // 這裡佔用了 Main Thread
 
 | 關鍵字 | 類型 | 阻塞 Thread? | 用途 |
 | :--- | :--- | :--- | :--- |
-| **suspend** | 修飾符 | **No** | 標記函數可以被掛起，必須在協程中呼叫。 |
+| **suspend** | 修飾符 | **No** | 標記函數可以被暫停，必須在協程中呼叫。 |
 | **runBlocking** | Builder | **Yes** (危險!) | 測試、Main 函數入口。**生產環境少用**。 |
 | **launch** | Builder | **No** | 啟動一個新協程，不關心結果 (Fire-and-forget)。 |
 | **coroutineScope**| Scope | **No** (Suspend) | 等待多個並行任務完成，結構化並發的基礎。 |

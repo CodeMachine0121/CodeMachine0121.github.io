@@ -57,7 +57,7 @@ val result = deferred.await() // 拿到 42
 suspend fun calculateTotal() {
     val start = System.currentTimeMillis()
     
-    // 這裡雖然用了 async，但馬上就 await，導致這裡會 "掛起" 等待結果
+    // 這裡雖然用了 async，但馬上就 await，導致這裡會 "暫停" 等待結果
     val apple = async { getStockPrice("Apple") }.await() 
     
     // 等上面 1000ms 跑完，才開始跑這個

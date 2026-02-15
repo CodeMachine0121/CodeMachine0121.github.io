@@ -127,7 +127,7 @@ suspend fun getUserProfile(id: String): Profile { ... }
 // 呼叫時：
 launch {
     try {
-        val user = login()           // 程式會在這裡 "掛起" (暫停)，直到結果回來
+        val user = login()           // 程式會在這裡 "暫停"，直到結果回來
         val id = getUserId(user)     // 前一行做完才會做這一行
         val profile = getUserProfile(id)
         updateUI(profile)
@@ -138,7 +138,7 @@ launch {
 }
 ```
 
-這段程式碼看起來像是單線程順序執行的，但實際上它在執行網路請求時並**沒有阻塞 (Block)** 主執行緒，它只是**掛起 (Suspend)** 了。這讓程式碼邏輯清晰，且易於維護。
+這段程式碼看起來像是單線程順序執行的，但實際上它在執行網路請求時並**沒有阻塞 (Block)** 主執行緒，它只是**暫停 (Suspend)** 了。這讓程式碼邏輯清晰，且易於維護。
 
 ---
 
