@@ -1,6 +1,6 @@
 ---
 title: "Day 7: 協程間的溝通— 深入 channel 的生產與消費模式"
-datetime: "2026-02-14"
+datetime: "2026-02-16"
 description: "在複雜的系統中，協程之間往往需要交換資訊。例如：一個協程負責讀取網路資訊，另一個協程負責將資訊轉換寫入資料庫。比較傳統做法是使用「共享變數」（Shared Mutable State），例如一個 List，但這需要加鎖（Lock/Synchronized），容易導致死鎖或效能低落。"
 parent: "Kotlin Coroutines Bootcamp"
 ---
