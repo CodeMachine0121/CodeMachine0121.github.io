@@ -1,5 +1,5 @@
 ---
-title: "Day 5: 結構化並發 (Structured Concurrency) — 馴服野生協程的韁繩"
+title: "Day 5: 結構化併發 (Structured Concurrency) — 馴服野生協程的韁繩"
 datetime: "2026-02-14"
 description: "無論是在實際開發中（特別是 Android/Backend）或是 現實生活中，我們最怕的是 「僵屍」的出現。在開發上的殭屍是指那些使用者已經離開頁面，卻還在背景默默下載大檔案、消耗電量、甚至導致記憶體洩漏 (Memory Leak) 的任務。今天我們要學習 Kotlin 協程最引以為傲的設計哲學：結構化併發 (Structured Concurrency)。"
 parent: "Kotlin Coroutines Bootcamp"
@@ -7,7 +7,7 @@ parent: "Kotlin Coroutines Bootcamp"
 
 在傳統的 Thread 世界裡，如果你創建了一個 Thread，它就變成了一個「野生」的執行緒。除非你手動保留它的引用並 kill 掉它，否則它會一直跑到結束。這就是 **"Fire-and-forget" (射後不理)** 的隱患。
 
-Kotlin 引入了 **結構化並發**，它的核心規則只有一條：
+Kotlin 引入了 **結構化併發**，它的核心規則只有一條：
 > **新的協程必須在一個特定的作用域 (Scope) 中啟動。**
 
 這就像是「家」的概念。協程不能流浪，必須有家長。
@@ -55,7 +55,7 @@ fun main() = runBlocking {
 
 **輸出結果**：
 你會發現，當 `parentJob.cancel()` 被呼叫後，**子協程 A 和 B 都會立刻停止**。
-這就是結構化並發的威力：**你不需要手動去追蹤每一個啟動的任務，只要控制最上層的 Scope，就能一鍵清理所有背景任務。**
+這就是結構化併發的威力：**你不需要手動去追蹤每一個啟動的任務，只要控制最上層的 Scope，就能一鍵清理所有背景任務。**
 
 ---
 
@@ -170,7 +170,7 @@ val job = launch(Dispatchers.Default) {
 
 ## Day 5 總結
 
-1.  **結構化並發**：協程必須有家（Scope）。
+1.  **結構化併發**：協程必須有家（Scope）。
 2.  **父子關係**：
     *   父協程取消 $\rightarrow$ 子協程全部取消。
     *   子協程異常 $\rightarrow$ 父協程（默認）也會異常並取消其他兄弟。
