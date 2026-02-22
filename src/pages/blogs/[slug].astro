@@ -5,6 +5,7 @@ import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
 import ReadingProgress from '../../components/common/ReadingProgress.astro';
+import GiscusComments from '../../components/common/GiscusComments.astro';
 import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 
 
@@ -65,6 +66,8 @@ if (blog.data.parent) {
         </div>
 
         <PostNavigation {prevPost} {nextPost} />
+
+        <GiscusComments />
 
         <div class="back-to-top fixed bottom-8 right-8 opacity-0 invisible transition-all z-30">
             <button
