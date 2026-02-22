@@ -1,0 +1,66 @@
+---
+// No server-side props needed
+---
+
+<div class="giscus-wrapper mt-16 pt-8 border-t border-[var(--color-border)]">
+  <div class="giscus"></div>
+</div>
+
+<script is:inline>
+  (function () {
+    const GISCUS_ORIGIN = 'https://giscus.app';
+
+    function getGiscusTheme() {
+      const theme = document.documentElement.dataset.theme;
+      return theme === 'dark' ? 'dark_protanopia' : 'light_protanopia';
+    }
+
+    function loadGiscus() {
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.setAttribute('data-repo', 'CodeMachine0121/CodeMachine0121.github.io');
+      script.setAttribute('data-repo-id', 'R_kgDOMgHz9A');
+      script.setAttribute('data-category', 'General');
+      script.setAttribute('data-category-id', 'DIC_kwDOMgHz9M4C29li');
+      script.setAttribute('data-mapping', 'pathname');
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'bottom');
+      script.setAttribute('data-theme', getGiscusTheme());
+      script.setAttribute('data-lang', 'en');
+      script.setAttribute('data-loading', 'lazy');
+      script.crossOrigin = 'anonymous';
+      script.async = true;
+
+      const container = document.querySelector('.giscus');
+      if (container) {
+        container.appendChild(script);
+      }
+    }
+
+    function sendThemeToGiscus(theme) {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      if (iframe) {
+        iframe.contentWindow.postMessage(
+          { giscus: { setConfig: { theme } } },
+          GISCUS_ORIGIN
+        );
+      }
+    }
+
+    // Load Giscus on page load
+    loadGiscus();
+
+    // Watch for theme changes on <html data-theme="...">
+    const observer = new MutationObserver(function (mutations) {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'data-theme') {
+          sendThemeToGiscus(getGiscusTheme());
+        }
+      }
+    });
+
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  })();
+</script>
