@@ -213,7 +213,7 @@ type DistanceRange struct {
 }
 
 func (d DistanceRange) Contains(value float64) bool {
-	return value >= d.Min && value <= d.Max
+	return value >= d.Min && value < d.Max
 }
 
 type WeightRange struct {
@@ -222,7 +222,7 @@ type WeightRange struct {
 }
 
 func (w WeightRange) Contains(value float64) bool {
-	return value >= w.Min && value <= w.Max
+	return value >= w.Min && value < w.Max
 }
 ```
 ### 定義 Rule model
@@ -312,3 +312,5 @@ Rule Table Pattern 的好處也在這個過程中一一浮現：
 - AI 可以直接讀懂規則並協助補齊
 
 下次遇到多條件交叉邏輯時，試試看這個 pattern，相信你也會很快愛上它的。
+
+BTW: 相關的範例程式碼，我放在這 [GitHub](https://github.com/CodeMachine0121/tdd-rules-pattern)
