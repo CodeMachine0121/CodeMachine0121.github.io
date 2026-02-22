@@ -4,7 +4,7 @@
 /* 基本文章容器 */
 .blog-content {
   width: 100%;
-  max-width: 48rem; /* max-w-3xl: ~65-75 chars per line for optimal readability */
+  max-width: 80rem; /* max-w-7xl: wide on desktop */
   margin-left: auto;
   margin-right: auto;
   color: var(--color-text);
