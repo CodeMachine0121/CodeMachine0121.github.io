@@ -20,7 +20,7 @@
         { "en": "Re-Construct Strategy Module" },
         { "en": "Implement Login System with SSO/OAuth" },
         { "en": "Setup Azure DevOps CI/CD" },
-        { "en": "Setup OCP (OpenShift) Deployment" },
+        { "en": "Setup OCP (Oracle Cloud Platform) Deployment" },
         { "en": "Setup Test Environment for Projects (Esso, UserInfo, OracleDb, Redis)" }
       ]
     },
