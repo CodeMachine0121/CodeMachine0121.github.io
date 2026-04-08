@@ -1,0 +1,605 @@
+---
+// AI Redefines Software Development — Notes on Martin Fowler × Kent Beck
+---
+
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 如何重新定義軟體開發 — Martin Fowler × Kent Beck 深度對談筆記</title>
+    <meta name="description" content="Martin Fowler 與 Kent Beck 針對 AI 如何重新定義軟體開發的深度對談摘要與筆記，涵蓋 TDD、DDD、職涯轉型與社會影響。">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <script is:inline>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surface:    '#0A0F1E',
+                        'surface-2':'#111827',
+                        'surface-3':'#1F2937',
+                        'surface-4':'#374151',
+                        accent:     '#F59E0B',
+                        'accent-2': '#FCD34D',
+                        blue:       '#60A5FA',
+                        purple:     '#A78BFA',
+                        green:      '#34D399',
+                        red:        '#F87171',
+                        muted:      '#9CA3AF',
+                        subtle:     '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+            background-color: #0A0F1E;
+            color: #E5E7EB;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.8;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* Grid background */
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* Gradient text */
+        .gradient-amber {
+            background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 50%, #FDE68A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-blue {
+            background: linear-gradient(135deg, #60A5FA 0%, #818CF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-green {
+            background: linear-gradient(135deg, #34D399 0%, #6EE7B7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Card border glow on hover */
+        .card-hover {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        /* Section number */
+        .section-num {
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Quote style */
+        blockquote {
+            border-left: 4px solid #F59E0B;
+            padding-left: 1.75rem;
+            font-style: italic;
+            font-size: 1.05rem;
+            color: #D1D5DB;
+        }
+
+        /* Tag pill */
+        .tag {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        /* Scroll indicator */
+        @keyframes bounce-down {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+        .bounce-down { animation: bounce-down 1.6s ease-in-out infinite; }
+
+        /* Fade-in on scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════ HERO ══ -->
+<section class="relative grid-bg min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center overflow-hidden">
+
+    <!-- Radial glow -->
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full pointer-events-none"
+         style="background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%)"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+        <!-- Meta label -->
+        <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 mb-10">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span class="section-num text-amber-400">Video Notes · 2026</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-7xl md:text-8xl font-extrabold leading-tight mb-8 tracking-tight">
+            <span class="gradient-amber">AI 如何重新定義</span><br>
+            <span class="text-white">軟體開發</span>
+        </h1>
+
+        <p class="text-xl sm:text-2xl text-gray-400 mb-5 max-w-3xl mx-auto">
+            Martin Fowler × Kent Beck 深度對談筆記
+        </p>
+
+        <p class="text-base text-gray-500 mb-12">
+            兩位軟體工藝大師從歷史、工藝、社會、職涯四個視角，拆解 AI 浪潮對軟體開發的深遠影響
+        </p>
+
+        <!-- CTA -->
+        <a href="https://www.youtube.com/watch?v=CZs8J1ZD0CE"
+           target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-semibold text-base
+                  bg-amber-500 text-gray-900 hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/20">
+            <!-- YouTube icon -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            觀看原始影片
+        </a>
+
+        <!-- Speaker chips -->
+        <div class="flex flex-wrap justify-center gap-4 mt-10">
+            <div class="flex items-center gap-3 px-5 py-3 rounded-full bg-surface-2 border border-gray-700">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white">MF</div>
+                <span class="text-base text-gray-300 font-medium">Martin Fowler</span>
+            </div>
+            <div class="flex items-center gap-3 px-5 py-3 rounded-full bg-surface-2 border border-gray-700">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-sm font-bold text-white">KB</div>
+                <span class="text-base text-gray-300 font-medium">Kent Beck</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 bounce-down">
+        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        </svg>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ NAV DOTS ══ -->
+<nav class="fixed right-5 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-3">
+    <a href="#s1" title="AI 的歷史規模" class="nav-dot w-2 h-2 rounded-full bg-gray-600 hover:bg-amber-400 transition-colors"></a>
+    <a href="#s2" title="軟體工藝轉型" class="nav-dot w-2 h-2 rounded-full bg-gray-600 hover:bg-amber-400 transition-colors"></a>
+    <a href="#s3" title="如何在混亂中學習" class="nav-dot w-2 h-2 rounded-full bg-gray-600 hover:bg-amber-400 transition-colors"></a>
+    <a href="#s4" title="社會與組織隱憂" class="nav-dot w-2 h-2 rounded-full bg-gray-600 hover:bg-amber-400 transition-colors"></a>
+    <a href="#s5" title="職涯新動態" class="nav-dot w-2 h-2 rounded-full bg-gray-600 hover:bg-amber-400 transition-colors"></a>
+</nav>
+
+<!-- ═══════════════════════════════════════════ SECTION 1 ══ -->
+<section id="s1" class="px-8 py-28 max-w-6xl mx-auto fade-in">
+    <div class="flex items-center gap-3 mb-10">
+        <span class="section-num text-amber-400">01 / 05</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent"></div>
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-bold mb-6 text-white">
+        AI 的歷史規模與<br><span class="gradient-amber">「想像力擴張」</span>
+    </h2>
+    <p class="text-gray-400 text-lg mb-12 max-w-3xl">
+        兩位專家認為，這波 AI 浪潮不只是工具升級，而是足以改變「可能性邊界」的範式轉移。
+    </p>
+
+    <div class="grid sm:grid-cols-2 gap-6">
+        <!-- Card: Intel 4004 -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-amber-500/40">
+            <div class="w-12 h-12 rounded-lg bg-amber-500/15 flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <h3 class="font-semibold text-white mb-3 text-lg">Intel 4004 時刻</h3>
+            <p class="text-gray-400 text-base">
+                Kent Beck 將 AI 比作 Intel 4004 微處理器的出現——讓「想像力的可能性」突然爆發，開發者開始敢於嘗試過去不敢想像的雄心壯志專案。
+            </p>
+        </div>
+
+        <!-- Card: 超越 OOP -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-amber-500/40">
+            <div class="w-12 h-12 rounded-lg bg-amber-500/15 flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <h3 class="font-semibold text-white mb-3 text-lg">超越 OOP 與網路革命</h3>
+            <p class="text-gray-400 text-base">
+                AI 的影響力被認為超越物件導向（OOP）或網路革命。這不是「下一代工具」，而是整個技術想像空間的重構。
+            </p>
+        </div>
+
+        <!-- Card: 恐懼 -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-amber-500/40 sm:col-span-2">
+            <div class="w-12 h-12 rounded-lg bg-red-500/15 flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <h3 class="font-semibold text-white mb-3 text-lg">這次的恐懼感更強烈</h3>
+            <p class="text-gray-400 text-base">
+                歷史上「不需要工程師」的預言（Cobol、敏捷運動）一再落空，但這次不同：人們開始討論「程式碼」本身的定義是否會被徹底改變。這種存在性的焦慮，是前所未有的。
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ SECTION 2 ══ -->
+<section id="s2" class="px-8 py-28 max-w-6xl mx-auto fade-in">
+    <div class="flex items-center gap-3 mb-10">
+        <span class="section-num text-blue-400">02 / 05</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-blue-400/40 to-transparent"></div>
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-bold mb-6 text-white">
+        軟體工藝的轉型：<br><span class="gradient-blue">從「寫程式」到「溝通與驗證」</span>
+    </h2>
+    <p class="text-gray-400 text-lg mb-12 max-w-3xl">
+        在 AI 代理普及的時代，開發者的核心技能正在發生本質上的轉移。
+    </p>
+
+    <!-- TDD highlight -->
+    <div class="relative p-8 sm:p-10 rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5 mb-6 overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-blue-500/10 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <h3 class="font-bold text-white text-xl">TDD 是 AI 時代的救命稻草</h3>
+                    <span class="tag bg-blue-500/20 text-blue-300 border border-blue-500/30">Kent Beck</span>
+                </div>
+                <p class="text-gray-300 text-base leading-relaxed">
+                    隨著 AI 代理（Agents）的普及，<strong class="text-blue-300">「驗證」</strong>比「生成」更重要。就像人類需要測試來確保自己做對一樣，面對實力強大的 AI「精靈（Genie）」，開發者更需要透過 TDD 來掌握主控權。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6">
+        <!-- DX = AX -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-blue-500/40">
+            <h3 class="font-semibold text-white mb-3 text-lg flex items-center gap-2">
+                <span class="text-blue-400">DX = AX</span>
+            </h3>
+            <p class="text-gray-400 text-base">
+                好程式碼對人類與 AI 的標準是高度重合的。良好的模組化與詳盡的測試，不僅幫助人類理解，更能顯著提升 AI 代理的工作效率。
+            </p>
+        </div>
+
+        <!-- Domain focus -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-blue-500/40">
+            <h3 class="font-semibold text-white mb-3 text-lg">
+                重心：函式 <span class="text-gray-500">→</span> <span class="text-blue-400">領域（Domain）</span>
+            </h3>
+            <p class="text-gray-400 text-base">
+                微觀重構單一函式的樂趣，在 AI 時代已失去槓桿作用。開發者應轉向建立精確的語言來與 AI 溝通領域知識——這與 DDD 的核心不謀而合。
+            </p>
+        </div>
+    </div>
+
+    <!-- Key insight -->
+    <div class="mt-6 p-7 rounded-xl bg-surface-3 border border-gray-700">
+        <blockquote>
+            「在 AI 代理時代，我們的工作從『生成正確的程式碼』，轉移到『定義什麼是正確』。」
+        </blockquote>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ SECTION 3 ══ -->
+<section id="s3" class="px-8 py-28 max-w-6xl mx-auto fade-in">
+    <div class="flex items-center gap-3 mb-10">
+        <span class="section-num text-green-400">03 / 05</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-green-400/40 to-transparent"></div>
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-bold mb-6 text-white">
+        如何在混亂中學習：<br><span class="gradient-green">保持好奇的懷疑論</span>
+    </h2>
+    <p class="text-gray-400 text-lg mb-12 max-w-3xl">
+        面對快速變化的 AI 工具，建立一套有效的學習與驗證框架，比追趕最新工具更重要。
+    </p>
+
+    <!-- 3-step process -->
+    <div class="space-y-5">
+        <div class="flex gap-6 p-7 rounded-xl bg-surface-2 border border-gray-800 card-hover hover:border-green-500/40">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center font-mono font-bold text-green-400 text-base">01</div>
+            <div>
+                <h3 class="font-semibold text-white mb-2 text-lg">懷疑自己的懷疑</h3>
+                <p class="text-gray-400 text-base">
+                    Martin Fowler 坦言，他曾因初次使用 Emacs 搭配 AI 體驗不佳而差點放棄。但他提醒：不能僅憑初期信號就下定論。<strong class="text-gray-300">懷疑本身也需要被質疑。</strong>
+                </p>
+                <span class="tag bg-green-500/10 text-green-400 border border-green-500/20 mt-2">Martin Fowler</span>
+            </div>
+        </div>
+
+        <div class="flex gap-6 p-7 rounded-xl bg-surface-2 border border-gray-800 card-hover hover:border-green-500/40">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center font-mono font-bold text-green-400 text-base">02</div>
+            <div>
+                <h3 class="font-semibold text-white mb-2 text-lg">執行「最小化實驗」</h3>
+                <p class="text-gray-400 text-base">
+                    在缺乏標準答案的現狀下，開發者最核心的技能是<strong class="text-gray-300">設計最小的實驗來驗證技術宣稱的真實性</strong>。別全盤接受，也別全盤拒絕。
+                </p>
+            </div>
+        </div>
+
+        <div class="flex gap-6 p-7 rounded-xl bg-surface-2 border border-gray-800 card-hover hover:border-green-500/40">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center font-mono font-bold text-green-400 text-base">03</div>
+            <div>
+                <h3 class="font-semibold text-white mb-2 text-lg">向專家學習決策流</h3>
+                <p class="text-gray-400 text-base">
+                    Martin Fowler 目前專注於觀察領先者的<strong class="text-gray-300">Decision Flow</strong>——人機協作時，哪些決定權仍保留在人類手中？溝通的具體細節是什麼？
+                </p>
+                <span class="tag bg-green-500/10 text-green-400 border border-green-500/20 mt-2">Martin Fowler</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ SECTION 4 ══ -->
+<section id="s4" class="px-8 py-28 max-w-6xl mx-auto fade-in">
+    <div class="flex items-center gap-3 mb-10">
+        <span class="section-num text-red-400">04 / 05</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-red-400/40 to-transparent"></div>
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-bold mb-6 text-white">
+        社會與組織層面的<br><span style="background: linear-gradient(135deg, #F87171 0%, #FB923C 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">隱憂</span>
+    </h2>
+    <p class="text-gray-400 text-lg mb-12 max-w-3xl">
+        技術變革帶來的不只是效率提升，更深刻的是對協作模式與組織文化的衝擊。
+    </p>
+
+    <!-- Warning card: Resoloing -->
+    <div class="relative p-8 sm:p-10 rounded-2xl border border-red-500/30 bg-red-500/5 mb-6 overflow-hidden">
+        <div class="absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-red-500/10 pointer-events-none"></div>
+        <div class="flex items-start gap-5">
+            <div class="w-14 h-14 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <h3 class="font-bold text-white text-xl">「重新孤島化（Resoloing）」的風險</h3>
+                    <span class="tag bg-red-500/20 text-red-300 border border-red-500/30">Kent Beck</span>
+                </div>
+                <p class="text-gray-300 text-base leading-relaxed">
+                    敏捷開發（XP）致力於打破孤島、促進社交互動。但現在有些開發者傾向一人管理六個 AI 代理，這可能導致<strong class="text-red-300">社交環境的萎縮</strong>——這是 Kent Beck 尤其擔心的趨勢。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-6">
+        <!-- Team size -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-gray-800 hover:border-orange-500/40">
+            <h3 class="font-semibold text-white mb-3 text-lg">
+                兩條披薩 <span class="text-gray-500">→</span> <span class="text-orange-400">一條披薩？</span>
+            </h3>
+            <p class="text-gray-400 text-base">
+                業界正在討論團隊規模的縮減。Kent 認為兩位人類配合多個 AI 代理的協作模式（進化的雙人編程），在控制 AI 輸出與深度決策上，比單人作業更有優勢。
+            </p>
+        </div>
+
+        <!-- Security -->
+        <div class="card-hover p-8 rounded-xl bg-surface-2 border border-red-900/30 hover:border-red-500/40 bg-red-950/10">
+            <h3 class="font-semibold text-white mb-3 text-lg flex items-center gap-2">
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                安全風險警告
+            </h3>
+            <p class="text-gray-400 text-base">
+                已有企業考慮讓 LLM 擁有讀寫郵件的全權處理權。在專家眼中，這是<strong class="text-red-400">極其危險且缺乏監督</strong>的行為。
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ SECTION 5 ══ -->
+<section id="s5" class="px-8 py-28 max-w-6xl mx-auto fade-in">
+    <div class="flex items-center gap-3 mb-10">
+        <span class="section-num text-purple-400">05 / 05</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-purple-400/40 to-transparent"></div>
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-bold mb-6 text-white">
+        開發者職涯的<br><span style="background: linear-gradient(135deg, #A78BFA 0%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">新動態</span>
+    </h2>
+    <p class="text-gray-400 text-lg mb-12 max-w-3xl">
+        AI 浪潮對不同資歷的開發者，帶來截然不同的機遇與挑戰。
+    </p>
+
+    <div class="space-y-5">
+        <!-- Junior -->
+        <div class="p-8 rounded-xl border card-hover bg-gradient-to-br from-green-950/30 to-surface-2 border-green-700/30 hover:border-green-500/50">
+            <div class="flex items-start gap-5">
+                <div class="w-12 h-12 rounded-lg bg-green-500/15 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 class="font-bold text-white text-lg">初級開發者的黃金時代</h3>
+                        <span class="tag bg-green-500/10 text-green-400 border border-green-500/20">機遇</span>
+                    </div>
+                    <p class="text-gray-400 text-base">
+                        如果年輕人能快速學習如何與強大工具協作，這將是<strong class="text-green-300">最好的入行時機</strong>，就像木工獲得了圓鋸機一樣——工具不會取代你，而是放大你的能力。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mid-level -->
+        <div class="p-8 rounded-xl border card-hover bg-gradient-to-br from-red-950/30 to-surface-2 border-red-700/30 hover:border-red-500/50">
+            <div class="flex items-start gap-5">
+                <div class="w-12 h-12 rounded-lg bg-red-500/15 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 class="font-bold text-white text-lg">中間層的淘汰危機</h3>
+                        <span class="tag bg-red-500/10 text-red-400 border border-red-500/20">風險</span>
+                    </div>
+                    <p class="text-gray-400 text-base">
+                        那些單純為了薪資而編碼、缺乏對工藝熱忱的人，在 AI 效率革命與<strong class="text-red-300">經濟逆風的雙重打擊</strong>下，處境最為危險。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Senior -->
+        <div class="p-8 rounded-xl border card-hover bg-gradient-to-br from-purple-950/30 to-surface-2 border-purple-700/30 hover:border-purple-500/50">
+            <div class="flex items-start gap-5">
+                <div class="w-12 h-12 rounded-lg bg-purple-500/15 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 class="font-bold text-white text-lg">資深開發者的新責任</h3>
+                        <span class="tag bg-purple-500/10 text-purple-400 border border-purple-500/20">轉型</span>
+                    </div>
+                    <p class="text-gray-400 text-base">
+                        資深者的價值不再是「提供標準答案」，而是<strong class="text-purple-300">演示「如何找出答案」</strong>，並在技術快速變動的環境中，教導下一代如何有效驗證與學習。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ KEY TAKEAWAYS ══ -->
+<section class="px-8 py-28 fade-in">
+    <div class="max-w-6xl mx-auto">
+        <div class="p-10 sm:p-14 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-surface-2 relative overflow-hidden">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background: radial-gradient(ellipse at top right, rgba(245,158,11,0.08) 0%, transparent 60%)"></div>
+            <div class="relative z-10">
+                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-8">
+                    <span class="gradient-amber">核心洞見</span> 一覽
+                </h2>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        AI 是「想像力放大器」，而非「工程師取代者」——能力邊界正在擴展，而非消失。
+                    </li>
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        TDD 與清晰的領域語言，是在 AI 時代保持控制權的關鍵工具。
+                    </li>
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        好的軟體設計對人類和 AI 的標準高度重合：DX ≈ AX。
+                    </li>
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        面對新工具，應設計「最小化實驗」來驗證，而非全盤接受或拒絕。
+                    </li>
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        警惕「重新孤島化」——不要用 AI 代理取代人與人之間有價值的協作。
+                    </li>
+                    <li class="flex items-start gap-4 text-base text-gray-300">
+                        <span class="text-amber-400 mt-0.5 flex-shrink-0">▸</span>
+                        資深者的新使命：不再是給答案，而是示範「如何找答案」。
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ FOOTER ══ -->
+<footer class="px-8 py-16 border-t border-gray-800">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-base text-gray-500">
+        <div>
+            筆記整理 · 2026 ·
+            <a href="/" class="text-gray-400 hover:text-amber-400 transition-colors ml-1">Coding Afternoon</a>
+        </div>
+        <a href="https://www.youtube.com/watch?v=CZs8J1ZD0CE"
+           target="_blank" rel="noopener noreferrer"
+           class="flex items-center gap-2 text-gray-400 hover:text-amber-400 transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            原始影片來源
+        </a>
+    </div>
+</footer>
+
+<!-- Scroll-based fade-in -->
+<script is:inline>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
