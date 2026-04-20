@@ -7,24 +7,14 @@ import PostNavigation from '../../components/sections/blog/PostNavigation.astro'
 import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import GiscusComments from '../../components/common/GiscusComments.astro';
 import BackToTop from '../../components/common/BackToTop.astro';
-import { getAdjacentSeriesPosts } from '../../utils/series';
+import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 
 export const getStaticPaths = async () => {
     const blogs = await getCollection("blogs");
-    // 只處理在子文件夾中的文章
-    const nestedBlogs = blogs.filter(blog => blog.slug.includes('/'));
-    const paths = nestedBlogs.map(blog => {
-        return {
-            params: {
-                slug: blog.slug
-            },
-            props: {
-                blog
-            }
-        }
-    });
-
-    return paths;
+    return blogs.map(blog => ({
+        params: { slug: blog.slug },
+        props: { blog }
+    }));
 }
 
 type Props = {
@@ -33,7 +23,18 @@ type Props = {
 
 const {blog} = Astro.props;
 const {Content} = await blog.render();
-const { prevPost, nextPost } = await getAdjacentSeriesPosts(blog.slug, blog.data.parent!);
+
+let prevPost, nextPost;
+
+if (blog.data.parent) {
+    const adjacent = await getAdjacentSeriesPosts(blog.slug, blog.data.parent);
+    prevPost = adjacent.prevPost;
+    nextPost = adjacent.nextPost;
+} else {
+    const adjacent = await getAdjacentPosts(blog.slug);
+    prevPost = adjacent.prevPost;
+    nextPost = adjacent.nextPost;
+}
 ---
 
 <Layout title={blog.data.title}>
@@ -67,4 +68,3 @@ const { prevPost, nextPost } = await getAdjacentSeriesPosts(blog.slug, blog.data
         toggleMarkdownTheme(theme);
     </script>
 </Layout>
-
