@@ -7,8 +7,7 @@ export interface Blog {
         description: string;
         datetime: string;
         image?: string;
-        isEnabled: boolean;
-        parent?: string;
+parent?: string;
         seriesIndex?: number;
     }
 }
