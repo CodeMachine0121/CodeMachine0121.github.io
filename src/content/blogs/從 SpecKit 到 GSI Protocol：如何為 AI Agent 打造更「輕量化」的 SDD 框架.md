@@ -12,6 +12,15 @@ class: "responsive-blog-post"
 
 為了在「嚴謹度」與「敏捷性」之間取得更好的平衡，並解決 **AI 對「既有專案結構」感知不足** 的問題，我基於 SDD 的精神，開發了 **GSI Protocol**。
 
+<a href="/slides/gsi-protocol/index.html" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;margin:2rem 0;border:1px solid rgba(59,130,246,0.35);border-radius:12px;background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(37,99,235,0.04));text-decoration:none;transition:transform .15s ease,box-shadow .15s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(59,130,246,0.18)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+  <span style="font-size:2rem;line-height:1;">📊</span>
+  <span style="flex:1;">
+    <span style="display:block;font-weight:700;font-size:1.05rem;color:var(--color-text,#e2e8f0);">GSI-Protocol 簡報</span>
+    <span style="display:block;font-size:.9rem;opacity:.7;margin-top:.15rem;">點此開啟全螢幕簡報 — Gherkin · Structure · Implement</span>
+  </span>
+  <span style="font-size:1.25rem;color:#3B82F6;">→</span>
+</a>
+
 ---
 
 ### 📚 GSI, Gherkin -> Structure -> Implementation
