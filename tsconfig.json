@@ -1,4 +1,4 @@
 {
   "extends": "astro/tsconfigs/base",
-  "exclude": ["dist", "public"]
+  "exclude": ["dist", "public", "e2e"]
 }

@@ -23,8 +23,10 @@
     "typescript": "^5.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "playwright-bdd": "^9.0.0"
   },
   "private": true,
   "peerDependencies": {

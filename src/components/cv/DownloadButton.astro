@@ -1,0 +1,55 @@
+---
+interface Props {
+  fileName: string;
+}
+
+const { fileName } = Astro.props;
+---
+
+<button
+  id="download-pdf-btn"
+  data-filename={fileName}
+  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl
+         hover:opacity-90 active:scale-95 transition-all duration-150 shadow-md"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+  Download PDF
+</button>
+
+<script>
+  const btn = document.getElementById('download-pdf-btn') as HTMLButtonElement;
+  const fileName = btn?.dataset.filename ?? 'cv.pdf';
+
+  btn?.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        if ((window as any).html2pdf) { resolve(); return; }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('CDN load failed'));
+        document.head.appendChild(script);
+      });
+
+      const element = document.getElementById('cv-content');
+      if (!element) throw new Error('cv-content not found');
+
+      await (window as any).html2pdf().set({
+        margin: [10, 12],
+        filename: fileName,
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+      }).from(element).save();
+    } catch {
+      window.print();
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Download PDF`;
+    }
+  });
+</script>

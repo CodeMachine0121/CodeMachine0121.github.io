@@ -1,0 +1,47 @@
+---
+interface SocialLink {
+  iconName: string;
+  link: string;
+}
+
+interface Props {
+  basic: {
+    name: string;
+    job: string;
+    summary: { en: string };
+  };
+  socialLinks: SocialLink[];
+}
+
+const { basic, socialLinks } = Astro.props;
+
+const visibleLinks = socialLinks.filter(l =>
+  l.iconName === 'Github' || l.iconName === 'Email'
+);
+
+const labelMap: Record<string, string> = {
+  Github: 'GitHub',
+  Email: 'Email',
+};
+---
+
+<header class="pb-6 mb-2 border-b-2 border-gray-800 print:border-gray-400">
+  <h1 class="text-4xl font-bold tracking-tight text-gray-900 mb-1">
+    {basic.name}
+  </h1>
+  <p class="text-lg font-medium text-gray-600 mb-3">
+    {basic.job}
+  </p>
+  <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm text-gray-600">
+    {visibleLinks.map((sl) => (
+      <a
+        href={sl.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-gray-900 underline underline-offset-2 transition-colors"
+      >
+        {labelMap[sl.iconName] ?? sl.iconName}
+      </a>
+    ))}
+  </div>
+</header>

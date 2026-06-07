@@ -1,0 +1,47 @@
+---
+interface ExperienceItem {
+  title: string;
+  sub_title: string;
+  years: string;
+  details?: { en: string };
+  achievements?: { en: string }[];
+}
+
+interface Props {
+  items: ExperienceItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="mb-7">
+  <h2 class="text-xs font-bold tracking-widest uppercase text-gray-500 mb-4 pb-1 border-b border-gray-200">
+    Experience
+  </h2>
+
+  <div class="space-y-5">
+    {items.map((item) => (
+      <div>
+        <div class="flex items-baseline justify-between gap-4 mb-0.5">
+          <h3 class="text-sm font-bold text-gray-900">{item.title}</h3>
+          <time class="text-xs text-gray-500 whitespace-nowrap shrink-0">{item.years}</time>
+        </div>
+        <p class="text-sm font-semibold text-gray-600 mb-1.5">{item.sub_title}</p>
+
+        {item.details && (
+          <p class="text-sm text-gray-600 leading-relaxed mb-2">{item.details.en}</p>
+        )}
+
+        {item.achievements && item.achievements.length > 0 && (
+          <ul class="space-y-0.5 pl-3">
+            {item.achievements.map((a) => (
+              <li class="text-sm text-gray-700 before:content-['•'] before:mr-2 before:text-gray-400">
+                {a.en}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+  </div>
+</section>

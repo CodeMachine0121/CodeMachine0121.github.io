@@ -1,0 +1,46 @@
+---
+interface ProjectItem {
+  title: { en: string };
+  type: { en: string };
+  link: string;
+  imageUrl?: string;
+}
+
+interface Props {
+  items: ProjectItem[];
+}
+
+const { items } = Astro.props;
+
+const visibleItems = items.filter(p => p.title.en);
+---
+
+<section class="mb-7">
+  <h2 class="text-xs font-bold tracking-widest uppercase text-gray-500 mb-4 pb-1 border-b border-gray-200">
+    Projects
+  </h2>
+
+  <div class="space-y-2">
+    {visibleItems.map((item) => (
+      <div class="flex items-baseline justify-between gap-3">
+        <div class="flex items-baseline gap-2 min-w-0">
+          {item.link ? (
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-gray-800 hover:text-gray-900 underline underline-offset-2 truncate"
+            >
+              {item.title.en}
+            </a>
+          ) : (
+            <span class="text-sm text-gray-800 truncate">{item.title.en}</span>
+          )}
+        </div>
+        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap shrink-0">
+          {item.type.en}
+        </span>
+      </div>
+    ))}
+  </div>
+</section>
