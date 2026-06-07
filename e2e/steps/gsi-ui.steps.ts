@@ -48,6 +48,24 @@ Then('a file named {string} should be downloaded', async ({}, fileName: string) 
   pendingDownload = null;
 });
 
+Then('a file download should be triggered', async ({}) => {
+  const download = await pendingDownload;
+  expect(download).not.toBeNull();
+  pendingDownload = null;
+});
+
+Then('the {string} should be visible', async ({ page }, name: string) => {
+  const el = page.getByAltText(name).or(page.getByRole('img', { name }));
+  await expect(el.first()).toBeVisible();
+});
+
+Then('the summary text should contain at least 3 sentences', async ({ page }) => {
+  const summarySection = page.locator('section').filter({ hasText: 'Summary' });
+  const text = await summarySection.textContent();
+  const sentenceCount = (text ?? '').split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+  expect(sentenceCount).toBeGreaterThanOrEqual(3);
+});
+
 Then('I should be navigated to {string}', async ({ page }, urlPath: string) => {
   await expect(page).toHaveURL(new RegExp(`${urlPath}$`));
 });

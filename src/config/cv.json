@@ -1,0 +1,129 @@
+{
+  "basic": {
+    "name": "James Hsueh",
+    "job": "Full Stack Software Engineer",
+    "location": "Taiwan",
+    "email": "james.afternoon.dev@gmail.com",
+    "summary": {
+      "en": "Results-driven Full Stack Software Engineer with 4+ years of experience building scalable backend systems, microservices architectures, and developer tooling across fintech and enterprise domains. Proficient in .NET Core, Golang, and cloud-native platforms (Azure, Oracle Cloud), with a meticulous approach to clean, test-driven code. A collaborative engineer who has led intern teams as Scrum Master and Frontend Technical Mentor, and represented the team at community events including GDG Kaohsiung. Holds a CKAD certification and a Master of Computer Science, consistently accountable for delivering production-quality systems from initial design to deployment."
+    },
+    "cv_file_name": "james_cv.pdf"
+  },
+  "experiences": [
+    {
+      "title": "Backend/Frontend Software Engineer",
+      "sub_title": "Cafler",
+      "years": "2026 – Present",
+      "details": {
+        "en": "Leading Asia-region service integration for a global vehicle care platform, bridging business operations across markets using .NET Core."
+      },
+      "achievements": [
+        { "en": "Built cross-regional business integration services using .NET Core to support Asia-market operations" },
+        { "en": "Implemented backend APIs bridging Cafler's global platform with Asia-specific business workflows" }
+      ]
+    },
+    {
+      "title": "Backend Software Engineer",
+      "sub_title": "Doutify Tech",
+      "years": "2024 – 2026",
+      "details": {
+        "en": "Redesigned and optimized backend infrastructure for a loan processing platform, migrating a monolithic system to a microservices architecture."
+      },
+      "achievements": [
+        { "en": "Reconstructed the credit loan system using microservices architecture, improving scalability and reducing deployment coupling" },
+        { "en": "Redesigned the strategy module to decouple business rules from core loan processing logic" },
+        { "en": "Implemented SSO/OAuth login system, enabling unified authentication across multiple internal services" },
+        { "en": "Set up Azure DevOps CI/CD pipelines, reducing manual deployment effort and improving release consistency" },
+        { "en": "Deployed production services on Oracle Cloud Platform (OCP), establishing a cloud-native infrastructure" },
+        { "en": "Configured integration test environments for Esso, UserInfo, OracleDB, and Redis, enabling reliable pre-production validation" }
+      ]
+    },
+    {
+      "title": "Full Stack Software Engineer",
+      "sub_title": "TitanSoft",
+      "years": "2022 – 2024",
+      "details": {
+        "en": "Developed payment processing systems and third-party API integrations. Led intern teams and championed engineering practices including hexagonal architecture, DevOps, and TDD."
+      },
+      "achievements": [
+        { "en": "Led intern team as Scrum Master and Frontend Technical Mentor, hosting workshops on hexagonal architecture and refactoring best practices" },
+        { "en": "Built and delivered Docker and Kubernetes DevOps workshops, upskilling team members in container-based deployments" },
+        { "en": "Implemented ELK stack monitoring for Kubernetes projects, improving observability across distributed services" },
+        { "en": "Refactored legacy codebase and resolved 2+ year-old production bugs, increasing system stability" },
+        { "en": "Earned CKAD (Certified Kubernetes Application Developer) certification, validating cloud-native engineering expertise" },
+        { "en": "Spoke at GDG Kaohsiung twice, presenting on Golang Discord bot development and Vim IDE configuration" },
+        { "en": "Acted as external liaison, coordinating communication between the engineering team and outside stakeholders" }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "title": "Master of Computer Science",
+      "sub_title": "National Yunlin University of Science and Technology, YunTech",
+      "years": "2020 – 2022",
+      "details": {
+        "en": "Graduated with honors. Researched Blockchain technology and Network Security. Developed a thesis on a secure payment transmission protocol (GSI Protocol)."
+      }
+    },
+    {
+      "title": "Bachelor of Information and Telecommunication Engineering",
+      "sub_title": "Ming Chuan University, MCU",
+      "years": "2016 – 2020",
+      "details": {
+        "en": "Focused on Blockchain and Network Security research."
+      }
+    }
+  ],
+  "projects": [
+    {
+      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD" },
+      "type": { "en": "Blog" },
+      "link": "https://github.com/CodeMachine0121/GSI-Protocol#"
+    },
+    {
+      "title": { "en": "From 0 to 1: Golang TDD with AI" },
+      "type": { "en": "Blog Series" },
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
+    },
+    {
+      "title": { "en": "30 Design Patterns with Golang in 30 Days" },
+      "type": { "en": "Blog Series" },
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
+    },
+    {
+      "title": { "en": "Side-Project: Build an Editable Blockchain" },
+      "type": { "en": "Blog Series" },
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
+    },
+    {
+      "title": { "en": "Open Source SDK for NuGet: EccSDK" },
+      "type": { "en": "SDK" },
+      "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
+    },
+    {
+      "title": { "en": "CKAD Certification" },
+      "type": { "en": "Certification" },
+      "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
+    },
+    {
+      "title": { "en": "Monitoring Discord Latency with Golang Bot" },
+      "type": { "en": "GDG Kaohsiung Speaker" },
+      "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/"
+    },
+    {
+      "title": { "en": "Turn Vim into an IDE" },
+      "type": { "en": "GDG Kaohsiung Speaker" },
+      "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/"
+    }
+  ],
+  "socialLinks": [
+    {
+      "iconName": "Github",
+      "link": "https://github.com/CodeMachine0121"
+    },
+    {
+      "iconName": "Email",
+      "link": "mailto:james.afternoon.dev@gmail.com"
+    }
+  ]
+}

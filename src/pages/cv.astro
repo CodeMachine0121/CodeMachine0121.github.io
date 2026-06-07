@@ -5,8 +5,11 @@ import CVExperience from '../components/cv/CVExperience.astro';
 import CVEducation from '../components/cv/CVEducation.astro';
 import CVProjects from '../components/cv/CVProjects.astro';
 import DownloadButton from '../components/cv/DownloadButton.astro';
-import { basic, experiences, education, projects, socialLinks } from '../config/introduce.json';
+import profilePicture from '../assets/profile-picture.png';
+import cvData from '../config/cv.json';
 import '../styles/theme.css';
+
+const { basic, experiences, education, projects, socialLinks } = cvData;
 ---
 
 <!doctype html>
@@ -36,7 +39,6 @@ import '../styles/theme.css';
         -webkit-font-smoothing: antialiased;
       }
 
-      /* Action bar hidden in print */
       @media print {
         .no-print { display: none !important; }
         body { background: white; }
@@ -68,12 +70,12 @@ import '../styles/theme.css';
     </div>
 
     <!-- CV Paper -->
-    <div class="px-4 pt-8 pb-16">
+    <div class="flex justify-center px-4 pt-8 pb-16">
       <div
         id="cv-content"
-        class="cv-paper max-w-[780px] mx-auto bg-white px-[52px] py-12 shadow-[0_4px_24px_rgba(0,0,0,.10)] rounded-sm"
+        class="cv-paper w-full max-w-[780px] bg-white px-[52px] py-12 shadow-[0_4px_24px_rgba(0,0,0,.10)] rounded-sm"
       >
-        <CVHeader basic={basic} socialLinks={socialLinks} />
+        <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
         <div style="margin-top:24px;">
           <CVSummary summary={basic.summary.en} />

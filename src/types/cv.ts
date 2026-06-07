@@ -6,8 +6,18 @@ export interface SocialLink {
 export interface BasicInfo {
   name: string;
   job: string;
+  location?: string;
+  email?: string;
   summary: { en: string };
   cv_file_name: string;
+}
+
+export interface CvData {
+  basic: BasicInfo;
+  experiences: ExperienceItem[];
+  education: EducationItem[];
+  projects: ProjectItem[];
+  socialLinks: SocialLink[];
 }
 
 export interface ExperienceItem {
