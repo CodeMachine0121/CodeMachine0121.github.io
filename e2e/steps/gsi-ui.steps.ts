@@ -38,6 +38,10 @@ Then('the {string} button should be visible', async ({ page }, label: string) =>
   await expect(page.getByRole('button', { name: label })).toBeVisible();
 });
 
+Then('the {string} link should be visible', async ({ page }, label: string) => {
+  await expect(page.getByRole('link', { name: label })).toBeVisible();
+});
+
 Then('a file named {string} should be downloaded', async ({}, fileName: string) => {
   const download = await pendingDownload;
   expect(download.suggestedFilename()).toBe(fileName);
