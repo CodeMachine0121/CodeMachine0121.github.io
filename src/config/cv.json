@@ -9,9 +9,20 @@
   },
   "experiences": [
     {
+      "title": "Backend/Frontend Software Engineer",
+      "sub_title": "Cafler",
+      "years": "2026 - Present",
+      "details": {
+        "en": "Responsible for Asia region Business integration using .NET Core, building backend services to support cross-regional operations."
+      },
+      "achievements": [
+        { "en": "Asia Region Business Integration" }
+      ]
+    },
+    {
       "title": "Backend Software Engineer",
       "sub_title": "Doutify Tech",
-      "years": "2024 - Present",
+      "years": "2024 - 2026",
       "details": {
         "en": "Developed and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability."
       },
