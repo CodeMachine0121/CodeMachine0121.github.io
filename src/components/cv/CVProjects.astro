@@ -23,18 +23,18 @@ const visibleItems = items.filter(p => p.title.en);
   <div class="space-y-2">
     {visibleItems.map((item) => (
       <div class="flex items-baseline justify-between gap-3">
-        <div class="flex items-baseline gap-2 min-w-0">
+        <div class="flex items-baseline gap-2">
           {item.link ? (
             <a
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm text-gray-800 hover:text-gray-900 underline underline-offset-2 truncate"
+              class="text-sm text-gray-800 hover:text-gray-900 underline underline-offset-2"
             >
               {item.title.en}
             </a>
           ) : (
-            <span class="text-sm text-gray-800 truncate">{item.title.en}</span>
+            <span class="text-sm text-gray-800">{item.title.en}</span>
           )}
         </div>
         <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap shrink-0">

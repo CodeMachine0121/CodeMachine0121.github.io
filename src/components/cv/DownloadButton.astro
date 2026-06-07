@@ -22,29 +22,69 @@ const { fileName } = Astro.props;
   const btn = document.getElementById('download-pdf-btn') as HTMLButtonElement;
   const fileName = btn?.dataset.filename ?? 'cv.pdf';
 
+  function loadScript(src: string, check: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if ((window as any)[check]) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => resolve();
+      s.onerror = () => reject();
+      document.head.appendChild(s);
+    });
+  }
+
   btn?.addEventListener('click', async () => {
     btn.disabled = true;
     btn.textContent = 'Generating…';
 
     try {
-      await new Promise<void>((resolve, reject) => {
-        if ((window as any).html2pdf) { resolve(); return; }
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('CDN load failed'));
-        document.head.appendChild(script);
-      });
+      await Promise.all([
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'html2canvas'),
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf'),
+      ]);
 
       const element = document.getElementById('cv-content');
       if (!element) throw new Error('cv-content not found');
 
-      await (window as any).html2pdf().set({
-        margin: [10, 12],
-        filename: fileName,
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
-      }).from(element).save();
+      const canvasScale = 2;
+      const canvas = await (window as any).html2canvas(element, {
+        scale: canvasScale,
+        useCORS: true,
+        scrollY: -window.scrollY,
+      });
+
+      const { jsPDF } = (window as any).jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgRatio = canvas.height / canvas.width;
+      const imgH = pageW * imgRatio;
+      const imgData = canvas.toDataURL('image/png');
+
+      let imgX: number, imgY: number, imgW: number, imgFinalH: number;
+      if (imgH <= pageH) {
+        imgX = 0; imgY = (pageH - imgH) / 2; imgW = pageW; imgFinalH = imgH;
+      } else {
+        const s = pageH / imgH;
+        imgW = pageW * s; imgFinalH = pageH;
+        imgX = (pageW - imgW) / 2; imgY = 0;
+      }
+      pdf.addImage(imgData, 'PNG', imgX, imgY, imgW, imgFinalH);
+
+      // Overlay clickable link regions
+      const elemRect = element.getBoundingClientRect();
+      const mmPerPx = imgW / (canvas.width / canvasScale);
+
+      element.querySelectorAll('a[href]').forEach((a) => {
+        const href = (a as HTMLAnchorElement).href;
+        if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+        const r = a.getBoundingClientRect();
+        const x = imgX + (r.left - elemRect.left) * mmPerPx;
+        const y = imgY + (r.top - elemRect.top) * mmPerPx;
+        pdf.link(x, y, r.width * mmPerPx, r.height * mmPerPx, { url: href });
+      });
+
+      pdf.save(fileName);
     } catch {
       window.print();
     } finally {
