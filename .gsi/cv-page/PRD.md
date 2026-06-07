@@ -8,11 +8,11 @@
 ## 業務規則
 
 - 路由為 `/cv`，與首頁完全分離，不含 Hero、Portfolio、Header 導覽列等
-- 資料全部來自 `cv.json`（basic、experiences、education、projects、socialLinks）
+- 資料全部來自 `introduce.json`（basic、experiences、education、projects、socialLinks）
 - 版面依標準 Resume 順序排列：Header → Summary → Experience → Education → Projects
 - Header 區塊需顯示：姓名、職稱、以及 socialLinks（GitHub、Email）
 - Experience 每筆需顯示：職稱、公司名、年份、職務描述、achievements bullet points
-- Projects 區段顯示 cv.json 的 `projects` 陣列，含標題與類型標籤
+- Projects 區段顯示 introduce.json 的 `projects` 陣列，含標題與類型標籤
 - 頁面無動畫效果，確保 PDF 轉換品質
 - 提供「Download PDF」按鈕，觸發瀏覽器端 HTML → PDF（A4）並自動下載
 - PDF 內容不含 Download 按鈕本身與返回首頁連結（列印時隱藏）
