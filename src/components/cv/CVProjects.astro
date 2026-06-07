@@ -1,25 +1,16 @@
 ---
-interface ProjectItem {
-  title: { en: string };
-  type: { en: string };
-  link: string;
-  imageUrl?: string;
-}
+import CVSection from './CVSection.astro';
+import type { ProjectItem } from '../../types/cv';
 
 interface Props {
   items: ProjectItem[];
 }
-
 const { items } = Astro.props;
 
 const visibleItems = items.filter(p => p.title.en);
 ---
 
-<section class="mb-7">
-  <h2 class="text-xs font-bold tracking-widest uppercase text-gray-500 mb-4 pb-1 border-b border-gray-200">
-    Projects
-  </h2>
-
+<CVSection title="Projects">
   <div class="space-y-2">
     {visibleItems.map((item) => (
       <div class="flex items-baseline justify-between gap-3">
@@ -43,4 +34,4 @@ const visibleItems = items.filter(p => p.title.en);
       </div>
     ))}
   </div>
-</section>
+</CVSection>

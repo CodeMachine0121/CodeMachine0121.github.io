@@ -1,0 +1,21 @@
+---
+interface Props {
+  title: string;
+  sub_title: string;
+  years: string;
+  details?: string;
+}
+const { title, sub_title, years, details } = Astro.props;
+---
+
+<div>
+  <div class="flex items-baseline justify-between gap-4 mb-0.5">
+    <h3 class="text-sm font-bold text-gray-900">{title}</h3>
+    <time class="text-xs text-gray-500 whitespace-nowrap shrink-0">{years}</time>
+  </div>
+  <p class="text-sm font-semibold text-gray-600 mb-1.5">{sub_title}</p>
+  {details && (
+    <p class="text-sm text-gray-600 leading-relaxed mb-2">{details}</p>
+  )}
+  <slot />
+</div>

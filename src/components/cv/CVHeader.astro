@@ -1,15 +1,8 @@
 ---
-interface SocialLink {
-  iconName: string;
-  link: string;
-}
+import type { BasicInfo, SocialLink } from '../../types/cv';
 
 interface Props {
-  basic: {
-    name: string;
-    job: string;
-    summary: { en: string };
-  };
+  basic: BasicInfo;
   socialLinks: SocialLink[];
 }
 
