@@ -28,3 +28,5 @@ pnpm-debug.log*
 .idea/
 .github/*
 .netlify/
+
+test-results/*
