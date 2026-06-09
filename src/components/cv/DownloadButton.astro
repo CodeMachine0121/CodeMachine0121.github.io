@@ -2,94 +2,142 @@
 interface Props {
   fileName: string;
 }
-
 const { fileName } = Astro.props;
 ---
 
 <button
   id="download-pdf-btn"
   data-filename={fileName}
-  class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-xl
-         hover:opacity-90 active:scale-95 transition-all duration-150 shadow-md"
+  class="no-print cv-download-btn"
+  aria-label="Download CV as PDF"
 >
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
   </svg>
-  Download PDF
+  <span>Download PDF</span>
 </button>
 
 <script>
   const btn = document.getElementById('download-pdf-btn') as HTMLButtonElement;
   const fileName = btn?.dataset.filename ?? 'cv.pdf';
 
-  function loadScript(src: string, check: string): Promise<void> {
+  const ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>`;
+
+  function setLoading(text: string) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="cv-spinner" aria-hidden="true"></span><span>${text}</span>`;
+  }
+
+  function setDefault() {
+    btn.disabled = false;
+    btn.innerHTML = `${ICON_SVG}<span>Download PDF</span>`;
+  }
+
+  function loadScript(src: string, globalKey: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if ((window as any)[check]) { resolve(); return; }
+      if ((window as any)[globalKey]) { resolve(); return; }
       const s = document.createElement('script');
       s.src = src;
       s.onload = () => resolve();
-      s.onerror = () => reject();
+      s.onerror = () => reject(new Error(`Failed to load ${src}`));
       document.head.appendChild(s);
     });
   }
 
   btn?.addEventListener('click', async () => {
-    btn.disabled = true;
-    btn.textContent = 'Generating…';
+    setLoading('Preparing…');
+
+    const element = document.getElementById('cv-content') as HTMLElement | null;
+    if (!element) { setDefault(); return; }
+
+    // Hide fixed UI overlays
+    const noPrint = document.querySelectorAll<HTMLElement>('.no-print');
+    noPrint.forEach(el => { el.style.visibility = 'hidden'; });
+
+    // Apply compact mode — tightens spacing so everything fits one A4 page
+    element.classList.add('cv-pdf-rendering');
+
+    // Allow styles to settle before capture, then ensure all fonts are painted
+    await new Promise(r => setTimeout(r, 80));
+    await document.fonts.ready;
 
     try {
+      setLoading('Generating…');
+
       await Promise.all([
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'html2canvas'),
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf'),
       ]);
 
-      const element = document.getElementById('cv-content');
-      if (!element) throw new Error('cv-content not found');
-
-      const canvasScale = 2;
       const canvas = await (window as any).html2canvas(element, {
-        scale: canvasScale,
+        scale: 2,
         useCORS: true,
+        allowTaint: false,
         scrollY: -window.scrollY,
+        logging: false,
+        backgroundColor: '#ffffff',
       });
 
       const { jsPDF } = (window as any).jspdf;
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const imgRatio = canvas.height / canvas.width;
-      const imgH = pageW * imgRatio;
-      const imgData = canvas.toDataURL('image/png');
+      const pageW = pdf.internal.pageSize.getWidth();   // 210 mm
+      const pageH = pdf.internal.pageSize.getHeight();  // 297 mm
 
-      let imgX: number, imgY: number, imgW: number, imgFinalH: number;
-      if (imgH <= pageH) {
-        imgX = 0; imgY = (pageH - imgH) / 2; imgW = pageW; imgFinalH = imgH;
-      } else {
-        const s = pageH / imgH;
-        imgW = pageW * s; imgFinalH = pageH;
-        imgX = (pageW - imgW) / 2; imgY = 0;
+      const padX = 8;   // mm — horizontal margin inside PDF
+      const padY = 10;  // mm — vertical margin inside PDF
+      const availW = pageW - padX * 2;
+      const availH = pageH - padY * 2;
+
+      // Scale canvas width to fill availW
+      const scaleByW = availW / canvas.width;
+      const contentH_mm = canvas.height * scaleByW;
+
+      // If content is taller than one page, scale down uniformly to fit
+      let finalW = availW;
+      let finalH = contentH_mm;
+      if (contentH_mm > availH) {
+        const shrink = availH / contentH_mm;
+        finalW = availW * shrink;
+        finalH = availH;
       }
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgW, imgFinalH);
 
-      // Overlay clickable link regions
+      // Center horizontally if scaled down
+      const offsetX = padX + (availW - finalW) / 2;
+
+      // Single page — no loop, no slicing. PNG avoids JPEG artifacts on text.
+      pdf.addImage(
+        canvas.toDataURL('image/png'),
+        'PNG',
+        offsetX,
+        padY,
+        finalW,
+        finalH
+      );
+
+      // Overlay clickable links
+      // mmPerCssPx: mm per CSS pixel (canvas is scale:2, so ×2 to convert canvas→CSS)
+      const mmPerCssPx = (finalW / canvas.width) * 2;
       const elemRect = element.getBoundingClientRect();
-      const mmPerPx = imgW / (canvas.width / canvasScale);
 
-      element.querySelectorAll('a[href]').forEach((a) => {
-        const href = (a as HTMLAnchorElement).href;
-        if (!href || href.startsWith('#') || href.startsWith('javascript')) return;
+      element.querySelectorAll('a[href]').forEach((anchor) => {
+        const a = anchor as HTMLAnchorElement;
+        if (!a.href || a.href.startsWith('#') || a.href.startsWith('javascript')) return;
         const r = a.getBoundingClientRect();
-        const x = imgX + (r.left - elemRect.left) * mmPerPx;
-        const y = imgY + (r.top - elemRect.top) * mmPerPx;
-        pdf.link(x, y, r.width * mmPerPx, r.height * mmPerPx, { url: href });
+        const linkTop = r.top - elemRect.top;
+        const xMm = offsetX + (r.left - elemRect.left) * mmPerCssPx;
+        const yMm = padY + linkTop * mmPerCssPx;
+        pdf.link(xMm, yMm, r.width * mmPerCssPx, r.height * mmPerCssPx, { url: a.href });
       });
 
       pdf.save(fileName);
+
     } catch {
+      // Fallback: native browser print — compact styles already applied via CSS @media print
       window.print();
     } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Download PDF`;
+      element.classList.remove('cv-pdf-rendering');
+      noPrint.forEach(el => { el.style.visibility = ''; });
+      setDefault();
     }
   });
 </script>

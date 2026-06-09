@@ -1,0 +1,38 @@
+// CV Design Tokens — Redesign 2026
+// Palette: Zinc neutrals + Blue accent (used sparingly)
+
+$cv-zinc-900: #18181B;
+$cv-zinc-800: #27272A;
+$cv-zinc-700: #3F3F46;
+$cv-zinc-600: #52525B;
+$cv-zinc-500: #71717A;
+$cv-zinc-400: #A1A1AA;
+$cv-zinc-300: #D4D4D8;
+$cv-zinc-200: #E4E4E7;
+$cv-zinc-100: #F4F4F5;
+$cv-zinc-50:  #FAFAFA;
+
+$cv-accent:    #2563EB; // blue-600 — links & interactive only
+$cv-accent-bg: #EFF6FF; // blue-50
+
+$cv-surface: #FFFFFF;
+$cv-bg:      $cv-zinc-100;
+$cv-border:  $cv-zinc-200;
+
+// Typography
+$cv-font-heading: 'Archivo', system-ui, sans-serif;
+$cv-font-body:    'Space Grotesk', system-ui, sans-serif;
+
+// Type scale
+$cv-fs-name:  42px;
+$cv-fs-role:  16px;
+$cv-fs-label: 10px; // section labels (UPPERCASE)
+$cv-fs-title: 15px; // entry role/titles
+$cv-fs-body:  13px;
+$cv-fs-body-lg: 13.5px; // summary
+$cv-fs-meta:  12px; // dates, badges
+
+// Paper layout
+$cv-paper-max:   860px;
+$cv-paper-pad-x: 88px;
+$cv-paper-pad-y: 60px;

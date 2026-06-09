@@ -10,7 +10,7 @@ const { items } = Astro.props;
 ---
 
 <CVSection title="Experience">
-  <div class="space-y-6">
+  <div>
     {items.map((item) => (
       <CVTimelineEntry
         title={item.title}
@@ -19,10 +19,10 @@ const { items } = Astro.props;
         details={item.details?.en}
       >
         {item.achievements && item.achievements.length > 0 && (
-          <ul class="space-y-1 mt-1">
+          <ul class="cv-achievements">
             {item.achievements.map((a) => (
-              <li class="flex items-start gap-2 text-[13px] text-gray-700 leading-snug">
-                <span class="mt-[5px] shrink-0 w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+              <li class="cv-achievement">
+                <span class="cv-bullet" aria-hidden="true"></span>
                 <span>{a.en}</span>
               </li>
             ))}

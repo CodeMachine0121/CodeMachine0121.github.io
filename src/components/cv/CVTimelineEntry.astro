@@ -8,14 +8,12 @@ interface Props {
 const { title, sub_title, years, details } = Astro.props;
 ---
 
-<div class="relative pl-5 before:absolute before:left-0 before:top-[7px] before:w-2 before:h-2 before:rounded-full before:bg-blue-600 before:ring-2 before:ring-blue-100">
-  <div class="flex items-baseline justify-between gap-4 mb-0.5">
-    <h3 class="text-[14px] font-bold text-gray-900">{title}</h3>
-    <time class="text-[12px] text-gray-400 whitespace-nowrap shrink-0 font-medium">{years}</time>
+<div class="cv-entry">
+  <div class="cv-entry__header">
+    <h3 class="cv-entry__title">{title}</h3>
+    <time class="cv-entry__date">{years}</time>
   </div>
-  <p class="text-[13px] font-semibold text-blue-600 mb-1.5">{sub_title}</p>
-  {details && (
-    <p class="text-[13px] text-gray-500 leading-relaxed mb-2 italic">{details}</p>
-  )}
+  <p class="cv-entry__org">{sub_title}</p>
+  {details && <p class="cv-entry__details">{details}</p>}
   <slot />
 </div>

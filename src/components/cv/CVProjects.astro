@@ -9,39 +9,44 @@ const { items } = Astro.props;
 
 const visibleItems = items.filter(p => p.title.en);
 
-const typeColor: Record<string, string> = {
-  'Blog':                 'bg-sky-50 text-sky-700 ring-sky-200',
-  'Blog Series':          'bg-indigo-50 text-indigo-700 ring-indigo-200',
-  'SDK':                  'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  'Certification':        'bg-amber-50 text-amber-700 ring-amber-200',
-  'GDG Kaohsiung Speaker':'bg-rose-50 text-rose-700 ring-rose-200',
+type BadgePalette = { bg: string; color: string };
+const badgePalette: Record<string, BadgePalette> = {
+  'Blog':                 { bg: '#EFF6FF', color: '#1D4ED8' },
+  'Blog Series':          { bg: '#EEF2FF', color: '#4338CA' },
+  'SDK':                  { bg: '#F0FDF4', color: '#15803D' },
+  'Certification':        { bg: '#FFFBEB', color: '#B45309' },
+  'GDG Kaohsiung Speaker':{ bg: '#FFF1F2', color: '#BE123C' },
 };
-const defaultBadge = 'bg-gray-50 text-gray-600 ring-gray-200';
+const defaultPalette: BadgePalette = { bg: '#F4F4F5', color: '#52525B' };
+
+function badgeStyle(type: string): string {
+  const p = badgePalette[type] ?? defaultPalette;
+  return `background:${p.bg};color:${p.color}`;
+}
 ---
 
 <CVSection title="Projects &amp; Highlights">
-  <div class="pl-5 grid gap-2">
+  <ul class="cv-projects-list">
     {visibleItems.map((item) => (
-      <div class="flex items-start justify-between gap-4 py-1.5 border-b border-gray-50 last:border-0">
-        <div class="flex items-start gap-2 min-w-0">
-          <span class="mt-[5px] shrink-0 w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+      <li class="cv-project-row">
+        <span>
           {item.link ? (
             <a
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-[13px] text-gray-800 hover:text-blue-600 transition-colors truncate"
+              class="cv-project-link"
             >
               {item.title.en}
             </a>
           ) : (
-            <span class="text-[13px] text-gray-800 truncate">{item.title.en}</span>
+            <span class="cv-project-text">{item.title.en}</span>
           )}
-        </div>
-        <span class={`shrink-0 text-[11px] font-medium px-2 py-0.5 rounded-full ring-1 whitespace-nowrap ${typeColor[item.type.en] ?? defaultBadge}`}>
+        </span>
+        <span class="cv-badge" style={badgeStyle(item.type.en)}>
           {item.type.en}
         </span>
-      </div>
+      </li>
     ))}
-  </div>
+  </ul>
 </CVSection>

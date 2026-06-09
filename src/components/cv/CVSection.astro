@@ -5,13 +5,10 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<section class="mb-8">
-  <div class="flex items-center gap-3 mb-4">
-    <div class="w-1 h-5 bg-blue-600 rounded-full shrink-0"></div>
-    <h2 class="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-500">
-      {title}
-    </h2>
-    <div class="flex-1 h-px bg-gray-100"></div>
+<section class="cv-section cv-animate">
+  <div class="cv-section__header">
+    <span class="cv-section__label">{title}</span>
+    <div class="cv-section__rule"></div>
   </div>
   <slot />
 </section>

@@ -7,13 +7,13 @@ import CVProjects from '../components/cv/CVProjects.astro';
 import DownloadButton from '../components/cv/DownloadButton.astro';
 import profilePicture from '../assets/profile-picture.png';
 import cvData from '../config/cv.json';
-import '../styles/theme.css';
+import '../styles/cv.scss';
 
 const { basic, experiences, education, projects, socialLinks } = cvData;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,67 +23,54 @@ const { basic, experiences, education, projects, socialLinks } = cvData;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <title>{basic.name} – CV</title>
-
-    <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-      body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background: #f5f5f5;
-        color: #111;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      @media print {
-        .no-print { display: none !important; }
-        body { background: white; }
-        .cv-paper {
-          box-shadow: none !important;
-          margin: 0 !important;
-          padding: 20mm 18mm !important;
-          max-width: 100% !important;
-        }
-      }
-    </style>
   </head>
 
   <body>
-    <!-- Action bar -->
-    <div class="no-print sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
-      <div class="max-w-[780px] mx-auto px-6 py-2.5 flex items-center justify-between gap-4">
-        <a
-          href="/"
-          class="inline-flex items-center gap-1.5 text-[13px] font-medium text-gray-500 no-underline hover:text-gray-900 transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-          </svg>
-          Back to Home
-        </a>
-        <DownloadButton fileName={basic.cv_file_name} />
-      </div>
-    </div>
+    <!-- Back to Home -->
+    <a href="/" class="no-print cv-back-link" aria-label="Back to home">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Home
+    </a>
+
+    <!-- Download PDF -->
+    <DownloadButton fileName={basic.cv_file_name} />
 
     <!-- CV Paper -->
-    <div class="flex justify-center px-4 pt-8 pb-16">
-      <div
-        id="cv-content"
-        class="cv-paper w-full max-w-[780px] bg-white px-[52px] py-12 shadow-[0_4px_24px_rgba(0,0,0,.10)] rounded-sm"
-      >
+    <div class="flex justify-center px-4 pt-14 pb-16">
+      <div id="cv-content" class="cv-paper">
         <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
-        <div style="margin-top:24px;">
-          <CVSummary summary={basic.summary.en} />
-          <CVExperience items={experiences} />
-          <CVEducation items={education} />
-          <CVProjects items={projects} />
-        </div>
+        <CVSummary summary={basic.summary.en} />
+        <CVExperience items={experiences} />
+        <CVEducation items={education} />
+        <CVProjects items={projects} />
       </div>
     </div>
+
+    <!-- Intersection Observer for entrance animations -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              const el = entry.target as HTMLElement;
+              el.style.animationDelay = `${i * 40}ms`;
+              el.classList.add('is-visible');
+              observer.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.05 }
+      );
+
+      document.querySelectorAll('.cv-animate').forEach(el => observer.observe(el));
+    </script>
   </body>
 </html>

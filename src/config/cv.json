@@ -5,7 +5,7 @@
     "location": "Taiwan",
     "email": "james.afternoon.dev@gmail.com",
     "summary": {
-      "en": "Results-driven Full Stack Software Engineer with 4+ years of experience building scalable backend systems, microservices architectures, and developer tooling across fintech and enterprise domains. Proficient in .NET Core, Golang, and cloud-native platforms (Azure, Oracle Cloud), with a meticulous approach to clean, test-driven code. A collaborative engineer who has led intern teams as Scrum Master and Frontend Technical Mentor, and represented the team at community events including GDG Kaohsiung. Holds a CKAD certification and a Master of Computer Science, consistently accountable for delivering production-quality systems from initial design to deployment."
+      "en": "Full Stack Software Engineer with 4+ years building scalable microservices and backend systems across fintech and enterprise domains. Proficient in .NET Core, Golang, and cloud-native platforms (Azure, Oracle Cloud); CKAD-certified with a meticulous approach to clean, test-driven developer. Has spoken at GDG Kaohsiung on Golang and Coding-Tools topics."
     },
     "cv_file_name": "james_cv.pdf"
   },
@@ -15,11 +15,10 @@
       "sub_title": "Cafler",
       "years": "2026 – Present",
       "details": {
-        "en": "Leading Asia-region service integration for a global vehicle care platform, bridging business operations across markets using .NET Core."
+        "en": "Leading Asia-region service integration for a global vehicle care platform using .NET Core."
       },
       "achievements": [
-        { "en": "Built cross-regional business integration services using .NET Core to support Asia-market operations" },
-        { "en": "Implemented backend APIs bridging Cafler's global platform with Asia-specific business workflows" }
+        { "en": "Built cross-regional .NET Core services supporting Asia-market business operations" }
       ]
     },
     {
@@ -27,15 +26,14 @@
       "sub_title": "Doutify Tech",
       "years": "2024 – 2026",
       "details": {
-        "en": "Redesigned and optimized backend infrastructure for a loan processing platform, migrating a monolithic system to a microservices architecture."
+        "en": "Migrated a loan platform to Micro Services; established cloud-native infrastructure on Oracle Cloud."
       },
       "achievements": [
-        { "en": "Reconstructed the credit loan system using microservices architecture, improving scalability and reducing deployment coupling" },
-        { "en": "Redesigned the strategy module to decouple business rules from core loan processing logic" },
-        { "en": "Implemented SSO/OAuth login system, enabling unified authentication across multiple internal services" },
-        { "en": "Set up Azure DevOps CI/CD pipelines, reducing manual deployment effort and improving release consistency" },
-        { "en": "Deployed production services on Oracle Cloud Platform (OCP), establishing a cloud-native infrastructure" },
-        { "en": "Configured integration test environments for Esso, UserInfo, OracleDB, and Redis, enabling reliable pre-production validation" }
+        { "en": "Migrated credit loan system from Monolithic Architecture to Micro Services Architecture, reducing deployment coupling" },
+        { "en": "Decoupled business rules from loan processing logic via strategy module redesign" },
+        { "en": "Implemented SSO/OAuth for unified authentication across multiple internal services" },
+        { "en": "Automated CI/CD pipelines with Azure DevOps, reducing manual deployment effort" },
+        { "en": "Deployed production services on Oracle Cloud (OCP), establishing cloud-native infra" }
       ]
     },
     {
@@ -43,16 +41,14 @@
       "sub_title": "TitanSoft",
       "years": "2022 – 2024",
       "details": {
-        "en": "Developed payment processing systems and third-party API integrations. Led intern teams and championed engineering practices including hexagonal architecture, DevOps, and TDD."
+        "en": "Developed payment processing and third-party API integrations; championed TDD, hexagonal architecture, and DevOps practices."
       },
       "achievements": [
-        { "en": "Led intern team as Scrum Master and Frontend Technical Mentor, hosting workshops on hexagonal architecture and refactoring best practices" },
-        { "en": "Built and delivered Docker and Kubernetes DevOps workshops, upskilling team members in container-based deployments" },
-        { "en": "Implemented ELK stack monitoring for Kubernetes projects, improving observability across distributed services" },
-        { "en": "Refactored legacy codebase and resolved 2+ year-old production bugs, increasing system stability" },
-        { "en": "Earned CKAD (Certified Kubernetes Application Developer) certification, validating cloud-native engineering expertise" },
-        { "en": "Spoke at GDG Kaohsiung twice, presenting on Golang Discord bot development and Vim IDE configuration" },
-        { "en": "Acted as external liaison, coordinating communication between the engineering team and outside stakeholders" }
+        { "en": "Led intern team as Scrum Master, running workshops on hexagonal architecture and TDD" },
+        { "en": "Delivered Docker and Kubernetes workshops, upskilling the team on container deployments" },
+        { "en": "Set up ELK stack monitoring for Kubernetes services, improving distributed observability" },
+        { "en": "Refactored legacy codebase and resolved 2+ year-old production bugs" },
+        { "en": "Spoke at GDG Kaohsiung twice on Golang Discord bots and Vim IDE configuration" }
       ]
     }
   ],
@@ -62,7 +58,7 @@
       "sub_title": "National Yunlin University of Science and Technology, YunTech",
       "years": "2020 – 2022",
       "details": {
-        "en": "Graduated with honors. Researched Blockchain technology and Network Security. Developed a thesis on a secure payment transmission protocol (GSI Protocol)."
+        "en": "Researched Blockchain and Network Security; thesis on a secure encryption scheme called Chameleon Hash."
       }
     },
     {
