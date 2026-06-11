@@ -5,7 +5,7 @@
     "location": "Taiwan",
     "email": "james.afternoon.dev@gmail.com",
     "summary": {
-      "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified and test-driven. Runs the Coding Afternoon tech blog and has spoken twice at GDG Kaohsiung."
+      "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified, applying the same TDD and hexagonal-architecture discipline across both languages. Runs the Coding Afternoon tech blog — writing mainly about Golang (design patterns, TDD, concurrency) — and has spoken twice at GDG Kaohsiung."
     },
     "cv_file_name": "james_cv.pdf"
   },
@@ -37,7 +37,7 @@
       },
       "achievements": [
         { "en": "Operate the platform end to end: content, site, and an automated subscription flow" },
-        { "en": "Authored three 30-day technical series (Golang design patterns, TDD with AI, blockchain) and the open-source EccSDK NuGet package" }
+        { "en": "Authored technical series on Golang (design patterns, TDD with AI, goroutine concurrency) and blockchain, plus the open-source EccSDK NuGet package" }
       ]
     },
     {
@@ -60,7 +60,7 @@
       },
       "achievements": [
         { "en": "Migrated the credit loan system from a monolith to microservices" },
-        { "en": "Redesigned the strategy module to separate business rules from loan-processing logic" },
+        { "en": "Redesigned the strategy module to separate business rules from loan-processing logic, so new loan rules can be added without changing core flows" },
         { "en": "Implemented SSO/OAuth authentication shared across internal services" },
         { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud (OCI)" },
         { "en": "Set up test environments (OracleDB, Redis, identity services) for local verification" }
@@ -76,7 +76,7 @@
       "achievements": [
         { "en": "Led the intern team as Scrum Master; ran workshops on hexagonal architecture, TDD, and refactoring" },
         { "en": "Hosted Docker and Kubernetes workshops for the team" },
-        { "en": "Built ELK monitoring for Kubernetes services" },
+        { "en": "Built ELK monitoring for Kubernetes services to surface production issues early" },
         { "en": "Refactored legacy code and fixed bugs that had persisted for over two years" },
         { "en": "Spoke twice at GDG Kaohsiung (Golang, developer tooling)" }
       ]
