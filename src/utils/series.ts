@@ -155,7 +155,7 @@ export async function getAdjacentPosts(currentSlug: string): Promise<{ prevPost:
   const standaloneBlogs = allBlogs.filter(blog => !blog.data.parent);
   const sortedBlogs = standaloneBlogs.sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
 
-  const currentIndex = sortedBlogs.findIndex(blog => blog.slug === currentSlug);
+  const currentIndex = sortedBlogs.findIndex(blog => blog.id === currentSlug);
 
   if (currentIndex === -1) {
     return { prevPost: null, nextPost: null };
@@ -179,7 +179,7 @@ export async function getAdjacentSeriesPosts(currentSlug: string, seriesName: st
   const seriesBlogs = allBlogs.filter(blog => blog.data.parent === seriesName);
   const sortedBlogs = sortArticlesBySeries(seriesBlogs);
 
-  const currentIndex = sortedBlogs.findIndex(blog => blog.slug === currentSlug);
+  const currentIndex = sortedBlogs.findIndex(blog => blog.id === currentSlug);
 
   if (currentIndex === -1) {
     return { prevPost: null, nextPost: null };

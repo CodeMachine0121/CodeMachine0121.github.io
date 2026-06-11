@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
@@ -12,7 +12,7 @@ import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 export const getStaticPaths = async () => {
     const blogs = await getCollection("blogs");
     return blogs.map(blog => ({
-        params: { slug: blog.slug },
+        params: { slug: blog.id },
         props: { blog }
     }));
 }
@@ -22,16 +22,16 @@ type Props = {
 }
 
 const {blog} = Astro.props;
-const {Content} = await blog.render();
+const {Content} = await render(blog);
 
 let prevPost, nextPost;
 
 if (blog.data.parent) {
-    const adjacent = await getAdjacentSeriesPosts(blog.slug, blog.data.parent);
+    const adjacent = await getAdjacentSeriesPosts(blog.id, blog.data.parent);
     prevPost = adjacent.prevPost;
     nextPost = adjacent.nextPost;
 } else {
-    const adjacent = await getAdjacentPosts(blog.slug);
+    const adjacent = await getAdjacentPosts(blog.id);
     prevPost = adjacent.prevPost;
     nextPost = adjacent.nextPost;
 }

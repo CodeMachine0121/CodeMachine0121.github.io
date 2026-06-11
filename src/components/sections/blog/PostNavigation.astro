@@ -12,7 +12,7 @@ const { prevPost, nextPost } = Astro.props;
 <nav class="flex flex-col sm:flex-row justify-between gap-4 mt-12 pt-8 border-t border-[var(--color-border)]">
   <div class="flex-1">
     {prevPost && (
-      <a href={`/blogs/${prevPost.slug}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
+      <a href={`/blogs/${prevPost.id}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
         <p class="text-sm text-offset">« 上一篇</p>
         <h4 class="font-bold mt-1 text-default">{prevPost.data.title}</h4>
       </a>
@@ -20,7 +20,7 @@ const { prevPost, nextPost } = Astro.props;
   </div>
   <div class="flex-1 text-right">
     {nextPost && (
-      <a href={`/blogs/${nextPost.slug}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
+      <a href={`/blogs/${nextPost.id}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
         <p class="text-sm text-offset">下一篇 »</p>
         <h4 class="font-bold mt-1 text-default">{nextPost.data.title}</h4>
       </a>
