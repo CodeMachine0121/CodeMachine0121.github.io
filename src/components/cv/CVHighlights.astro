@@ -1,19 +1,21 @@
 ---
 import CVSection from './CVSection.astro';
-import type { HighlightItem } from '../../types/cv';
+import { getLocalizedText } from '../../utils/i18n';
+import type { HighlightItem, Language } from '../../types/cv';
 
 interface Props {
   items: HighlightItem[];
+  lang?: Language;
 }
-const { items } = Astro.props;
+const { items, lang = 'en' } = Astro.props;
 ---
 
-<CVSection title="Core Strengths">
+<CVSection title={lang === 'zh' ? '核心優勢' : 'Core Strengths'}>
   <div class="cv-highlights">
     {items.map((item) => (
       <div class="cv-highlight">
-        <h3 class="cv-highlight__title">{item.title.en}</h3>
-        <p class="cv-highlight__desc">{item.description.en}</p>
+        <h3 class="cv-highlight__title">{getLocalizedText(item.title as any, lang)}</h3>
+        <p class="cv-highlight__desc">{getLocalizedText(item.description as any, lang)}</p>
       </div>
     ))}
   </div>

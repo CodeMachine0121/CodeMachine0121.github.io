@@ -5,26 +5,27 @@
     "location": "Taiwan",
     "email": "james.afternoon.dev@gmail.com",
     "summary": {
-      "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified, applying the same TDD and hexagonal-architecture discipline across both languages. Runs the Coding Afternoon tech blog — writing mainly about Golang (design patterns, TDD, concurrency) — and has spoken twice at GDG Kaohsiung."
+      "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified, applying the same TDD and hexagonal-architecture discipline across both languages. Runs the Coding Afternoon tech blog — writing mainly about Golang (design patterns, TDD, concurrency) — and has spoken twice at GDG Kaohsiung.",
+      "zh": "4 年以上微服務與後端系統開發經驗的全棧軟體工程師,涵蓋金融科技與企業領域。主要使用 .NET Core、Golang 與雲端平台 (Azure、Oracle Cloud、Kubernetes);獲得 CKAD 認證,在兩種語言上應用相同的 TDD 與六邊形架構原則。經營 Coding Afternoon 技術部落格 — 主要撰寫 Golang (設計模式、TDD、併發) — 並在 GDG Kaohsiung 發表過兩次演講。"
     },
     "cv_file_name": "james_cv.pdf"
   },
   "highlights": [
     {
-      "title": { "en": "Engineering Process & DX" },
-      "description": { "en": "CI/CD automation, reproducible test environments, team workshops (TDD, Docker/K8s)." }
+      "title": { "en": "Engineering Process & DX", "zh": "工程流程與開發體驗" },
+      "description": { "en": "CI/CD automation, reproducible test environments, team workshops (TDD, Docker/K8s).", "zh": "CI/CD 自動化、可復現測試環境、團隊工作坊(TDD、Docker/K8s)。" }
     },
     {
-      "title": { "en": "Architecture" },
-      "description": { "en": "Monolith-to-microservices migration, hexagonal architecture, SSO/OAuth." }
+      "title": { "en": "Architecture", "zh": "系統架構設計" },
+      "description": { "en": "Monolith-to-microservices migration, hexagonal architecture, SSO/OAuth.", "zh": "單體到微服務遷移、六邊形架構、SSO/OAuth。" }
     },
     {
-      "title": { "en": "Product Ownership" },
-      "description": { "en": "Coding Afternoon blog built and run solo — content, site, and subscription automation." }
+      "title": { "en": "Product Ownership", "zh": "產品所有權" },
+      "description": { "en": "Coding Afternoon blog built and run solo — content, site, and subscription automation.", "zh": "Coding Afternoon 部落格獨自構建與運營 — 內容、網站與訂閱自動化。" }
     },
     {
-      "title": { "en": "Reliability" },
-      "description": { "en": "CKAD-certified; ELK observability on Kubernetes; legacy refactoring." }
+      "title": { "en": "Reliability", "zh": "系統可靠性" },
+      "description": { "en": "CKAD-certified; ELK observability on Kubernetes; legacy refactoring.", "zh": "CKAD 認證；Kubernetes 上的 ELK 可觀測性；遺留系統重構。" }
     }
   ],
   "experiences": [
@@ -33,11 +34,12 @@
       "sub_title": "Coding Afternoon",
       "years": "2023 – Present",
       "details": {
-        "en": "Tech-education blog (coding-afternoon.com), built and run solo."
+        "en": "Tech-education blog (coding-afternoon.com), built and run solo.",
+        "zh": "技術教育部落格 (coding-afternoon.com)，獨自構建與運營。"
       },
       "achievements": [
-        { "en": "Operate the platform end to end: content, site, and an automated subscription flow" },
-        { "en": "Authored technical series on Golang (design patterns, TDD with AI, goroutine concurrency) and blockchain, plus the open-source EccSDK NuGet package" }
+        { "en": "Operate the platform end to end: content, site, and an automated subscription flow", "zh": "端對端管理平台:內容、網站與自動化訂閱流程" },
+        { "en": "Authored technical series on Golang (design patterns, TDD with AI, goroutine concurrency) and blockchain, plus the open-source EccSDK NuGet package", "zh": "撰寫 Golang(設計模式、AI 輔助 TDD、Goroutine 並發) 與區塊鏈技術系列,並開源 EccSDK NuGet 套件" }
       ]
     },
     {
@@ -45,10 +47,11 @@
       "sub_title": "Cafler",
       "years": "2026 – Present",
       "details": {
-        "en": "Asia-region service integration for a global vehicle-care platform, using .NET Core."
+        "en": "Asia-region service integration for a global vehicle-care platform, using .NET Core.",
+        "zh": "為全球車輛護理平台進行亞洲區域服務整合,使用 .NET Core。"
       },
       "achievements": [
-        { "en": "Built cross-regional .NET Core services supporting Asia-market business operations" }
+        { "en": "Built cross-regional .NET Core services supporting Asia-market business operations", "zh": "構建支持亞洲市場業務運營的跨區域 .NET Core 服務" }
       ]
     },
     {
@@ -56,14 +59,15 @@
       "sub_title": "Doutify Tech",
       "years": "2024 – 2026",
       "details": {
-        "en": "Migrated a credit-loan platform to microservices; set up cloud infrastructure on Oracle Cloud."
+        "en": "Migrated a credit-loan platform to microservices; set up cloud infrastructure on Oracle Cloud.",
+        "zh": "將信用貸款平台遷移至微服務;在 Oracle Cloud 設置雲端基礎設施。"
       },
       "achievements": [
-        { "en": "Migrated the credit loan system from a monolith to microservices" },
-        { "en": "Redesigned the strategy module to separate business rules from loan-processing logic, so new loan rules can be added without changing core flows" },
-        { "en": "Implemented SSO/OAuth authentication shared across internal services" },
-        { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud (OCI)" },
-        { "en": "Set up test environments (OracleDB, Redis, identity services) for local verification" }
+        { "en": "Migrated the credit loan system from a monolith to microservices", "zh": "將信用貸款系統從單體遷移至微服務" },
+        { "en": "Redesigned the strategy module to separate business rules from loan-processing logic, so new loan rules can be added without changing core flows", "zh": "重設計策略模組,將業務規則與貸款處理邏輯分離,使新規則可直接新增而無需修改核心流程" },
+        { "en": "Implemented SSO/OAuth authentication shared across internal services", "zh": "實現跨內部服務的共享 SSO/OAuth 認證" },
+        { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud (OCI)", "zh": "使用 Azure DevOps 實現 CI/CD 自動化,並在 Oracle Cloud (OCI) 上部署生產服務" },
+        { "en": "Set up test environments (OracleDB, Redis, identity services) for local verification", "zh": "建置測試環境 (OracleDB、Redis、身份服務) 用於本地驗證" }
       ]
     },
     {
@@ -71,14 +75,15 @@
       "sub_title": "TitanSoft",
       "years": "2022 – 2024",
       "details": {
-        "en": "Developed payment processing and third-party API integrations, with TDD and hexagonal architecture."
+        "en": "Developed payment processing and third-party API integrations, with TDD and hexagonal architecture.",
+        "zh": "開發支付處理與第三方 API 整合,採用 TDD 與六邊形架構。"
       },
       "achievements": [
-        { "en": "Led the intern team as Scrum Master; ran workshops on hexagonal architecture, TDD, and refactoring" },
-        { "en": "Hosted Docker and Kubernetes workshops for the team" },
-        { "en": "Built ELK monitoring for Kubernetes services to surface production issues early" },
-        { "en": "Refactored legacy code and fixed bugs that had persisted for over two years" },
-        { "en": "Spoke twice at GDG Kaohsiung (Golang, developer tooling)" }
+        { "en": "Led the intern team as Scrum Master; ran workshops on hexagonal architecture, TDD, and refactoring", "zh": "擔任 Scrum Master 帶領實習生團隊;舉辦六邊形架構、TDD 與重構工作坊" },
+        { "en": "Hosted Docker and Kubernetes workshops for the team", "zh": "為團隊舉辦 Docker 與 Kubernetes 工作坊" },
+        { "en": "Built ELK monitoring for Kubernetes services to surface production issues early", "zh": "為 Kubernetes 服務構建 ELK 監控,及早發現生產問題" },
+        { "en": "Refactored legacy code and fixed bugs that had persisted for over two years", "zh": "重構遺留程式碼並修復持續超過兩年的缺陷" },
+        { "en": "Spoke twice at GDG Kaohsiung (Golang, developer tooling)", "zh": "在 GDG Kaohsiung 發表過兩次演講 (Golang、開發工具)" }
       ]
     }
   ],
@@ -88,7 +93,8 @@
       "sub_title": "National Yunlin University of Science and Technology, YunTech",
       "years": "2020 – 2022",
       "details": {
-        "en": "Researched Blockchain and Network Security; thesis on a secure encryption scheme called Chameleon Hash."
+        "en": "Researched Blockchain and Network Security; thesis on a secure encryption scheme called Chameleon Hash.",
+        "zh": "研究區塊鏈與網路安全;論文主題為名為 Chameleon Hash 的安全加密方案。"
       }
     },
     {
@@ -96,49 +102,50 @@
       "sub_title": "Ming Chuan University, MCU",
       "years": "2016 – 2020",
       "details": {
-        "en": "Focused on Blockchain and Network Security research."
+        "en": "Focused on Blockchain and Network Security research.",
+        "zh": "專注區塊鏈與網路安全研究。"
       }
     }
   ],
   "projects": [
     {
-      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD" },
-      "type": { "en": "Blog" },
+      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD", "zh": "GSI 協議:在 AI 驅動的 SDD 中提升效率與敏捷性" },
+      "type": { "en": "Blog", "zh": "部落格" },
       "link": "https://github.com/CodeMachine0121/GSI-Protocol#"
     },
     {
-      "title": { "en": "From 0 to 1: Golang TDD with AI" },
-      "type": { "en": "Blog Series" },
+      "title": { "en": "From 0 to 1: Golang TDD with AI", "zh": "從 0 到 1:Golang TDD with AI" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
     },
     {
-      "title": { "en": "30 Design Patterns with Golang in 30 Days" },
-      "type": { "en": "Blog Series" },
+      "title": { "en": "30 Design Patterns with Golang in 30 Days", "zh": "30 天內精通 Golang 的 30 個設計模式" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
     },
     {
-      "title": { "en": "Side-Project: Build an Editable Blockchain" },
-      "type": { "en": "Blog Series" },
+      "title": { "en": "Side-Project: Build an Editable Blockchain", "zh": "附加專案:構建可編輯的區塊鏈" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
     },
     {
-      "title": { "en": "Open Source SDK for NuGet: EccSDK" },
-      "type": { "en": "SDK" },
+      "title": { "en": "Open Source SDK for NuGet: EccSDK", "zh": "NuGet 開源 SDK:EccSDK" },
+      "type": { "en": "SDK", "zh": "SDK" },
       "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
     },
     {
-      "title": { "en": "CKAD Certification" },
-      "type": { "en": "Certification" },
+      "title": { "en": "CKAD Certification", "zh": "CKAD 認證" },
+      "type": { "en": "Certification", "zh": "認證" },
       "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
     },
     {
-      "title": { "en": "Monitoring Discord Latency with Golang Bot" },
-      "type": { "en": "GDG Kaohsiung Speaker" },
+      "title": { "en": "Monitoring Discord Latency with Golang Bot", "zh": "使用 Golang Bot 監控 Discord 延遲" },
+      "type": { "en": "GDG Kaohsiung Speaker", "zh": "GDG Kaohsiung 演講者" },
       "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/"
     },
     {
-      "title": { "en": "Turn Vim into an IDE" },
-      "type": { "en": "GDG Kaohsiung Speaker" },
+      "title": { "en": "Turn Vim into an IDE", "zh": "將 Vim 變成 IDE" },
+      "type": { "en": "GDG Kaohsiung Speaker", "zh": "GDG Kaohsiung 演講者" },
       "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/"
     }
   ],

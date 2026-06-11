@@ -1,29 +1,31 @@
 ---
 import CVSection from './CVSection.astro';
 import CVTimelineEntry from './CVTimelineEntry.astro';
-import type { ExperienceItem } from '../../types/cv';
+import { getLocalizedText } from '../../utils/i18n';
+import type { ExperienceItem, Language } from '../../types/cv';
 
 interface Props {
   items: ExperienceItem[];
+  lang?: Language;
 }
-const { items } = Astro.props;
+const { items, lang = 'en' } = Astro.props;
 ---
 
-<CVSection title="Experience">
+<CVSection title={lang === 'zh' ? '工作經驗' : 'Experience'}>
   <div>
     {items.map((item) => (
       <CVTimelineEntry
         title={item.title}
         sub_title={item.sub_title}
         years={item.years}
-        details={item.details?.en}
+        details={getLocalizedText(item.details as any, lang)}
       >
         {item.achievements && item.achievements.length > 0 && (
           <ul class="cv-achievements">
             {item.achievements.map((a) => (
               <li class="cv-achievement">
                 <span class="cv-bullet" aria-hidden="true"></span>
-                <span>{a.en}</span>
+                <span>{getLocalizedText(a as any, lang)}</span>
               </li>
             ))}
           </ul>

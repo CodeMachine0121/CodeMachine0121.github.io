@@ -1,21 +1,27 @@
 ---
 import CVSection from './CVSection.astro';
-import type { ProjectItem } from '../../types/cv';
+import { getLocalizedText } from '../../utils/i18n';
+import type { ProjectItem, Language } from '../../types/cv';
 
 interface Props {
   items: ProjectItem[];
+  lang?: Language;
 }
-const { items } = Astro.props;
+const { items, lang = 'en' } = Astro.props;
 
 const visibleItems = items.filter(p => p.title.en);
 
 type BadgePalette = { bg: string; color: string };
 const badgePalette: Record<string, BadgePalette> = {
   'Blog':                 { bg: '#EFF6FF', color: '#1D4ED8' },
+  '部落格':              { bg: '#EFF6FF', color: '#1D4ED8' },
   'Blog Series':          { bg: '#EEF2FF', color: '#4338CA' },
+  '部落格系列':          { bg: '#EEF2FF', color: '#4338CA' },
   'SDK':                  { bg: '#F0FDF4', color: '#15803D' },
   'Certification':        { bg: '#FFFBEB', color: '#B45309' },
+  '認證':                { bg: '#FFFBEB', color: '#B45309' },
   'GDG Kaohsiung Speaker':{ bg: '#FFF1F2', color: '#BE123C' },
+  'GDG Kaohsiung 演講者':{ bg: '#FFF1F2', color: '#BE123C' },
 };
 const defaultPalette: BadgePalette = { bg: '#F4F4F5', color: '#52525B' };
 
@@ -25,28 +31,31 @@ function badgeStyle(type: string): string {
 }
 ---
 
-<CVSection title="Projects &amp; Highlights">
+<CVSection title={lang === 'zh' ? '專案與亮點' : 'Projects &amp; Highlights'}>
   <ul class="cv-projects-list">
-    {visibleItems.map((item) => (
-      <li class="cv-project-row">
-        <span>
-          {item.link ? (
-            <a
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cv-project-link"
-            >
-              {item.title.en}
-            </a>
-          ) : (
-            <span class="cv-project-text">{item.title.en}</span>
-          )}
-        </span>
-        <span class="cv-badge" style={badgeStyle(item.type.en)}>
-          {item.type.en}
-        </span>
-      </li>
-    ))}
+    {visibleItems.map((item) => {
+      const localizedType = getLocalizedText(item.type as any, lang);
+      return (
+        <li class="cv-project-row">
+          <span>
+            {item.link ? (
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cv-project-link"
+              >
+                {getLocalizedText(item.title as any, lang)}
+              </a>
+            ) : (
+              <span class="cv-project-text">{getLocalizedText(item.title as any, lang)}</span>
+            )}
+          </span>
+          <span class="cv-badge" style={badgeStyle(localizedType)}>
+            {localizedType}
+          </span>
+        </li>
+      );
+    })}
   </ul>
 </CVSection>

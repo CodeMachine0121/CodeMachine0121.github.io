@@ -1,20 +1,34 @@
 ---
-import CVHeader from '../components/cv/CVHeader.astro';
-import CVSummary from '../components/cv/CVSummary.astro';
-import CVHighlights from '../components/cv/CVHighlights.astro';
-import CVExperience from '../components/cv/CVExperience.astro';
-import CVEducation from '../components/cv/CVEducation.astro';
-import CVProjects from '../components/cv/CVProjects.astro';
-import DownloadButton from '../components/cv/DownloadButton.astro';
-import profilePicture from '../assets/profile-picture.png';
-import cvData from '../config/cv.json';
-import '../styles/cv.scss';
+import CVHeader from '../../components/cv/CVHeader.astro';
+import CVSummary from '../../components/cv/CVSummary.astro';
+import CVHighlights from '../../components/cv/CVHighlights.astro';
+import CVExperience from '../../components/cv/CVExperience.astro';
+import CVEducation from '../../components/cv/CVEducation.astro';
+import CVProjects from '../../components/cv/CVProjects.astro';
+import DownloadButton from '../../components/cv/DownloadButton.astro';
+import LanguageSwitcher from '../../components/cv/LanguageSwitcher.astro';
+import profilePicture from '../../assets/profile-picture.png';
+import cvData from '../../config/cv.json';
+import { getLocalizedText, isValidLanguage } from '../../utils/i18n';
+import type { Language } from '../../types/cv';
+import '../../styles/cv.scss';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params;
+const language: Language = isValidLanguage(lang) ? lang : 'en';
 
 const { basic, highlights, experiences, education, projects, socialLinks } = cvData;
+const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,19 +54,22 @@ const { basic, highlights, experiences, education, projects, socialLinks } = cvD
       Home
     </a>
 
-    <!-- Download PDF -->
-    <DownloadButton fileName={basic.cv_file_name} />
+    <!-- Download PDF & Language Switcher -->
+    <div class="cv-toolbar">
+      <DownloadButton fileName={basic.cv_file_name} />
+      <LanguageSwitcher currentLang={language} />
+    </div>
 
     <!-- CV Paper -->
     <div class="flex justify-center px-4 pt-14 pb-16">
       <div id="cv-content" class="cv-paper">
         <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
-        <CVSummary summary={basic.summary.en} />
-        {highlights && highlights.length > 0 && <CVHighlights items={highlights} />}
-        <CVExperience items={experiences} />
-        <CVEducation items={education} />
-        <CVProjects items={projects} />
+        <CVSummary summary={getLocalizedText(basic.summary as any, language)} />
+        {highlights && highlights.length > 0 && <CVHighlights items={highlights} lang={language} />}
+        <CVExperience items={experiences} lang={language} />
+        <CVEducation items={education} lang={language} />
+        <CVProjects items={projects} lang={language} />
       </div>
     </div>
 
