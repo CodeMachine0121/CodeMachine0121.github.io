@@ -5,52 +5,50 @@
     "location": "Taiwan",
     "email": "james.afternoon.dev@gmail.com",
     "summary": {
-      "en": "Product-minded Full Stack Software Engineer with 4+ years architecting scalable microservices and backend systems across fintech and enterprise domains. Known for anticipating needs before they become bottlenecks — standardizing development workflows, CI/CD pipelines, and test infrastructure that keep teams shipping fast as they grow. Proficient in .NET Core, Golang, and cloud-native platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified with a strict test-driven approach. Founder of the Coding Afternoon tech-education platform and a two-time GDG Kaohsiung speaker."
+      "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified and test-driven. Runs the Coding Afternoon tech blog and has spoken twice at GDG Kaohsiung."
     },
     "cv_file_name": "james_cv.pdf"
   },
   "highlights": [
     {
-      "title": { "en": "Engineering Leadership & DX" },
-      "description": { "en": "Standardizes workflows, CI/CD pipelines, and test infrastructure ahead of team growth — removing friction before it becomes technical debt." }
+      "title": { "en": "Engineering Process & DX" },
+      "description": { "en": "CI/CD automation, reproducible test environments, team workshops (TDD, Docker/K8s)." }
     },
     {
-      "title": { "en": "Anticipatory Architecture" },
-      "description": { "en": "Designs for tomorrow's traffic and teams: modular microservices, decoupled domains, and unified auth that scale without rewrites." }
+      "title": { "en": "Architecture" },
+      "description": { "en": "Monolith-to-microservices migration, hexagonal architecture, SSO/OAuth." }
     },
     {
-      "title": { "en": "End-to-End Product Ownership" },
-      "description": { "en": "Runs Coding Afternoon solo — from identifying audience needs to UX, backend, and the automated publishing pipeline behind it." }
+      "title": { "en": "Product Ownership" },
+      "description": { "en": "Coding Afternoon blog built and run solo — content, site, and subscription automation." }
     },
     {
-      "title": { "en": "Performance & Reliability" },
-      "description": { "en": "CKAD-certified; builds observability (ELK on Kubernetes), tunes queries, and treats production stability as a first-class requirement." }
+      "title": { "en": "Reliability" },
+      "description": { "en": "CKAD-certified; ELK observability on Kubernetes; legacy refactoring." }
     }
   ],
   "experiences": [
-    {
-      "title": "Backend/Frontend Software Engineer",
-      "sub_title": "Cafler",
-      "years": "2026 – Present",
-      "details": {
-        "en": "Spearheading Asia-region service integration for a global vehicle-care platform, owning the regional .NET Core architecture end to end."
-      },
-      "achievements": [
-        { "en": "Built cross-regional .NET Core services supporting Asia-market operations, designed so future markets onboard through configuration rather than re-architecture" },
-        { "en": "Acting as regional technical owner, translating Asia-market business requirements into platform capabilities ahead of expansion" }
-      ]
-    },
     {
       "title": "Founder & Solo Developer",
       "sub_title": "Coding Afternoon",
       "years": "2023 – Present",
       "details": {
-        "en": "Self-initiated tech-education platform (coding-afternoon.com) with full-lifecycle product ownership — from market analysis to high-availability deployment."
+        "en": "Tech-education blog (coding-afternoon.com), built and run solo."
       },
       "achievements": [
-        { "en": "Identified a gap in practical backend-engineering education and built the platform end to end: content strategy, UX, backend, and an automated subscription pipeline" },
-        { "en": "Authored three 30-day technical series (Design Patterns in Golang, Golang TDD with AI, building an editable blockchain) and published an open-source NuGet SDK (EccSDK)" },
-        { "en": "Leveraged technical writing and mentoring to bridge complex backend architecture and developer onboarding, fostering a culture of continuous learning" }
+        { "en": "Operate the platform end to end: content, site, and an automated subscription flow" },
+        { "en": "Authored three 30-day technical series (Golang design patterns, TDD with AI, blockchain) and the open-source EccSDK NuGet package" }
+      ]
+    },
+    {
+      "title": "Backend/Frontend Software Engineer",
+      "sub_title": "Cafler",
+      "years": "2026 – Present",
+      "details": {
+        "en": "Asia-region service integration for a global vehicle-care platform, using .NET Core."
+      },
+      "achievements": [
+        { "en": "Built cross-regional .NET Core services supporting Asia-market business operations" }
       ]
     },
     {
@@ -58,14 +56,14 @@
       "sub_title": "Doutify Tech",
       "years": "2024 – 2026",
       "details": {
-        "en": "Architected the migration of a credit-loan platform from monolith to microservices and established the company's cloud-native infrastructure on Oracle Cloud."
+        "en": "Migrated a credit-loan platform to microservices; set up cloud infrastructure on Oracle Cloud."
       },
       "achievements": [
-        { "en": "Spearheaded the migration of the credit loan system from a monolith to microservices, decoupling deployments so services release independently" },
-        { "en": "Redesigned the strategy module to isolate business rules from loan-processing logic, enabling new loan products to launch without touching core code" },
-        { "en": "Implemented unified SSO/OAuth authentication across internal services, eliminating duplicated login logic ahead of service expansion" },
-        { "en": "Standardized CI/CD on Azure DevOps and established cloud-native production infrastructure on Oracle Cloud (OCI), replacing manual deployments with automated release pipelines" },
-        { "en": "Provisioned reproducible test environments (OracleDB, Redis, identity services), shortening feedback loops and improving developer experience across the team" }
+        { "en": "Migrated the credit loan system from a monolith to microservices" },
+        { "en": "Redesigned the strategy module to separate business rules from loan-processing logic" },
+        { "en": "Implemented SSO/OAuth authentication shared across internal services" },
+        { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud (OCI)" },
+        { "en": "Set up test environments (OracleDB, Redis, identity services) for local verification" }
       ]
     },
     {
@@ -73,14 +71,14 @@
       "sub_title": "TitanSoft",
       "years": "2022 – 2024",
       "details": {
-        "en": "Developed payment processing and third-party API integrations; raised the team's engineering bar through TDD, hexagonal architecture, and DevOps practices."
+        "en": "Developed payment processing and third-party API integrations, with TDD and hexagonal architecture."
       },
       "achievements": [
-        { "en": "Led the intern team as Scrum Master, running workshops on hexagonal architecture, TDD, and refactoring to level up engineering practices" },
-        { "en": "Drove container adoption through Docker and Kubernetes workshops, upskilling the team on cloud-native deployment" },
-        { "en": "Built ELK-stack observability for Kubernetes services, giving the team end-to-end visibility into distributed systems" },
-        { "en": "Refactored a legacy payment codebase and resolved production bugs that had persisted for over two years" },
-        { "en": "Represented the team externally as a two-time GDG Kaohsiung speaker (Golang tooling, developer productivity)" }
+        { "en": "Led the intern team as Scrum Master; ran workshops on hexagonal architecture, TDD, and refactoring" },
+        { "en": "Hosted Docker and Kubernetes workshops for the team" },
+        { "en": "Built ELK monitoring for Kubernetes services" },
+        { "en": "Refactored legacy code and fixed bugs that had persisted for over two years" },
+        { "en": "Spoke twice at GDG Kaohsiung (Golang, developer tooling)" }
       ]
     }
   ],
