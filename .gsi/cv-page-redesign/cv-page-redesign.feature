@@ -7,7 +7,7 @@ Feature: CV Page Redesign with Profile Picture & cv.json
     And I should see "James Hsueh"
     And I should see "Full Stack Software Engineer"
     And I should see "GitHub"
-    And I should see "Email"
+    And I should see "james.afternoon.dev@gmail.com"
 
   Scenario: Summary 顯示豐富的 professional summary
     Given I am on the "/cv" page

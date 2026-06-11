@@ -27,7 +27,7 @@ const visibleLinks = socialLinks.filter(l => l.iconName === 'Github');
       {profilePicture ? (
         <Image
           src={profilePicture}
-          alt=""
+          alt={`${basic.name} profile picture`}
           width={88}
           height={88}
           class="cv-header__img"

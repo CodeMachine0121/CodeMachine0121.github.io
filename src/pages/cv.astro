@@ -1,6 +1,7 @@
 ---
 import CVHeader from '../components/cv/CVHeader.astro';
 import CVSummary from '../components/cv/CVSummary.astro';
+import CVHighlights from '../components/cv/CVHighlights.astro';
 import CVExperience from '../components/cv/CVExperience.astro';
 import CVEducation from '../components/cv/CVEducation.astro';
 import CVProjects from '../components/cv/CVProjects.astro';
@@ -9,7 +10,7 @@ import profilePicture from '../assets/profile-picture.png';
 import cvData from '../config/cv.json';
 import '../styles/cv.scss';
 
-const { basic, experiences, education, projects, socialLinks } = cvData;
+const { basic, highlights, experiences, education, projects, socialLinks } = cvData;
 ---
 
 <!doctype html>
@@ -48,6 +49,7 @@ const { basic, experiences, education, projects, socialLinks } = cvData;
         <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
         <CVSummary summary={basic.summary.en} />
+        {highlights && highlights.length > 0 && <CVHighlights items={highlights} />}
         <CVExperience items={experiences} />
         <CVEducation items={education} />
         <CVProjects items={projects} />

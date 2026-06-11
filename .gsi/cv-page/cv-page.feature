@@ -18,8 +18,8 @@ Feature: CV Page (International SWE Style)
 
   Scenario: 每筆工作經歷顯示 achievements
     Given I am on the "/cv" page
-    Then I should see "Built cross-regional business integration"
-    And I should see "Reconstructed the credit loan system"
+    Then I should see "Built cross-regional .NET Core services"
+    And I should see "Spearheaded the migration of the credit loan system"
     And I should see "CKAD"
 
   Scenario: CV 頁面不含首頁特有區塊

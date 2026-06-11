@@ -1,0 +1,20 @@
+---
+import CVSection from './CVSection.astro';
+import type { HighlightItem } from '../../types/cv';
+
+interface Props {
+  items: HighlightItem[];
+}
+const { items } = Astro.props;
+---
+
+<CVSection title="Core Strengths">
+  <div class="cv-highlights">
+    {items.map((item) => (
+      <div class="cv-highlight">
+        <h3 class="cv-highlight__title">{item.title.en}</h3>
+        <p class="cv-highlight__desc">{item.description.en}</p>
+      </div>
+    ))}
+  </div>
+</CVSection>

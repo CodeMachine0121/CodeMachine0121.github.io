@@ -211,6 +211,39 @@
   margin-top: 7px;
 }
 
+// ─── Highlights (Core Strengths) ───────────────────────────────────────────────
+.cv-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cv-highlight {
+  padding: 0.75rem 0.875rem;
+  border: 1px solid $cv-border;
+  border-radius: 0.5rem;
+  background: $cv-zinc-50;
+}
+
+.cv-highlight__title {
+  font-family: $cv-font-body;
+  font-size: $cv-fs-body;
+  font-weight: 600;
+  color: $cv-zinc-900;
+  margin-bottom: 0.25rem;
+}
+
+.cv-highlight__desc {
+  font-family: $cv-font-body;
+  font-size: 12.5px;
+  color: $cv-zinc-700;
+  line-height: 1.55;
+}
+
 // ─── Summary ───────────────────────────────────────────────────────────────────
 .cv-summary {
   font-family: $cv-font-body;
@@ -398,6 +431,11 @@
   .cv-achievement        { font-size: 10.5px; line-height: 1.4; }
 
   .cv-summary            { font-size: 11.5px; line-height: 1.55; }
+
+  .cv-highlights         { gap: 0.3rem; }
+  .cv-highlight          { padding: 0.3rem 0.5rem; }
+  .cv-highlight__title   { font-size: 10.5px; margin-bottom: 0.1rem; color: #18181B !important; }
+  .cv-highlight__desc    { font-size: 10px; line-height: 1.35; color: #3F3F46 !important; }
 
   .cv-project-row        { padding: 0.15rem 0; }
   .cv-project-link,

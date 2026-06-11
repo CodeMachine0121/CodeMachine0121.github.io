@@ -12,8 +12,14 @@ export interface BasicInfo {
   cv_file_name: string;
 }
 
+export interface HighlightItem {
+  title: { en: string };
+  description: { en: string };
+}
+
 export interface CvData {
   basic: BasicInfo;
+  highlights?: HighlightItem[];
   experiences: ExperienceItem[];
   education: EducationItem[];
   projects: ProjectItem[];
