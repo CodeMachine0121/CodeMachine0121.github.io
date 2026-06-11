@@ -32,7 +32,7 @@ Feature: CV Page Redesign with Profile Picture & cv.json
 
   Scenario: Download PDF 功能正常
     Given I am on the "/cv" page
-    When I click the "Download PDF" button
+    When I click the "Export PDF" button
     Then a file download should be triggered
 
   Scenario: Back to Home 功能正常

@@ -156,6 +156,7 @@
   font-size: $cv-fs-title;
   font-weight: 600;
   color: $cv-zinc-900;
+  white-space: nowrap;
 }
 
 .cv-entry__date {
@@ -368,76 +369,4 @@
   border-top-color: transparent;
   border-radius: 50%;
   animation: cv-spin 0.7s linear infinite;
-}
-
-// ─── PDF compact mode ──────────────────────────────────────────────────────────
-// Applied by JS to #cv-content before html2canvas capture.
-// Aggressively tightens vertical rhythm so the full CV fits on one A4 page
-// with minimal scaling (target: content height ≤ 1230px at 860px viewport).
-.cv-pdf-rendering {
-  // Reduce paper padding (overrides .cv-paper — needs !important due to cascade order)
-  padding: 24px 68px !important;
-
-  // html2canvas clones the DOM without running CSS animations.
-  // .cv-animate has opacity:0 as its base style; the visible state comes from
-  // the animation's fill-mode. In the clone, animations never complete, so
-  // every section renders at opacity:0 (near-invisible on white = looks gray).
-  .cv-animate { opacity: 1 !important; animation: none !important; }
-
-  // -webkit-font-smoothing: antialiased causes partial-alpha text pixels on canvas,
-  // which makes dark text appear gray when html2canvas rasterizes it.
-  -webkit-font-smoothing: subpixel-antialiased !important;
-  * { -webkit-font-smoothing: subpixel-antialiased !important; }
-
-  // Explicit color overrides guarantee html2canvas captures correct values
-  // even if font fallback or subpixel rendering alters perceived darkness.
-  .cv-entry__title,
-  .cv-header__name       { color: #18181B !important; }
-
-  .cv-achievement,
-  .cv-summary            { color: #27272A !important; }
-
-  .cv-entry__org,
-  .cv-entry__details,
-  .cv-project-link,
-  .cv-project-text       { color: #3F3F46 !important; }
-
-  .cv-section__label,
-  .cv-entry__date,
-  .cv-header__contact-item { color: #52525B !important; }
-
-  .cv-header             { margin-bottom: 0.375rem; }
-  .cv-header__name       { font-size: 22px; letter-spacing: -0.02em; }
-  .cv-header__top        { margin-bottom: 0.375rem; }
-  .cv-header__contact    { margin-top: 0.375rem; gap: 0 1rem; row-gap: 0.1rem; }
-  .cv-header__rule       { margin-top: 0.5rem; }
-
-  // Smaller photo for compact layout
-  .cv-header__img,
-  .cv-header__photo-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 0.5rem;
-  }
-
-  .cv-section            { margin-bottom: 0.5rem; }
-  .cv-section__header    { margin-bottom: 0.25rem; }
-
-  .cv-entry + .cv-entry  { margin-top: 0.375rem; }
-  .cv-entry__org         { margin-bottom: 0.15rem; }
-  .cv-entry__details     { font-size: 10.5px; line-height: 1.4; margin-bottom: 0.15rem; }
-
-  .cv-achievements       { gap: 0.05rem; margin-top: 0.15rem; }
-  .cv-achievement        { font-size: 10.5px; line-height: 1.4; }
-
-  .cv-summary            { font-size: 11.5px; line-height: 1.55; }
-
-  .cv-highlights         { gap: 0.3rem; }
-  .cv-highlight          { padding: 0.3rem 0.5rem; }
-  .cv-highlight__title   { font-size: 10.5px; margin-bottom: 0.1rem; color: #18181B !important; }
-  .cv-highlight__desc    { font-size: 10px; line-height: 1.35; color: #3F3F46 !important; }
-
-  .cv-project-row        { padding: 0.15rem 0; }
-  .cv-project-link,
-  .cv-project-text       { font-size: 11px; }
 }

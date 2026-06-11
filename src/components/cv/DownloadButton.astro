@@ -13,7 +13,7 @@ const { fileName } = Astro.props;
   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
   </svg>
-  <span>Download PDF</span>
+  <span>Export PDF</span>
 </button>
 
 <script>
@@ -26,10 +26,9 @@ const { fileName } = Astro.props;
     btn.disabled = true;
     btn.innerHTML = `<span class="cv-spinner" aria-hidden="true"></span><span>${text}</span>`;
   }
-
   function setDefault() {
     btn.disabled = false;
-    btn.innerHTML = `${ICON_SVG}<span>Download PDF</span>`;
+    btn.innerHTML = `${ICON_SVG}<span>Export PDF</span>`;
   }
 
   function loadScript(src: string, globalKey: string): Promise<void> {
@@ -44,98 +43,67 @@ const { fileName } = Astro.props;
   }
 
   btn?.addEventListener('click', async () => {
+    const paper = document.getElementById('cv-content') as HTMLElement | null;
+    if (!paper) return;
+
     setLoading('Preparing…');
 
-    const element = document.getElementById('cv-content') as HTMLElement | null;
-    if (!element) { setDefault(); return; }
+    // Reveal all animated sections before capture
+    const animated = paper.querySelectorAll<HTMLElement>('.cv-animate');
+    animated.forEach(el => { el.style.opacity = '1'; el.style.animation = 'none'; });
 
-    // Hide fixed UI overlays
-    const noPrint = document.querySelectorAll<HTMLElement>('.no-print');
-    noPrint.forEach(el => { el.style.visibility = 'hidden'; });
-
-    // Apply compact mode — tightens spacing so everything fits one A4 page
-    element.classList.add('cv-pdf-rendering');
-
-    // Allow styles to settle before capture, then ensure all fonts are painted
-    await new Promise(r => setTimeout(r, 80));
+    // Scroll to top — prevents element-offset bugs in canvas libraries
+    const savedScrollY = window.scrollY;
+    window.scrollTo(0, 0);
+    await new Promise(r => setTimeout(r, 120));
     await document.fonts.ready;
 
     try {
       setLoading('Generating…');
 
+      // html-to-image renders via SVG foreignObject — the browser's own engine,
+      // so ALL CSS (flex, grid, gap, etc.) is pixel-perfect.
       await Promise.all([
-        loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'html2canvas'),
+        loadScript('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js', 'htmlToImage'),
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf'),
       ]);
 
-      const canvas = await (window as any).html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        scrollY: -window.scrollY,
-        logging: false,
+      const SCALE = 2;
+      const canvas = await (window as any).htmlToImage.toCanvas(paper, {
+        pixelRatio: SCALE,
         backgroundColor: '#ffffff',
       });
 
+      // PDF page = exact content dimensions → single page, no scaling, exact match
+      const PX_TO_MM = 25.4 / 96;
+      const pdfW = (canvas.width / SCALE) * PX_TO_MM;
+      const pdfH = (canvas.height / SCALE) * PX_TO_MM;
+
       const { jsPDF } = (window as any).jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageW = pdf.internal.pageSize.getWidth();   // 210 mm
-      const pageH = pdf.internal.pageSize.getHeight();  // 297 mm
-
-      const padX = 8;   // mm — horizontal margin inside PDF
-      const padY = 10;  // mm — vertical margin inside PDF
-      const availW = pageW - padX * 2;
-      const availH = pageH - padY * 2;
-
-      // Scale canvas width to fill availW
-      const scaleByW = availW / canvas.width;
-      const contentH_mm = canvas.height * scaleByW;
-
-      // If content is taller than one page, scale down uniformly to fit
-      let finalW = availW;
-      let finalH = contentH_mm;
-      if (contentH_mm > availH) {
-        const shrink = availH / contentH_mm;
-        finalW = availW * shrink;
-        finalH = availH;
-      }
-
-      // Center horizontally if scaled down
-      const offsetX = padX + (availW - finalW) / 2;
-
-      // Single page — no loop, no slicing. PNG avoids JPEG artifacts on text.
-      pdf.addImage(
-        canvas.toDataURL('image/png'),
-        'PNG',
-        offsetX,
-        padY,
-        finalW,
-        finalH
-      );
+      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: [pdfW, pdfH], compress: true });
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
 
       // Overlay clickable links
-      // mmPerCssPx: mm per CSS pixel (canvas is scale:2, so ×2 to convert canvas→CSS)
-      const mmPerCssPx = (finalW / canvas.width) * 2;
-      const elemRect = element.getBoundingClientRect();
-
-      element.querySelectorAll('a[href]').forEach((anchor) => {
-        const a = anchor as HTMLAnchorElement;
+      const pr = paper.getBoundingClientRect();
+      paper.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(a => {
         if (!a.href || a.href.startsWith('#') || a.href.startsWith('javascript')) return;
         const r = a.getBoundingClientRect();
-        const linkTop = r.top - elemRect.top;
-        const xMm = offsetX + (r.left - elemRect.left) * mmPerCssPx;
-        const yMm = padY + linkTop * mmPerCssPx;
-        pdf.link(xMm, yMm, r.width * mmPerCssPx, r.height * mmPerCssPx, { url: a.href });
+        pdf.link(
+          (r.left - pr.left) * PX_TO_MM,
+          (r.top  - pr.top)  * PX_TO_MM,
+          r.width  * PX_TO_MM,
+          r.height * PX_TO_MM,
+          { url: a.href }
+        );
       });
 
       pdf.save(fileName);
 
-    } catch {
-      // Fallback: native browser print — compact styles already applied via CSS @media print
-      window.print();
+    } catch (err) {
+      console.error('PDF generation failed:', err);
     } finally {
-      element.classList.remove('cv-pdf-rendering');
-      noPrint.forEach(el => { el.style.visibility = ''; });
+      animated.forEach(el => { el.style.opacity = ''; el.style.animation = ''; });
+      window.scrollTo(0, savedScrollY);
       setDefault();
     }
   });

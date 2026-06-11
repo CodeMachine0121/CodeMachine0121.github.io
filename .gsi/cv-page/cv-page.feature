@@ -14,7 +14,7 @@ Feature: CV Page (International SWE Style)
     And I should see "National Yunlin University of Science and Technology"
     And I should see "Projects"
     And I should see "GSI Protocol"
-    And the "Download PDF" button should be visible
+    And the "Export PDF" button should be visible
 
   Scenario: 每筆工作經歷顯示 achievements
     Given I am on the "/cv" page
@@ -29,7 +29,7 @@ Feature: CV Page (International SWE Style)
 
   Scenario: 下載 PDF
     Given I am on the "/cv" page
-    When I click the "Download PDF" button
+    When I click the "Export PDF" button
     Then a file named "james_cv.pdf" should be downloaded
 
   Scenario: 返回首頁
