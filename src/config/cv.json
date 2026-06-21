@@ -109,6 +109,11 @@
   ],
   "projects": [
     {
+      "title": { "en": "Trader Risk Radar: Risk Analysis & Ranking API for On-Chain Perpetual Traders", "zh": "Trader Risk Radar:鏈上永續合約交易員的風險分析與排行 API" },
+      "type": { "en": "Side Project", "zh": "個人專案" },
+      "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
+    },
+    {
       "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD", "zh": "GSI 協議:在 AI 驅動的 SDD 中提升效率與敏捷性" },
       "type": { "en": "Blog", "zh": "部落格" },
       "link": "https://github.com/CodeMachine0121/GSI-Protocol#"

@@ -77,6 +77,12 @@
   ],
   "projects": [
     {
+      "imageUrl": "",
+      "title": { "en": "Trader Risk Radar: Risk Analysis & Ranking API for On-Chain Perpetual Traders" },
+      "type": { "en": "Side Project" },
+      "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
+    },
+    {
       "imageUrl": "/images/titles/GSI.png",
       "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD" },
       "type": { "en": "Blog" },
