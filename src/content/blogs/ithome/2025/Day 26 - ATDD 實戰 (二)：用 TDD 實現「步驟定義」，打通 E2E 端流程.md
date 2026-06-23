@@ -3,7 +3,7 @@ title: "Day 26 - ATDD 實戰 (二)：用 TDD 實現「步驟定義」，打通E2
 datetime: "2025-08-27"
 description:  "完成 ATDD 的後半部分，將業務描述與真實的程式碼邏輯連接起來，並點亮最終的綠燈！"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-couch-potato.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-couch-potato.png"
 ---
 
 ## 昨日回顧與今日目標

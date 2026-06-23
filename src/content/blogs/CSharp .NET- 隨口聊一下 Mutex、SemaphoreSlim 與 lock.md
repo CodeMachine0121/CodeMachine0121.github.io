@@ -2,7 +2,7 @@
 title: "C# 隨口聊一下 Mutex、SemaphoreSlim 與 lock"
 datetime: "2025-09-08"
 description: "身為後端工程師，或多或少我們都有遇過**併發**的情境，舉個例子: 訂票、交易等等。 我們都明白在多執行緒環境下確保資源的同步存取是重要的事情。 任何對共享資源的誤判都可能導致資料錯亂、系統崩潰等後果。今天就來聊聊三種關鍵的同步機制：lock、Mutex 和 SemaphoreSlim。"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/CSharp-lock.png"
+image: "https://cdn.coding-afternoon.com/images/titles/CSharp-lock.png"
 ---
 
 ## 前言 

@@ -3,7 +3,7 @@ title: "Day 22 - AI 輔助併發測試：處理 Go 語言的核心挑戰"
 datetime: "2025-08-24"
 description:  "學習如何利用 AI，幫助我們輕鬆地編寫併發測試，並使用 TDD 的方式，來修復併發場景下的競爭條件 Bug。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-dota.jpg"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-dota.jpg"
 ---
 
 ## 昨日回顧與今日目標

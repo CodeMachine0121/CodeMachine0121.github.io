@@ -2,7 +2,7 @@
 title: "AI 如何重新定義軟體開發 — Martin Fowler × Kent Beck 深度對談筆記"
 datetime: "2026-04-08"
 description: "Martin Fowler 與 Kent Beck 針對 AI 如何重新定義軟體開發的深度對談摘要與筆記，涵蓋 TDD、DDD、職涯轉型與社會影響。"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/AI 如何重新定義軟體開發 — Martin Fowler × Kent Beck 深度對談筆記.png"
+image: "https://cdn.coding-afternoon.com/images/titles/AI 如何重新定義軟體開發 — Martin Fowler × Kent Beck 深度對談筆記.png"
 ---
 
 > 影片來源：[AI Redefines Software Development — Martin Fowler × Kent Beck](https://www.youtube.com/watch?v=CZs8J1ZD0CE)

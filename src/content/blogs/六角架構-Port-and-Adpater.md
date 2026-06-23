@@ -2,7 +2,7 @@
 title: 淺談六角架構中的 Port 與 Adpater
 datetime: "2025-08-10"
 description: "以實務經驗來探討如何解決傳統三層架構的耦合問題，深入分析 Repository 模式的重新設計，以及 Entity 到 Domain 轉換邏輯的關鍵作用。說明單元測試如何推動架構向六角架構自然演進，實現更好的關注點分離和系統可維護性。"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/hexagonal-architecture.jpg"
+image: "https://cdn.coding-afternoon.com/images/titles/hexagonal-architecture.jpg"
 class: "responsive-blog-post"
 ---
 
@@ -12,7 +12,7 @@ class: "responsive-blog-post"
 前提是大家都有乖乖寫單元測試的情況下哈，這篇文章就來聊一下，讓專案更貼近六角架構的過程。
 
 以下為 六角架構的基本概念圖：
-![img.png](https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/hexagoanl-architecture.png)
+![img.png](https://cdn.coding-afternoon.com/images/hexagoanl-architecture.png)
 
 ## 從三層架構到六角架構的演變
 

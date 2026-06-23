@@ -2,7 +2,7 @@
 title:  就來搞懂 K8s Leader Election 吧
 datetime: "2025-09-28"
 description: "一個分散式鎖的解法, 使用 K8s Leader Election"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-leader-election.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-leader-election.png"
 class: "responsive-blog-post"
 ---
 
@@ -235,7 +235,7 @@ kubectl get lease my-leader-election-lock
 
 接著，我把作為 Leader 的 instance-1 結束，並透過指令將 K8s 的 Lease 資訊印出來，可以發現當前的 Leader 還是 instance-1，但過幾秒再看一次就會發現 Leader 變成了 instance-3，同時也能看到 instance-3 得知自己變成 Leader，instance-2 也同步得知 instance-3 變成 Leader。
 
-![img.png](https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/go-leader-election.png)
+![img.png](https://cdn.coding-afternoon.com/images/go-leader-election.png)
 
 ## 結論
 

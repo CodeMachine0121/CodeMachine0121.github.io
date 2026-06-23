@@ -2,7 +2,7 @@
 title: "從 SpecKit 到 GSI Protocol：我如何為 AI Agent 打造更「輕量化」的 SDD 框架"
 datetime: "2025-12-03"
 description: "SpecKit 無疑是 SDD (規格驅動開發) 的先行者與標竿。它展示了如何透過嚴謹的文件流程（Constitution -> Plan -> Tasks），讓 AI 的產出變得可控。 然而，在實際將 SpecKit 導入日常的 功能迭代 時，我遇到了一些挑戰：對於一個中小型功能來說，完整的 SpecKit 流程顯得有些「重型 (Heavyweight)」，隨之而來的是較高的 Token 成本 與 等待時間。 為了在「嚴謹度」與「敏捷性」之間取得更好的平衡，並解決AI 對「既有專案結構」感知不足 的問題，我基於 SDD 的精神，開發了 GSI Protocol。"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/GSI.png"
+image: "https://cdn.coding-afternoon.com/images/titles/GSI.png"
 class: "responsive-blog-post"
 ---
 

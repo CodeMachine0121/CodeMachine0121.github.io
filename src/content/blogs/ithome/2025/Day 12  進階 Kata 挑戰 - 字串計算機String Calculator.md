@@ -3,7 +3,7 @@ title: "Day 12 - 進階 Kata 挑戰：字串計算機 (String Calculator)"
 datetime: "2025-08-15"
 description:  "這篇文章引入了更具挑戰性的 TDD Kata，模擬真實軟體開發中的需求演進"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-couch-potato.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-couch-potato.png"
 ---
 
 ## 昨日回顧與今日目標

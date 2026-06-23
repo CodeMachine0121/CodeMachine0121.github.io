@@ -3,7 +3,7 @@ title: "Day 24 - 迎接 ATDD：當測試成為「對話」的起點"
 datetime: "2025-08-26"
 description:  "將我們的視角從 開發維度 提升到 業務維度，引入 TDD 的近親——驗收測試驅動開發 (ATDD)，並學習一種能讓業務、QA 和開發者都能溝通的「共同語言」。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-biker.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-biker.png"
 ---
 
 ## 昨日回顧與今日目標

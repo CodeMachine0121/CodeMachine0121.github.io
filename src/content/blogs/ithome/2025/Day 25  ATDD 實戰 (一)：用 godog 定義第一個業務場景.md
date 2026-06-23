@@ -3,7 +3,7 @@ title: "Day 25 - ATDD 實戰 (一)：用 godog 定義第一個業務場景"
 datetime: "2025-08-27"
 description:  "為「購物車折扣」功能，完成 ATDD 的前半部分工作 —— 定義需求，並讓 godog 引導我們下一步該做什麼。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-beard.jpg"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-beard.jpg"
 ---
 
 ## 昨日回顧與今日目標

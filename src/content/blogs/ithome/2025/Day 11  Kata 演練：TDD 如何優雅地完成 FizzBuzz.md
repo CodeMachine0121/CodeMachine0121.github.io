@@ -3,7 +3,7 @@ title: "Day 11 Kata 演練：TDD 如何優雅地完成 FizzBuzz"
 datetime: "2025-08-14"
 description:  "這篇文章延續前面的 FizzBuzz 練習，展示了如何透過多個完整的 TDD 循環，逐步實現所有 FizzBuzz 邏輯"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-cowboy.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-cowboy.png"
 ---
 
 ## 昨日回顧與今日目標

@@ -3,7 +3,7 @@ title: "Day 30 - 完賽總結：重新定義開發流程"
 datetime: "2025-08-30"
 description:  "最基本的問題開始：「到底什麼是測試驅動開發？」"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-worker.png"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-worker.png"
 ---
 
 三十天前，懷著對 Go 語言、TDD 和 AI 的好奇心，開啟了這段非凡的旅程。

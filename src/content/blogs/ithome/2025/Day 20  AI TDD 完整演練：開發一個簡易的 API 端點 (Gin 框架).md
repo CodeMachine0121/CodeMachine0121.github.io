@@ -3,7 +3,7 @@ title: "Day 20 - AI TDD 完整演練：開發一個簡易的 API 端點 (Gin 框
 datetime: "2025-08-22"
 description:  "進行一次迄今為止最真實的 AI TDD 實戰演練！我們將使用流行的 Gin 框架，從零開始，完整地開發一個簡單的 HTTP API 端點。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-gin.webp"
+image: "https://cdn.coding-afternoon.com/images/titles/golang-gin.webp"
 ---
 
 ## 昨日回顧與今日目標

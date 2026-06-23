@@ -2,7 +2,7 @@
 title: "Rule Table Pattern｜用 TDD 馴服複雜的交叉條件邏輯"
 datetime: "2026-02-22"
 description: "這篇文章的啟發主要是我在開發的時候遇到的一個情境，我覺得產出挺不錯的，就放上來做紀錄，雖然是使用 Golang 做開發，但我想概念適用於各個程式語言"
-image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/Rule Table Pattern｜用 TDD 馴服複雜的交叉條件邏輯.png"
+image: "https://cdn.coding-afternoon.com/images/titles/Rule Table Pattern｜用 TDD 馴服複雜的交叉條件邏輯.png"
 ---
 
 Hi all, 當我們在開發的時候，多少會遇到需要交叉判斷的邏輯，更雖小的時候判斷條件可能還會同時包含： 
