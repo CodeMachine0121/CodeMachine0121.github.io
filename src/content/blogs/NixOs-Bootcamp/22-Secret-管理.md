@@ -655,13 +655,13 @@ config.sops.secrets.db_password.path
 
 今天我們解決了一個在 NixOS 實務中不可迴避的問題——**如何安全地管理 secrets**。
 
-| 重點 | 說明 |
-|------|------|
-| **Nix Store 不安全** | `/nix/store` 是 world-readable，絕對不能放密碼 |
-| **sops-nix** | 基於 SOPS，支援多種加密後端，加密後仍可看到 key 結構 |
-| **agenix** | 純 age 加密，概念簡潔，更貼近 Nix 風格 |
-| **解密位置** | 兩者都把明文放在 `tmpfs`（`/run/`），不碰 `/nix/store` |
-| **最小權限** | 透過 `owner`、`group`、`mode` 控制誰能讀取解密後的檔案 |
+| 重點                | 說明                                        |
+|-------------------|-------------------------------------------|
+| **Nix Store 不安全** | `/nix/store` 是 world-readable，絕對不能放密碼     |
+| **sops-nix**      | 基於 SOPS，支援多種加密後端，加密後仍可看到 key 結構           |
+| **agenix**        | 純 age 加密，概念簡潔，更貼近 Nix 風格                  |
+| **解密位置**          | 兩者都把明文放在 `tmpfs`（`/run/`），不碰 `/nix/store` |
+| **最小權限**          | 透過 `owner`、`group`、`mode` 控制誰能讀取解密後的檔案    |
 
 Secret management 是從「能用」到「能上線」的關鍵一步。沒有它，你的 NixOS 配置就只能停留在個人實驗階段。有了它，你才能真正放心地把整套系統配置放進 Git，做到 Infrastructure as Code 的理想。
 
