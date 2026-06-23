@@ -3,7 +3,7 @@ title: "Day 14 - 字串計算機實戰 (二)：處理兩個及多個數字"
 datetime: "2025-08-17"
 description:  "這篇文章讓字串計算機真正開始「計算」，處理多個數字的相加"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-drawing.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-drawing.png"
 ---
 
 ## 昨日回顧與今日目標

@@ -3,7 +3,7 @@ title: "Day 13 - 字串計算機實戰 (一)：處理空字串與單一數字"
 datetime: "2025-08-16"
 description:  "這篇文章實作字串計算機的前兩個基本功能，展現了紮實的 TDD 基礎"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-biker.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-biker.png"
 ---
 
 ## 昨日回顧與今日目標

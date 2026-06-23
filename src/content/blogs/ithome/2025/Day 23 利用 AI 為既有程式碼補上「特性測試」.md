@@ -3,7 +3,7 @@ title: "Day 23 - 利用 AI 為既有程式碼補上「特性測試」"
 datetime: "2025-08-25"
 description:  "學習一項能在遺留程式碼的泥潭中殺出重圍的關鍵技能——編寫「特性測試」(Characterization Tests)，並利用 AI 來極大地加速這個「程式碼考古」的過程。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-cowboy.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-cowboy.png"
 ---
 
 ## 昨日回顧與今日目標

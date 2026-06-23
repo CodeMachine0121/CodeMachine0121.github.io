@@ -2,7 +2,7 @@
 title: Code 魔術師 - AOP using Fody
 datetime: "2025-08-12"
 description: "這篇文章介紹了使用 Fody 框架來實作 AOP（面向切面程式設計）的實務經驗。從實際工作需求出發，詳細說明了 AOP 的核心概念：把跟業務邏輯沒有直接關係、但又不可缺少的橫切關注點（像是日誌記錄、身份驗證、效能監控等等）從主要的業務程式碼中抽離出來處理"
-image: "/images/titles/code-wizard.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/code-wizard.png"
 class: "responsive-blog-post"
 ---
 
@@ -191,7 +191,7 @@ public class ModuleWeaver : BaseModuleWeaver
 ### Run Project
 在這邊就可以嘗試把專案跑起來看看，如果一切順利的話，Console畫面會跟下圖一樣。
 
-![img.png](/images/AOP.png)
+![img.png](https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/AOP.png)
 
 ## Conclusion
 以上就是使用 Fody 作為AOP框架的應用實作，但其實AOP 還有另一個框架工具：`Castle.Core`，那兩者雖然都是AOP框架，但使用上的方式截然不同，若有空的話我再來寫一篇 `Castle.Core`的應用實作，今天先到這。

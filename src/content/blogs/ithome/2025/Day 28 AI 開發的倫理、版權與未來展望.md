@@ -3,7 +3,7 @@ title: "Day 28 - AI 開發的倫理、版權與未來展望"
 datetime: "2025-08-28"
 description:  "跳出程式碼，從一個行業參與者的角度，探討在專業開發中使用 AI 時，我們必須面對的幾個關鍵議題。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-strong.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-strong.png"
 ---
 
 ## 昨日回顧與今日目標

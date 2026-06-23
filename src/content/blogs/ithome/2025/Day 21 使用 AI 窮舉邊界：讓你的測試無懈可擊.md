@@ -3,7 +3,7 @@ title: "Day 21 - 使用 AI 窮舉邊界：讓你的測試無懈可擊"
 datetime: "2025-08-23"
 description:  "學習如何利用 AI 的窮舉能力，扮演我們的「對抗性陪練」，幫助我們找到並測試那些容易被忽略的邊界條件。"
 parent: "2025 ithome-鐵人賽: 從 0 到 1：與 AI 協作的 Golang TDD 實戰 系列"
-image: "/images/titles/golang-boxer.jpg"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/golang-boxer.jpg"
 ---
 
 ## 昨日回顧與今日目標

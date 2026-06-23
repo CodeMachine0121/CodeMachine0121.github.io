@@ -2,7 +2,7 @@
 title: "Clean Architecture with ASP .NET Core by Ardalis"
 datetime: "2025-11-17"
 description: "觀看完 2025年 .net conf 後，對這個 Topic 覺得說得還不錯，故透過筆記記錄。"
-image: "/images/titles/clean-architecture-with-dotnet10.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/clean-architecture-with-dotnet10.png"
 class: "responsive-blog-post"
 ---
 
@@ -39,14 +39,14 @@ Clean Architecture 的第一條規則是依賴規則：
 - 依賴關係應流向核心專案或領域模型所在層，而非流向基礎設施。
 - 在 .NET 專案中，這一規則可以透過編譯器來強制執行，因為 .NET 不允許專案之間存在循環引用 (如下圖)
 
-![not-allow-dependency-.not-allow-dependency.png](/images/not-allow-dependency-.net-project.png)
+![not-allow-dependency-.not-allow-dependency.png](https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/not-allow-dependency-.net-project.png)
 
 
 ### 架構層次結構：
 
 在講者心裡的架構依賴關係應該要長這樣:
 
-![allow-dependency-.net-project.png](/images/allow-dependency-.net-project.png)
+![allow-dependency-.net-project.png](https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/allow-dependency-.net-project.png)
 
 1. Core Domain Project（核心領域專案）： 位於底部，包含所有純粹的業務邏輯和領域模型（實體、值對象等）。這裡的程式碼是純 C#，不包含任何依賴項，因此單元測試非常容易。
 2. Application Layer / Use Cases（應用程式層/使用案例）： 實作使用案例，通常透過命令和查詢（CQRS）來執行，例如「新增項目到購物車」。

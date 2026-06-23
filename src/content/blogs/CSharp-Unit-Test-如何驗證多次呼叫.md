@@ -2,7 +2,7 @@
 title: "C# Unit Test\_如何驗證多次呼叫"
 datetime: "2025-08-03"
 description: "在 C# 單元測試中，如何驗證多次呼叫的情況？本文提供了一個實際範例，展示如何使用 NSubstitute 和 FluentAssertions 來驗證多次呼叫的參數。"
-image: "/images/titles/CSharp-Multiple-Assertion.png"
+image: "https://pub-159ff40b8c65457a8782edc77d8170be.r2.dev/images/titles/CSharp-Multiple-Assertion.png"
 class: "responsive-blog-post"
 ---
 Hi all, 由於工作的關係，我們在TDD的路上遇到了一個情境，那就是如何驗證多次被呼叫的情況。甚麼意思呢，這邊給個例子🌰
