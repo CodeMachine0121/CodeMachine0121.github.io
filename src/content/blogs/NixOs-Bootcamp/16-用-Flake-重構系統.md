@@ -83,7 +83,7 @@ sudo git commit -m "chore: snapshot before flake migration"
 
 ---
 
-## 建立系統級 `flake.nix`
+## 建立系統級 flake.nix
 
 在 `/etc/nixos/` 目錄下建立 `flake.nix`：
 
@@ -110,7 +110,7 @@ sudo git commit -m "chore: snapshot before flake migration"
 
 這就是最基本的系統級 Flake。讓我們拆解每一個部分。
 
-### `inputs`：取代 channel 的依賴來源
+### inputs：取代 channel 的依賴來源
 
 ```nix
 inputs = {
@@ -122,7 +122,7 @@ inputs = {
 
 當你第一次 evaluate 這個 Flake 時，Nix 會自動產生 `flake.lock`，把當下 `nixos-24.11` branch 的最新 commit hash 鎖住。從此以後，不管什麼時候 rebuild，都會使用**同一個 commit** 的 nixpkgs——直到你主動執行 `nix flake update`。
 
-### `outputs`：定義這個 Flake 產出什麼
+### outputs：定義這個 Flake 產出什麼
 
 ```nix
 outputs = { self, nixpkgs, ... }: {
@@ -141,7 +141,7 @@ outputs = { self, nixpkgs, ... }: {
 
 ---
 
-## 將 `configuration.nix` 整合進 Flake
+## 將 configuration.nix 整合進 Flake
 
 好消息：**你原本的 `configuration.nix` 幾乎不用改**。Flake 架構的優雅之處就在於，它是在原有的 module system 外面包了一層，而不是取代它。
 
@@ -164,7 +164,7 @@ outputs = { self, nixpkgs, ... }: {
 nix.settings.experimental-features = [ "nix-command" "flakes" ];
 ```
 
-### 建議：讓 `nixpkgs` 與 `nix-channel` 脫鉤
+### 建議：讓 nixpkgs 與 nix-channel 脫鉤
 
 遷移後，你可以讓系統的 `nixpkgs` 路徑指向 Flake 鎖定的版本，避免 channel 與 Flake 混用造成混亂：
 
@@ -179,7 +179,7 @@ nix.nixPath = [
 
 但等等——這裡的 `nixpkgs` 變數從哪裡來？它是 Flake 的 input，不是 `configuration.nix` 本身能直接存取的。我們需要透過 `specialArgs` 把它傳進去。
 
-### 使用 `specialArgs` 傳遞 Flake inputs
+### 使用 specialArgs 傳遞 Flake inputs
 
 回到 `flake.nix`，更新 `nixosSystem` 的呼叫：
 
@@ -222,7 +222,7 @@ nix.nixPath = [
 
 ---
 
-## `nixosConfigurations` output 詳解
+## nixosConfigurations output 詳解
 
 `nixosConfigurations` 是 Flake 專門為 NixOS 系統配置保留的 output 類型。讓我們深入了解它的結構與變化。
 
@@ -301,7 +301,7 @@ modules = [
 
 ---
 
-## 使用 `nixos-rebuild --flake` 重建系統
+## 使用 nixos-rebuild --flake 重建系統
 
 一切就緒，來 rebuild 吧！
 
@@ -315,7 +315,7 @@ sudo git add -A  # 確保所有 .nix 檔案都被追蹤
 
 > ⚠️ **再次提醒**：Flake 只會讀取被 `git add` 過的檔案。如果你新增了一個 module 但忘了 `git add`，evaluation 時會得到 `file not found` 的錯誤。
 
-### 第二步：使用 `--flake` 旗標 rebuild
+### 第二步：使用 --flake 旗標 rebuild
 
 ```bash
 sudo nixos-rebuild switch --flake /etc/nixos#my-nixos
@@ -337,7 +337,7 @@ nixos-rebuild switch --flake <flake-path>#<hostname>
 sudo nixos-rebuild switch --flake /etc/nixos
 ```
 
-### 第三步：觀察 `flake.lock` 的產生
+### 第三步：觀察 flake.lock 的產生
 
 第一次 rebuild 成功後，你會發現目錄中多了一個 `flake.lock` 檔案：
 
@@ -420,7 +420,7 @@ nix eval nixpkgs#lib.version  # 應該對應你鎖定的版本
 
 ### 常見問題與解法
 
-#### 問題一：`error: getting status of '/etc/nixos/flake.nix': No such file or directory`
+#### 問題一：error: getting status of '/etc/nixos/flake.nix': No such file or directory
 
 **原因**：檔案沒有被 `git add`。Flake 會建立一個臨時的 working tree，只包含 Git 追蹤的檔案。
 
@@ -430,7 +430,7 @@ sudo git add flake.nix
 sudo git add -A
 ```
 
-#### 問題二：`error: attribute 'my-nixos' missing`
+#### 問題二：error: attribute 'my-nixos' missing
 
 **原因**：`--flake` 指定的 hostname 與 `nixosConfigurations` 中的 key 不一致。
 
@@ -444,7 +444,7 @@ grep "nixosConfigurations" /etc/nixos/flake.nix
 
 確保兩者一致，或是明確指定 `#<key-name>`。
 
-#### 問題三：`error: undefined variable 'nixpkgs'`（在 `configuration.nix` 中）
+#### 問題三：error: undefined variable 'nixpkgs'（在 configuration.nix 中）
 
 **原因**：你在 `configuration.nix` 中引用了 `nixpkgs`，但沒有在 `flake.nix` 的 `specialArgs` 中傳入。
 
@@ -454,7 +454,7 @@ grep "nixosConfigurations" /etc/nixos/flake.nix
 specialArgs = { inherit nixpkgs; };
 ```
 
-#### 問題四：遷移後 `nix-shell` 或 `nix search` 行為不同
+#### 問題四：遷移後 nix-shell 或 nix search 行為不同
 
 這是因為舊的 `nix-*` 指令（如 `nix-shell`、`nix-env`）仍然走 channel 路徑，而 Flake 是透過新的 `nix` 指令（如 `nix develop`、`nix search`）來操作。
 

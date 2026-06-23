@@ -76,7 +76,7 @@ func main() {
 
 多次執行這個程式，你會發現 `Actual counter` 的值幾乎每次都不同，而且幾乎從來不是 1000！它可能是 998、995，或任何小於 1000 的數字。這就是 `Race Condition` 活生生的例子。
 
-### **解法：`sync.Mutex` 互斥鎖**
+### **解法：sync.Mutex 互斥鎖**
 
 為了解決這個問題，我們需要一種機制來確保在任何時候，只有一個 `goroutine` 能夠存取 `counter`。這塊一次只允許一個 `goroutine` 進入的程式碼區域，我們稱之為**臨界區 (Critical Section)**。
 

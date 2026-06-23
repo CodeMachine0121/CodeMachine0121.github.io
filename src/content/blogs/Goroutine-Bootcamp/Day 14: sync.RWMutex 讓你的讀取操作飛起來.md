@@ -14,7 +14,7 @@ parent: "Goroutine 最佳入門姿勢"
 
 在這種「讀多寫少」的場景中，讀取操作本身是安全的——多個 `goroutine` 同時讀取同一份數據並不會產生衝突。但如果我們使用 `sync.Mutex`，即使是讀取操作也必須排隊等待，這會嚴重限制系統的併發效能。為此，`Golang` 提供了另一把更智慧的鎖：`sync.RWMutex` (讀寫互斥鎖)。
 
-### **`sync.RWMutex` 是什麼？**
+### **sync.RWMutex 是什麼？**
 
 `sync.RWMutex` (Read-Write Mutual Exclusion Lock) 是一把更精細的鎖，它區分了「讀取」和「寫入」兩種操作。
 
@@ -27,7 +27,7 @@ parent: "Goroutine 最佳入門姿勢"
 2.  **作者是排他的**：一次只能有一個 `goroutine` 持有寫鎖。
 3.  **讀寫互斥**：如果一個 `goroutine` 持有寫鎖，其他任何 `goroutine`（無論是讀還是寫）都必須等待。反之，如果任何 `goroutine` 持有讀鎖，寫操作就必須等待。
 
-### **`RWMutex` 的核心方法**
+### **RWMutex 的核心方法**
 
 `RWMutex` 提供了四個核心方法：
 *   `mu.RLock()`: 獲取**讀鎖** (Read Lock)。如果此刻有寫鎖被持有，則阻塞。
@@ -108,7 +108,7 @@ func main() {
 
 如果這個例子使用 `sync.Mutex`，那麼在任何時間點，即使是 10 個 `Reader` 之間也必須互相排隊，大大降低了程式的併發度。
 
-### **何時該用 `RWMutex`？**
+### **何時該用 RWMutex？**
 
 `RWMutex` 並非萬靈丹，它比 `Mutex` 更複雜，內部協調的成本也更高。只有在滿足以下條件時，使用 `RWMutex` 才能帶來顯著的效能提升：
 

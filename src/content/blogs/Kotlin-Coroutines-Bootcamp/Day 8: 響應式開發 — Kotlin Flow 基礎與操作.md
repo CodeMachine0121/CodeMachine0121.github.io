@@ -74,7 +74,7 @@ suspend fun performFlowTransformation() {
 
 ---
 
-## 3. Thread 切換：`flowOn`
+## 3. Thread 切換：flowOn
 
 在協程中，Flow 預設擁有 **Context Preservation (上下文保留)** 的特性。
 簡單說：**你在哪個Thread呼叫 `collect`，Flow 中的運算程式碼就在哪個Thread跑。**
@@ -83,7 +83,7 @@ suspend fun performFlowTransformation() {
 
 這時就要用 **`flowOn`**。
 
-### 🔄 `flowOn` 是如何工作的？
+### 🔄 flowOn 是如何工作的？
 
 它會改變它 **上游 (Upstream)** 運算的執行環境。
 
@@ -113,7 +113,7 @@ fun main() = runBlocking {
 
 ---
 
-## 4. 異常處理：優雅的 `catch`
+## 4. 異常處理：優雅的 catch
 
 在前面我們學過 `try-catch`。在 Flow 中，雖然你也可以在 `collect` 外面包 `try-catch`，但更推薦使用 **聲明式 (Declarative)** 的 `catch` 運算子。
 

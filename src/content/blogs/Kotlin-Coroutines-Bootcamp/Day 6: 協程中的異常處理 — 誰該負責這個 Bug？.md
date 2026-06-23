@@ -7,7 +7,7 @@ parent: "Kotlin Coroutines Bootcamp"
 
 在 Kotlin 協程中，異常處理有三個重要原則，與傳統 Java/Kotlin 程式碼略有不同。我們將依序破解這些誤區。
 
-## 1. 誤區：外層的 `try-catch` 抓不到 `launch` 的錯
+## 1. 誤區：外層的 try-catch 抓不到 launch 的錯
 
 這是新手最常犯的錯誤。
 
@@ -90,7 +90,7 @@ fun main() = runBlocking {
 
 如果你希望「兄弟登山，各自努力」，也就是**其中一個子協程失敗，不要影響其他人**，你需要使用 **Supervisor (監督者)** 模式。
 
-### 🛡️ `supervisorScope`：防火牆
+### 🛡️ supervisorScope：防火牆
 
 `supervisorScope` 是一個特殊的 Scope，它會改變異常傳播的規則：
 *   **規則**：子協程發生異常時，**不會** 匯報給父協程，也不會取消其他兄弟。子協程自己負責處理這個異常。
@@ -152,7 +152,7 @@ fun main() = runBlocking {
 
 ---
 
-## 5. `launch` vs `async` 的異常處理差異
+## 5. launch vs async 的異常處理差異
 
 這兩者在異常處理上有巨大的區別：
 

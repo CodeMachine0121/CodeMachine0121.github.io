@@ -135,11 +135,11 @@ nix flake init
 
 讓我們逐一拆解。
 
-### `description`
+### description
 
 一段簡短的文字描述，說明這個 flake 的用途。雖然是選填的，但建議都填寫，方便日後辨識。
 
-### `inputs`：你的依賴來源
+### inputs：你的依賴來源
 
 `inputs` 是一個 attribute set，列出這個 flake 依賴的所有外部來源。最常見的就是 `nixpkgs`：
 
@@ -169,7 +169,7 @@ inputs = {
 >
 > 當多個 inputs 都依賴 `nixpkgs` 時，`inputs.nixpkgs.follows = "nixpkgs"` 可以讓它們共用同一份 nixpkgs，避免重複下載與版本不一致的問題。這是 Flakes 中非常實用的功能。
 
-### `outputs`：你提供什麼
+### outputs：你提供什麼
 
 `outputs` 是一個 function，接收所有 resolved 過的 inputs，回傳一個 attribute set。這個 attribute set 的 key 有一些約定俗成的名稱：
 

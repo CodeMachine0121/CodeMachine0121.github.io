@@ -70,7 +70,7 @@ Header → Summary → Experience → Education → Projects，並保留 PDF 下
 
 ## 4. 服務介面（元件設計）
 
-### cv.astro（`src/pages/cv.astro`）
+### cv.astro（src/pages/cv.astro）
 
 職責：頁面進入點，自建精簡 HTML shell，組合所有 CV section 元件
 
@@ -88,7 +88,7 @@ cv.astro
 
 ---
 
-### CVHeader（`src/components/cv/CVHeader.astro`）
+### CVHeader（src/components/cv/CVHeader.astro）
 
 職責：顯示姓名、職稱、social links（GitHub、Email）
 
@@ -106,7 +106,7 @@ cv.astro
 
 ---
 
-### CVSummary（`src/components/cv/CVSummary.astro`）
+### CVSummary（src/components/cv/CVSummary.astro）
 
 職責：Professional Summary 段落
 
@@ -118,7 +118,7 @@ cv.astro
 
 ---
 
-### CVExperience（`src/components/cv/CVExperience.astro`）
+### CVExperience（src/components/cv/CVExperience.astro）
 
 職責：Work Experience 區段，無動畫，pure HTML list
 
@@ -134,7 +134,7 @@ cv.astro
 
 ---
 
-### CVEducation（`src/components/cv/CVEducation.astro`）
+### CVEducation（src/components/cv/CVEducation.astro）
 
 職責：Education 區段
 
@@ -149,7 +149,7 @@ cv.astro
 
 ---
 
-### CVProjects（`src/components/cv/CVProjects.astro`）
+### CVProjects（src/components/cv/CVProjects.astro）
 
 職責：Projects & Publications 區段
 
@@ -164,7 +164,7 @@ cv.astro
 
 ---
 
-### DownloadButton（`src/components/cv/DownloadButton.astro`）
+### DownloadButton（src/components/cv/DownloadButton.astro）
 
 職責：保持既有實作不變（html2pdf.js CDN + window.print() fallback）
 

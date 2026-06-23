@@ -38,7 +38,7 @@ launch(Dispatchers.Default) {
 
 ---
 
-## 2. `withContext`：優雅的執行緒切換 (Thread Switching)
+## 2. withContext：優雅的執行緒切換 (Thread Switching)
 
 這是今天最重要的關鍵字。
 在傳統 Android 開發（例如 AsyncTask 或 RxJava）中，切換執行緒往往意味著 callback 的嵌套。但在協程中，我們使用 `withContext` 來實現 **「同步式的執行緒切換」**。

@@ -34,7 +34,7 @@ parent: "Goroutine 最佳入門姿勢"
 2.  `Done()`：**減少計數器** (等同於 `Add(-1)`）。相當於團隊成員來回報任務完成。通常我們會在 Goroutine 的任務結束時，透過 `defer` 來呼叫它。
 3.  `Wait()`：**阻塞直到計數器歸零**。相當於專案經理的等待過程。它會一直卡在那裡，直到所有 Goroutine 都呼叫了 `Done()`，讓計數器變回 0。
 
-## 實戰：用 `WaitGroup` 改造昨天的程式
+## 實戰：用 WaitGroup 改造昨天的程式
 
 讓我們把 Day 2 的 `time.Sleep` 範例，用 `WaitGroup` 來進行一次華麗的升級。
 

@@ -495,7 +495,7 @@ JetBrains 系列 IDE 有 [Direnv Integration](https://plugins.jetbrains.com/plug
 
 ## 九、常見問題排解
 
-### Q1：`direnv allow` 之後沒有反應？
+### Q1：direnv allow 之後沒有反應？
 
 確認 shell hook 有正確設定。在你的 shell 設定檔（`.bashrc`、`.zshrc`）中應該有這行：
 

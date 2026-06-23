@@ -45,7 +45,7 @@ ls -la /nix/store/abc123...-some-config
 
 還記得 Day 1 提到的 immutability 嗎？`/nix/store` 中的檔案一旦寫入就不會被修改或刪除（除非手動跑 garbage collection）。就算你後來把密碼從 `.nix` 中移除了，舊的 store path 裡可能還保留著那個含有密碼的檔案。
 
-### 原因三：你的 `.nix` 檔案在 Git 裡
+### 原因三：你的 .nix 檔案在 Git 裡
 
 NixOS 最大的優勢之一就是把系統配置放進 Git 做版本控管。但如果密碼也跟著 commit 進去，那就是一場災難：
 
@@ -115,7 +115,7 @@ nix-shell -p ssh-to-age --run \
 # 輸出類似：age1rgffpespcyjn0d8jglk7km9kfrfhdyev6camd3rck6pn8y47ze4sug23v3
 ```
 
-#### Step 2：建立 `.sops.yaml` 配置
+#### Step 2：建立 .sops.yaml 配置
 
 在 repository 根目錄建立 `.sops.yaml`，告訴 SOPS 用哪些 key 來加密：
 
@@ -256,7 +256,7 @@ nix-shell -p ssh-to-age --run \
   'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'
 ```
 
-#### Step 2：建立 `secrets.nix`
+#### Step 2：建立 secrets.nix
 
 在 repository 中建立 `secrets.nix`，宣告每個 secret 檔案可以被哪些 key 解密：
 
@@ -527,7 +527,7 @@ my-nixos-config/
     └── webapp.nix
 ```
 
-### 完整的 `flake.nix`
+### 完整的 flake.nix
 
 ```nix
 {

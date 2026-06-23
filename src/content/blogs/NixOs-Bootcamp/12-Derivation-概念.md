@@ -211,7 +211,7 @@ stdenv.mkDerivation {
 
 以下是最常見的四個 phases：
 
-### 1. `unpackPhase` — 解壓縮原始碼
+### 1. unpackPhase — 解壓縮原始碼
 
 負責把 `src` 解壓縮到 build 目錄。如果 `src` 是 `.tar.gz`、`.zip` 等常見格式，`stdenv` 會自動處理。
 
@@ -224,7 +224,7 @@ unpackPhase = ''
 '';
 ```
 
-### 2. `configurePhase` — 設定建置參數
+### 2. configurePhase — 設定建置參數
 
 執行 `./configure` script（如果存在的話）。你可以透過 `configureFlags` 來傳遞參數：
 
@@ -238,7 +238,7 @@ configureFlags = [
 
 如果專案使用 CMake 而非 Autotools，你可以搭配 `cmake` 的 setup hook（透過 `nativeBuildInputs = [ cmake ]`），它會自動接管 `configurePhase`。
 
-### 3. `buildPhase` — 編譯
+### 3. buildPhase — 編譯
 
 預設行為是執行 `make`。如果你需要自訂：
 
@@ -250,7 +250,7 @@ buildPhase = ''
 
 `$NIX_BUILD_CORES` 是 Nix 提供的環境變數，表示可用的 CPU cores 數量，讓你的 build 能善用多核心平行編譯。
 
-### 4. `installPhase` — 安裝到 output path
+### 4. installPhase — 安裝到 output path
 
 預設行為是執行 `make install`，並把結果安裝到 `$out`。如果專案沒有 `make install` 的規則，你需要自己寫：
 
@@ -391,7 +391,7 @@ passthru.tests = {
 
 這就是 `stdenv` 的威力 — 對於「行為端正」的專案，你幾乎只需要提供 source 和 metadata。
 
-### 再看一個稍微複雜的：`jq`
+### 再看一個稍微複雜的：jq
 
 讓我們也來看看 JSON 處理工具 `jq` 的 derivation，體驗一下自訂 build 設定的案例：
 

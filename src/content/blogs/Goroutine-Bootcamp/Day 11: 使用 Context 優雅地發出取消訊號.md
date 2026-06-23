@@ -13,7 +13,7 @@ parent: "Goroutine 最佳入門姿勢"
 
 ---
 
-### **第一部分：深入理解 `Context` 介面**
+### **第一部分：深入理解 Context 介面**
 
 `Context` 是一個介面，它定義了四個核心方法。讓我們透過實際範例來逐一解析它們。
 
@@ -26,7 +26,7 @@ type Context interface {
 }
 ```
 
-#### **1. `Deadline()`**
+#### **1. Deadline()**
 
 此方法回傳 `Context` 被設定的截止時間。如果沒有設定截止時間，`ok` 會是 `false`。
 
@@ -73,7 +73,7 @@ func main() {
 
 ---
 
-#### **2. `Done()` 與 3. `Err()`**
+#### **2. Done() 與 3. Err()**
 
 `Done()` 是 `Context` 的靈魂。它回傳一個 `channel`，當 `Context` 被取消時，這個 `channel` 會被關閉。`Err()` 則是在 `Done()` 的 `channel` 關閉後，回傳 `Context` 被關閉的原因。這兩者通常一起使用。
 
@@ -122,7 +122,7 @@ Goroutine: Cancellation signal received! Reason: context canceled
 
 ---
 
-#### **4. `Value()`**
+#### **4. Value()**
 
 `Value()` 允許你在 `Context` 中附加**請求範圍 (request-scoped)** 的數據，例如 `request ID` 或使用者身份信息。
 
@@ -172,9 +172,9 @@ Could not find request ID in context.
 
 ---
 
-### **第二部分：使用 `With...` 函式衍生 Context**
+### **第二部分：使用 With... 函式衍生 Context**
 
-#### **`With...` 函式是什麼？**
+#### **With... 函式是什麼？**
 
 在 `Golang` 中，我們永遠不會直接從零開始創建一個 `Context`。相反地，`context` 套件提供了一系列的 `With...` 函式，讓我們能從一個已存在的 **`parent Context`** 衍生出一個帶有新功能的 **`child Context`**。
 
@@ -188,7 +188,7 @@ Could not find request ID in context.
 
 -----
 
-#### **1. `context.WithCancel()`**
+#### **1. context.WithCancel()**
 
 創建一個可以手動取消的 Context。當 goroutine 的生命週期不依賴於時間，而是由某個外部事件（如用戶點擊取消按鈕）決定時，使用此函式。
 
@@ -229,7 +229,7 @@ func main() {
 ```
 ```
 
-#### **2. `context.WithTimeout()` 與 3. `context.WithDeadline()`**
+#### **2. context.WithTimeout() 與 3. context.WithDeadline()**
 
 `WithTimeout` (相對時間) 和 `WithDeadline` (絕對時間) 是用來創建會在**未來某個時間點自動取消**的 `Context`。
 
@@ -278,13 +278,13 @@ Error: context deadline exceeded
 
 這個例子完美展示了 `select` 如何在「任務完成」和「`context` 超時」之間進行競賽，並由先到達者勝出。
 
-#### **4. `context.WithValue()`**
+#### **4. context.WithValue()**
 
 前面已有範例，其核心價值在於**安全地**、**不可變地**傳遞跨越 API 邊界的請求數據，而不會污染函式簽章。父 `Context` 無法存取子 `Context` 中附加的值。
 
 ---
 
-### **黃金法則：`Context` 的使用慣例**
+### **黃金法則：Context 的使用慣例**
 
 為了讓 `context` 的使用保持一致性和可讀性，`Golang` 社群形成了一些約定俗成的規則：
 *   **將 `Context` 作為函式的第一個參數**，通常命名為 `ctx`。

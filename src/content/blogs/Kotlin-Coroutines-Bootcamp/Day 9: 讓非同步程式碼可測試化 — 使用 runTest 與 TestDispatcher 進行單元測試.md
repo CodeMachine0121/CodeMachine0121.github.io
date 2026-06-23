@@ -11,7 +11,7 @@ parent: "Kotlin Coroutines Bootcamp"
 testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 ```
 
-## 1. 告別 `runBlocking`，擁抱 `runTest`
+## 1. 告別 runBlocking，擁抱 runTest
 
 在 Day 2 我們說過 `runBlocking` 可以用在測試。但在現代（Coroutine 1.6+）的標準中，請改用 **`runTest`**。
 
@@ -43,7 +43,7 @@ class BasicTest {
 
 ---
 
-## 2. 標準 Dispatcher ：`StandardTestDispatcher`
+## 2. 標準 Dispatcher ：StandardTestDispatcher
 
 當你使用 `runTest` 時，它預設使用 `StandardTestDispatcher`。
 這個 Dispatcher 的特點是：**它不會自動執行新啟動的協程**，除非你叫它跑。這讓你能夠精確控制執行順序。
@@ -86,7 +86,7 @@ fun testStandardDispatcher() = runTest {
 
 ---
 
-## 3. 解決 Android 的痛點：`MainDispatcherRule`
+## 3. 解決 Android 的痛點：MainDispatcherRule
 
 在 Android 單元測試（JVM Test）中，沒有真實的 UI Thread (Main Looper)。
 如果你的程式碼中用了 `Dispatchers.Main`，測試會直接報錯：
@@ -149,7 +149,7 @@ fun testFlowValues() = runTest {
 }
 ```
 
-### B. 使用 `backgroundScope` (對於無限的 flow )
+### B. 使用 backgroundScope (對於無限的 flow )
 如果 Flow 是無限的（例如 `StateFlow`），你不能用 `toList()`，因為它永遠不會結束，測試會卡死。
 這時可以用 `backgroundScope` 來收集它。這個 Scope 會在測試結束時自動取消。
 

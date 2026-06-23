@@ -145,7 +145,7 @@ Nix 也提供了語法糖，讓你直接用 `.` 來定義巢狀結構：
 
 兩種寫法完全等價，挑你覺得可讀性較好的即可。
 
-### Recursive Attribute Sets（`rec { }`）
+### Recursive Attribute Sets（rec { }）
 
 一般的 attribute set 中，attribute 之間不能互相引用。如果你需要這個功能，要加上 `rec` 關鍵字：
 
@@ -159,7 +159,7 @@ rec {
 
 > 💡 實務上建議少用 `rec`，因為它可能導致無限遞迴。大多數情況下，`let...in` 是更好的替代方案。
 
-### 用 `//` 合併 Attribute Sets
+### 用 // 合併 Attribute Sets
 
 `//` 運算子可以合併兩個 attribute set，若有重複的 key，右邊會覆蓋左邊：
 
@@ -202,7 +202,7 @@ builtins.elemAt [ "a" "b" "c" ] 1  # => "b"（index 從 0 開始）
 # => [ 1 2 3 4 ]
 ```
 
-### List 與 `map`
+### List 與 map
 
 `map` 是函數式程式設計的經典操作，對 list 中的每個元素套用一個 function：
 
@@ -284,7 +284,7 @@ in
   "${name}-${version}"
 ```
 
-#### 允許額外的 Attributes（`...`）
+#### 允許額外的 Attributes（...）
 
 加上 `...` 表示「可以接受其他額外的 attribute，但我不處理」：
 
@@ -297,9 +297,9 @@ in
 
 ---
 
-## `let...in` 與 `with` 表達式
+## let...in 與 with 表達式
 
-### `let...in`
+### let...in
 
 `let...in` 用來定義區域變數，是 Nix 語言中最常用的表達式之一：
 
@@ -325,7 +325,7 @@ in
 
 > 💡 前面提到 `rec { }` 的替代方案就是 `let...in`。在 `let` 區塊中，變數之間可以互相引用，而且不會有 `rec` 的潛在風險。
 
-### `with` 表達式
+### with 表達式
 
 `with` 可以把一個 attribute set 的所有 attribute 引入 scope，省去反覆打前綴的麻煩：
 
@@ -358,7 +358,7 @@ environment.systemPackages = with pkgs; [
 
 ---
 
-## `inherit` 關鍵字
+## inherit 關鍵字
 
 `inherit` 是 Nix 語言提供的語法糖，讓你可以快速把變數「繼承」進 attribute set 中。
 
@@ -403,7 +403,7 @@ in
 
 ---
 
-## 在 `nix repl` 中練習
+## 在 nix repl 中練習
 
 理論學完了，現在打開終端機來實際操作吧！`nix repl` 是你最好的練習場：
 

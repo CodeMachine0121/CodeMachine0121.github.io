@@ -127,11 +127,11 @@ in
 
 ---
 
-## `mkOption` 與 `types` 詳解
+## mkOption 與 types 詳解
 
 `mkOption` 是定義 module option 的核心函式。它接收一個 attribute set，用來描述這個選項的各種屬性。
 
-### `mkOption` 的完整參數
+### mkOption 的完整參數
 
 ```nix
 lib.mkOption {
@@ -149,7 +149,7 @@ lib.mkOption {
 | `example` | ❌ | 範例值，會出現在 `nixos-option` 或線上文件中 |
 | `description` | ❌ | 選項的文字說明，建議一定要寫 |
 
-### 常用的 `types`
+### 常用的 types
 
 NixOS 提供了豐富的型別系統，以下是最常用的幾種：
 
@@ -370,11 +370,11 @@ in
 
 ---
 
-## `mkEnableOption` 與 `mkIf`
+## mkEnableOption 與 mkIf
 
 這兩個是撰寫 module 時最常搭配使用的工具，值得單獨拿出來講清楚。
 
-### `mkEnableOption`
+### mkEnableOption
 
 `mkEnableOption` 是 `mkOption` 的語法糖，專門用來定義 `enable` 選項：
 
@@ -391,7 +391,7 @@ enable = lib.mkOption {
 
 使用 `mkEnableOption` 的好處是簡潔，而且自動產生標準化的 description。它接受一個字串參數，會自動組合成 `"Whether to enable <你給的字串>."` 這樣的說明文字。
 
-### `mkIf`：條件化配置
+### mkIf：條件化配置
 
 `mkIf` 讓你可以根據某個條件，決定是否套用一段配置。這是實作 `enable` 開關的核心：
 
@@ -405,7 +405,7 @@ config = lib.mkIf cfg.enable {
 
 `mkIf` 的重要特性：**它不是「有條件地執行程式碼」，而是「有條件地將這段配置納入合併」**。在 Nix 的世界裡沒有 side effect，一切都是 value。`mkIf` 產生的是一個帶有條件標記的值，NixOS 在合併所有 module 的配置時，會根據條件決定是否將這段值納入最終結果。
 
-### `mkMerge`：合併多段條件配置
+### mkMerge：合併多段條件配置
 
 當你需要根據不同條件套用不同的配置時，`mkMerge` 搭配 `mkIf` 非常實用：
 
@@ -433,7 +433,7 @@ config = lib.mkMerge [
 
 寫好 module 之後，怎麼確認它是正確的？以下介紹幾種實用的測試與除錯方法。
 
-### 1. 使用 `nixos-rebuild build` 做語法檢查
+### 1. 使用 nixos-rebuild build 做語法檢查
 
 在正式套用之前，先用 `build` 驗證配置是否有語法錯誤：
 
@@ -443,7 +443,7 @@ sudo nixos-rebuild build
 
 這只會 build 出新的 system，不會實際切換。如果你的 module 有語法錯誤或 type mismatch，就會在這一步被抓出來。
 
-### 2. 使用 `nixos-option` 查詢 option 定義
+### 2. 使用 nixos-option 查詢 option 定義
 
 ```bash
 # 查看某個 option 的定義與當前值
@@ -455,7 +455,7 @@ nixos-option services.healthCheck
 
 這個指令非常適合用來確認你的 option 有沒有被正確註冊、type 是否符合預期。
 
-### 3. 使用 `nix repl` 互動式除錯
+### 3. 使用 nix repl 互動式除錯
 
 ```bash
 # 載入系統配置進入 REPL
@@ -553,7 +553,7 @@ nix-build tests/health-check-test.nix
     └── monitoring.nix         # 監控模組
 ```
 
-### 2. 使用 `let cfg = config.xxx` 慣用寫法
+### 2. 使用 let cfg = config.xxx 慣用寫法
 
 幾乎所有 NixOS 官方 module 都會在最上方定義 `cfg`：
 
@@ -568,7 +568,7 @@ in
 
 這不只是為了方便，更是一種約定俗成的風格，讓其他開發者一眼就能看懂。
 
-### 3. 善用 `lib.mdDoc` 撰寫 option description
+### 3. 善用 lib.mdDoc 撰寫 option description
 
 ```nix
 description = lib.mdDoc ''

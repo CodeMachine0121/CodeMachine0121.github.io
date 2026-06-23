@@ -46,7 +46,7 @@ final: prev: {
 
 ---
 
-## Overlay 的基本語法：`final` 與 `prev`
+## Overlay 的基本語法：final 與 prev
 
 每個 overlay 都是一個形如 `final: prev: { ... }` 的函式。這兩個參數分別代表：
 
@@ -57,7 +57,7 @@ final: prev: {
 
 > 💡 在早期的 Nix 文件和社群文章中，你會看到 `self` / `super` 的寫法。新版的慣例傾向使用 `final` / `prev`，語意更明確。本文統一使用 `final` / `prev`。
 
-### 什麼時候用 `prev`？什麼時候用 `final`？
+### 什麼時候用 prev？什麼時候用 final？
 
 **大部分情況下，你應該使用 `prev`。** 因為你是要「在原本的東西上面修改」，所以需要拿到修改前的版本作為基礎：
 
@@ -100,7 +100,7 @@ final: prev: {
 
 在 flake 的架構下，overlay 有兩個常見的使用方式。
 
-### 方式一：直接在 `nixpkgs.overlays` 中定義
+### 方式一：直接在 nixpkgs.overlays 中定義
 
 最直覺的方式是直接在 `flake.nix` 的 NixOS configuration 裡設定 `nixpkgs.overlays`：
 
@@ -181,7 +181,7 @@ final: prev: {
 }
 ```
 
-### 方式三：在 `legacyPackages` 或 `packages` 中使用
+### 方式三：在 legacyPackages 或 packages 中使用
 
 如果你只是在 `devShell` 或 `packages` 中使用 overlay，不一定需要走 NixOS module 的方式，可以直接用 `import`：
 
@@ -210,7 +210,7 @@ final: prev: {
 
 這是最常見的 overlay 使用場景之一。假設 Nixpkgs 中的某個套件版本太舊，你需要升級到特定版本。
 
-### 範例：升級 `jq` 到更新的版本
+### 範例：升級 jq 到更新的版本
 
 ```nix
 # overlays/version-bump.nix
@@ -233,7 +233,7 @@ final: prev: {
 > nix-prefetch-github jqlang jq --rev jq-1.7.1
 > ```
 
-### 使用 `overrideAttrs` 的注意事項
+### 使用 overrideAttrs 的注意事項
 
 `overrideAttrs` 是覆寫套件最常用的 function。它接受一個 function 作為參數，這個 function 會收到原本的 attributes（`oldAttrs`），你可以基於它來做修改：
 
@@ -258,7 +258,7 @@ prev.some-package.overrideAttrs (oldAttrs: {
 
 有時候你不需要升級版本，只是要修復一個 bug 或加入一個小改動。這時候用 patch 就對了。
 
-### 範例：為 `neovim` 加上自訂 patch
+### 範例：為 neovim 加上自訂 patch
 
 先準備好你的 patch 檔案：
 
@@ -400,7 +400,7 @@ final: prev:
   // (import ./custom-pkgs.nix final prev)
 ```
 
-### 2. 優先使用 `prev`，必要時才用 `final`
+### 2. 優先使用 prev，必要時才用 final
 
 前面已經強調過了，再說一次：**修改套件用 `prev`，引用依賴用 `final`**。搞反了就是 infinite recursion。
 
@@ -429,11 +429,11 @@ final: prev: {
 
 當你追蹤的 Nixpkgs channel 更新到已包含你的修改時，相對應的 overlay 就該移除了。留著過時的 overlay 不僅增加維護成本，還可能在未來的版本升級中造成衝突。
 
-### 5. 善用 `nixpkgs.overlays` 的順序性
+### 5. 善用 nixpkgs.overlays 的順序性
 
 `nixpkgs.overlays` 接受的是一個 **list**，overlay 會依照順序套用。後面的 overlay 可以「看到」前面 overlay 的修改結果（透過 `prev`）。善用這一點，你可以做出分層的修改策略。
 
-### 6. 使用 `lib.composeExtensions` 組合 overlay
+### 6. 使用 lib.composeExtensions 組合 overlay
 
 當你需要程式化地組合多個 overlay 時：
 

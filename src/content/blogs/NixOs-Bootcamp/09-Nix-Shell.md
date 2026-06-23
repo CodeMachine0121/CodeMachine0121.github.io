@@ -42,7 +42,7 @@ parent: "NixOs Bootcamp"
 
 ---
 
-## 即時使用：`nix-shell -p`
+## 即時使用：nix-shell -p
 
 最簡單的用法，就是 `-p`（`--packages`）參數。假設你想要一個有 Python 3 的環境：
 
@@ -103,11 +103,11 @@ go version go1.22.5 linux/amd64
 
 ---
 
-## `--run` 與 `--command` 參數
+## --run 與 --command 參數
 
 有時候你不需要進入互動式的 shell，只是想 **跑一個指令就走**。這時候 `--run` 和 `--command` 就派上用場了。
 
-### `--run`：執行完就離開
+### --run：執行完就離開
 
 ```bash
 nix-shell -p python3 --run "python3 -c 'print(1 + 1)'"
@@ -129,7 +129,7 @@ nix-shell -p jq --run "cat data.json | jq '.users[] | .name'"
 nix-shell -p httpie --run "http GET https://api.github.com/users/octocat"
 ```
 
-### `--command`：執行指令，但保留 shell 環境
+### --command：執行指令，但保留 shell 環境
 
 ```bash
 nix-shell -p nodejs --command "node --version && bash"
@@ -259,7 +259,7 @@ Nix 會自動幫你準備好 Python 3 的環境，然後執行這個 script。**
 
 在結束之前，再分享幾個實用的小技巧：
 
-### 1. 使用 `--pure` 參數
+### 1. 使用 --pure 參數
 
 加上 `--pure` 會建立一個更乾淨的環境，它會把你系統原本的 `$PATH` 清掉，只保留 nix-shell 裡指定的套件：
 
@@ -269,7 +269,7 @@ nix-shell --pure -p python3 coreutils
 
 這在你需要確保「這個環境只用到了我指定的工具」時特別有用，例如測試你的 build script 是否有遺漏的 dependency。
 
-### 2. 搭配 `nix-shell` 與 `shellHook`
+### 2. 搭配 nix-shell 與 shellHook
 
 在 Day 10 我們會深入介紹 `shell.nix` 檔案，屆時你可以在裡面定義 `shellHook`，讓進入 nix-shell 時自動執行特定指令（例如設定環境變數、啟動 service 等）。
 

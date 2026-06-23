@@ -22,7 +22,7 @@
 
 ## 4. 服務介面
 
-### Hero.astro（`src/components/sections/Hero.astro`）
+### Hero.astro（src/components/sections/Hero.astro）
 
 職責：首頁英雄區塊，包含 CTA 按鈕群
 

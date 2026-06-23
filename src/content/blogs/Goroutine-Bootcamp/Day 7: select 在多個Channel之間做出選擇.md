@@ -101,7 +101,7 @@ Received: From Producer 2: Message 2
 ```
 你可以看到，`main` 函式中的 `select` 總是會處理那個**先準備好**的 Channel，因為 `Producer 1` 的發送頻率更高，所以我們更頻繁地從 `ch1` 接收到消息。
 
-## 實戰二：`select` 與超時 (Timeout) 控制
+## 實戰二：select 與超時 (Timeout) 控制
 
 這是 `select` 最經典、最有用的場景之一。假設我們呼叫一個遠程服務，我們不希望無限期地等待它的回應。
 

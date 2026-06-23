@@ -7,7 +7,7 @@ parent: "Kotlin Coroutines Bootcamp"
 
 今天我們要把這四個最容易混淆的概念一次講清楚。
 
-## 1. `suspend`：只是個標記 (The Marker)
+## 1. suspend：只是個標記 (The Marker)
 
 這是最基礎的關鍵字。
 **誤區**：很多人以為加上 `suspend`，函數就會自動跑到背景執行緒去執行。
@@ -32,7 +32,7 @@ suspend fun slowFunction() {
 
 ---
 
-## 2. `runBlocking`：連接現實與協程的橋樑 (The Bridge)
+## 2. runBlocking：連接現實與協程的橋樑 (The Bridge)
 
 協程的世界（Suspend World）和普通程式碼的世界（Blocking World）是隔離的。普通函數不能直接呼叫 `suspend` 函數。我們需要一個橋樑。
 
@@ -57,7 +57,7 @@ fun main() { // 這是普通世界
 
 ---
 
-## 3. `launch`：射後不理 (Fire and Forget)
+## 3. launch：射後不理 (Fire and Forget)
 
 這是在協程世界裡最常用的啟動方式。
 
@@ -92,7 +92,7 @@ fun main() = runBlocking {
 
 ---
 
-## 4. `coroutineScope`：最有禮貌的等待者 (The Polite Waiter)
+## 4. coroutineScope：最有禮貌的等待者 (The Polite Waiter)
 
 這是初學者最容易跟 `runBlocking` 搞混的關鍵字。
 
@@ -102,7 +102,7 @@ fun main() = runBlocking {
     *   `coroutineScope` 會 **暫停 (Suspend)** 協程（Thread 沒事做，可以去執行別的協程任務，等這邊好了再回來）。
 *   **用途**：用來實現「並行分解」。比如你需要同時下載 A 和 下載 B，兩個都好了才能繼續往下走。
 
-### ⚔️ 關鍵對決：`runBlocking` vs `coroutineScope`
+### ⚔️ 關鍵對決：runBlocking vs coroutineScope
 
 這個範例，請仔細看 `Thread` 的行為：
 
@@ -144,7 +144,7 @@ fun main() = runBlocking { // 這裡佔用了 Main Thread
 
 ---
 
-## `run` 又是什麼？
+## run 又是什麼？
 
 你提到了 `run`。在 Kotlin 中，`run` 其實有兩種含義，容易混淆：
 

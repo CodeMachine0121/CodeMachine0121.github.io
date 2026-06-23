@@ -69,7 +69,7 @@ Dockerfile 的 layer caching 機制是按照指令順序的。只要某一層變
 
 ---
 
-## `dockerTools.buildImage`：基本用法
+## dockerTools.buildImage：基本用法
 
 Nixpkgs 提供了一系列 `dockerTools.*` 函數，讓你完全用 Nix expression 來描述一個 Docker image。最基礎的是 `dockerTools.buildImage`。
 
@@ -132,7 +132,7 @@ docker images hello-nix
 
 ---
 
-## `dockerTools.buildLayeredImage`：進階用法
+## dockerTools.buildLayeredImage：進階用法
 
 `buildImage` 會把所有東西塞進一個 layer，這在實務上有個問題：每次 rebuild 都會產生一個全新的 layer，即使只改了一行程式碼，整個 image 都得重新 push。
 
@@ -405,11 +405,11 @@ docker run -p 8080:8080 my-server:latest
 
 ---
 
-## `dockerTools` 其他實用函數
+## dockerTools 其他實用函數
 
 除了 `buildImage` 和 `buildLayeredImage`，`dockerTools` 還提供了幾個實用的輔助函數：
 
-### `pullImage` — 拉取現有的 Docker Image
+### pullImage — 拉取現有的 Docker Image
 
 ```nix
 pkgs.dockerTools.pullImage {
@@ -422,7 +422,7 @@ pkgs.dockerTools.pullImage {
 
 你可以用它來拉取一個既有的 image 作為 base，再用 `buildImage` 的 `fromImage` 參數來疊加。
 
-### `buildImage` + `fromImage` — 基於現有 Image 疊加
+### buildImage + fromImage — 基於現有 Image 疊加
 
 ```nix
 let
@@ -441,7 +441,7 @@ pkgs.dockerTools.buildImage {
 }
 ```
 
-### `streamLayeredImage` — 串流構建（不需要暫存空間）
+### streamLayeredImage — 串流構建（不需要暫存空間）
 
 ```nix
 pkgs.dockerTools.streamLayeredImage {
@@ -480,7 +480,7 @@ contents = [
 
 Production 環境則建議移除這些工具，保持最小攻擊面。你也可以用 `docker debug`（Docker Desktop 功能）或 `kubectl debug` 來臨時掛載 debug container。
 
-### Q: 缺少 `/etc/passwd` 或 `/tmp` 怎麼辦？
+### Q: 缺少 /etc/passwd 或 /tmp 怎麼辦？
 
 Nix 構建的 image 預設是「空的」— 真的什麼都沒有。如果你的 application 需要 `/etc/passwd`（例如 Nginx 要查 user），加上 `fakeNss`：
 

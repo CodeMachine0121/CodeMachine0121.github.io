@@ -59,7 +59,7 @@ fun main() = runBlocking {
 
 ---
 
-## 2. 千萬別用 `GlobalScope` (The Forbidden Fruit)
+## 2. 千萬別用 GlobalScope (The Forbidden Fruit)
 
 在網路上的舊教學中，你可能會看到這樣的程式碼：
 
@@ -82,7 +82,7 @@ GlobalScope.launch {
 
 ---
 
-## 3. `coroutineScope` Builder：打造自己的結構
+## 3. coroutineScope Builder：打造自己的結構
 
 Day 2 我們簡單提過 `coroutineScope`，現在從結構的角度重新看它。
 它是一個 suspend 函數，它會**創建一個新的子作用域**，並繼承外部的 Context。

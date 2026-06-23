@@ -7,11 +7,11 @@ parent: "Kotlin Coroutines Bootcamp"
 
 在 Java/Android 的世界裡，要從一個背景執行緒拿到結果通常很麻煩（需要 Callback 或是 `Future.get()` 阻塞）。Kotlin 協程提供了兩個最強大的武器：**`launch`** 和 **`async`**。
 
-## `launch` vs `async`：到底該用哪個？
+## launch vs async：到底該用哪個？
 
 這兩個都是用來啟動新協程的「構建器 (Builder)」，但目的完全不同。
 
-### 🚀 `launch`：射後不理 (Fire-and-Forget)
+### 🚀 launch：射後不理 (Fire-and-Forget)
 *   **含義**：「我發射一個火箭，我不指望它飛回來帶給我什麼紀念品。」
 *   **返回值**：`Job`。
 *   **用途**：執行那些 **不需要返回結果** 的任務。例如：寫入 Log、更新資料庫、發送 Analytics 事件。
@@ -25,7 +25,7 @@ val job = scope.launch {
 // job 無法 .await()，只能 .join() 等待它結束
 ```
 
-### 📡 `async`：有去有回 (Compute a Result)
+### 📡 async：有去有回 (Compute a Result)
 *   **含義**：「我派一個間諜出去，他任務完成後必須帶一份機密文件回來。」
 *   **返回值**：`Deferred<T>` (這是 `Job` 的子類別，帶有結果泛型)。
 *   **用途**：執行 **需要計算結果** 的任務。例如：抓取網路 API JSON、讀取檔案內容、複雜數學運算。
@@ -94,7 +94,7 @@ suspend fun calculateTotal() = coroutineScope {
 
 ---
 
-## 3. `Job` 與 `Deferred`：遙控器的按鈕
+## 3. Job 與 Deferred：遙控器的按鈕
 
 當你呼叫 `launch` 或 `async` 時，你會得到一個物件 (`Job` 或 `Deferred`)，你可以把它想像成這個協程的「遙控器」。
 
@@ -112,7 +112,7 @@ suspend fun calculateTotal() = coroutineScope {
     *   **暫停** 當前協程，直到拿到結果。
     *   如果 Job 被取消了，呼叫 `await()` 會拋出 `CancellationException`。
 
-### ⚠️ 關於 `runBlocking` 的回顧
+### ⚠️ 關於 runBlocking 的回顧
 
 結合 Day 2，我們來看一個完整的 `main` 函數範例：
 

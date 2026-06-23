@@ -1,4 +1,4 @@
-﻿---
+---
 title: "C# 隨口聊一下 Mutex、SemaphoreSlim 與 lock"
 datetime: "2025-09-08"
 description: "身為後端工程師，或多或少我們都有遇過**併發**的情境，舉個例子: 訂票、交易等等。 我們都明白在多執行緒環境下確保資源的同步存取是重要的事情。 任何對共享資源的誤判都可能導致資料錯亂、系統崩潰等後果。今天就來聊聊三種關鍵的同步機制：lock、Mutex 和 SemaphoreSlim。"
@@ -90,7 +90,7 @@ private readonly SharedResourceService _service;
 
 ---
 
-## 2. `Mutex`：重量級的跨 Process 同步守門員
+## 2. Mutex：重量級的跨 Process 同步守門員
 
 `Mutex` (Mutual Exclusion) 是一種更強大的鎖，它可以被命名，並用於作業系統層級的同步，這意味著它可以用於協調不同Process之間的資源存取。
 
