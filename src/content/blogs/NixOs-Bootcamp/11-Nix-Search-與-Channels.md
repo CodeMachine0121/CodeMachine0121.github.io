@@ -5,12 +5,6 @@ description: "介紹 Nixpkgs 套件庫與 Channels 機制，說明 Nix 軟體包
 parent: "NixOs Bootcamp"
 ---
 
-# Day 11：Nix Search 與 Channels —— 軟體包從哪裡來？
-
-> 📅 NixOS 30 天學習之旅 ・ 第二階段：掌握 Nix 語言與開發環境 (Day 8 – Day 14)
-
----
-
 ## 前言：軟體包從哪裡來？
 
 在前幾天的學習中，我們已經透過 `nix-env -iA` 或 `environment.systemPackages` 安裝了不少軟體。但你有沒有想過：**這些軟體包到底是從哪裡來的？**

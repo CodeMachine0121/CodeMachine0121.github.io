@@ -5,12 +5,6 @@ description: "介紹 Flakes 的核心概念與啟用方式，說明為何 Flakes
 parent: "NixOs Bootcamp"
 ---
 
-# Day 15：啟用 Flakes — Nix 的未來已經到來
-
-> 🗂️ NixOS 30 天學習之旅 ｜ 第三階段：Flakes 與 Home Manager（Day 15 – Day 21）
-
----
-
 ## 前言：歡迎來到第三階段
 
 恭喜你走過前兩個階段！我們從 Nix 的基本概念、Nix language 語法，一路到用 `configuration.nix` 管理整個系統。到目前為止，你已經具備了操作 NixOS 的紮實基礎。

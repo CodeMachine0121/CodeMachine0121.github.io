@@ -5,14 +5,6 @@ description: "安裝 Home Manager 並學會用宣告式設定取代手動管理 
 parent: "NixOs Bootcamp"
 ---
 
-# Day 17：Home Manager 入門 — 用 Nix 宣告式管理你的 Dotfiles
-
-> 📘 系列：NixOS 30 天學習之旅
-> 📂 階段：第三階段 — Flakes 與 Home Manager（Day 15 – Day 21）
-> 🎯 今日目標：安裝 Home Manager，學會用宣告式設定取代手動管理 dotfiles
-
----
-
 ## 前言：Dotfiles 管理的痛點
 
 身為開發者，你的 dotfiles 就是你的「數位工作環境」。`.bashrc`、`.vimrc`、`.gitconfig`——這些散落在 `$HOME` 底下的小檔案，默默決定了你每天的操作體驗。

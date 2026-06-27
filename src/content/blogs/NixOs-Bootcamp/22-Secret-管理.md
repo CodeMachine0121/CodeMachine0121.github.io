@@ -5,14 +5,6 @@ description: "介紹 NixOS 中兩大主流密鑰管理方案 sops-nix 與 agenix
 parent: "NixOs Bootcamp"
 ---
 
-# Day 22：Secret 管理 — 用 sops-nix 和 agenix 守護你的密碼與 API Key
-
-> 🗓 系列：NixOS 30 天學習之旅  
-> 📦 階段：第四階段 — 工程師進階實務（Day 22 – Day 30）  
-> 🎯 階段核心目標：佈署、自動化、安全性與貢獻
-
----
-
 ## 前言：進入第四階段，從「會用」到「用得安全」
 
 恭喜你走到第四階段！前三個階段我們一路從基礎觀念、日常操作，走到了開發環境的建構。到了這裡，你已經能自在地撰寫 `configuration.nix`、用 Flakes 管理專案、甚至用 Home Manager 打造個人化的開發環境。

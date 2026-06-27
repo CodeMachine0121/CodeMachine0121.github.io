@@ -5,14 +5,6 @@ description: "從臨時的 nix-shell -p 指令進階到撰寫專案級的 shell.
 parent: "NixOs Bootcamp"
 ---
 
-# Day 10：shell.nix 實戰 — 讓每個人都擁有相同的開發環境
-
-> 🗓 系列：NixOS 30 天學習之旅  
-> 📦 階段：第二階段 — 掌握 Nix 語言與開發環境 (Day 8 – Day 14)  
-> 🎯 階段核心目標：學會寫 Nix expression，不再只是複製貼上
-
----
-
 ## 前言：從臨時指令到專案級配置
 
 在前幾天，我們學會了用 `nix-shell -p` 快速拉一個臨時環境：

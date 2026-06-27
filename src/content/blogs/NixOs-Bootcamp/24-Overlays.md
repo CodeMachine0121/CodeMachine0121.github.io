@@ -5,14 +5,6 @@ description: "深入理解 Nix Overlay 的概念與語法，學會在不 fork Ni
 parent: "NixOs Bootcamp"
 ---
 
-# Day 24：Overlays — 當 Nixpkgs 滿足不了你，就自己動手改
-
-> 🗓 系列：NixOS 30 天學習之旅  
-> 📦 階段：第四階段 — 工程師進階實務 (Day 22 – Day 30)  
-> 🎯 階段核心目標：佈署、自動化、安全性與貢獻
-
----
-
 ## 前言：當 Nixpkgs 不能滿足你的需求時
 
 走到 Day 24，你對 Nix 的基本操作應該已經相當熟練了。但總有些時候，你會碰到 Nixpkgs 裡的套件「差一點點」就符合需求的窘境：

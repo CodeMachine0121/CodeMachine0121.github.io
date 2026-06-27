@@ -5,14 +5,6 @@ description: "學習撰寫自訂 NixOS Module，理解 module system 中 options
 parent: "NixOs Bootcamp"
 ---
 
-# Day 26：自定義 NixOS Module — 讓你的配置也能像官方服務一樣被呼叫
-
-> 🗓 系列：NixOS 30 天學習之旅  
-> 📦 階段：第四階段 — 工程師進階實務（Day 22 – Day 30）  
-> 🎯 階段核心目標：佈署、自動化、安全性與貢獻
-
----
-
 ## 前言：從使用模組到撰寫模組
 
 在前面的旅程中，我們已經大量使用了 NixOS 的 module。像是 `services.nginx.enable = true` 或 `services.openssh.enable = true`，一行設定就能啟動一個完整的服務，背後的複雜度全部被封裝起來。

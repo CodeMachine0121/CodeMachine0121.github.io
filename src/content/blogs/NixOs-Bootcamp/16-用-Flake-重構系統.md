@@ -5,14 +5,6 @@ description: "實作將傳統 channel-based 的系統配置完整遷移到 flake
 parent: "NixOs Bootcamp"
 ---
 
-# Day 16：用 Flake 重構系統 — 從 Channel 遷移到現代化配置
-
-> 🗓 系列：NixOS 30 天學習之旅  
-> 📦 階段：第三階段 — Flakes 與 Home Manager（Day 15 – Day 21）  
-> 🎯 階段核心目標：現代化 Nix 流程（2024 年後的標準做法）
-
----
-
 ## 前言：是時候跟 Channel 說再見了
 
 在 Day 15，我們認識了 Flake 的核心概念：`flake.nix`、`flake.lock`、inputs / outputs 的結構，以及為什麼 Flake 會成為 Nix 生態系的未來。
