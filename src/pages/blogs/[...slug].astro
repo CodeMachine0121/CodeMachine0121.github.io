@@ -50,6 +50,15 @@ if (blog.data.parent) {
             </time>
         </header>
 
+        {blog.data.image && (
+            <img
+                src={blog.data.image}
+                alt={blog.data.title}
+                loading="eager"
+                class="w-full max-h-96 object-cover rounded-lg mb-10 border border-[var(--color-border)]"
+            />
+        )}
+
         <div class="blog-content prose prose-lg dark:prose-invert">
             <Content />
         </div>
