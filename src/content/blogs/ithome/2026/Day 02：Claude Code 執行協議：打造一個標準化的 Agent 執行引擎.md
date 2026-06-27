@@ -1,5 +1,5 @@
 ---
-title: "Day 02：`.claude/` 目錄協議：打造標準化的 Agent 運作根目錄"
+title: "Day 02：.claude/ 目錄協議：打造標準化的 Agent 運作根目錄"
 datetime: "2026-06-24"
 description: "深入解析 .claude/ 目錄的內部結構與設計哲學，並確立 Agentic Runtime 的標準目錄配置，作為後續 30 天所有 Workflow Pattern 的執行地基。"
 image: ""
