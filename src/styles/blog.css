@@ -1,14 +1,16 @@
-/* 博客文章專用樣式 — Swiss Modernism */
-/* 所有間距使用固定 rem 單位 + !important 覆蓋 prose 插件的 em 單位 */
+/* 部落格文章專用樣式 — Hand-Drawn / Sketchbook */
+/* 間距使用固定 rem 單位 + !important 覆蓋 prose 插件的 em 單位；
+   外觀（邊框、陰影、區塊）對齊 handdrawn 設計系統的 --hd-* tokens。 */
 
 /* 基本文章容器 */
 .blog-content {
   width: 100%;
-  max-width: 80rem; /* max-w-7xl: wide on desktop */
+  max-width: 80rem; /* wide on desktop */
   margin-left: auto;
   margin-right: auto;
-  color: var(--color-text);
-  line-height: 1.85;
+  color: var(--hd-ink);
+  line-height: 1.9;
+  font-size: 1.0625rem;
 }
 
 .prose h1,
@@ -16,30 +18,34 @@
 .prose h3,
 .prose h4,
 .prose h5,
-.prose h6 {
-  color: var(--color-text);
-}
-
+.prose h6,
 .dark .prose h1,
 .dark .prose h2,
 .dark .prose h3,
 .dark .prose h4,
 .dark .prose h5,
 .dark .prose h6 {
-  color: var(--color-text);
+  color: var(--hd-ink);
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  font-weight: 700;
 }
 
 /* 標題層級間距 — 固定 rem 間距系統 */
 .blog-content h2 {
-  margin-top: 2.5rem !important;
+  margin-top: 2.75rem !important;
   margin-bottom: 1rem !important;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 3px dashed var(--hd-border);
 }
 
 .blog-content h3 {
   margin-top: 2rem !important;
   margin-bottom: 0.75rem !important;
+}
+
+.blog-content h3::before {
+  content: "✎ ";
+  color: var(--hd-accent);
 }
 
 .blog-content h4,
@@ -64,67 +70,124 @@
 
 .blog-content li {
   margin-top: 0 !important;
-  margin-bottom: 0.375rem !important;
+  margin-bottom: 0.5rem !important;
 }
 
-/* 程式碼區塊優化 */
+/* 列表項目的手繪標記 */
+.blog-content ul {
+  list-style: none;
+  padding-left: 1.75rem;
+}
+
+.blog-content ul > li {
+  position: relative;
+}
+
+.blog-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 0.65em;
+  width: 8px;
+  height: 8px;
+  background: var(--hd-accent);
+  border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+}
+
+/* 連結 */
+.blog-content a {
+  color: var(--hd-accent-2);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.blog-content a:hover {
+  color: var(--hd-accent);
+}
+
+/* 程式碼區塊 — 手繪卡片：粗邊框 + 硬陰影 */
 .blog-content pre {
-  border-radius: 0.5rem;
-  margin-top: 1.25rem !important;
-  margin-bottom: 1.25rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
   padding: 1.25rem;
   overflow-x: auto;
-  background-color: var(--color-background-offset);
-  color: var(--color-text);
+  background-color: var(--hd-surface);
+  color: var(--hd-ink);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 4px 4px 0 0 var(--hd-shadow);
 }
 
 .blog-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.875rem !important;
-  padding: 0.2em 0.4em;
-  border-radius: 0.25rem;
-  background-color: var(--color-background-offset);
+}
+
+/* 行內程式碼 — 小貼紙 */
+.blog-content :not(pre) > code,
+.blog-content :not(pre) code {
+  padding: 0.1em 0.45em;
+  border: 1.5px solid var(--hd-border);
+  border-radius: 8px 3px 7px 4px / 4px 7px 3px 8px;
+  background-color: var(--hd-paper-offset);
+  color: var(--hd-ink);
+}
+
+.blog-content :not(pre) > code::before,
+.blog-content :not(pre) > code::after {
+  content: "";
 }
 
 .blog-content pre code {
   background-color: transparent;
   padding: 0;
+  border: none;
+  color: inherit;
 }
 
-/* 圖片優化 */
+/* 圖片 — 硬偏移陰影 + 微歪斜框 */
 .blog-content img {
-  margin-top: 1.5rem !important;
-  margin-bottom: 1.5rem !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 1.75rem !important;
   margin-left: auto;
   margin-right: auto;
-  border-radius: 0.5rem;
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  border: 2px solid var(--hd-border);
   max-width: 100%;
   height: auto;
   display: block;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 5px 5px 0 0 var(--hd-shadow);
 }
 
-/* Blockquote 強化 */
+/* Blockquote — 便利貼 */
 .blog-content blockquote {
-  margin-top: 1.25rem !important;
-  margin-bottom: 1.25rem !important;
-  padding: 1.25rem 1.5rem;
-  border-left: 3px solid var(--color-primary);
-  background-color: var(--color-background-offset);
-  border-radius: 0 0.375rem 0.375rem 0;
-  font-style: italic;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  padding: 1.1rem 1.4rem;
+  border: 2px solid var(--hd-border);
+  border-left: 6px solid var(--hd-accent);
+  background-color: var(--hd-note);
+  color: var(--hd-note-text);
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
+  font-style: normal;
 }
 
 .blog-content blockquote p:last-child {
   margin-bottom: 0 !important;
 }
 
-/* 表格優化 — Swiss Modernism: 無外框、斑馬紋、粗表頭底線 */
+/* 表格 — 粗表頭、虛線分隔 */
 .blog-content .table-scroll-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 1.25rem !important;
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
 }
 
 .blog-content table {
@@ -134,14 +197,15 @@
 }
 
 .blog-content table thead {
-  border-bottom: 2px solid var(--color-text);
+  border-bottom: 3px solid var(--hd-border);
+  background-color: var(--hd-paper-offset);
 }
 
 .blog-content table th {
-  padding: 0.625rem 1rem;
+  padding: 0.7rem 1rem;
+  font-family: 'Kalam', 'LXGW WenKai TC', sans-serif;
   font-weight: 700;
   text-align: left;
-  letter-spacing: -0.01em;
   white-space: normal;
 }
 
@@ -150,11 +214,7 @@
 }
 
 .blog-content table tbody tr {
-  border-bottom: 1px solid var(--color-border);
-}
-
-.blog-content table tbody tr:nth-child(even) {
-  background-color: var(--color-background-offset);
+  border-bottom: 1.5px dashed var(--hd-border);
 }
 
 .blog-content table tbody tr:last-child {
@@ -163,10 +223,11 @@
 
 /* 分隔線 */
 .blog-content hr {
-  margin-top: 2rem !important;
-  margin-bottom: 2rem !important;
+  margin-top: 2.25rem !important;
+  margin-bottom: 2.25rem !important;
   border: none;
-  border-top: 1px solid var(--color-border);
+  border-top: 3px dashed var(--hd-border);
+  opacity: 0.7;
 }
 
 /* ===== RWD 響應式優化 ===== */
@@ -174,7 +235,7 @@
 /* 平板 (640px - 1024px) */
 @media (min-width: 640px) and (max-width: 1024px) {
   .blog-content {
-    max-width: 42rem; /* max-w-2xl */
+    max-width: 42rem;
   }
 }
 
@@ -183,60 +244,47 @@
   .blog-content {
     max-width: 100%;
     font-size: 1rem;
-    line-height: 1.75;
+    line-height: 1.8;
   }
 
-  .blog-content h1 {
-    font-size: 1.75rem;
-  }
+  .blog-content h1 { font-size: 1.85rem; }
 
   .blog-content h2 {
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     margin-top: 2rem !important;
     padding-bottom: 0.375rem;
   }
 
   .blog-content h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     margin-top: 1.5rem !important;
   }
 
-  .blog-content p {
-    margin-bottom: 1rem !important;
-  }
+  .blog-content p { margin-bottom: 1rem !important; }
 
   .blog-content ul,
-  .blog-content ol {
-    margin-bottom: 1rem !important;
-  }
+  .blog-content ol { margin-bottom: 1rem !important; }
 
   .blog-content pre {
-    margin-left: -1rem;
-    margin-right: -1rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
     padding: 1rem;
-    border-radius: 0;
   }
 
-  .blog-content pre code {
-    font-size: 0.8125rem !important;
-  }
+  .blog-content pre code { font-size: 0.8125rem !important; }
 
   .blog-content img {
-    margin-left: -1rem;
-    margin-right: -1rem;
     margin-top: 1.25rem !important;
     margin-bottom: 1.25rem !important;
-    max-width: calc(100% + 2rem);
-    border-radius: 0;
+    box-shadow: 3px 3px 0 0 var(--hd-shadow);
   }
 
   .blog-content blockquote {
     margin-left: 0;
     margin-right: 0;
-    padding: 1rem 1.25rem;
-    border-left-width: 2px;
+    padding: 1rem 1.2rem;
   }
 }
 
@@ -252,10 +300,4 @@
 .back-to-top.visible {
   opacity: 1;
   visibility: visible;
-}
-
-/* Inline code should appear light gray */
-.blog-content :not(pre) > code,
-.blog-content :not(pre) code {
-  color: var(--color-text-offset);
 }

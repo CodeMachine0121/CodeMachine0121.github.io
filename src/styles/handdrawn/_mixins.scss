@@ -1,0 +1,130 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hand-Drawn Mixins — reusable building blocks for the sketchbook aesthetic.
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'tokens' as *;
+
+// Theme projection: write the raw palette onto CSS custom properties.
+// Called once per [data-theme] so every token flips at runtime, and the
+// existing Tailwind `--color-*` bridge is re-skinned for free.
+@mixin emit-theme(
+  $bg, $bg-offset, $surface, $text, $text-soft,
+  $accent, $accent-2, $note, $note-text, $dot-color, $border, $shadow, $shadow-soft
+) {
+  // Hand-drawn namespace
+  --hd-paper:        #{$bg};
+  --hd-paper-offset: #{$bg-offset};
+  --hd-surface:      #{$surface};
+  --hd-ink:          #{$text};
+  --hd-ink-soft:     #{$text-soft};
+  --hd-accent:       #{$accent};
+  --hd-accent-2:     #{$accent-2};
+  --hd-note:         #{$note};
+  --hd-note-text:    #{$note-text};
+  --hd-dot:          #{$dot-color};
+  --hd-border:       #{$border};
+  --hd-shadow:       #{$shadow};
+  --hd-shadow-soft:  #{$shadow-soft};
+
+  // Re-skin the legacy Tailwind bridge so existing utilities adopt the palette.
+  --color-primary:            #{$accent};
+  --color-secondary:          #{$accent-2};
+  --color-text:               #{$text};
+  --color-text-offset:        #{$text-soft};
+  --color-background:         #{$bg};
+  --color-background-offset:  #{$bg-offset};
+  --color-border:             #{$border};
+}
+
+// Wobbly border + hard shadow + thick pencil outline in one call.
+@mixin wobble($radius-val: $radius, $width: $bw, $shadow-val: $shadow, $style: solid) {
+  border: $width $style var(--hd-border);
+  border-radius: $radius-val;
+  box-shadow: $shadow-val;
+}
+
+// Notebook dot-grid paper texture.
+@mixin paper-texture($size: 24px) {
+  background-color: var(--hd-paper);
+  background-image: radial-gradient(var(--hd-dot) 1px, transparent 1px);
+  background-size: $size $size;
+}
+
+// "Press flat" interaction: lifts toward the cursor, shadow shrinks then vanishes.
+@mixin press-flat($from: $shadow) {
+  transition: transform $dur-fast ease, box-shadow $dur-fast ease, background-color $dur-fast ease, color $dur-fast ease;
+  box-shadow: $from;
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: $shadow-sm;
+  }
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+}
+
+// Playful jiggle on hover (cards / decorative bits).
+@mixin jiggle($deg: 1deg) {
+  transition: transform $dur-fast $ease-snappy, box-shadow $dur-fast ease;
+  &:hover { transform: rotate($deg); }
+}
+
+// Translucent tape strip pinned to the top-centre of a positioned parent.
+@mixin tape {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 96px;
+    height: 26px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgba(120, 120, 120, 0.18);
+    border-left: 1px dashed rgba(120, 120, 120, 0.28);
+    border-right: 1px dashed rgba(120, 120, 120, 0.28);
+    backdrop-filter: blur(1px);
+  }
+}
+
+// Red thumbtack pinned to the top-centre of a positioned parent.
+@mixin tack($color: var(--hd-accent)) {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateX(-50%);
+    background: $color;
+    border: 2px solid var(--hd-border);
+    border-radius: 50%;
+    box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.18);
+    z-index: 2;
+  }
+}
+
+// Hand-drawn wavy underline that grows in on hover (links / nav).
+@mixin wavy-underline($color: var(--hd-accent)) {
+  position: relative;
+  text-decoration: none;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 5px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='5' viewBox='0 0 40 5'%3E%3Cpath d='M0 2.5 Q5 0 10 2.5 T20 2.5 T30 2.5 T40 2.5' fill='none' stroke='%23ff4d4d' stroke-width='1.6'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 20px 5px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 180ms ease;
+  }
+  &:hover::after,
+  &:focus-visible::after { transform: scaleX(1); }
+}

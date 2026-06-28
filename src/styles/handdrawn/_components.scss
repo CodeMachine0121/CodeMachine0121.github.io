@@ -1,0 +1,174 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hand-Drawn Components — reusable .hd-* classes.
+// Pair these with Tailwind for layout (grid/flex/spacing); the look lives here.
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// ── Buttons ───────────────────────────────────────────────────────────────────
+.hd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem; // 48px touch target
+  padding: 0.65rem 1.6rem;
+  font-family: $font-body;
+  font-size: 1.15rem;
+  font-weight: 400;
+  cursor: pointer;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  @include wobble($radius, $bw-emph, $shadow);
+  @include press-flat($shadow);
+
+  &:hover {
+    background: var(--hd-accent);
+    color: #fff;
+    border-color: var(--hd-border);
+  }
+
+  // Secondary: muted paper resting, fills ballpoint-blue on hover.
+  &--secondary {
+    background: var(--hd-paper-offset);
+    &:hover { background: var(--hd-accent-2); color: #fff; }
+  }
+
+  // Bold call-to-action: thicker outline + bigger shadow.
+  &--cta {
+    border-width: $bw-bold;
+    @include press-flat($shadow-lg);
+    &:hover { background: var(--hd-accent); color: #fff; }
+  }
+}
+
+// ── Cards / containers ─────────────────────────────────────────────────────────
+.hd-card {
+  position: relative;
+  background: var(--hd-surface);
+  color: var(--hd-ink);
+  padding: 1.5rem;
+  @include wobble($radius-md, $bw, $shadow-card);
+  @include jiggle(0deg); // base: no rotation, just smooth transition
+
+  // Interactive card: lifts on hover (shadow grows, slight tilt).
+  &--link {
+    cursor: pointer;
+    &:hover {
+      transform: rotate(-1deg);
+      box-shadow: $shadow-lg;
+    }
+  }
+
+  // Decorations
+  &--tape  { @include tape; }
+  &--tack  { @include tack; }
+
+  // Post-it feature card.
+  &--postit {
+    background: var(--hd-note);
+    color: var(--hd-note-text);
+    transform: rotate(-1.5deg);
+    &.hd-card--link:hover { transform: rotate(1deg); }
+  }
+}
+
+// ── Inputs ─────────────────────────────────────────────────────────────────────
+.hd-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-family: $font-body;
+  font-size: 1.05rem;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  @include wobble($radius-sm, $bw, none);
+  transition: border-color $dur-fast ease, box-shadow $dur-fast ease;
+
+  &::placeholder { color: var(--hd-ink-soft); opacity: 0.7; }
+
+  &:focus {
+    outline: none;
+    border-color: var(--hd-accent-2);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--hd-accent-2) 22%, transparent);
+  }
+}
+
+// ── Tags / chips ────────────────────────────────────────────────────────────────
+.hd-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.85rem;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  border: $bw solid var(--hd-border);
+  border-radius: $radius-sm;
+  transition: transform $dur-fast $ease-snappy, background-color $dur-fast ease, color $dur-fast ease;
+  cursor: default;
+
+  &:hover {
+    background: var(--hd-accent);
+    color: #fff;
+    transform: rotate(-2deg);
+  }
+}
+
+// ── Badge / pill (status, dates, types) ────────────────────────────────────────
+.hd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  padding: 0.2rem 0.75rem;
+  color: var(--hd-note-text);
+  background: var(--hd-note);
+  border: $bw solid var(--hd-border);
+  border-radius: $radius-sm;
+  box-shadow: $shadow-sm;
+}
+
+// ── Wavy-underline link (nav, footer, inline) ──────────────────────────────────
+.hd-link { @include wavy-underline; }
+
+// ── Icon enclosed in a rough hand-drawn circle ─────────────────────────────────
+.hd-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  border: $bw-emph solid var(--hd-border);
+  border-radius: $radius-blob;
+  transition: transform $dur-fast $ease-snappy, background-color $dur-fast ease, color $dur-fast ease;
+
+  &:hover {
+    background: var(--hd-accent);
+    color: #fff;
+    transform: rotate(8deg);
+  }
+}
+
+// ── Organic stat blob ──────────────────────────────────────────────────────────
+.hd-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 1rem;
+  text-align: center;
+  background: var(--hd-surface);
+  border: $bw-emph solid var(--hd-border);
+  border-radius: $radius-blob;
+  box-shadow: $shadow;
+
+  &:nth-child(2) { transform: rotate(2deg); }
+  &:nth-child(3) { transform: rotate(-2deg); }
+
+  &__value { font-family: $font-heading; font-weight: 700; font-size: 1.75rem; color: var(--hd-accent); line-height: 1; }
+  &__label { font-size: 0.85rem; color: var(--hd-ink-soft); margin-top: 0.25rem; }
+}

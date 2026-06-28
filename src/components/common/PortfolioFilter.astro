@@ -45,38 +45,38 @@ const uniqueTypes = Object.keys(typeCounts).sort();
         display: inline-flex;
         align-items: center;
         gap: 0.375rem;
-        padding: 0.625rem 1.25rem;
-        font-size: 0.875rem;
-        font-weight: 600;
-        border-radius: 0.5rem;
-        border: 2px solid var(--color-border);
-        background-color: var(--color-background-offset);
-        color: var(--color-text-offset);
-        transition: all 200ms ease-out;
+        padding: 0.5rem 1.15rem;
+        font-family: 'Patrick Hand', 'LXGW WenKai TC', sans-serif;
+        font-size: 1.05rem;
+        border: 2px solid var(--hd-border);
+        border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+        background-color: var(--hd-surface);
+        color: var(--hd-ink);
+        box-shadow: 2px 2px 0 0 var(--hd-shadow);
+        transition: transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1), background-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
         cursor: pointer;
         white-space: nowrap;
     }
 
     .filter-tag:hover:not(.active) {
-        background-color: var(--color-background);
-        border-color: var(--color-primary);
-        transform: scale(1.02);
+        background-color: var(--hd-paper-offset);
+        transform: rotate(-2deg);
     }
 
     .filter-tag:active:not(.active) {
-        transform: scale(0.98);
+        transform: translate(2px, 2px);
+        box-shadow: none;
     }
 
     .filter-tag.active {
-        background-color: var(--color-primary);
-        border-color: var(--color-primary);
-        color: white;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        background-color: var(--hd-accent);
+        color: #fff;
+        box-shadow: 4px 4px 0 0 var(--hd-shadow);
     }
 
     .filter-tag:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 2px;
+        outline: 3px dashed var(--hd-accent-2);
+        outline-offset: 3px;
     }
 
     .count {

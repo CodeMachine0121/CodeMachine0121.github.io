@@ -4,9 +4,7 @@ import { Icon } from 'astro-icon/components'
 
 <button id="toggle-theme-button"
     aria-label="Toggle dark mode"
-    class="theme-toggle-btn py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border bg-background
-        text-text shadow-sm hover:bg-background-offset focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:bg-background-offset
-        transition-all duration-200">
+    class="theme-toggle-btn hd-icon-circle !w-10 !h-10">
     <div id="icon-theme-light" class="theme-icon">
         <Icon id='toggle-theme-icon' name={'Sun'} />
     </div>
@@ -19,14 +17,6 @@ import { Icon } from 'astro-icon/components'
     .theme-toggle-btn {
         position: relative;
         overflow: hidden;
-    }
-
-    .theme-toggle-btn:hover {
-        transform: scale(1.05);
-    }
-
-    .theme-toggle-btn:active {
-        transform: scale(0.95);
     }
 
     .theme-icon {

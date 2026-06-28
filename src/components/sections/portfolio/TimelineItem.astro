@@ -8,87 +8,47 @@ interface Props {
   isLast?: boolean;
 }
 
-const { title, sub_title, years, details, achievements, isLast = false } = Astro.props;
+const { title, sub_title, years, details, achievements } = Astro.props;
 ---
 
-<div class="relative pl-8 sm:pl-32 py-8 group">
-  <!-- Timeline line and dot -->
-  <div class="flex flex-col sm:flex-row items-start mb-2">
-    <!-- Vertical line (hidden on last item) -->
-    {!isLast && (
-      <div class="absolute left-2 sm:left-[6.5rem] top-0 h-full w-0.5 bg-gradient-to-b from-primary/50 to-border -translate-x-1/2"></div>
+<div class="relative group mb-10 last:mb-0">
+  <!-- Node dot sitting on the dashed timeline -->
+  <span class="absolute -left-[2.1rem] sm:-left-[3.1rem] top-7 w-4 h-4 bg-accent border-2 border-border rounded-full ring-4 ring-paper"></span>
+
+  <div class="hd-card hd-card--link p-5 sm:p-6">
+    <!-- Year sticky-tag -->
+    <span class="hd-badge mb-3 font-heading">{years}</span>
+
+    <h3 class="font-heading text-2xl sm:text-3xl text-ink leading-tight mb-1">
+      {title}
+    </h3>
+
+    <div class="flex items-center gap-2 mb-4 text-accent-2 font-heading text-lg">
+      <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+      {sub_title}
+    </div>
+
+    {details && (
+      <p class="text-ink leading-relaxed mb-5">{details.en}</p>
     )}
 
-    <!-- Timeline dot with pulse effect -->
-    <div class="absolute left-2 sm:left-[6.5rem] top-8 w-4 h-4 -translate-x-1/2 -translate-y-1/2">
-      <!-- Outer ring (pulse) -->
-      <div class="absolute inset-0 bg-primary/20 rounded-full animate-pulse"></div>
-      <!-- Middle ring -->
-      <div class="absolute inset-0.5 bg-primary/40 rounded-full"></div>
-      <!-- Inner dot -->
-      <div class="absolute inset-1 bg-primary rounded-full ring-4 ring-background"></div>
-    </div>
-
-    <!-- Year badge -->
-    <time class="sm:absolute left-0 translate-y-0.5 inline-flex items-center justify-end
-                 text-sm font-mono font-bold uppercase w-28 mb-4 sm:mb-0 text-primary pr-4">
-      {years}
-    </time>
-
-    <!-- Content wrapper -->
-    <div class="flex-1 w-full">
-      <!-- Card container -->
-      <div class="bg-background-offset border border-border rounded-2xl p-6 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 group-hover:-translate-y-1">
-        <!-- Job title -->
-        <h3 class="font-heading text-xl sm:text-2xl font-bold text-default leading-tight mb-2">
-          {title}
-        </h3>
-
-        <!-- Company name with icon -->
-        <div class="flex items-center gap-2 mb-4">
-          <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <div class="text-lg font-semibold text-primary">{sub_title}</div>
-        </div>
-
-        <!-- Description -->
-        {details && (
-          <p class="text-offset mb-5 leading-relaxed text-base">
-            {details.en}
-          </p>
-        )}
-
-        <!-- Achievements -->
-        {achievements && achievements.length > 0 && (
-          <div class="space-y-2">
-            <h4 class="text-sm font-semibold text-default uppercase tracking-wide mb-3">
-              Key Achievements
-            </h4>
-            <ul class="space-y-2.5">
-              {achievements.map((achievement) => (
-                <li class="flex items-start gap-3 text-offset text-base">
-                  <!-- Custom bullet -->
-                  <div class="flex-shrink-0 mt-1.5">
-                    <div class="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                  </div>
-                  <span class="flex-1">
-                    {achievement.en}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+    {achievements && achievements.length > 0 && (
+      <div>
+        <span class="hd-label !text-xs mb-4">Key Achievements</span>
+        <ul class="mt-4 space-y-2.5">
+          {achievements.map((achievement) => (
+            <li class="flex items-start gap-3 text-ink">
+              <!-- hand-drawn check -->
+              <svg class="w-5 h-5 mt-0.5 shrink-0 text-accent" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 13l5 5L20 6" />
+              </svg>
+              <span class="flex-1">{achievement.en}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
+    )}
   </div>
 </div>
-
-<style>
-  @media (prefers-reduced-motion: reduce) {
-    .animate-pulse {
-      animation: none;
-    }
-  }
-</style>

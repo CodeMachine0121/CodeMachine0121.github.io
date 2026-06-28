@@ -3,7 +3,6 @@ import type { GetStaticPaths } from 'astro';
 import Layout from "../../layouts/Layout.astro";
 import BlogItem from "../../components/sections/blog/BlogItem.astro";
 import { generateSeriesList, findSeriesBySlug, sortArticlesBySeries } from "../../utils/series";
-import { createPagination, parsePageFromUrl, createPageUrl, isValidPage } from "../../utils/pagination";
 import { SERIES_CONSTANTS, type Series } from "../../types/series";
 
 // 生成靜態路徑
@@ -54,24 +53,17 @@ const pageTitle = `${currentSeries.name} - 系列文章`;
 ---
 
 <Layout title={pageTitle}>
-  <section class="py-8">
+  <section class="py-10 max-w-4xl mx-auto px-4">
     <!-- 麵包屑導覽 -->
-    <nav class="mb-6" aria-label="麵包屑導覽">
-      <ol class="flex items-center text-sm text-offset">
+    <nav class="mb-8" aria-label="麵包屑導覽">
+      <ol class="flex items-center flex-wrap gap-1 font-heading text-ink-soft">
         {breadcrumb.map((item, index) => (
           <li class="flex items-center">
-            {index > 0 && <span class="mx-2 text-offset" aria-hidden="true">></span>}
+            {index > 0 && <span class="mx-2 text-accent" aria-hidden="true">→</span>}
             {item.url ? (
-              <a
-                href={item.url}
-                class="hover:text-text transition-colors underline decoration-transparent hover:decoration-current"
-              >
-                {item.text}
-              </a>
+              <a href={item.url} class="hd-link">{item.text}</a>
             ) : (
-              <span class={item.active ? 'text-text font-medium' : 'text-offset'}>
-                {item.text}
-              </span>
+              <span class={item.active ? 'text-ink' : 'text-ink-soft'}>{item.text}</span>
             )}
           </li>
         ))}
@@ -79,24 +71,23 @@ const pageTitle = `${currentSeries.name} - 系列文章`;
     </nav>
 
     <!-- 系列標題與資訊 -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold mb-2">{currentSeries.name}</h1>
-      <div class="flex items-center text-offset space-x-4">
-        <span>共 {currentSeries.count} 篇文章</span>
+    <div class="mb-10">
+      <span class="hd-label">Series</span>
+      <h1 class="font-heading text-4xl sm:text-5xl text-ink mt-5 mb-4 leading-tight">{currentSeries.name}</h1>
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="hd-badge">共 {currentSeries.count} 篇文章</span>
         {totalPages > 1 && (
-          <>
-            <span>•</span>
-            <span id="page-info">第 1 / {totalPages} 頁</span>
-          </>
+          <span id="page-info" class="font-heading text-ink-soft">第 1 / {totalPages} 頁</span>
         )}
       </div>
+      <span class="hd-squiggle mt-6" aria-hidden="true"></span>
     </div>
 
     <!-- 文章清單 -->
     {allArticles.length === 0 ? (
       <div class="text-center py-12">
-        <p class="text-offset text-lg">此系列尚無文章。</p>
-        <p class="text-offset text-sm mt-2">請稍後再回來查看更新。</p>
+        <p class="font-heading text-2xl text-ink">此系列尚無文章。</p>
+        <p class="text-ink-soft mt-2">請稍後再回來查看更新。</p>
       </div>
     ) : (
       <div id="articles-container" class="space-y-6 mb-8">
@@ -111,23 +102,23 @@ const pageTitle = `${currentSeries.name} - 系列文章`;
     <!-- 分頁導覽 -->
     {totalPages > 1 && (
       <nav id="pagination-nav" class="flex justify-center items-center mt-12" aria-label="分頁導覽">
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-4">
           <button
             id="prev-page"
-            class="px-4 py-2 border border-default rounded hover:bg-background-offset transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:!shadow-none disabled:!translate-x-0 disabled:!translate-y-0"
             aria-label="前一頁"
             disabled
           >
             ← 上一頁
           </button>
 
-          <span id="pagination-info" class="text-offset px-2">
+          <span id="pagination-info" class="font-heading text-ink-soft px-1">
             第 1 頁，共 {totalPages} 頁
           </span>
 
           <button
             id="next-page"
-            class="px-4 py-2 border border-default rounded hover:bg-background-offset transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:!shadow-none disabled:!translate-x-0 disabled:!translate-y-0"
             aria-label="下一頁"
           >
             下一頁 →
@@ -139,21 +130,6 @@ const pageTitle = `${currentSeries.name} - 系列文章`;
 </Layout>
 
 <style>
-  .border-default { border-color: rgba(125, 125, 125, 0.2); }
-  .bg-background-offset { background: rgba(125, 125, 125, 0.08); }
-  .text-text { color: inherit; }
-  .text-offset { opacity: 0.75; }
-  .text-primary { color: var(--primary-color, #0066cc); }
-
-  /* Focus ring styles */
-  .focus\:ring-primary:focus {
-    --tw-ring-color: var(--primary-color, #0066cc);
-  }
-
-  .focus\:ring-opacity-50:focus {
-    --tw-ring-opacity: 0.5;
-  }
-
   /* 響應式分頁 */
   @media (max-width: 640px) {
     nav[aria-label="分頁導覽"] .flex {

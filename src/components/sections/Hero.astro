@@ -4,109 +4,93 @@ import me from '../../assets/me.png';
 import { basic } from '../../config/introduce.json';
 
 const skills = [
-    { en: "Backend Systems",},
-    { en: "Microservices",},
-    { en: "DevOps",},
-    { en: "Kubernetes",},
-    { en: "TDD/ATDD",},
-    { en: "Problem Solving",  }
+    { en: "Backend Systems" },
+    { en: "Microservices" },
+    { en: "DevOps" },
+    { en: "Kubernetes" },
+    { en: "TDD/ATDD" },
+    { en: "Problem Solving" },
 ];
 ---
 
-<section class="relative py-12 px-4 sm:py-16 lg:py-24 overflow-hidden">
-    <!-- Subtle background gradient -->
-    <div class="absolute inset-0 bg-gradient-to-br from-background via-background to-background-offset opacity-50 pointer-events-none"></div>
-
-    <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+<section class="relative py-12 sm:py-16 lg:py-20 overflow-hidden">
+    <div class="relative px-4 mx-auto max-w-6xl sm:px-6">
         <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
-            <!-- Image Section with enhanced styling -->
-            <div class="relative flex justify-center lg:order-2" data-reveal="fade-in" data-reveal-delay="200">
-                <div class="relative group">
-                    <!-- Decorative background circle -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
 
-                    <!-- Image container with border -->
-                    <div class="relative w-full md:max-w-md lg:max-w-md">
-                        <div class="relative rounded-2xl overflow-hidden border-4 border-background-offset shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]">
-                            <Image
-                                class="w-full h-auto"
-                                src={me}
-                                loading="eager"
-                                alt="James Coding Afternoon"
-                            />
-                        </div>
+            <!-- Photo: taped, tacked, slightly tilted polaroid -->
+            <div class="relative flex justify-center lg:order-2" data-reveal="fade-in" data-reveal-delay="200">
+                <!-- bouncing scribble circle (desktop only) -->
+                <span class="hd-bounce hidden md:block absolute -top-6 -left-2 w-16 h-16 border-[3px] border-dashed border-accent rounded-full -z-0" aria-hidden="true"></span>
+
+                <div class="hd-card hd-card--tape relative w-full max-w-sm bg-surface p-3 rotate-2 hover:-rotate-1 transition-transform duration-100">
+                    <div class="overflow-hidden border-2 border-border" style="border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;">
+                        <Image
+                            class="w-full h-auto"
+                            src={me}
+                            loading="eager"
+                            alt="James Coding Afternoon"
+                        />
                     </div>
+                    <p class="text-center font-heading text-lg mt-3 text-ink-soft">— hello, that's me —</p>
                 </div>
+
+                <!-- corner-frame marks -->
+                <span class="hidden md:block absolute -bottom-4 -right-3 w-10 h-10 border-b-[3px] border-r-[3px] border-border" aria-hidden="true"></span>
             </div>
 
-            <!-- Content Section -->
+            <!-- Content -->
             <div class="lg:order-1 space-y-6">
-                <!-- Job title badge -->
-                <div class="inline-flex items-center px-4 py-2 bg-background-offset border border-border rounded-full" data-reveal="fade-up">
-                    <div class="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></div>
-                    <p class="text-sm sm:text-base font-medium text-offset">
-                        {basic?.job}
-                    </p>
+                <span class="hd-label" data-reveal="fade-up">About Me</span>
+
+                <!-- Job badge -->
+                <div class="hd-badge w-fit" data-reveal="fade-up">
+                    <span class="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+                    {basic?.job}
                 </div>
 
-                <!-- Name with gradient -->
-                <h1 class="text-4xl font-bold sm:text-5xl lg:text-6xl leading-tight bg-gradient-to-r from-default to-offset bg-clip-text text-transparent" data-reveal="fade-up" data-reveal-delay="100">
-                    {basic?.name}
+                <!-- Name with rotating exclamation -->
+                <h1 class="font-heading text-5xl sm:text-6xl lg:text-7xl leading-[1.05]" data-reveal="fade-up" data-reveal-delay="100">
+                    Hi, I'm<br />
+                    <span class="text-accent">{basic?.name}</span><span class="hd-wave inline-block text-ink">!</span>
                 </h1>
+                <span class="hd-squiggle" aria-hidden="true"></span>
 
                 <!-- Summary -->
-                <div class="text-lg sm:text-xl text-offset leading-relaxed" data-reveal="fade-up" data-reveal-delay="150">
-                    <p>{basic?.summary?.en}</p>
-                </div>
+                <p class="text-xl sm:text-2xl text-ink leading-relaxed" data-reveal="fade-up" data-reveal-delay="150">
+                    {basic?.summary?.en}
+                </p>
 
-                <!-- Skills tags -->
-                <div class="flex flex-wrap gap-2 pt-2" data-reveal="fade-up" data-reveal-delay="200">
-                    {skills.map((skill) => (
-                        <span class="px-3 py-1.5 text-sm font-medium bg-background-offset text-default border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 cursor-default">
+                <!-- Skills -->
+                <div class="flex flex-wrap gap-2.5 pt-1" data-reveal="fade-up" data-reveal-delay="200">
+                    {skills.map((skill, i) => (
+                        <span class="hd-tag" style={`transform: rotate(${(i % 2 === 0 ? -1 : 1) * (1 + (i % 3))}deg);`}>
                             {skill.en}
                         </span>
                     ))}
                 </div>
 
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-4" data-reveal="fade-up" data-reveal-delay="250">
-                    <a
-                        href="/cv"
-                        title="Download CV"
-                        class="interactive-scale group inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-primary hover:bg-secondary focus:bg-secondary rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    >
-                        <svg class="w-5 h-5 mr-2 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <!-- CTAs with a hand-drawn arrow pointing at the primary one -->
+                <div class="relative flex flex-col sm:flex-row gap-4 pt-3" data-reveal="fade-up" data-reveal-delay="250">
+                    <span class="hd-arrow hidden md:block" aria-hidden="true"></span>
+                    <a href="/cv" title="View CV" class="hd-btn hd-btn--cta">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Download CV
+                        View My CV
                     </a>
-
-                    <a
-                        href="mailto:james.afternoon.dev@gmail.com"
-                        class="interactive-scale inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-default bg-background-offset hover:bg-border border border-border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                        role="button"
-                    >
-                        Contact Me
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    <a href="mailto:james.afternoon.dev@gmail.com" class="hd-btn hd-btn--secondary" role="button">
+                        Reach Me
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                     </a>
                 </div>
 
-                <!-- Social proof / Quick stats -->
-                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-border" data-reveal="fade-up" data-reveal-delay="300">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-primary">3+</div>
-                        <div class="text-sm text-offset">Years Exp.</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-primary">50+</div>
-                        <div class="text-sm text-offset">Projects</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-primary">CKAD</div>
-                        <div class="text-sm text-offset">Certified</div>
-                    </div>
+                <!-- Stats: organic blobs -->
+                <div class="grid grid-cols-3 gap-4 pt-6" data-reveal="fade-up" data-reveal-delay="300">
+                    <div class="hd-stat"><span class="hd-stat__value">3+</span><span class="hd-stat__label">Years Exp.</span></div>
+                    <div class="hd-stat"><span class="hd-stat__value">50+</span><span class="hd-stat__label">Projects</span></div>
+                    <div class="hd-stat"><span class="hd-stat__value">CKAD</span><span class="hd-stat__label">Certified</span></div>
                 </div>
             </div>
         </div>
@@ -114,12 +98,32 @@ const skills = [
 </section>
 
 <style>
-    /* Smooth animations with reduced motion support */
+    /* gentle bounce for the scribble circle */
+    .hd-bounce { animation: hd-bounce 3s ease-in-out infinite; }
+    @keyframes hd-bounce {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(8deg); }
+    }
+
+    /* rotating exclamation wobble */
+    .hd-wave { animation: hd-wave 2.5s ease-in-out infinite; transform-origin: bottom center; }
+    @keyframes hd-wave {
+        0%, 100% { transform: rotate(-8deg); }
+        50% { transform: rotate(8deg); }
+    }
+
+    /* hand-drawn dashed arrow pointing to the CTA */
+    .hd-arrow {
+        position: absolute;
+        top: -34px;
+        left: 14px;
+        width: 70px;
+        height: 40px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='40' viewBox='0 0 70 40'%3E%3Cpath d='M5 4 C30 0 50 14 52 32' fill='none' stroke='%23ff4d4d' stroke-width='2.4' stroke-dasharray='5 5' stroke-linecap='round'/%3E%3Cpath d='M44 28 L52 34 L58 24' fill='none' stroke='%23ff4d4d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-        * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
+        .hd-bounce, .hd-wave { animation: none; }
     }
 </style>

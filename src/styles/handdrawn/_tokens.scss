@@ -1,0 +1,63 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hand-Drawn Design Tokens
+// "Sketchbook / sticky-note" aesthetic — wobbly borders, hard offset shadows,
+// pencil + marker palette, handwritten type. Light + dark paper.
+//
+// SCSS vars below are the source of truth for the mixins/components.
+// `emit-theme()` projects them onto CSS custom properties so they can switch
+// per [data-theme] AND re-skin the existing Tailwind `--color-*` bridge.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Raw palette ───────────────────────────────────────────────────────────────
+// Light: warm paper, pencil lead, correction-marker red, ballpoint blue, post-it.
+$paper:            #fdfbf7; // warm paper
+$paper-offset:     #f1ece1; // old / erased paper
+$surface:          #ffffff; // clean sheet (cards)
+$pencil:           #2d2d2d; // soft pencil black — never pure #000
+$pencil-soft:      #6b675f; // lighter pencil (secondary text)
+$marker-red:       #ff4d4d; // correction marker (accent / action)
+$ballpoint-blue:   #2d5da1; // blue ballpoint (secondary accent)
+$postit:           #fff7b0; // post-it yellow
+$dot:              #e3ddd0; // notebook dot-grid
+
+// Dark: night sketchbook — dark kraft, chalk-cream ink, brighter markers.
+$paper-d:          #1c1b18; // dark kraft paper
+$paper-offset-d:   #262420; // raised kraft
+$surface-d:        #232120; // card sheet on dark
+$chalk:            #ece6d8; // chalk / cream ink
+$chalk-soft:       #a8a08f; // dim chalk (secondary text)
+$marker-red-d:     #ff6b6b; // brighter marker on dark
+$ballpoint-blue-d: #7eade0; // lighter ballpoint on dark
+$postit-d:         #4a431f; // dim post-it on dark
+$postit-d-text:    #fdf6c2;
+$dot-d:            #302d28;
+
+// ── Typography ──────────────────────────────────────────────────────────────
+// Latin glyphs resolve to the handwritten Latin fonts first; CJK glyphs fall
+// through to LXGW WenKai TC (a very legible kaishu) per-glyph in every browser.
+$font-heading: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', 'Noto Sans TC', system-ui, sans-serif;
+$font-body:    'Patrick Hand', 'LXGW WenKai TC', 'Noto Sans TC', system-ui, sans-serif;
+$font-mono:    ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+
+// ── Wobbly radii ──────────────────────────────────────────────────────────────
+// Asymmetric ellipse pairs (h-radii / v-radii) — the signature "no straight line".
+$radius:      255px 15px 225px 15px / 15px 225px 15px 255px; // standard
+$radius-md:   15px 225px 15px 255px / 255px 15px 225px 15px; // medium (containers)
+$radius-sm:   14px 6px 12px 8px / 8px 12px 6px 14px;         // inputs / tags / small
+$radius-blob: 60% 40% 33% 67% / 64% 31% 69% 36%;             // organic blob (stats)
+
+// ── Hard offset shadows (no blur — cut-paper layering) ──────────────────────────
+// Offsets only; colour comes from --hd-shadow so it flips per theme.
+$shadow-sm: 2px 2px 0 0 var(--hd-shadow);
+$shadow:    4px 4px 0 0 var(--hd-shadow);
+$shadow-lg: 8px 8px 0 0 var(--hd-shadow);
+$shadow-card: 3px 3px 0 0 var(--hd-shadow-soft); // subtle depth for resting cards
+
+// ── Border widths ───────────────────────────────────────────────────────────
+$bw:      2px; // minimum
+$bw-emph: 3px; // buttons / emphasis
+$bw-bold: 4px; // hero / feature
+
+// ── Motion ──────────────────────────────────────────────────────────────────
+$ease-snappy: cubic-bezier(0.34, 1.56, 0.64, 1);
+$dur-fast:    120ms;

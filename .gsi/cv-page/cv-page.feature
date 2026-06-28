@@ -13,7 +13,7 @@ Feature: CV Page (International SWE Style)
     And I should see "Education"
     And I should see "National Yunlin University of Science and Technology"
     And I should see "Projects"
-    And I should see "GSI Protocol"
+    And I should see "DevOpsDays Taipei 2026"
     And the "Export PDF" button should be visible
 
   Scenario: 每筆工作經歷顯示 achievements

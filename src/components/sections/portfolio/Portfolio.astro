@@ -4,31 +4,25 @@ import PortfolioFilter from '../../common/PortfolioFilter.astro';
 import { projects } from '../../../config/introduce.json';
 ---
 
-<section class="relative bg-background py-16 sm:py-20">
-    <div class="container px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
-        <!-- Section Header -->
+<section class="relative py-16 sm:py-20">
+    <div class="container px-4 sm:px-6 mx-auto max-w-6xl">
+        <!-- Section header -->
         <div class="text-center mb-12 sm:mb-16">
-            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-default mb-4" data-reveal="fade-up">
-                My Portfolio
+            <span class="hd-label" data-reveal="fade-up">My Portfolio</span>
+            <h2 class="font-heading text-4xl sm:text-5xl text-ink mt-6 mb-4" data-reveal="fade-up" data-reveal-delay="50">
+                Stuff I've built &amp; shared
             </h2>
-
-            <p class="mt-4 text-lg sm:text-xl text-offset max-w-3xl mx-auto leading-relaxed" data-reveal="fade-up" data-reveal-delay="100">
-                Discover my range of projects that highlight my expertise in design, development, and innovative solutions.
+            <p class="text-lg sm:text-xl text-ink-soft max-w-2xl mx-auto leading-relaxed" data-reveal="fade-up" data-reveal-delay="100">
+                A pile of projects, talks and writing — pinned up like notes on a board.
             </p>
-
-            <!-- Decorative line -->
-            <div class="flex items-center justify-center mt-6" data-reveal="fade-in" data-reveal-delay="150">
-                <div class="w-16 h-1 bg-primary rounded-full"></div>
-                <div class="w-2 h-2 bg-primary rounded-full mx-2"></div>
-                <div class="w-16 h-1 bg-primary rounded-full"></div>
-            </div>
+            <span class="hd-squiggle mx-auto mt-6" data-reveal="fade-in" data-reveal-delay="150" aria-hidden="true"></span>
         </div>
 
-        <!-- Portfolio Filter -->
+        <!-- Filter -->
         <PortfolioFilter />
 
-        <!-- Projects Grid -->
-        <div id="portfolio-grid" class="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <!-- Projects grid -->
+        <div id="portfolio-grid" class="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project, index) => (
                 <div
                     class="filtered-in"
@@ -41,6 +35,7 @@ import { projects } from '../../../config/introduce.json';
                         title={project.title}
                         type={project.type}
                         link={project.link}
+                        index={index}
                     />
                 </div>
             ))}

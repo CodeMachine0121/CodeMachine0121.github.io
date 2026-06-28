@@ -40,23 +40,28 @@ if (blog.data.parent) {
 <Layout title={blog.data.title}>
     <ReadingProgress />
     <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <header class="mb-12 text-center md:text-left pb-8 border-b border-[var(--color-border)]">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight text-text">{blog.data.title}</h1>
-            {blog.data.description && (
-                <p class="text-base md:text-lg text-offset mb-4 leading-relaxed">{blog.data.description}</p>
+        <header class="mb-12 pb-8 border-b-[3px] border-dashed border-border">
+            {blog.data.parent && (
+                <span class="hd-badge mb-4">{blog.data.parent}</span>
             )}
-            <time datetime={blog.data.datetime} class="text-sm text-offset block">
+            <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl mb-4 leading-tight text-ink">{blog.data.title}</h1>
+            {blog.data.description && (
+                <p class="text-lg md:text-xl text-ink-soft mb-5 leading-relaxed">{blog.data.description}</p>
+            )}
+            <time datetime={blog.data.datetime} class="hd-badge">
                 {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
         </header>
 
         {blog.data.image && (
-            <img
-                src={blog.data.image}
-                alt={blog.data.title}
-                loading="eager"
-                class="w-full max-h-96 object-cover rounded-lg mb-10 border border-[var(--color-border)]"
-            />
+            <div class="overflow-hidden border-[3px] border-border mb-10 rotate-1" style="border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; box-shadow: 6px 6px 0 0 var(--hd-shadow);">
+                <img
+                    src={blog.data.image}
+                    alt={blog.data.title}
+                    loading="eager"
+                    class="w-full max-h-96 object-cover"
+                />
+            </div>
         )}
 
         <div class="blog-content prose prose-lg dark:prose-invert">

@@ -5,13 +5,33 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				heading: ['Poppins', 'sans-serif'],
-				body: ['Open Sans', 'sans-serif'],
-				sans: ['Open Sans', 'sans-serif'],
+				// Hand-drawn: Latin handwriting first, CJK kaishu fallback per-glyph.
+				heading: ['Kalam', 'LXGW WenKai TC', 'Patrick Hand', 'Noto Sans TC', 'sans-serif'],
+				body: ['Patrick Hand', 'LXGW WenKai TC', 'Noto Sans TC', 'sans-serif'],
+				sans: ['Patrick Hand', 'LXGW WenKai TC', 'Noto Sans TC', 'sans-serif'],
 			},
 			colors: {
 				primary: "var(--color-primary)",
 				secondary: "var(--color-secondary)",
+				// Hand-drawn palette aliases (theme-aware via --hd-* custom props)
+				ink: "var(--hd-ink)",
+				"ink-soft": "var(--hd-ink-soft)",
+				paper: "var(--hd-paper)",
+				"paper-offset": "var(--hd-paper-offset)",
+				surface: "var(--hd-surface)",
+				accent: "var(--hd-accent)",
+				"accent-2": "var(--hd-accent-2)",
+				note: "var(--hd-note)",
+			},
+			boxShadow: {
+				hd: "4px 4px 0 0 var(--hd-shadow)",
+				"hd-sm": "2px 2px 0 0 var(--hd-shadow)",
+				"hd-lg": "8px 8px 0 0 var(--hd-shadow)",
+			},
+			borderRadius: {
+				wobbly: "255px 15px 225px 15px / 15px 225px 15px 255px",
+				"wobbly-md": "15px 225px 15px 255px / 255px 15px 225px 15px",
+				"wobbly-sm": "14px 6px 12px 8px / 8px 12px 6px 14px",
 			},
 			textColor: {
 				default: "var(--color-text)",
