@@ -1,0 +1,12 @@
+---
+// StickyNotes — reader-authored sticky notes on article pages.
+// Notes persist per-article in localStorage and are rendered client-side.
+// Visual language follows the hand-drawn design system (--hd-note, wobble, offset shadow).
+---
+
+<div id="sticky-notes-root" class="sticky-notes-layer" aria-hidden="true"></div>
+
+<script>
+  import { initStickyNotes } from '../../scripts/stickyNotes';
+  initStickyNotes();
+</script>
