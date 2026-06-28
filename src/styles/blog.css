@@ -366,6 +366,12 @@
   cursor: pointer;
 }
 
+/* 顏色圓點對應目前便利貼顏色 */
+.sticky-note[data-color='yellow'] .sticky-note__color { background: #fff7b0; }
+.sticky-note[data-color='pink']   .sticky-note__color { background: #ffd6e0; }
+.sticky-note[data-color='blue']   .sticky-note__color { background: #cfe3ff; }
+.sticky-note[data-color='green']  .sticky-note__color { background: #d4f5d0; }
+
 .sticky-note__delete {
   width: 1.4rem;
   height: 1.4rem;

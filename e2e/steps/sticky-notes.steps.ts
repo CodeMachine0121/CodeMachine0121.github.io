@@ -35,6 +35,14 @@ Then('the sticky note should contain {string}', async ({ page }, text: string) =
   await expect(page.locator('.sticky-note__text').last()).toContainText(text);
 });
 
+When('I click the sticky note color swatch', async ({ page }) => {
+  await page.locator('.sticky-note__color').last().click();
+});
+
+Then('the sticky note color should be {string}', async ({ page }, color: string) => {
+  await expect(page.locator('.sticky-note').last()).toHaveAttribute('data-color', color);
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

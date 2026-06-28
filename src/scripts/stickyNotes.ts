@@ -81,6 +81,12 @@ function renderNote(note: Note): HTMLElement {
   color.className = 'sticky-note__color';
   color.type = 'button';
   color.setAttribute('aria-label', '切換便利貼顏色');
+  color.addEventListener('click', () => {
+    const next = (COLORS.indexOf(note.color) + 1) % COLORS.length;
+    note.color = COLORS[next];
+    el.dataset.color = note.color;
+    save();
+  });
 
   const del = document.createElement('button');
   del.className = 'sticky-note__delete';

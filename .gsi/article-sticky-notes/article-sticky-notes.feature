@@ -25,3 +25,12 @@ Feature: Article Sticky Notes
     And I reload the page
     Then there should be 1 sticky notes
     And the sticky note should contain "重點：六角架構"
+
+  Scenario: TC-04 note defaults to yellow, cycles color, and persists the choice
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    Then the sticky note color should be "yellow"
+    When I click the sticky note color swatch
+    Then the sticky note color should be "pink"
+    When I reload the page
+    Then the sticky note color should be "pink"
