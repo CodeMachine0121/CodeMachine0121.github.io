@@ -198,6 +198,10 @@ function renderPanelList(): void {
     del.type = 'button';
     del.setAttribute('aria-label', '刪除便利貼');
     del.textContent = '×';
+    del.addEventListener('click', () => {
+      removeNote(note);
+      renderPanelList();
+    });
 
     li.append(label, del);
     panelListEl.appendChild(li);

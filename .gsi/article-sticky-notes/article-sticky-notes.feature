@@ -78,3 +78,13 @@ Feature: Article Sticky Notes
     And I click the panel add button
     Then there should be 1 sticky notes
     And the notes panel should list 1 notes
+
+  Scenario: TC-10 deleting a note from the panel removes it
+    Given the viewport is narrow
+    And I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I click the sticky-notes button
+    And I click the panel add button
+    Then there should be 1 sticky notes
+    When I click the panel item delete button
+    Then there should be 0 sticky notes
+    And the notes panel should list 0 notes
