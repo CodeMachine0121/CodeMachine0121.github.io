@@ -216,6 +216,10 @@ Then('the detail view should show note text {string}', async ({ page }, text: st
   await expect(page.locator('#sticky-notes-detail-text')).toHaveValue(text);
 });
 
+When('I edit the detail text to {string}', async ({ page }, text: string) => {
+  await page.locator('#sticky-notes-detail-text').fill(text);
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

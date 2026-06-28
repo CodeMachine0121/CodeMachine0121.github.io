@@ -392,4 +392,13 @@ export function initStickyNotes(): void {
   document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));
   document.getElementById('sticky-notes-add')?.addEventListener('click', addNoteFromPanel);
   detailBackEl?.addEventListener('click', showListView);
+  detailTextEl?.addEventListener('input', () => {
+    if (!detailNote || !detailTextEl) return;
+    detailNote.text = detailTextEl.value;
+    const textEl = root?.querySelector<HTMLElement>(
+      `[data-note-id="${detailNote.id}"] .sticky-note__text`
+    );
+    if (textEl) textEl.textContent = detailNote.text;
+    save();
+  });
 }

@@ -138,3 +138,14 @@ Feature: Article Sticky Notes
     And I open the first panel note
     Then the sticky-notes detail view should be visible
     And the detail view should show note text "note 0"
+
+  Scenario: TC-18 editing a note in the detail view persists across reload
+    Given the viewport is narrow
+    And the article is preloaded with 1 sticky notes
+    When I click the sticky-notes button
+    And I open the first panel note
+    And I edit the detail text to "手機改的內容"
+    And I reload the page
+    And I click the sticky-notes button
+    And I open the first panel note
+    Then the detail view should show note text "手機改的內容"
