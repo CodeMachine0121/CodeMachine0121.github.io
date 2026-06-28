@@ -9,20 +9,20 @@ interface Props {
 const { prevPost, nextPost } = Astro.props;
 ---
 
-<nav class="flex flex-col sm:flex-row justify-between gap-4 mt-12 pt-8 border-t border-[var(--color-border)]">
+<nav class="flex flex-col sm:flex-row justify-between gap-5 mt-12 pt-8 border-t-[3px] border-dashed border-border">
   <div class="flex-1">
     {prevPost && (
-      <a href={`/blogs/${prevPost.id}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
-        <p class="text-sm text-offset">« 上一篇</p>
-        <h4 class="font-bold mt-1 text-default">{prevPost.data.title}</h4>
+      <a href={`/blogs/${prevPost.id}`} class="hd-card hd-card--link block h-full !p-4">
+        <p class="font-heading text-ink-soft">« 上一篇</p>
+        <h4 class="font-heading text-lg mt-1 text-ink leading-snug">{prevPost.data.title}</h4>
       </a>
     )}
   </div>
-  <div class="flex-1 text-right">
+  <div class="flex-1 sm:text-right">
     {nextPost && (
-      <a href={`/blogs/${nextPost.id}`} class="block p-4 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-background-offset)] transition-colors cursor-pointer h-full">
-        <p class="text-sm text-offset">下一篇 »</p>
-        <h4 class="font-bold mt-1 text-default">{nextPost.data.title}</h4>
+      <a href={`/blogs/${nextPost.id}`} class="hd-card hd-card--link block h-full !p-4">
+        <p class="font-heading text-ink-soft">下一篇 »</p>
+        <h4 class="font-heading text-lg mt-1 text-ink leading-snug">{nextPost.data.title}</h4>
       </a>
     )}
   </div>
