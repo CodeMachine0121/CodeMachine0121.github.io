@@ -10,7 +10,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 在 `.claude/` 目錄中，`docs/` 不僅是給人類看的說明書，它更可以扮演 **Agent 的「架構知識庫 (Architectural Knowledge Base)」**。
 
-> ⚠️ 先釐清一個關鍵前提：`.claude/docs/` **不是** Claude Code 內建會自動讀取或檢索的特殊目錄（這點和 Day 05 會被自動掃描的 `commands/` 不同）。它能發揮作用，完全來自我們在 `commands/` 或 `rules/` 中用 `@` 主動掛載、或在前置檢查中引導 Agent 去讀取。本篇所談的「知識庫」，是一套**自訂的協議設計模式**，而非開箱即用的功能。
+> 先釐清一個關鍵前提：`.claude/docs/` **不是** Claude Code 內建會自動讀取或檢索的特殊目錄（這點和 Day 05 會被自動掃描的 `commands/` 不同）。它能發揮作用，完全來自我們在 `commands/` 或 `rules/` 中用 `@` 主動掛載、或在前置檢查中引導 Agent 去讀取。本篇所談的「知識庫」，是一套**自訂的協議設計模式**，而非開箱即用的功能。
 
 ## 1. 知識庫的架構角色：為什麼 AI 需要 Docs？
 LLM 的上下文視窗 (Context Window) 雖然在擴大，但長上下文中段的資訊容易被忽略（即所謂的 "lost in the middle"），塞得越多不代表 Agent 越能精準引用。當我們將架構規範、設計模式、API 約定定義在 `.claude/docs/` 中、再按需掛載時，我們實際上是在為 Agent 構建一個 **「外掛式長期記憶 (External Long-term Memory)」**。

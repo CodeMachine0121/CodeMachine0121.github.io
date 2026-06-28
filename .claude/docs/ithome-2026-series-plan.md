@@ -57,8 +57,43 @@
 | 30 | 打造你的 Pattern Language：總結與未來——建立私有 Agent 生態系 | 2026-07-22 |
 
 ## 目前進度
-- ✅ Day 01–08 已撰寫完成。
-- ⏳ Day 09 起（CoT、ToT…）尚未建檔。
+- 已完成：Day 01–08。
+- 待撰寫：Day 09 起（CoT、ToT…）。
+
+## Side Project 練習題（各 Pattern 日）
+
+> 每篇 Pattern 文章的「今日實踐任務」收錄一個「剛好需要該 pattern 才好解」的 side project。Day 08 已寫入文章；Day 09–30 為以下設計，待各篇撰寫時嵌入。
+
+### 第二階段：決策、推理與結構化
+- **Day 08 ReAct（已嵌入文章）** — 陌生專案上手助手 `onboarding-scout`：唯讀探索一個沒看過的 repo，摸出技術棧／安裝／啟動／測試；每步動作取決於上一步觀察，逼出 Thought→Action→Observation。
+- **Day 09 CoT** — 演算法解題陪練：強制先寫出顯式推導（狀態轉移、邊界、複雜度）再下 code，對照「省略推理」的錯誤率。純推理、不碰環境，與 ReAct 對照。
+- **Day 10 ToT** — 重構方案探索器：對一段爛 code 同時展開三條重構路徑，各自評估後選優、回溯淘汰，體現分支與剪枝。
+- **Day 11 Skeleton-of-Thought** — 長文／文件產生器：先生成整篇章節骨架，再平行填充各段，對照線性寫法的速度與一致性。
+- **Day 12 Reasoning Trace** — 決策日誌型修改助手：每次自動修改都產出可審計的 reasoning trace（為何這樣改、否決了什麼），存成 decision log。
+- **Day 13 Self-Reflection** — 自我修訂產生器：產生 → 用 rubric 自評打分 → 修訂，迭代到通過門檻才輸出。
+- **Day 14 Dual-Process** — 快慢雙軌問答器：先判斷題目難度，簡單走 System 1 直答、複雜觸發 System 2 深思。
+
+### 第三階段：協作、博弈與路由
+- **Day 15 Supervisor** — 多檔案重構指揮官：supervisor 把大重構拆成子任務派給 worker，再彙整驗收。
+- **Day 16 Debate** — 技術選型辯論賽：兩個 agent 各持立場辯論（如 SQL vs NoSQL），裁判 agent 總結，降低單一視角偏差。
+- **Day 17 Peer Review** — Producer／Reviewer 流水線：一個寫 code、一個專挑錯退回，直到通過。
+- **Day 18 Task Routing** — 智慧路由分流：依問題複雜度／類型路由到不同成本的 agent（便宜的處理簡單、貴的處理難題）。
+- **Day 19 Consensus** — 多視角投票答題器：同一問題跑 N 個視角，投票取共識並標出分歧。
+- **Day 20 Swarm** — 整庫註解蜂群：對整個 repo 並行 fan-out 同一任務（補 docstring／i18n），體驗大規模並行。
+
+### 第四階段：執行韌性與工程可靠性
+- **Day 21 Dynamic Skill Injection** — 環境感知裝備器：偵測 repo 型別（Python／Node／Rust）動態掛載對應 skills。
+- **Day 22 Map-Reduce** — 全庫安全掃描器：map 階段每檔獨立掃描、reduce 階段彙整成一份報告。
+- **Day 23 Fallback** — 韌性呼叫器：主方案失敗逐層降級（貴模型→便宜模型、線上→快取），確保不整個失敗。
+- **Day 24 State-Management** — 可續跑批次遷移器：長任務把進度寫入 state 檔，中斷後從斷點續跑。
+- **Day 25 Human-in-the-Loop** — 危險操作確認閘：在 rm／migration／deploy 等高風險動作前停下等人確認。
+- **Day 26 Context Window Management** — 滾動摘要記憶器：對話超過閾值就把舊內容歸納成摘要塞回，壓縮上下文。
+
+### 第五階段：進階實戰與生態優化
+- **Day 27 Codebase Analysis** — Repo 問答機：索引整庫，用檢索回答「X 功能在哪實作、怎麼運作」。
+- **Day 28 TDD Workflow** — 紅綠燈 TDD agent：先寫測試（紅）→ 實作到綠 → 重構，測試即事實規範。
+- **Day 29 Doc-as-Code** — 文件同步守門員：改了 API 就同步更新 docs／README，CI 檢查不一致即擋。
+- **Day 30 Pattern Language（總結）** — 組合技 capstone：挑 2–3 個學過的 pattern 串成你自己的私有 workflow（例如 Supervisor + TDD + Doc-as-Code 的「功能交付流水線」）。
 
 ## 撰寫慣例（重點摘要，完整規範見 [`blog-writing-style`](../rules/blog-writing-style.md)）
 - **標題層級從 h2（`##`）開始**，子節用 h3（`###`）；正文不寫 h1（標題由模板從 frontmatter `title` 渲染）。

@@ -18,7 +18,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 換句話說：`SKILL.md` 是編排（orchestration），`scripts/` 與 `templates/` 是它調度的執行單元與輸出模具。
 
-> 📌 這也是 Skill 與明天要談的 `commands/` 最大的差別：**Skill 是「模型觸發」**（Claude 依 description 自己決定何時用）；**Command 是「使用者觸發」**（你打 `/command` 才啟動）。
+> 這也是 Skill 與明天要談的 `commands/` 最大的差別：**Skill 是「模型觸發」**（Claude 依 description 自己決定何時用）；**Command 是「使用者觸發」**（你打 `/command` 才啟動）。
 
 ## 2. Skill 的結構
 ```text

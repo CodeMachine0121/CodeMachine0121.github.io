@@ -60,7 +60,7 @@ mkdir -p "$base"/{rules,skills,commands,docs}
 [ -f "$base/docs/context.md" ]        || echo "# 專案架構概覽（請填入核心設計原則）" > "$base/docs/context.md"
 [ -f "$root/CLAUDE.md" ]              || echo "# 全局原則 + 指向 .claude/docs 的索引" > "$root/CLAUDE.md"
 
-echo "✅ .claude/ 環境已初始化於 $base"
+echo "完成：.claude/ 環境已初始化於 $base"
 ```
 
 `|| echo ...` 的寫法確保它是**冪等**的：重複執行不會覆蓋你已經寫好的規則，這對「在既有專案上補裝」尤其重要。

@@ -43,3 +43,8 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 ## 5. 資產
 
 - 圖片、CV PDF 等資產放 Cloudflare R2，**NEVER** 放進 `public/`；frontmatter `image` 填 R2 連結。
+
+## 6. 內文不使用 emoji
+
+- 文章正文 **NEVER** 使用 emoji（如 🚀、✅、⚠️、📌、⏳）。需要標示「注意／重點」時，改用文字（「注意：」「重點：」）或引言區塊（`>`）。
+- 箭頭（`→` `←` `↓`）、表格、ASCII 線框等**功能性符號不受此限**。

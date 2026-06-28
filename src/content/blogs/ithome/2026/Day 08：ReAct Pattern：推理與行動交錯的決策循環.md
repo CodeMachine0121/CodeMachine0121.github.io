@@ -94,7 +94,7 @@ ReAct 不是免費的，它的成本來自那個「循環」本身：
 **今日實踐任務：**
 1. 在 `.claude/rules/` 建立 `react-protocol.md`，定義 Thought / Action / Observation 的格式與停止條件。
 
-2. **🚀 Side Project：陌生專案上手助手 (`onboarding-scout`)**
+2. **Side Project：陌生專案上手助手 (`onboarding-scout`)**
 
    找一個你**沒看過**的小型開源 repo，用 Claude Code 搭配你剛寫的 `react-protocol`，讓它透過 ReAct 循環自己摸索，最後產出一份「新人上手指南」：**技術棧 / 安裝步驟 / 啟動指令 / 如何跑測試**。
 
