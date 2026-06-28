@@ -313,7 +313,10 @@
 .sticky-note {
   position: fixed;
   z-index: 50;
+  display: flex;
+  flex-direction: column;
   width: 12.5rem;
+  min-width: 7.5rem;
   min-height: 7rem;
   padding: 0.4rem 0.75rem 0.75rem;
   background: var(--hd-note);
@@ -388,15 +391,43 @@
 .sticky-note__delete:hover { opacity: 1; }
 
 .sticky-note__text {
+  flex: 1;
   min-height: 4.5rem;
   outline: none;
   overflow-wrap: anywhere;
+  overflow-y: auto;
   white-space: pre-wrap;
 }
 
 .sticky-note__text:empty::before {
   content: '寫點筆記…';
   opacity: 0.45;
+}
+
+/* 右下角縮放把手：手繪斜線格紋 */
+.sticky-note__resize {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  opacity: 0.55;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--hd-border) 0,
+    var(--hd-border) 1.5px,
+    transparent 1.5px,
+    transparent 4px
+  );
+}
+
+.sticky-note__resize:hover {
+  opacity: 0.9;
+}
+
+.sticky-note.is-resizing {
+  user-select: none;
 }
 
 /* 拖到頂端刪除：拖曳時靠近視窗頂端才浮現的垃圾桶區 */

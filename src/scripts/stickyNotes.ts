@@ -11,12 +11,16 @@ interface Note {
   color: Color;
   x: number;
   y: number;
+  w?: number;
+  h?: number;
 }
 
 const DESKTOP_MIN = 768;
 const STORAGE_PREFIX = 'sticky-notes:';
 const TRASH_THRESHOLD = 90;
 const MAX_NOTES = 20;
+const MIN_W = 120;
+const MIN_H = 80;
 
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
@@ -27,6 +31,7 @@ let fabEl: HTMLElement | null = null;
 let panelEl: HTMLElement | null = null;
 let panelListEl: HTMLElement | null = null;
 let drag: { note: Note; el: HTMLElement; dx: number; dy: number } | null = null;
+let resizing: { note: Note; el: HTMLElement; startX: number; startY: number; startW: number; startH: number } | null = null;
 let armed = false;
 
 function uid(): string {
@@ -111,6 +116,8 @@ function renderNote(note: Note): HTMLElement {
   el.dataset.color = note.color;
   el.style.left = note.x + 'px';
   el.style.top = note.y + 'px';
+  if (typeof note.w === 'number') el.style.width = note.w + 'px';
+  if (typeof note.h === 'number') el.style.height = note.h + 'px';
 
   const bar = document.createElement('div');
   bar.className = 'sticky-note__bar';
@@ -151,7 +158,24 @@ function renderNote(note: Note): HTMLElement {
     save();
   });
 
-  el.append(bar, text);
+  const resize = document.createElement('div');
+  resize.className = 'sticky-note__resize';
+  resize.setAttribute('aria-hidden', 'true');
+  resize.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resizing = {
+      note,
+      el,
+      startX: e.clientX,
+      startY: e.clientY,
+      startW: el.offsetWidth,
+      startH: el.offsetHeight,
+    };
+    el.classList.add('is-resizing');
+  });
+
+  el.append(bar, text, resize);
   return el;
 }
 
@@ -190,6 +214,15 @@ function addNoteFromPanel(): void {
 }
 
 function onPointerMove(e: PointerEvent): void {
+  if (resizing) {
+    const w = Math.max(MIN_W, resizing.startW + (e.clientX - resizing.startX));
+    const h = Math.max(MIN_H, resizing.startH + (e.clientY - resizing.startY));
+    resizing.note.w = w;
+    resizing.note.h = h;
+    resizing.el.style.width = w + 'px';
+    resizing.el.style.height = h + 'px';
+    return;
+  }
   if (!drag) return;
   drag.note.x = e.clientX - drag.dx;
   drag.note.y = e.clientY - drag.dy;
@@ -202,6 +235,12 @@ function onPointerMove(e: PointerEvent): void {
 }
 
 function onPointerUp(): void {
+  if (resizing) {
+    resizing.el.classList.remove('is-resizing');
+    resizing = null;
+    save();
+    return;
+  }
   if (!drag) return;
   const note = drag.note;
   drag.el.classList.remove('is-dragging');

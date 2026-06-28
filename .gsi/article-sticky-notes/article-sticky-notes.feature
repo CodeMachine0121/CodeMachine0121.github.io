@@ -109,3 +109,18 @@ Feature: Article Sticky Notes
     Given the article is preloaded with an off-screen note
     Then there should be 1 sticky notes
     And the sticky note should be within the viewport
+
+  Scenario: TC-14 resizing a note changes its size and persists across reload
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    And I resize the sticky note by 90,70
+    Then the sticky note should be at the resized size
+    When I reload the page
+    Then there should be 1 sticky notes
+    And the sticky note should be at the resized size
+
+  Scenario: TC-15 resizing below the minimum is floored
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    And I resize the sticky note by -500,-500
+    Then the sticky note should not be smaller than the minimum size

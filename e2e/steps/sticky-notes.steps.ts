@@ -4,6 +4,15 @@ import { createBdd } from 'playwright-bdd';
 const { Given, When, Then } = createBdd();
 
 let expectedPos: { x: number; y: number } | null = null;
+let expectedSize: { w: number; h: number } | null = null;
+const MIN_NOTE_W = 120;
+const MIN_NOTE_H = 80;
+
+const offsetSize = (loc: { evaluate: (fn: (n: Element) => number) => Promise<number> }) =>
+  Promise.all([
+    loc.evaluate((n) => (n as HTMLElement).offsetWidth),
+    loc.evaluate((n) => (n as HTMLElement).offsetHeight),
+  ]);
 
 When('I triple-click in the left margin', async ({ page }) => {
   const box = await page.locator('article').boundingBox();
@@ -124,6 +133,36 @@ Given('the article is preloaded with an off-screen note', async ({ page }) => {
     window.localStorage.setItem(key, JSON.stringify(arr));
   });
   await page.reload();
+});
+
+When('I resize the sticky note by {int},{int}', async ({ page }, dx: number, dy: number) => {
+  const note = page.locator('.sticky-note').last();
+  const [w0, h0] = await offsetSize(note);
+  const handle = page.locator('.sticky-note__resize').last();
+  const hb = await handle.boundingBox();
+  if (!hb) throw new Error('resize handle not found');
+  const sx = hb.x + hb.width / 2;
+  const sy = hb.y + hb.height / 2;
+  await page.mouse.move(sx, sy);
+  await page.mouse.down();
+  await page.mouse.move(sx + dx, sy + dy, { steps: 8 });
+  await page.mouse.up();
+  expectedSize = { w: Math.max(MIN_NOTE_W, w0 + dx), h: Math.max(MIN_NOTE_H, h0 + dy) };
+});
+
+Then('the sticky note should be at the resized size', async ({ page }) => {
+  if (!expectedSize) throw new Error('no expected size recorded');
+  const note = page.locator('.sticky-note').last();
+  const [w, h] = await offsetSize(note);
+  expect(Math.abs(w - expectedSize.w)).toBeLessThanOrEqual(4);
+  expect(Math.abs(h - expectedSize.h)).toBeLessThanOrEqual(4);
+});
+
+Then('the sticky note should not be smaller than the minimum size', async ({ page }) => {
+  const note = page.locator('.sticky-note').last();
+  const [w, h] = await offsetSize(note);
+  expect(w).toBeGreaterThanOrEqual(MIN_NOTE_W);
+  expect(h).toBeGreaterThanOrEqual(MIN_NOTE_H);
 });
 
 Then('the sticky note should be within the viewport', async ({ page }) => {
