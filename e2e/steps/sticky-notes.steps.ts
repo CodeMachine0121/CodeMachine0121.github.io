@@ -72,6 +72,23 @@ Then('the sticky note should be at the dragged position', async ({ page }) => {
   expect(Math.abs(box.y - expectedPos.y)).toBeLessThanOrEqual(6);
 });
 
+When('I start dragging the sticky note to the top edge', async ({ page }) => {
+  const bar = page.locator('.sticky-note__bar').last();
+  const handle = await bar.boundingBox();
+  if (!handle) throw new Error('note not found');
+  await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handle.x + handle.width / 2, 8, { steps: 10 });
+});
+
+Then('the sticky-notes trash zone should be visible', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-trash')).toBeVisible();
+});
+
+When('I drop the sticky note', async ({ page }) => {
+  await page.mouse.up();
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

@@ -52,3 +52,14 @@ Feature: Article Sticky Notes
     Then there should be 0 sticky notes
     When I reload the page
     Then there should be 0 sticky notes
+
+  Scenario: TC-07 dragging a note to the top edge reveals the trash and drops to delete
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    Then there should be 1 sticky notes
+    When I start dragging the sticky note to the top edge
+    Then the sticky-notes trash zone should be visible
+    When I drop the sticky note
+    Then there should be 0 sticky notes
+    When I reload the page
+    Then there should be 0 sticky notes

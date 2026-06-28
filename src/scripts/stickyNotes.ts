@@ -15,10 +15,13 @@ interface Note {
 
 const DESKTOP_MIN = 768;
 const STORAGE_PREFIX = 'sticky-notes:';
+const TRASH_THRESHOLD = 90;
 
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
+let trashEl: HTMLElement | null = null;
 let drag: { note: Note; el: HTMLElement; dx: number; dy: number } | null = null;
+let armed = false;
 
 function uid(): string {
   return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -140,13 +143,25 @@ function onPointerMove(e: PointerEvent): void {
   drag.note.y = e.clientY - drag.dy;
   drag.el.style.left = drag.note.x + 'px';
   drag.el.style.top = drag.note.y + 'px';
+
+  armed = e.clientY < TRASH_THRESHOLD;
+  trashEl?.classList.toggle('is-active', armed);
+  trashEl?.classList.toggle('is-armed', armed);
 }
 
 function onPointerUp(): void {
   if (!drag) return;
+  const note = drag.note;
   drag.el.classList.remove('is-dragging');
   drag = null;
-  save();
+  const wasArmed = armed;
+  armed = false;
+  trashEl?.classList.remove('is-active', 'is-armed');
+  if (wasArmed) {
+    removeNote(note);
+  } else {
+    save();
+  }
 }
 
 function onTripleClick(e: MouseEvent): void {
@@ -168,6 +183,7 @@ function onTripleClick(e: MouseEvent): void {
 export function initStickyNotes(): void {
   root = document.getElementById('sticky-notes-root');
   if (!root) return;
+  trashEl = document.getElementById('sticky-notes-trash');
   load();
   document.addEventListener('click', onTripleClick);
   document.addEventListener('pointermove', onPointerMove);

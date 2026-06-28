@@ -398,3 +398,38 @@
   content: '寫點筆記…';
   opacity: 0.45;
 }
+
+/* 拖到頂端刪除：拖曳時靠近視窗頂端才浮現的垃圾桶區 */
+.sticky-notes-trash {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  border: 2px dashed var(--hd-border);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow-soft);
+}
+
+.sticky-notes-trash.is-active {
+  display: flex;
+}
+
+.sticky-notes-trash.is-armed {
+  color: #fff;
+  background: var(--hd-accent);
+  border-color: var(--hd-border);
+}
+
+.sticky-notes-trash__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
