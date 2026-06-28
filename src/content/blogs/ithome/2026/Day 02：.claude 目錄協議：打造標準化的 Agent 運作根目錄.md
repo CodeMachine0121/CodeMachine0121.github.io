@@ -10,7 +10,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 這不僅僅是一個資料夾，它是 **Agentic Runtime Environment (代理執行環境)** 的控制中心。若沒有標準化的目錄結構，Agent 的行為將隨著每個專案的 Prompt 設定不同而產生不可預測的偏差。
 
-## 1. `.claude/` 的設計哲學：系統與行為分離
+## 1. .claude/ 的設計哲學：系統與行為分離
 我們將 `.claude/` 的設計核心建立在**「配置即協議 (Configuration as Protocol)」**之上。一個標準化的目錄結構應包含以下三個核心子系統：
 
 ```text

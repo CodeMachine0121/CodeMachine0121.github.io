@@ -35,10 +35,10 @@ ReAct 把 Agent 的認知拆成一個不斷重複的三段式循環：
 
 關鍵在於 **Thought 必須引用上一個 Observation 的事實**——這條紀律強迫模型「看著真實結果說話」，而不是自由發揮。
 
-## 3. `.claude/` 中的協議實作
+## 3. .claude/ 中的協議實作
 我們把 ReAct 的循環紀律「編譯」進規則檔，確保 Agent 不會跳過觀察、直接臆測到底。
 
-### `.claude/rules/react-protocol.md`
+### .claude/rules/react-protocol.md
 ```markdown
 # ReAct 執行協議
 
