@@ -70,3 +70,11 @@ Feature: Article Sticky Notes
     Then the sticky-notes button should be visible
     When I click the sticky-notes button
     Then the sticky-notes panel should be visible
+
+  Scenario: TC-09 adding a note from the panel creates and lists it
+    Given the viewport is narrow
+    And I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I click the sticky-notes button
+    And I click the panel add button
+    Then there should be 1 sticky notes
+    And the notes panel should list 1 notes

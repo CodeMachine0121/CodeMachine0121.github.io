@@ -105,6 +105,14 @@ Then('the sticky-notes panel should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-panel')).toBeVisible();
 });
 
+When('I click the panel add button', async ({ page }) => {
+  await page.locator('#sticky-notes-add').click();
+});
+
+Then('the notes panel should list {int} notes', async ({ page }, count: number) => {
+  await expect(page.locator('.sticky-notes-panel__item')).toHaveCount(count);
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

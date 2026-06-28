@@ -140,6 +140,13 @@ function addNote(x: number, y: number): void {
   el.querySelector<HTMLElement>('.sticky-note__text')?.focus();
 }
 
+function addNoteFromPanel(): void {
+  // Cascade panel-added notes near the top-left so they stay on-screen.
+  const step = notes.length % 6;
+  addNote(20 + step * 12, 100 + step * 12);
+  renderPanelList();
+}
+
 function onPointerMove(e: PointerEvent): void {
   if (!drag) return;
   drag.note.x = e.clientX - drag.dx;
@@ -235,4 +242,5 @@ export function initStickyNotes(): void {
 
   fabEl?.addEventListener('click', () => setPanelOpen(!panelEl?.classList.contains('is-open')));
   document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));
+  document.getElementById('sticky-notes-add')?.addEventListener('click', addNoteFromPanel);
 }
