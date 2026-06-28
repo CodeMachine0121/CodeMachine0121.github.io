@@ -104,3 +104,8 @@ Feature: Article Sticky Notes
     When I triple-click in the left margin
     Then there should be 20 sticky notes
     And the sticky-notes limit notice should be visible
+
+  Scenario: TC-13 a note saved off-screen is clamped back into the viewport on restore
+    Given the article is preloaded with an off-screen note
+    Then there should be 1 sticky notes
+    And the sticky note should be within the viewport

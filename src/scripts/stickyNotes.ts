@@ -73,7 +73,35 @@ function load(): void {
     return;
   }
   if (!root) return;
-  for (const note of notes) root.appendChild(renderNote(note));
+  for (const note of notes) {
+    const el = renderNote(note);
+    root.appendChild(el);
+    clampToViewport(note, el);
+  }
+}
+
+function clampToViewport(note: Note, el: HTMLElement): void {
+  const w = el.offsetWidth || 200;
+  const h = el.offsetHeight || 112;
+  const maxX = Math.max(0, window.innerWidth - w);
+  const maxY = Math.max(0, window.innerHeight - h);
+  note.x = Math.min(Math.max(0, note.x), maxX);
+  note.y = Math.min(Math.max(0, note.y), maxY);
+  el.style.left = note.x + 'px';
+  el.style.top = note.y + 'px';
+}
+
+function clampAll(): void {
+  if (!root) return;
+  let changed = false;
+  for (const note of notes) {
+    const el = root.querySelector<HTMLElement>(`[data-note-id="${note.id}"]`);
+    if (!el) continue;
+    const before = { x: note.x, y: note.y };
+    clampToViewport(note, el);
+    if (before.x !== note.x || before.y !== note.y) changed = true;
+  }
+  if (changed) save();
 }
 
 function renderNote(note: Note): HTMLElement {
@@ -258,6 +286,7 @@ export function initStickyNotes(): void {
   document.addEventListener('click', onTripleClick);
   document.addEventListener('pointermove', onPointerMove);
   document.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('resize', clampAll);
 
   fabEl?.addEventListener('click', () => setPanelOpen(!panelEl?.classList.contains('is-open')));
   document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));

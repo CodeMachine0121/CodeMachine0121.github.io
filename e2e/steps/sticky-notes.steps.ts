@@ -115,6 +115,28 @@ Then('the sticky-notes limit notice should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-limit')).toBeVisible();
 });
 
+Given('the article is preloaded with an off-screen note', async ({ page }) => {
+  const url = '/blogs/clean-architecture-with-asp-dotnet-core-10';
+  await page.goto(url);
+  await page.evaluate(() => {
+    const key = 'sticky-notes:' + window.location.pathname;
+    const arr = [{ id: 'offscreen', text: 'far away', color: 'yellow', x: 99999, y: 99999 }];
+    window.localStorage.setItem(key, JSON.stringify(arr));
+  });
+  await page.reload();
+});
+
+Then('the sticky note should be within the viewport', async ({ page }) => {
+  const vp = page.viewportSize();
+  if (!vp) throw new Error('no viewport');
+  const box = await page.locator('.sticky-note').last().boundingBox();
+  if (!box) throw new Error('note not found');
+  expect(box.x).toBeGreaterThanOrEqual(-6);
+  expect(box.y).toBeGreaterThanOrEqual(-6);
+  expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 6);
+  expect(box.y + box.height).toBeLessThanOrEqual(vp.height + 6);
+});
+
 Then('the sticky-notes button should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-fab')).toBeVisible();
 });
