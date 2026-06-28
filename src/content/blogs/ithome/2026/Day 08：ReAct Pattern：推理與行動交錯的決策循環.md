@@ -91,25 +91,24 @@ ReAct 不是免費的，它的成本來自那個「循環」本身：
 
 ---
 
-**今日實踐任務：**
+## 今日實踐任務：
+
 1. 在 `.claude/rules/` 建立 `react-protocol.md`，定義 Thought / Action / Observation 的格式與停止條件。
 
 2. **Side Project：陌生專案上手助手 (`onboarding-scout`)**
 
-   找一個你**沒看過**的小型開源 repo，用 Claude Code 搭配你剛寫的 `react-protocol`，讓它透過 ReAct 循環自己摸索，最後產出一份「新人上手指南」：**技術棧 / 安裝步驟 / 啟動指令 / 如何跑測試**。
+   找一個你**沒看過**的小型開源 repo，用 Claude Code 搭配你剛寫的 `react-protocol`，讓它透過 ReAct 循環自己摸索，最後產出一份「新人上手指南」：** 使用框架 / 安裝步驟 / 啟動指令 / 如何跑測試**。
 
    *為什麼這題適合練 ReAct：* 它無法一步到位——每一步的下個動作都取決於上一步的觀察（看到 `package.json` 才知道有沒有 `test` script；看到 `Cargo.toml` 就走另一條路），正好逼出 Thought → Action → Observation 迴圈，而且有明確的收斂點（四項資訊湊齊就 `Finish`）。
 
-   **建議里程碑：**
+### 建議里程碑：
    - 動作先限定在**唯讀探索**（`ls`、`grep`、讀檔，最多跑一次 `install` / `test`），先不改任何檔案。
    - 要求 Agent 嚴格按 `react-protocol` 輸出每一步，禁止跳過 Observation 直接臆測。
    - 收斂條件：四項資訊到齊即輸出 Markdown 指南並 `Finish`。
 
-   **驗收標準（對照本篇重點）：**
+### 驗收標準（對照本篇重點)：
    - [ ] 每個 Thought 都引用上一個 Observation 的事實，沒有憑空臆測。
    - [ ] 至少出現一次「觀察推翻了原本假設、進而改變下一步動作」。
    - [ ] 有命中停止條件，沒有陷入無限迴圈。
-
-   **進階（stretch）：** 加上「連續 3 次 Observation 沒推進就停止並回報」的防呆，丟一個資訊殘缺的 repo 給它，看它會不會優雅地停下來、而不是硬猜。
 
 *明天 Day 09，我們會看推理模式的另一條路——CoT (Chain-of-Thought)：當任務不需要與環境互動、而是純粹的邏輯推導時，如何用「強制顯式推理」讓 Agent 把思路攤開、減少跳步出錯。*
