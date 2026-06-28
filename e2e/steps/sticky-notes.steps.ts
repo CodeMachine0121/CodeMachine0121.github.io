@@ -204,6 +204,18 @@ When('I click the panel item delete button', async ({ page }) => {
   await page.locator('.sticky-notes-panel__item-delete').first().click();
 });
 
+When('I open the first panel note', async ({ page }) => {
+  await page.locator('.sticky-notes-panel__item .sticky-notes-panel__text').first().click();
+});
+
+Then('the sticky-notes detail view should be visible', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-panel-detail')).toBeVisible();
+});
+
+Then('the detail view should show note text {string}', async ({ page }, text: string) => {
+  await expect(page.locator('#sticky-notes-detail-text')).toHaveValue(text);
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

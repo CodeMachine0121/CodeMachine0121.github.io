@@ -30,6 +30,13 @@ let limitTimer: number | undefined;
 let fabEl: HTMLElement | null = null;
 let panelEl: HTMLElement | null = null;
 let panelListEl: HTMLElement | null = null;
+let panelListViewEl: HTMLElement | null = null;
+let panelDetailEl: HTMLElement | null = null;
+let panelTitleEl: HTMLElement | null = null;
+let detailBackEl: HTMLElement | null = null;
+let detailTextEl: HTMLTextAreaElement | null = null;
+let detailColorsEl: HTMLElement | null = null;
+let detailNote: Note | null = null;
 let drag: { note: Note; el: HTMLElement; dx: number; dy: number } | null = null;
 let resizing: { note: Note; el: HTMLElement; startX: number; startY: number; startW: number; startH: number } | null = null;
 let armed = false;
@@ -273,6 +280,7 @@ function renderPanelList(): void {
     const label = document.createElement('span');
     label.className = 'sticky-notes-panel__text';
     label.textContent = note.text.trim() || '（空白便利貼）';
+    label.addEventListener('click', () => openDetail(note));
 
     const del = document.createElement('button');
     del.className = 'sticky-notes-panel__item-delete';
@@ -289,12 +297,58 @@ function renderPanelList(): void {
   }
 }
 
+function buildDetailSwatches(): void {
+  if (!detailColorsEl) return;
+  detailColorsEl.textContent = '';
+  for (const c of COLORS) {
+    const sw = document.createElement('button');
+    sw.type = 'button';
+    sw.className = 'sticky-notes-detail__swatch';
+    sw.dataset.color = c;
+    sw.setAttribute('aria-label', '顏色：' + c);
+    sw.addEventListener('click', () => {
+      if (!detailNote) return;
+      detailNote.color = c;
+      const el = root?.querySelector<HTMLElement>(`[data-note-id="${detailNote.id}"]`);
+      if (el) el.dataset.color = c;
+      detailColorsEl
+        ?.querySelectorAll<HTMLElement>('.sticky-notes-detail__swatch')
+        .forEach((s) => s.classList.toggle('is-active', s.dataset.color === c));
+      save();
+    });
+    detailColorsEl.appendChild(sw);
+  }
+}
+
+function showListView(): void {
+  detailNote = null;
+  if (panelDetailEl) panelDetailEl.hidden = true;
+  if (panelListViewEl) panelListViewEl.hidden = false;
+  if (detailBackEl) detailBackEl.hidden = true;
+  if (panelTitleEl) panelTitleEl.textContent = '我的便利貼';
+  renderPanelList();
+}
+
+function openDetail(note: Note): void {
+  detailNote = note;
+  if (detailTextEl) detailTextEl.value = note.text;
+  if (detailColorsEl) {
+    detailColorsEl.querySelectorAll<HTMLElement>('.sticky-notes-detail__swatch').forEach((sw) => {
+      sw.classList.toggle('is-active', sw.dataset.color === note.color);
+    });
+  }
+  if (panelListViewEl) panelListViewEl.hidden = true;
+  if (panelDetailEl) panelDetailEl.hidden = false;
+  if (detailBackEl) detailBackEl.hidden = false;
+  if (panelTitleEl) panelTitleEl.textContent = '便利貼內容';
+}
+
 function setPanelOpen(open: boolean): void {
   if (!panelEl) return;
   panelEl.classList.toggle('is-open', open);
   panelEl.setAttribute('aria-hidden', String(!open));
   fabEl?.setAttribute('aria-expanded', String(open));
-  if (open) renderPanelList();
+  if (open) showListView();
 }
 
 function onTripleClick(e: MouseEvent): void {
@@ -321,6 +375,13 @@ export function initStickyNotes(): void {
   fabEl = document.getElementById('sticky-notes-fab');
   panelEl = document.getElementById('sticky-notes-panel');
   panelListEl = document.getElementById('sticky-notes-panel-list');
+  panelListViewEl = document.getElementById('sticky-notes-panel-list-view');
+  panelDetailEl = document.getElementById('sticky-notes-panel-detail');
+  panelTitleEl = document.getElementById('sticky-notes-panel-title');
+  detailBackEl = document.getElementById('sticky-notes-detail-back');
+  detailTextEl = document.getElementById('sticky-notes-detail-text') as HTMLTextAreaElement | null;
+  detailColorsEl = document.getElementById('sticky-notes-detail-colors');
+  buildDetailSwatches();
   load();
   document.addEventListener('click', onTripleClick);
   document.addEventListener('pointermove', onPointerMove);
@@ -330,4 +391,5 @@ export function initStickyNotes(): void {
   fabEl?.addEventListener('click', () => setPanelOpen(!panelEl?.classList.contains('is-open')));
   document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));
   document.getElementById('sticky-notes-add')?.addEventListener('click', addNoteFromPanel);
+  detailBackEl?.addEventListener('click', showListView);
 }

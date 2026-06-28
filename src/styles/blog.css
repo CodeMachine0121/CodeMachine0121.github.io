@@ -623,3 +623,79 @@
   box-shadow: 2px 2px 0 0 var(--hd-shadow);
   cursor: pointer;
 }
+
+.sticky-notes-panel__title {
+  flex: 1;
+  text-align: center;
+}
+
+.sticky-notes-panel__back {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--hd-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* 便利貼詳情頁（手機：點選後進入的內容畫面） */
+.sticky-notes-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.sticky-notes-detail__colors {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.sticky-notes-detail__swatch {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 2px solid var(--hd-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sticky-notes-detail__swatch.is-active {
+  outline: 3px dashed var(--hd-accent-2);
+  outline-offset: 2px;
+}
+
+.sticky-notes-detail__swatch[data-color='yellow'] { background: #fff7b0; }
+.sticky-notes-detail__swatch[data-color='pink']   { background: #ffd6e0; }
+.sticky-notes-detail__swatch[data-color='blue']   { background: #cfe3ff; }
+.sticky-notes-detail__swatch[data-color='green']  { background: #d4f5d0; }
+
+.sticky-notes-detail__text {
+  flex: 1;
+  min-height: 9rem;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  resize: none;
+  outline: none;
+}
+
+.sticky-notes-detail__delete {
+  padding: 0.55rem 1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #fff;
+  background: var(--hd-accent);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 2px 2px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}

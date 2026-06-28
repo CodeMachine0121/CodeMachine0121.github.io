@@ -130,3 +130,11 @@ Feature: Article Sticky Notes
     And the article is preloaded with 1 sticky notes
     Then there should be 1 sticky notes
     And the floating sticky note should be hidden
+
+  Scenario: TC-17 selecting a panel note opens its detail view with the content
+    Given the viewport is narrow
+    And the article is preloaded with 1 sticky notes
+    When I click the sticky-notes button
+    And I open the first panel note
+    Then the sticky-notes detail view should be visible
+    And the detail view should show note text "note 0"
