@@ -149,3 +149,12 @@ Feature: Article Sticky Notes
     And I click the sticky-notes button
     And I open the first panel note
     Then the detail view should show note text "手機改的內容"
+
+  Scenario: TC-19 deleting a note from the detail view removes it
+    Given the viewport is narrow
+    And the article is preloaded with 1 sticky notes
+    When I click the sticky-notes button
+    And I open the first panel note
+    And I click the detail delete button
+    Then there should be 0 sticky notes
+    And the notes panel should list 0 notes
