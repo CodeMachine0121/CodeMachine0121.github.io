@@ -124,3 +124,9 @@ Feature: Article Sticky Notes
     When I triple-click in the left margin
     And I resize the sticky note by -500,-500
     Then the sticky note should not be smaller than the minimum size
+
+  Scenario: TC-16 on a narrow screen floating notes are not shown on the page
+    Given the viewport is narrow
+    And the article is preloaded with 1 sticky notes
+    Then there should be 1 sticky notes
+    And the floating sticky note should be hidden

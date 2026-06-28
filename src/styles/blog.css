@@ -518,6 +518,12 @@
   .sticky-notes-fab {
     display: flex;
   }
+
+  /* 手機模式：不顯示浮貼便利貼與拖曳垃圾桶，一切操作走漢堡選單面板 */
+  .sticky-note,
+  .sticky-notes-trash {
+    display: none !important;
+  }
 }
 
 /* 便利貼管理面板（窄螢幕） */

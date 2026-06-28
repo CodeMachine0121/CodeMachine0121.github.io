@@ -158,6 +158,10 @@ Then('the sticky note should be at the resized size', async ({ page }) => {
   expect(Math.abs(h - expectedSize.h)).toBeLessThanOrEqual(4);
 });
 
+Then('the floating sticky note should be hidden', async ({ page }) => {
+  await expect(page.locator('.sticky-note').first()).toBeHidden();
+});
+
 Then('the sticky note should not be smaller than the minimum size', async ({ page }) => {
   const note = page.locator('.sticky-note').last();
   const [w, h] = await offsetSize(note);
