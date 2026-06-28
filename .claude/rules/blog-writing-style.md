@@ -10,16 +10,23 @@
 
 ## 2. Frontmatter
 
-每篇文章 **MUST** 包含以下欄位：
+每篇文章 **MUST** 包含 `title`、`datetime`、`description`、`image`：
 
 ```yaml
 ---
-title: "Day NN：主標題：副標題"
+title: "主標題：副標題"
 datetime: "YYYY-MM-DD"
 description: "一句話摘要，用於列表與 SEO。"
 image: ""
-parent: "系列名稱（同系列文章須完全一致）"
 ---
+```
+
+- **`parent`：系列文章專屬欄位。** 只有屬於某個系列的文章才加上 `parent`，值為系列名稱，且同系列所有文章 **MUST** 完全一致（用於分組與系列排序）。
+- **單篇（非系列）文章 NEVER 加 `parent`**——多出此欄位會被誤歸入系列。
+
+```yaml
+# 系列文章（例：iThome 2026）才加這一行
+parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的 30 天實戰"
 ```
 
 ## 3. 檔名
