@@ -7,6 +7,7 @@ import PostNavigation from '../../components/sections/blog/PostNavigation.astro'
 import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import GiscusComments from '../../components/common/GiscusComments.astro';
 import BackToTop from '../../components/common/BackToTop.astro';
+import StickyNotes from '../../components/common/StickyNotes.astro';
 import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
 
 export const getStaticPaths = async () => {
@@ -73,6 +74,8 @@ if (blog.data.parent) {
         <PostNavigation {prevPost} {nextPost} />
         <BackToTop />
     </article>
+
+    <StickyNotes />
 
     <script>
         import { toggleMarkdownTheme } from "../../scripts/theme";

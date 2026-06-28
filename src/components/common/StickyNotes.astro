@@ -1,0 +1,48 @@
+---
+// StickyNotes — reader-authored sticky notes on article pages.
+// Notes persist per-article in localStorage and are rendered client-side.
+// Visual language follows the hand-drawn design system (--hd-note, wobble, offset shadow).
+---
+
+<div id="sticky-notes-root" class="sticky-notes-layer" aria-hidden="true"></div>
+
+<div id="sticky-notes-trash" class="sticky-notes-trash" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" class="sticky-notes-trash__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5" />
+    </svg>
+    <span>拖到這裡刪除</span>
+</div>
+
+<div id="sticky-notes-limit" class="sticky-notes-limit" role="status" aria-hidden="true">
+    便利貼數量已達上限（20 張）
+</div>
+
+<button id="sticky-notes-fab" class="sticky-notes-fab" aria-label="便利貼筆記" aria-expanded="false">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+</button>
+
+<div id="sticky-notes-panel" class="sticky-notes-panel" aria-hidden="true">
+    <div class="sticky-notes-panel__head">
+        <button id="sticky-notes-detail-back" class="sticky-notes-panel__back" type="button" aria-label="返回" hidden>←</button>
+        <span id="sticky-notes-panel-title" class="sticky-notes-panel__title">我的便利貼</span>
+        <button id="sticky-notes-panel-close" class="sticky-notes-panel__close" type="button" aria-label="關閉">×</button>
+    </div>
+
+    <div id="sticky-notes-panel-list-view">
+        <ul id="sticky-notes-panel-list" class="sticky-notes-panel__list"></ul>
+        <button id="sticky-notes-add" class="sticky-notes-panel__add" type="button">＋ 新增便利貼</button>
+    </div>
+
+    <div id="sticky-notes-panel-detail" class="sticky-notes-detail" hidden>
+        <div id="sticky-notes-detail-colors" class="sticky-notes-detail__colors"></div>
+        <textarea id="sticky-notes-detail-text" class="sticky-notes-detail__text" placeholder="寫點筆記…"></textarea>
+        <button id="sticky-notes-detail-save" class="sticky-notes-detail__save" type="button">保存這張便利貼</button>
+    </div>
+</div>
+
+<script>
+  import { initStickyNotes } from '../../scripts/stickyNotes';
+  initStickyNotes();
+</script>

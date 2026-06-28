@@ -301,3 +301,406 @@
   opacity: 1;
   visibility: visible;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   便利貼 / Sticky Notes — 讀者就地筆記，沿用手繪 post-it 視覺語言。
+   位置 fixed（釘在畫面），顏色用 data-color 切換；明暗主題各自配色。
+   ─────────────────────────────────────────────────────────────────────────── */
+.sticky-notes-layer {
+  position: static;
+}
+
+.sticky-note {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: 12.5rem;
+  min-width: 7.5rem;
+  min-height: 7rem;
+  padding: 0.4rem 0.75rem 0.75rem;
+  background: var(--hd-note);
+  color: var(--hd-note-text);
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 4px 4px 0 0 var(--hd-shadow);
+  transform: rotate(-1.5deg);
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+
+.sticky-note.is-dragging {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 7px 7px 0 0 var(--hd-shadow);
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* 顏色變體（亮色主題的便利貼色票） */
+.sticky-note[data-color='yellow'] { background: #fff7b0; }
+.sticky-note[data-color='pink']   { background: #ffd6e0; }
+.sticky-note[data-color='blue']   { background: #cfe3ff; }
+.sticky-note[data-color='green']  { background: #d4f5d0; }
+
+/* 暗色主題：調暗便利貼底色、提亮文字 */
+:root[data-theme='dark'] .sticky-note { color: #fdf6c2; }
+:root[data-theme='dark'] .sticky-note[data-color='yellow'] { background: #4a431f; }
+:root[data-theme='dark'] .sticky-note[data-color='pink']   { background: #4a2330; }
+:root[data-theme='dark'] .sticky-note[data-color='blue']   { background: #1f3350; }
+:root[data-theme='dark'] .sticky-note[data-color='green']  { background: #1f3f23; }
+
+.sticky-note__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  cursor: grab;
+}
+
+.sticky-note__color {
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 2px solid var(--hd-border);
+  border-radius: 50%;
+  background: #fff7b0;
+  cursor: pointer;
+}
+
+/* 顏色圓點對應目前便利貼顏色 */
+.sticky-note[data-color='yellow'] .sticky-note__color { background: #fff7b0; }
+.sticky-note[data-color='pink']   .sticky-note__color { background: #ffd6e0; }
+.sticky-note[data-color='blue']   .sticky-note__color { background: #cfe3ff; }
+.sticky-note[data-color='green']  .sticky-note__color { background: #d4f5d0; }
+
+.sticky-note__delete {
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--hd-note-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.sticky-note__delete:hover { opacity: 1; }
+
+.sticky-note__text {
+  flex: 1;
+  min-height: 4.5rem;
+  outline: none;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.sticky-note__text:empty::before {
+  content: '寫點筆記…';
+  opacity: 0.45;
+}
+
+/* 右下角縮放把手：手繪斜線格紋 */
+.sticky-note__resize {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  opacity: 0.55;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--hd-border) 0,
+    var(--hd-border) 1.5px,
+    transparent 1.5px,
+    transparent 4px
+  );
+}
+
+.sticky-note__resize:hover {
+  opacity: 0.9;
+}
+
+.sticky-note.is-resizing {
+  user-select: none;
+}
+
+/* 拖到頂端刪除：拖曳時靠近視窗頂端才浮現的垃圾桶區 */
+.sticky-notes-trash {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  color: var(--hd-ink);
+  background: var(--hd-surface);
+  border: 2px dashed var(--hd-border);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow-soft);
+}
+
+.sticky-notes-trash.is-active {
+  display: flex;
+}
+
+.sticky-notes-trash.is-armed {
+  color: #fff;
+  background: var(--hd-accent);
+  border-color: var(--hd-border);
+}
+
+.sticky-notes-trash__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* 達上限提示（短暫浮現於畫面頂端置中） */
+.sticky-notes-limit {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-0.5rem);
+  z-index: 70;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  color: #fff;
+  background: var(--hd-accent);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+}
+
+.sticky-notes-limit.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 窄螢幕浮動按鈕（漢堡）— 桌機隱藏，僅 < md 顯示 */
+.sticky-notes-fab {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 55;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 3px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}
+
+.sticky-notes-fab svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+@media (max-width: 767px) {
+  .sticky-notes-fab {
+    display: flex;
+  }
+
+  /* 手機模式：不顯示浮貼便利貼與拖曳垃圾桶，一切操作走漢堡選單面板 */
+  .sticky-note,
+  .sticky-notes-trash {
+    display: none !important;
+  }
+}
+
+/* 便利貼管理面板（窄螢幕） */
+.sticky-notes-panel {
+  position: fixed;
+  bottom: 6rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 56;
+  display: none;
+  flex-direction: column;
+  max-height: 60vh;
+  padding: 1rem;
+  background: var(--hd-surface);
+  color: var(--hd-ink);
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  border: 3px solid var(--hd-border);
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  box-shadow: 6px 6px 0 0 var(--hd-shadow);
+}
+
+.sticky-notes-panel.is-open {
+  display: flex;
+}
+
+.sticky-notes-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-bottom: 2px dashed var(--hd-border);
+  padding-bottom: 0.5rem;
+}
+
+.sticky-notes-panel__close {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--hd-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.sticky-notes-panel__list {
+  flex: 1;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.sticky-notes-panel__empty {
+  padding: 1rem 0;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.sticky-notes-panel__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--hd-border);
+}
+
+.sticky-notes-panel__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sticky-notes-panel__item-delete {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--hd-accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.sticky-notes-panel__add {
+  padding: 0.6rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 2px 2px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}
+
+.sticky-notes-panel__title {
+  flex: 1;
+  text-align: center;
+}
+
+.sticky-notes-panel__back {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--hd-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* 便利貼詳情頁（手機：點選後進入的內容畫面） */
+.sticky-notes-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 讓 hidden 屬性確實隱藏詳情頁（覆蓋上面的 display:flex） */
+.sticky-notes-detail[hidden] {
+  display: none;
+}
+
+.sticky-notes-detail__colors {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.sticky-notes-detail__swatch {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 2px solid var(--hd-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sticky-notes-detail__swatch.is-active {
+  outline: 3px dashed var(--hd-accent-2);
+  outline-offset: 2px;
+}
+
+.sticky-notes-detail__swatch[data-color='yellow'] { background: #fff7b0; }
+.sticky-notes-detail__swatch[data-color='pink']   { background: #ffd6e0; }
+.sticky-notes-detail__swatch[data-color='blue']   { background: #cfe3ff; }
+.sticky-notes-detail__swatch[data-color='green']  { background: #d4f5d0; }
+
+.sticky-notes-detail__text {
+  flex: 1;
+  min-height: 9rem;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  resize: none;
+  outline: none;
+}
+
+.sticky-notes-detail__save {
+  padding: 0.6rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--hd-accent-2);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 2px 2px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}
