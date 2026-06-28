@@ -1,4 +1,7 @@
-/* Portfolio/Developer Professional Color Scheme */
+/* Theme transition helper.
+   The colour palette now lives in the hand-drawn design system
+   (src/styles/handdrawn/_base.scss), which emits both the --hd-* tokens
+   and the legacy --color-* bridge per [data-theme]. */
 
 /* Smooth theme transitions */
 :root.theme-transitioning,
@@ -6,38 +9,4 @@
     transition: background-color 300ms ease-in-out,
                 border-color 300ms ease-in-out,
                 color 300ms ease-in-out !important;
-}
-
-[data-theme="light"] {
-    /* Primary brand colors - Portfolio focused */
-    --color-primary: #2563EB;
-    --color-secondary: #3B82F6;
-
-    /* Text colors with better contrast */
-    --color-text: #09090B;
-    --color-text-offset: #52525B;
-
-    /* Background colors - Clean and professional */
-    --color-background: #FAFAFA;
-    --color-background-offset: #F4F4F5;
-
-    /* Border color - Subtle but visible */
-    --color-border: #E4E4E7;
-}
-
-[data-theme="dark"] {
-    /* Primary brand colors - Slightly brighter for dark mode */
-    --color-primary: #3B82F6;
-    --color-secondary: #60A5FA;
-
-    /* Text colors - Excellent contrast on dark */
-    --color-text: #F1F5F9;
-    --color-text-offset: #94A3B8;
-
-    /* Background colors - True dark mode */
-    --color-background: #0F172A;
-    --color-background-offset: #1E293B;
-
-    /* Border color - Visible in dark mode */
-    --color-border: #334155;
 }

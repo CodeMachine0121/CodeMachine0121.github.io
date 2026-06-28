@@ -5,6 +5,7 @@ import LoadingScreen from '../components/common/LoadingScreen.astro';
 
 import '../styles/index.css';
 import '../styles/blog.css';
+import '../styles/handdrawn/index.scss';
 import ImageModal from "../content/ImageModal.astro";
 
 interface Props {
@@ -25,10 +26,13 @@ const { title } = Astro.props;
 		<link rel="alternate" type="application/rss+xml" title="Coding Afternoon RSS Feed" href="/rss.xml" />
 		<meta name="generator" content={Astro.generator} />
 
-		<!-- Professional Typography: Poppins + Open Sans -->
+		<!-- Hand-Drawn Typography: Kalam + Patrick Hand (Latin) over LXGW WenKai TC (CJK) -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css" />
 
 		<title>{title}</title>
 

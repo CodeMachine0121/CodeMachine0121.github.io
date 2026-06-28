@@ -1,0 +1,9 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hand-Drawn design system — single entry point.
+// Import order matters: tokens → mixins → base (themes/global) → components.
+// Imported once globally from Layout.astro. CV pages are intentionally excluded.
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'tokens';
+@use 'mixins';
+@use 'base';
+@use 'components';
