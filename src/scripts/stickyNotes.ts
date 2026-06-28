@@ -14,12 +14,56 @@ interface Note {
 }
 
 const DESKTOP_MIN = 768;
+const STORAGE_PREFIX = 'sticky-notes:';
 
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
 
 function uid(): string {
   return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function storageKey(): string {
+  return STORAGE_PREFIX + window.location.pathname;
+}
+
+function save(): void {
+  try {
+    window.localStorage.setItem(storageKey(), JSON.stringify(notes));
+  } catch {
+    // Storage unavailable (private mode / quota) — keep working in-session.
+  }
+}
+
+function isNote(v: unknown): v is Note {
+  const n = v as Note;
+  return (
+    !!n &&
+    typeof n.id === 'string' &&
+    typeof n.text === 'string' &&
+    (COLORS as readonly string[]).includes(n.color) &&
+    typeof n.x === 'number' &&
+    typeof n.y === 'number'
+  );
+}
+
+function load(): void {
+  let raw: string | null = null;
+  try {
+    raw = window.localStorage.getItem(storageKey());
+  } catch {
+    return;
+  }
+  if (!raw) return;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    notes = parsed.filter(isNote);
+  } catch {
+    return;
+  }
+  if (!root) return;
+  for (const note of notes) root.appendChild(renderNote(note));
 }
 
 function renderNote(note: Note): HTMLElement {
@@ -51,6 +95,10 @@ function renderNote(note: Note): HTMLElement {
   text.setAttribute('contenteditable', 'true');
   text.setAttribute('role', 'textbox');
   text.textContent = note.text;
+  text.addEventListener('blur', () => {
+    note.text = text.textContent ?? '';
+    save();
+  });
 
   el.append(bar, text);
   return el;
@@ -62,6 +110,7 @@ function addNote(x: number, y: number): void {
   notes.push(note);
   const el = renderNote(note);
   root.appendChild(el);
+  save();
   el.querySelector<HTMLElement>('.sticky-note__text')?.focus();
 }
 
@@ -84,5 +133,6 @@ function onTripleClick(e: MouseEvent): void {
 export function initStickyNotes(): void {
   root = document.getElementById('sticky-notes-root');
   if (!root) return;
+  load();
   document.addEventListener('click', onTripleClick);
 }

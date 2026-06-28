@@ -18,6 +18,23 @@ When('I triple-click on the article body text', async ({ page }) => {
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, { clickCount: 3 });
 });
 
+When('I type {string} into the new sticky note', async ({ page }, text: string) => {
+  const note = page.locator('.sticky-note__text').last();
+  await note.fill(text);
+});
+
+When('I blur the sticky note', async ({ page }) => {
+  await page.locator('.sticky-note__text').last().blur();
+});
+
+When('I reload the page', async ({ page }) => {
+  await page.reload();
+});
+
+Then('the sticky note should contain {string}', async ({ page }, text: string) => {
+  await expect(page.locator('.sticky-note__text').last()).toContainText(text);
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });

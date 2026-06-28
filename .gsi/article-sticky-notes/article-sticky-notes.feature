@@ -16,3 +16,12 @@ Feature: Article Sticky Notes
     Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
     When I triple-click on the article body text
     Then there should be 0 sticky notes
+
+  Scenario: TC-03 note text is saved on blur and restored after reload
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    And I type "重點：六角架構" into the new sticky note
+    And I blur the sticky note
+    And I reload the page
+    Then there should be 1 sticky notes
+    And the sticky note should contain "重點：六角架構"
