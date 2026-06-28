@@ -301,3 +301,94 @@
   opacity: 1;
   visibility: visible;
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   便利貼 / Sticky Notes — 讀者就地筆記，沿用手繪 post-it 視覺語言。
+   位置 fixed（釘在畫面），顏色用 data-color 切換；明暗主題各自配色。
+   ─────────────────────────────────────────────────────────────────────────── */
+.sticky-notes-layer {
+  position: static;
+}
+
+.sticky-note {
+  position: fixed;
+  z-index: 50;
+  width: 12.5rem;
+  min-height: 7rem;
+  padding: 0.4rem 0.75rem 0.75rem;
+  background: var(--hd-note);
+  color: var(--hd-note-text);
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 4px 4px 0 0 var(--hd-shadow);
+  transform: rotate(-1.5deg);
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+
+.sticky-note.is-dragging {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 7px 7px 0 0 var(--hd-shadow);
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* 顏色變體（亮色主題的便利貼色票） */
+.sticky-note[data-color='yellow'] { background: #fff7b0; }
+.sticky-note[data-color='pink']   { background: #ffd6e0; }
+.sticky-note[data-color='blue']   { background: #cfe3ff; }
+.sticky-note[data-color='green']  { background: #d4f5d0; }
+
+/* 暗色主題：調暗便利貼底色、提亮文字 */
+:root[data-theme='dark'] .sticky-note { color: #fdf6c2; }
+:root[data-theme='dark'] .sticky-note[data-color='yellow'] { background: #4a431f; }
+:root[data-theme='dark'] .sticky-note[data-color='pink']   { background: #4a2330; }
+:root[data-theme='dark'] .sticky-note[data-color='blue']   { background: #1f3350; }
+:root[data-theme='dark'] .sticky-note[data-color='green']  { background: #1f3f23; }
+
+.sticky-note__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  cursor: grab;
+}
+
+.sticky-note__color {
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 2px solid var(--hd-border);
+  border-radius: 50%;
+  background: #fff7b0;
+  cursor: pointer;
+}
+
+.sticky-note__delete {
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--hd-note-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.sticky-note__delete:hover { opacity: 1; }
+
+.sticky-note__text {
+  min-height: 4.5rem;
+  outline: none;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.sticky-note__text:empty::before {
+  content: '寫點筆記…';
+  opacity: 0.45;
+}

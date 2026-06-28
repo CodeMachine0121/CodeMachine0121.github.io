@@ -1,7 +1,15 @@
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 
-const { Then } = createBdd();
+const { When, Then } = createBdd();
+
+When('I triple-click in the left margin', async ({ page }) => {
+  const box = await page.locator('article').boundingBox();
+  if (!box) throw new Error('article not found');
+  const x = Math.max(20, box.x / 2);
+  const y = box.y + 120;
+  await page.mouse.click(x, y, { clickCount: 3 });
+});
 
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
@@ -9,4 +17,9 @@ Then('the sticky-notes layer should be present', async ({ page }) => {
 
 Then('there should be {int} sticky notes', async ({ page }, count: number) => {
   await expect(page.locator('.sticky-note')).toHaveCount(count);
+});
+
+Then('the new sticky note should be editable', async ({ page }) => {
+  await expect(page.locator('.sticky-note .sticky-note__text')).toHaveAttribute('contenteditable', 'true');
+  await expect(page.locator('.sticky-note .sticky-note__text')).toBeFocused();
 });
