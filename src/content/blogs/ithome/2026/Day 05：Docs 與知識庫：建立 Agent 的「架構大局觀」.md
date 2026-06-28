@@ -1,5 +1,5 @@
 ---
-title: "Day 05：`docs/` 與知識庫：建立 Agent 的「架構大局觀」"
+title: "Day 05： Docs/ 與知識庫：建立 Agent 的「架構大局觀」"
 datetime: "2026-06-27"
 description: "探討如何利用 `.claude/docs/` 構建結構化的知識庫，解決 Agent 在處理大型專案時喪失全域觀點的問題，並實現『文檔驅動開發』的自動化邏輯。"
 image: ""

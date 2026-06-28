@@ -1,5 +1,5 @@
 ---
-title: "Day 04：commands/ 與執行擴充：定義 Agent 的斜線指令協議"
+title: "Day 04：Commands 與執行擴充：定義 Agent 的斜線指令協議"
 datetime: "2026-06-26"
 description: "探討 `.claude/commands/` 的實作機制，將複雜的 Workflow Pattern 封裝為可呼叫的 CLI 指令，降低 AI 協作的認知負載。"
 image: ""
