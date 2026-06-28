@@ -222,6 +222,14 @@ Then('the sticky-notes detail view should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-panel-detail')).toBeVisible();
 });
 
+Then('the sticky-notes detail view should be hidden', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-panel-detail')).toBeHidden();
+});
+
+When('I go back from the detail view', async ({ page }) => {
+  await page.locator('#sticky-notes-detail-back').click();
+});
+
 Then('the detail view should show note text {string}', async ({ page }, text: string) => {
   await expect(page.locator('#sticky-notes-detail-text')).toHaveValue(text);
 });

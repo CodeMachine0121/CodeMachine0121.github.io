@@ -219,9 +219,14 @@ function addNote(x: number, y: number): void {
 
 function addNoteFromPanel(): void {
   // Cascade panel-added notes near the top-left so they stay on-screen.
-  const step = notes.length % 6;
+  const before = notes.length;
+  const step = before % 6;
   addNote(20 + step * 12, 100 + step * 12);
+  if (notes.length === before) return; // blocked by the soft cap
   renderPanelList();
+  // Jump straight to the detail page to write the content; back returns to list.
+  openDetail(notes[notes.length - 1]);
+  detailTextEl?.focus();
 }
 
 function onPointerMove(e: PointerEvent): void {

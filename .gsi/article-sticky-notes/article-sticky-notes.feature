@@ -79,12 +79,11 @@ Feature: Article Sticky Notes
     Then there should be 1 sticky notes
     And the notes panel should list 1 notes
 
-  Scenario: TC-10 deleting a note from the panel removes it
+  Scenario: TC-10 deleting a note from the panel list removes it
     Given the viewport is narrow
-    And I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    And the article is preloaded with 1 sticky notes
     When I click the sticky-notes button
-    And I click the panel add button
-    Then there should be 1 sticky notes
+    Then the notes panel should list 1 notes
     When I click the panel item delete button
     Then there should be 0 sticky notes
     And the notes panel should list 0 notes
@@ -170,3 +169,14 @@ Feature: Article Sticky Notes
     And I reload the page
     Then there should be 1 sticky notes
     And the sticky note should contain "不失焦也要存"
+
+  Scenario: TC-22 adding from the panel jumps to the detail page; back returns to the list
+    Given the viewport is narrow
+    And I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I click the sticky-notes button
+    And I click the panel add button
+    Then the sticky-notes detail view should be visible
+    When I edit the detail text to "新便利貼內容"
+    And I go back from the detail view
+    Then the sticky-notes detail view should be hidden
+    And the notes panel should list 1 notes

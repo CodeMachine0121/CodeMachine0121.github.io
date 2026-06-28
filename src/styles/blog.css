@@ -649,6 +649,11 @@
   min-height: 0;
 }
 
+/* 讓 hidden 屬性確實隱藏詳情頁（覆蓋上面的 display:flex） */
+.sticky-notes-detail[hidden] {
+  display: none;
+}
+
 .sticky-notes-detail__colors {
   display: flex;
   gap: 0.6rem;
