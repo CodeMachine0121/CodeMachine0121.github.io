@@ -20,6 +20,9 @@ const TRASH_THRESHOLD = 90;
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
 let trashEl: HTMLElement | null = null;
+let fabEl: HTMLElement | null = null;
+let panelEl: HTMLElement | null = null;
+let panelListEl: HTMLElement | null = null;
 let drag: { note: Note; el: HTMLElement; dx: number; dy: number } | null = null;
 let armed = false;
 
@@ -164,6 +167,44 @@ function onPointerUp(): void {
   }
 }
 
+function renderPanelList(): void {
+  if (!panelListEl) return;
+  panelListEl.textContent = '';
+  if (notes.length === 0) {
+    const empty = document.createElement('li');
+    empty.className = 'sticky-notes-panel__empty';
+    empty.textContent = '還沒有便利貼';
+    panelListEl.appendChild(empty);
+    return;
+  }
+  for (const note of notes) {
+    const li = document.createElement('li');
+    li.className = 'sticky-notes-panel__item';
+    li.dataset.noteId = note.id;
+
+    const label = document.createElement('span');
+    label.className = 'sticky-notes-panel__text';
+    label.textContent = note.text.trim() || '（空白便利貼）';
+
+    const del = document.createElement('button');
+    del.className = 'sticky-notes-panel__item-delete';
+    del.type = 'button';
+    del.setAttribute('aria-label', '刪除便利貼');
+    del.textContent = '×';
+
+    li.append(label, del);
+    panelListEl.appendChild(li);
+  }
+}
+
+function setPanelOpen(open: boolean): void {
+  if (!panelEl) return;
+  panelEl.classList.toggle('is-open', open);
+  panelEl.setAttribute('aria-hidden', String(!open));
+  fabEl?.setAttribute('aria-expanded', String(open));
+  if (open) renderPanelList();
+}
+
 function onTripleClick(e: MouseEvent): void {
   if (e.detail !== 3) return;
   if (window.innerWidth < DESKTOP_MIN) return;
@@ -184,8 +225,14 @@ export function initStickyNotes(): void {
   root = document.getElementById('sticky-notes-root');
   if (!root) return;
   trashEl = document.getElementById('sticky-notes-trash');
+  fabEl = document.getElementById('sticky-notes-fab');
+  panelEl = document.getElementById('sticky-notes-panel');
+  panelListEl = document.getElementById('sticky-notes-panel-list');
   load();
   document.addEventListener('click', onTripleClick);
   document.addEventListener('pointermove', onPointerMove);
   document.addEventListener('pointerup', onPointerUp);
+
+  fabEl?.addEventListener('click', () => setPanelOpen(!panelEl?.classList.contains('is-open')));
+  document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));
 }

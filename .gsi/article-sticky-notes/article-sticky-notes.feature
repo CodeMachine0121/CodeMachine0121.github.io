@@ -63,3 +63,10 @@ Feature: Article Sticky Notes
     Then there should be 0 sticky notes
     When I reload the page
     Then there should be 0 sticky notes
+
+  Scenario: TC-08 narrow screen shows a floating button that opens the notes panel
+    Given the viewport is narrow
+    And I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    Then the sticky-notes button should be visible
+    When I click the sticky-notes button
+    Then the sticky-notes panel should be visible

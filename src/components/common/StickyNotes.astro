@@ -13,6 +13,21 @@
     <span>拖到這裡刪除</span>
 </div>
 
+<button id="sticky-notes-fab" class="sticky-notes-fab" aria-label="便利貼筆記" aria-expanded="false">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+    </svg>
+</button>
+
+<div id="sticky-notes-panel" class="sticky-notes-panel" aria-hidden="true">
+    <div class="sticky-notes-panel__head">
+        <span>我的便利貼</span>
+        <button id="sticky-notes-panel-close" class="sticky-notes-panel__close" type="button" aria-label="關閉">×</button>
+    </div>
+    <ul id="sticky-notes-panel-list" class="sticky-notes-panel__list"></ul>
+    <button id="sticky-notes-add" class="sticky-notes-panel__add" type="button">＋ 新增便利貼</button>
+</div>
+
 <script>
   import { initStickyNotes } from '../../scripts/stickyNotes';
   initStickyNotes();

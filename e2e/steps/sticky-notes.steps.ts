@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 
-const { When, Then } = createBdd();
+const { Given, When, Then } = createBdd();
 
 let expectedPos: { x: number; y: number } | null = null;
 
@@ -87,6 +87,22 @@ Then('the sticky-notes trash zone should be visible', async ({ page }) => {
 
 When('I drop the sticky note', async ({ page }) => {
   await page.mouse.up();
+});
+
+Given('the viewport is narrow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+});
+
+Then('the sticky-notes button should be visible', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-fab')).toBeVisible();
+});
+
+When('I click the sticky-notes button', async ({ page }) => {
+  await page.locator('#sticky-notes-fab').click();
+});
+
+Then('the sticky-notes panel should be visible', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-panel')).toBeVisible();
 });
 
 Then('the sticky-notes layer should be present', async ({ page }) => {

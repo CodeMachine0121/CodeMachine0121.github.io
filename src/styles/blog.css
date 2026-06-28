@@ -433,3 +433,131 @@
   width: 1.25rem;
   height: 1.25rem;
 }
+
+/* 窄螢幕浮動按鈕（漢堡）— 桌機隱藏，僅 < md 顯示 */
+.sticky-notes-fab {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 55;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 3px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}
+
+.sticky-notes-fab svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+@media (max-width: 767px) {
+  .sticky-notes-fab {
+    display: flex;
+  }
+}
+
+/* 便利貼管理面板（窄螢幕） */
+.sticky-notes-panel {
+  position: fixed;
+  bottom: 6rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 56;
+  display: none;
+  flex-direction: column;
+  max-height: 60vh;
+  padding: 1rem;
+  background: var(--hd-surface);
+  color: var(--hd-ink);
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  border: 3px solid var(--hd-border);
+  border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  box-shadow: 6px 6px 0 0 var(--hd-shadow);
+}
+
+.sticky-notes-panel.is-open {
+  display: flex;
+}
+
+.sticky-notes-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-bottom: 2px dashed var(--hd-border);
+  padding-bottom: 0.5rem;
+}
+
+.sticky-notes-panel__close {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--hd-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.sticky-notes-panel__list {
+  flex: 1;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.sticky-notes-panel__empty {
+  padding: 1rem 0;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.sticky-notes-panel__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--hd-border);
+}
+
+.sticky-notes-panel__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sticky-notes-panel__item-delete {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--hd-accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.sticky-notes-panel__add {
+  padding: 0.6rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--hd-ink);
+  background: var(--hd-note);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 2px 2px 0 0 var(--hd-shadow);
+  cursor: pointer;
+}
