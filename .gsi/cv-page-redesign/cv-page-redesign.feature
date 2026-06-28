@@ -28,7 +28,7 @@ Feature: CV Page Redesign with Profile Picture & cv.json
     Then I should see "Education"
     And I should see "National Yunlin University of Science and Technology"
     And I should see "Projects"
-    And I should see "GSI Protocol"
+    And I should see "DevOpsDays Taipei 2026"
 
   Scenario: Download PDF 功能正常
     Given I am on the "/cv" page
