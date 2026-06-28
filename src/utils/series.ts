@@ -125,26 +125,6 @@ function sortByDateAsc(a: BlogEntry, b: BlogEntry): number {
 }
 
 /**
- * 取得系列摘要資訊（用於概覽頁）
- * 
- * @param series 系列資料
- * @returns 系列摘要
- */
-export function getSeriesSummary(series: Series) {
-  const dates = series.articles.map(article => new Date(article.data.datetime));
-  const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
-  const firstDate = new Date(Math.min(...dates.map(d => d.getTime())));
-
-  return {
-    name: series.name,
-    slug: series.slug,
-    count: series.count,
-    latestDate: latestDate.toISOString(),
-    firstDate: firstDate.toISOString()
-  };
-}
-
-/**
  * 取得指定**單篇**文章的相鄰文章
  * 
  * @param currentSlug 目前文章的 slug

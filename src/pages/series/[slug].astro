@@ -3,7 +3,6 @@ import type { GetStaticPaths } from 'astro';
 import Layout from "../../layouts/Layout.astro";
 import BlogItem from "../../components/sections/blog/BlogItem.astro";
 import { generateSeriesList, findSeriesBySlug, sortArticlesBySeries } from "../../utils/series";
-import { createPagination, parsePageFromUrl, createPageUrl, isValidPage } from "../../utils/pagination";
 import { SERIES_CONSTANTS, type Series } from "../../types/series";
 
 // 生成靜態路徑
