@@ -184,6 +184,10 @@ Then('the sticky-notes button should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-fab')).toBeVisible();
 });
 
+Then('the sticky-notes button should be hidden', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-fab')).toBeHidden();
+});
+
 When('I click the sticky-notes button', async ({ page }) => {
   await page.locator('#sticky-notes-fab').click();
 });

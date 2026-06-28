@@ -158,3 +158,7 @@ Feature: Article Sticky Notes
     And I click the detail delete button
     Then there should be 0 sticky notes
     And the notes panel should list 0 notes
+
+  Scenario: TC-20 on a desktop screen the hamburger button is not shown
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    Then the sticky-notes button should be hidden
