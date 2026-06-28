@@ -401,9 +401,11 @@ export function initStickyNotes(): void {
   document.getElementById('sticky-notes-panel-close')?.addEventListener('click', () => setPanelOpen(false));
   document.getElementById('sticky-notes-add')?.addEventListener('click', addNoteFromPanel);
   detailBackEl?.addEventListener('click', showListView);
-  document.getElementById('sticky-notes-detail-delete')?.addEventListener('click', () => {
+  document.getElementById('sticky-notes-detail-save')?.addEventListener('click', () => {
     if (!detailNote) return;
-    removeNote(detailNote);
+    // Upsert the edited content, then return to the list.
+    if (detailTextEl) detailNote.text = detailTextEl.value;
+    save();
     showListView();
   });
   detailTextEl?.addEventListener('input', () => {

@@ -149,14 +149,19 @@ Feature: Article Sticky Notes
     And I open the first panel note
     Then the detail view should show note text "手機改的內容"
 
-  Scenario: TC-19 deleting a note from the detail view removes it
+  Scenario: TC-19 saving from the detail view upserts the content and returns to the list
     Given the viewport is narrow
     And the article is preloaded with 1 sticky notes
     When I click the sticky-notes button
     And I open the first panel note
-    And I click the detail delete button
-    Then there should be 0 sticky notes
-    And the notes panel should list 0 notes
+    And I edit the detail text to "已更新內容"
+    And I save the detail view
+    Then the sticky-notes detail view should be hidden
+    And the notes panel should list 1 notes
+    When I reload the page
+    And I click the sticky-notes button
+    And I open the first panel note
+    Then the detail view should show note text "已更新內容"
 
   Scenario: TC-20 on a desktop screen the hamburger button is not shown
     Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page

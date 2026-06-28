@@ -238,8 +238,8 @@ When('I edit the detail text to {string}', async ({ page }, text: string) => {
   await page.locator('#sticky-notes-detail-text').fill(text);
 });
 
-When('I click the detail delete button', async ({ page }) => {
-  await page.locator('#sticky-notes-detail-delete').click();
+When('I save the detail view', async ({ page }) => {
+  await page.locator('#sticky-notes-detail-save').click();
 });
 
 Then('the sticky-notes layer should be present', async ({ page }) => {

@@ -693,12 +693,12 @@
   outline: none;
 }
 
-.sticky-notes-detail__delete {
-  padding: 0.55rem 1rem;
+.sticky-notes-detail__save {
+  padding: 0.6rem 1rem;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #fff;
-  background: var(--hd-accent);
+  background: var(--hd-accent-2);
   border: 2px solid var(--hd-border);
   border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
   box-shadow: 2px 2px 0 0 var(--hd-shadow);
