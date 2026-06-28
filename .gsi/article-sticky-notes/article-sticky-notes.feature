@@ -11,3 +11,8 @@ Feature: Article Sticky Notes
     When I triple-click in the left margin
     Then there should be 1 sticky notes
     And the new sticky note should be editable
+
+  Scenario: TC-02 triple-click on the article body text adds no note
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click on the article body text
+    Then there should be 0 sticky notes

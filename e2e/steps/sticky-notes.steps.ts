@@ -11,6 +11,13 @@ When('I triple-click in the left margin', async ({ page }) => {
   await page.mouse.click(x, y, { clickCount: 3 });
 });
 
+When('I triple-click on the article body text', async ({ page }) => {
+  const p = page.locator('.blog-content p').first();
+  const box = await p.boundingBox();
+  if (!box) throw new Error('paragraph not found');
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, { clickCount: 3 });
+});
+
 Then('the sticky-notes layer should be present', async ({ page }) => {
   await expect(page.locator('#sticky-notes-root')).toBeAttached();
 });
