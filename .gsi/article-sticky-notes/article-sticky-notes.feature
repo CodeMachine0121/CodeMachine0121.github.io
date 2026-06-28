@@ -88,3 +88,12 @@ Feature: Article Sticky Notes
     When I click the panel item delete button
     Then there should be 0 sticky notes
     And the notes panel should list 0 notes
+
+  Scenario: TC-11 notes are scoped per article and do not leak across pages
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    Then there should be 1 sticky notes
+    When I navigate to the "/blogs/csharp-unit-test-如何驗證多次呼叫" page
+    Then there should be 0 sticky notes
+    When I navigate to the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    Then there should be 1 sticky notes

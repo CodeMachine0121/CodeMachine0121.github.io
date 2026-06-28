@@ -33,6 +33,10 @@ When('I reload the page', async ({ page }) => {
   await page.reload();
 });
 
+When('I navigate to the {string} page', async ({ page }, url: string) => {
+  await page.goto(url);
+});
+
 When('I click the sticky note delete button', async ({ page }) => {
   await page.locator('.sticky-note__delete').last().click();
 });
