@@ -434,6 +434,31 @@
   height: 1.25rem;
 }
 
+/* 達上限提示（短暫浮現於畫面頂端置中） */
+.sticky-notes-limit {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-0.5rem);
+  z-index: 70;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Kalam', 'LXGW WenKai TC', 'Patrick Hand', sans-serif;
+  color: #fff;
+  background: var(--hd-accent);
+  border: 2px solid var(--hd-border);
+  border-radius: 14px 6px 12px 8px / 8px 12px 6px 14px;
+  box-shadow: 3px 3px 0 0 var(--hd-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+}
+
+.sticky-notes-limit.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* 窄螢幕浮動按鈕（漢堡）— 桌機隱藏，僅 < md 顯示 */
 .sticky-notes-fab {
   position: fixed;

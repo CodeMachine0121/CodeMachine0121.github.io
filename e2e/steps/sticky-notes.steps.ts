@@ -97,6 +97,24 @@ Given('the viewport is narrow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
 });
 
+Given('the article is preloaded with {int} sticky notes', async ({ page }, n: number) => {
+  const url = '/blogs/clean-architecture-with-asp-dotnet-core-10';
+  await page.goto(url);
+  await page.evaluate((count) => {
+    const key = 'sticky-notes:' + window.location.pathname;
+    const arr = [];
+    for (let i = 0; i < count; i++) {
+      arr.push({ id: 'seed' + i, text: 'note ' + i, color: 'yellow', x: 600 + i, y: 420 + i });
+    }
+    window.localStorage.setItem(key, JSON.stringify(arr));
+  }, n);
+  await page.reload();
+});
+
+Then('the sticky-notes limit notice should be visible', async ({ page }) => {
+  await expect(page.locator('#sticky-notes-limit')).toBeVisible();
+});
+
 Then('the sticky-notes button should be visible', async ({ page }) => {
   await expect(page.locator('#sticky-notes-fab')).toBeVisible();
 });

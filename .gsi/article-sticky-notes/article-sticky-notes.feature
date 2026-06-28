@@ -97,3 +97,10 @@ Feature: Article Sticky Notes
     Then there should be 0 sticky notes
     When I navigate to the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
     Then there should be 1 sticky notes
+
+  Scenario: TC-12 adding beyond the soft cap of 20 is blocked with a notice
+    Given the article is preloaded with 20 sticky notes
+    Then there should be 20 sticky notes
+    When I triple-click in the left margin
+    Then there should be 20 sticky notes
+    And the sticky-notes limit notice should be visible

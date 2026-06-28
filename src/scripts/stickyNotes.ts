@@ -16,10 +16,13 @@ interface Note {
 const DESKTOP_MIN = 768;
 const STORAGE_PREFIX = 'sticky-notes:';
 const TRASH_THRESHOLD = 90;
+const MAX_NOTES = 20;
 
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
 let trashEl: HTMLElement | null = null;
+let limitEl: HTMLElement | null = null;
+let limitTimer: number | undefined;
 let fabEl: HTMLElement | null = null;
 let panelEl: HTMLElement | null = null;
 let panelListEl: HTMLElement | null = null;
@@ -130,8 +133,19 @@ function removeNote(note: Note): void {
   save();
 }
 
+function showLimitNotice(): void {
+  if (!limitEl) return;
+  limitEl.classList.add('is-visible');
+  window.clearTimeout(limitTimer);
+  limitTimer = window.setTimeout(() => limitEl?.classList.remove('is-visible'), 3000);
+}
+
 function addNote(x: number, y: number): void {
   if (!root) return;
+  if (notes.length >= MAX_NOTES) {
+    showLimitNotice();
+    return;
+  }
   const note: Note = { id: uid(), text: '', color: 'yellow', x, y };
   notes.push(note);
   const el = renderNote(note);
@@ -236,6 +250,7 @@ export function initStickyNotes(): void {
   root = document.getElementById('sticky-notes-root');
   if (!root) return;
   trashEl = document.getElementById('sticky-notes-trash');
+  limitEl = document.getElementById('sticky-notes-limit');
   fabEl = document.getElementById('sticky-notes-fab');
   panelEl = document.getElementById('sticky-notes-panel');
   panelListEl = document.getElementById('sticky-notes-panel-list');
