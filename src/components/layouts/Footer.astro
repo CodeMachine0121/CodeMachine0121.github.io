@@ -1,35 +1,44 @@
 ---
 import { Icon } from "astro-icon/components";
-import { menuItems, socialLinks } from "../../config/introduce.json";
+import { menuItems, socialLinks, basic } from "../../config/introduce.json";
+const year = new Date().getFullYear();
 ---
 
-<section class="py-10 mt-4">
-    <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-        <div class="text-center xl:flex xl:items-center xl:justify-between xl:text-left">
-            <div class="items-center mt-8 xl:mt-0 xl:flex xl:justify-end xl:space-x-8">
-                <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 xl:justify-end">
+<footer class="mt-8 border-t-[3px] border-dashed border-border">
+    <div class="px-4 mx-auto sm:px-6 max-w-6xl py-12">
+        <div class="flex flex-col items-center gap-8 xl:flex-row xl:justify-between">
+            <!-- Sign-off note -->
+            <div class="text-center xl:text-left">
+                <p class="font-heading text-2xl text-ink -rotate-1">{basic?.name}</p>
+                <p class="text-ink-soft mt-1">May the Bugs be with you.</p>
+            </div>
+
+            <div class="flex flex-col items-center gap-6 xl:flex-row xl:gap-10">
+                <!-- Nav -->
+                <ul class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
                     {menuItems.map(menu => (
                         <li>
-                            <a href={menu.link} title={menu.name.en} class="text-sm transition-all duration-200 hover:text-primary focus:text-primary font-medium">
+                            <a href={menu.link} title={menu.name.en} class="hd-link font-heading text-lg">
                                 {menu.name.en}
                             </a>
                         </li>
                     ))}
                 </ul>
 
-                <div class="w-full h-px mt-8 mb-5 xl:w-px xl:m-0 xl:h-6 bg-border"></div>
-
-                <ul class="flex items-center justify-center space-x-8 xl:justify-end">
+                <!-- Socials in rough circles -->
+                <ul class="flex items-center justify-center gap-4">
                     {socialLinks.map(social => (
                         <li>
                             <a href={social.link} title={social.iconName} target="_blank" rel="noopener noreferrer"
-                               class="social-link block text-default hover:text-primary focus:text-primary">
-                                <Icon name={social.iconName} />
+                               class="hd-icon-circle" aria-label={social.iconName}>
+                                <Icon name={social.iconName} class="size-5" />
                             </a>
                         </li>
                     ))}
                 </ul>
             </div>
         </div>
+
+        <p class="text-center text-ink-soft text-sm mt-10">© {year} · scribbled with care</p>
     </div>
-</section>
+</footer>

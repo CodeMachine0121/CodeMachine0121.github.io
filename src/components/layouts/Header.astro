@@ -4,43 +4,54 @@ import ThemeToggle from "../common/ThemeToggle.astro";
 import { basic, menuItems } from "../../config/introduce.json";
 ---
 
-<header class="bg-background py-4">
+<header class="sticky top-0 z-30 bg-paper/85 backdrop-blur-sm border-b-[3px] border-dashed border-border py-3">
   <div class="container max-w-6xl mx-auto flex justify-between items-center px-4 md:px-8">
-    <!-- Logo -->
-    <div class="text-2xl font-bold">
-      <a href="/" class="hover:text-offset">{basic?.name}</a>
-    </div>
+    <!-- Logo: a little taped name-tag -->
+    <a href="/" class="hd-logo inline-flex items-center font-heading text-2xl font-bold -rotate-1 hover:rotate-1 transition-transform duration-100">
+      {basic?.name}
+    </a>
 
-    <div class="flex gap-5 items-center">
+    <div class="flex gap-3 sm:gap-5 items-center">
       <!-- PC Menu -->
-      <nav class="hidden sm:flex space-x-6 items-center">
+      <nav class="hidden sm:flex space-x-7 items-center">
         {menuItems.map((item) => (
-          <a href={item.link} class="nav-link hover:text-primary font-medium">
+          <a href={item.link} class="hd-link font-heading text-lg">
             {item.name.en}
           </a>
         ))}
       </nav>
 
       <!-- Mobile Menu Button -->
-      <div class="sm:hidden flex">
-        <button id="menu-btn" class="focus:outline-none interactive-scale" aria-label="Mobile open menu">
-          <Icon name="Menu" class="size-6"/>
-        </button>
-      </div>
+      <button id="menu-btn" class="sm:hidden hd-icon-circle !w-10 !h-10" aria-label="Mobile open menu">
+        <Icon name="Menu" class="size-5" />
+      </button>
 
       <ThemeToggle />
     </div>
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden sm:hidden">
-    {menuItems.map((item) => (
-      <a href={item.link} class="block px-4 py-2 hover:bg-background-offset hover:text-primary transition-all duration-200 font-medium">
-        {item.name.en}
-      </a>
-    ))}
+  <div id="mobile-menu" class="hidden sm:hidden px-4 pb-3 pt-2">
+    <div class="hd-card !p-3 mt-2 space-y-1">
+      {menuItems.map((item) => (
+        <a href={item.link} class="block px-3 py-2 font-heading text-lg hover:bg-accent hover:text-white rounded-wobbly-sm transition-colors duration-100">
+          {item.name.en}
+        </a>
+      ))}
+    </div>
   </div>
 </header>
+
+<style>
+  /* Felt-tip underline that lives permanently under the logo */
+  .hd-logo {
+    background-image: linear-gradient(var(--hd-accent), var(--hd-accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 3px;
+    padding-bottom: 2px;
+  }
+</style>
 
 <script>
   const menuBtn = document.getElementById('menu-btn');
