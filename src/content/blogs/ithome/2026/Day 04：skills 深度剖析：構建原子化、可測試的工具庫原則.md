@@ -1,41 +1,71 @@
 ---
 title: "Day 04：skills/ 深度剖析：構建原子化、可測試的工具庫原則"
 datetime: "2026-06-26"
-description: "探討 .claude/skills/ 的設計原則：如何把不確定的 Shell 操作封裝成原子化、可測試、輸出結構化的「工具」，讓 Agent 的手腳既可靠又可被驗證，真正實現系統與邏輯的解耦。"
+description: "探討 .claude/skills/ 的設計：一個 skill 是一份 SKILL.md（定義何時觸發）加上它所指定的腳本與範本。如何讓能力被模型在對的時機自動載入，並把確定性的執行沉澱成可測試的 scripts。"
 image: ""
 parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的 30 天實戰"
 ---
 
 昨天我們剖析了 `rules/`——Agent 的「大腦邏輯」，它約束 Agent **怎麼想**。但光有紀律不夠，Agent 還需要可靠的「手腳」去**動手做**。今天，我們從「行為約束」走向「執行能力」，深入剖析 `.claude/skills/`。
 
-> ⚠️ 先釐清：本系列所談的 `skills/`，指的是一套**自訂的協議設計模式**——存放在 `.claude/skills/` 下、由 Agent 透過 Bash 呼叫的**原子化 CLI 工具腳本**。重點在於工程紀律（原子化、可測試、結構化輸出），而非任何開箱即用的功能。
+這裡要先打破一個常見誤解：**一個 skill 不是一支放在資料夾裡、等人呼叫的腳本。** 它是一份 `SKILL.md`——一個會描述「自己是什麼、何時該被用」的能力包，再由它去指定要執行哪支腳本、套用哪個範本。
 
-## 1. 為什麼要建工具庫，而不是讓 Agent 自由打指令？
-最危險的 Agent，是一個能隨意生成並執行任意 Shell 命令的 Agent。
+## 1. 什麼是 Skill？一份 SKILL.md + 它所指定的資源
+一個 skill 是 `.claude/skills/<name>/` 下的一個目錄，核心是根目錄的 `SKILL.md`：
 
-LLM 直接吐 shell 是**不可預測**的：它可能記錯 `git` 的選項、在 macOS 與 Linux 間踩到 `sed` 的差異、甚至在「想清理一下」的善意下打出 `rm -rf`。`skills/` 的核心價值，就是把這些**高風險或高複雜度的操作，預先封裝成寫好、測過的腳本**。
+*   **frontmatter（`name` + `description`）：** 這是 skill 的「身分證」。其中 `description` 最關鍵——它不是給人看的註解，而是 **觸發條件**。Claude Code 啟動時會掃過所有 skill 的 description，**由模型自行判斷**什麼情境該載入這個 skill（model-invoked），你不需要手動呼叫。
+*   **body（Markdown 內文）：** 用自然語言寫清楚這個能力的流程，以及**該呼叫哪支 `scripts/` 腳本、套用哪個 `templates/` 範本來產出**。
 
-*   `rules/` 定義 Agent **怎麼想**（決策邏輯）。
-*   `skills/` 提供 Agent **怎麼做**（可靠動作）。
+換句話說：`SKILL.md` 是編排（orchestration），`scripts/` 與 `templates/` 是它調度的執行單元與輸出模具。
 
-Agent 不需要重新發明 `git rebase` 的複雜流程，它只需要呼叫 `.claude/skills/git-safe-rebase.sh`。我們把「不確定性」鎖進一個個經過驗證的盒子裡。
+> 📌 這也是 Skill 與明天要談的 `commands/` 最大的差別：**Skill 是「模型觸發」**（Claude 依 description 自己決定何時用）；**Command 是「使用者觸發」**（你打 `/command` 才啟動）。
 
-## 2. 好工具的三個原則：原子化、確定性、結構化輸出
+## 2. Skill 的結構
+```text
+.claude/skills/
+└── git-report/
+    ├── SKILL.md              # 定義：name + description（觸發時機）+ 流程
+    ├── scripts/
+    │   └── summarize.sh      # 原子化、可測試的執行單元（輸出 JSON）
+    └── templates/
+        └── report.md         # 輸出範本（格式與邏輯分離）
+```
+
+`SKILL.md` 是大腦，`scripts/` 是肌肉，`templates/` 是模具——三者各司其職。
+
+## 3. 範例：一份 SKILL.md
+```markdown
+---
+name: git-report
+description: 產出目前 Git 工作區的狀態摘要報告。當使用者詢問「現在改了哪些東西」「幫我看 git 狀態」「整理一份變更摘要」時使用。
+---
+
+# Git 變更摘要
+
+## 流程
+1. 執行 `scripts/summarize.sh`，取得結構化的工作區狀態（JSON）。
+2. 將 JSON 的 `branch` / `staged` / `modified` 欄位填入 `templates/report.md`。
+3. 輸出填好的報告給使用者。
+```
+
+重點在於：**「何時用」寫在 description、「怎麼做」寫在 body、「實際執行」交給 script、「長什麼樣」交給 template。** 每一層職責清晰。
+
+## 4. 確定性的執行，沉澱進可測試的 scripts
+`SKILL.md` 指定的腳本，才是真正動手的地方。它應遵守三個原則：
 
 ### A. 原子化 (Atomicity)
-一支腳本只做一件可獨立描述的事。不要寫一支「跑測試順便部署順便發通知」的萬能腳本——那會讓它無法被獨立驗證，也無法被重用。
+一支腳本只做一件可獨立描述的事。不要寫「跑測試順便部署順便發通知」的萬能腳本——那無法被獨立驗證，也無法重用。
 
 ### B. 確定性 (Determinism)
-相同輸入必須產生相同輸出，並用明確的 **exit code** 表達成功與失敗。Agent 依賴 exit code 來判斷下一步，一個「有時回 0、有時靜默失敗」的腳本，會讓上層所有 Pattern 跟著崩潰。
+相同輸入產生相同輸出，並用明確的 **exit code** 表達成敗。一個「有時回 0、有時靜默失敗」的腳本，會讓上層整個 skill 跟著崩潰。
 
 ### C. 結構化輸出 (Structured Output)
-這是工具與「一般 CLI 指令」最關鍵的差異：**工具應該回傳 JSON，而不是給人看的純文字。** 讓 Agent 去解析 `git status` 那種為人類設計的排版，等於逼它在雜訊裡猜資料；直接給它結構化結果，解析就變得可靠。
+腳本應回傳 **JSON**，而不是給人看的純文字。讓模型去解析 `git status` 那種為人類排版的輸出，等於逼它在雜訊裡猜資料；直接給結構化結果，`SKILL.md` 的後續步驟才能可靠地引用。
 
-## 3. 範例：一支結構化輸出的 skill
 ```bash
 #!/usr/bin/env bash
-# .claude/skills/git-summary.sh
-# 原子化工具：回傳目前 Git 工作區狀態（JSON）
+# .claude/skills/git-report/scripts/summarize.sh
+# 原子化執行單元：回傳工作區狀態（JSON）
 set -euo pipefail
 
 branch=$(git rev-parse --abbrev-ref HEAD)
@@ -45,28 +75,25 @@ modified=$(git diff --name-only | wc -l | tr -d ' ')
 printf '{"branch":"%s","staged":%s,"modified":%s}\n' "$branch" "$staged" "$modified"
 ```
 
-Agent 呼叫它得到的是 `{"branch":"main","staged":2,"modified":5}`——一個它能 100% 可靠解析的事實，而不是一段需要「閱讀理解」的輸出。
+## 5. 為什麼「可測試」是 skill 的命脈
+Skill 由兩種材質組成，要用不同方式確保品質：
 
-## 4. 為什麼「可測試」是 skill 的命脈
-`skills/` 是整個 Agent 行為的地基。地基不穩，上面疊的所有 Workflow Pattern 都會塌。
+*   **`SKILL.md` 是給模型的 prompt：** 無法跑單元測試，但可以「審查」——尤其是 `description` 寫得夠不夠精準（決定它會不會在對的時機被觸發）。
+*   **`scripts/` 是純粹的程式：** 不含 LLM 的隨機性，**可以用傳統單元測試完整覆蓋**。
 
-而 skills 有一個 `rules/` 沒有的巨大優勢：**它們是純粹的 CLI 程式，不含 LLM 的隨機性，因此可以用傳統單元測試完整覆蓋。** 這帶來兩個關鍵好處：
+所以好的設計是：**把易變的判斷與編排留在 `SKILL.md`，把確定性的操作下沉到可測試的 `scripts/`。** 這條界線帶來可觀測性——任務失敗時，你能明確區分「是腳本壞了，還是模型的判斷錯了」。
 
-*   **可靠性：** 工具在進入 Agent 的工具箱前，就已經被驗證過行為正確。
-*   **可觀測性：** 當任務失敗時，你能明確區分「是工具壞了，還是 Agent 的推理錯了」。沒有這條界線，除錯會變成一場災難。
+## 6. Critical Thinking：description 的精準度與 skill 粒度
+Skill 最難的不是寫腳本，而是兩件事：
 
-## 5. Critical Thinking：工具粒度的拿捏 (Granularity)
-工具庫最難的不是寫腳本，而是**切分邊界**：
-
-*   **太細碎：** 每支腳本只做一個 micro 操作，Agent 得串接十幾支才能完成一件事，認知負擔反而暴增、組裝容易出錯。
-*   **太肥大：** 一支腳本包山包海，失去原子性、無法單獨測試，也難以在其他 Pattern 中重用。
-
-實務上的判準是：**以「一個可獨立驗證的業務動作」作為一支 skill 的邊界。** 「安全地 rebase」「總結測試覆蓋率缺口」都是好邊界；「處理所有 git 相關的事」則不是。
+*   **`description` 的精準度：** 寫太廣（「處理檔案相關的事」），它會到處誤觸發；寫太窄或太模糊，該用的時候模型卻選不到它。description 要明確描述**情境與觸發語句**，這直接決定 skill 有沒有用。
+*   **粒度 (Granularity)：** 以「一個可獨立描述、可獨立驗證的能力」作為一個 skill 的邊界。「產出 Git 變更摘要」是好邊界；「處理所有 git 相關的事」則太肥，會失去原子性與可測試性。
 
 ---
 
 **今日實踐任務：**
-1. 挑一個你常讓 AI 重複執行、又容易出錯的 Shell 操作（例如清理 build、檢查依賴版本），把它封裝成 `.claude/skills/` 下的一支腳本，並要求它**輸出 JSON**。
-2. 幫這支腳本寫一個最小測試（給定輸入 → 驗證輸出），確保它是一個「可測試的工具」，而不是一次性的 hack。
+1. 建立 `.claude/skills/<name>/SKILL.md`，frontmatter 寫上 `name` 與一段**明確描述觸發時機**的 `description`，body 指定要跑哪支 script、套哪個 template。
+2. 把實際操作沉澱成 `scripts/` 下的原子化腳本（**輸出 JSON**），並為它寫一個最小測試。
+3. 打開 Claude Code，用接近 `description` 的話描述需求，觀察它是否會**自動載入**這個 skill——藉此檢驗你的 description 寫得夠不夠精準。
 
-*明天 Day 05，我們會把 `rules/` 的紀律與 `skills/` 的工具組合起來，封裝成一個個斜線指令 (`commands/`)，讓開發者用一行 `/command` 就能啟動完整的 Workflow。*
+*明天 Day 05，我們會看 skill 的另一面：當你想要**主動、明確地**啟動一套流程，而不是等模型自己判斷時，就輪到 `commands/` 上場——用一行 `/command` 觸發完整的 Workflow。*

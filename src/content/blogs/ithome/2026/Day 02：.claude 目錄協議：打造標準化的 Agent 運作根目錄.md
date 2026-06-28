@@ -16,7 +16,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 ```text
 .claude/
 ├── rules/            # 【行為約束】存放 Workflow 的 Pattern 定義與行為守則
-├── skills/           # 【執行能力】存放原子化的 CLI 工具腳本 (Node.js/Python)
+├── skills/           # 【執行能力】每個子目錄一份 SKILL.md，封裝可被模型自動觸發的能力
 ├── commands/         # 【互動介面】定義 Agent 可觸發的斜線指令
 └── docs/             # 【上下文基準】提供 Agent 參考的技術協議文件
 ```
@@ -29,9 +29,9 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 *   **深度設計：** 將每個 Workflow Pattern 定義為一個規則檔，Claude Code 在啟動時會讀取這些規則，自動「載入」該模式的思考方式。
 
 ### B. skills/ (Functional Capabilities)
-這是 Agent 的「手腳」，存放與專案業務邏輯相關的原子化腳本。
-*   **作用：** 將複雜的 Shell 命令封裝成具備 JSON 輸出格式的工具。
-*   **深度設計：** 這是實現「系統與邏輯解耦」的關鍵。Agent 不需要知道 `git rebase` 的複雜選項，它只需要呼叫 `.claude/skills/git-safe-rebase.sh`。
+這是 Agent 的「手腳」。每個 skill 是一個含 `SKILL.md` 的目錄——由 `SKILL.md` 描述「何時該用這個能力」，再指定要執行的腳本或套用的範本。
+*   **作用：** 把一段可重用的能力（確定性腳本 + 輸出範本）封裝成可被模型**自動觸發**的單元。
+*   **深度設計：** 這是實現「系統與邏輯解耦」的關鍵。Agent 不需要知道 `git rebase` 的複雜選項，只要 `SKILL.md` 指向一支驗證過的腳本即可（Day 04 詳述）。
 
 ### C. commands/ (Interaction Interface)
 定義 Agent 的快捷指令。

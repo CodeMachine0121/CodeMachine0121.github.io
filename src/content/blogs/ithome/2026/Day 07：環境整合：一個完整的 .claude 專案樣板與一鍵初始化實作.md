@@ -31,7 +31,9 @@ your-project/
     ├── rules/
     │   └── base-protocol.md       # 所有 Pattern 的前置規範（PRE-FLIGHT CHECK）
     ├── skills/
-    │   └── git-summary.sh         # 範例工具：回傳工作區狀態（JSON）
+    │   └── git-report/
+    │       ├── SKILL.md           # 能力定義：何時觸發 + 流程
+    │       └── scripts/summarize.sh   # 確定性執行單元（輸出 JSON）
     ├── commands/
     │   └── kickoff.md             # 範例指令：載入 context 後再開工
     └── docs/
