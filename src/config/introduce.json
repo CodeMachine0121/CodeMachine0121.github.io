@@ -77,16 +77,16 @@
   ],
   "projects": [
     {
+      "imageUrl": "https://cdn.coding-afternoon.com/images/GSI%20Protocol.png",
+      "title": { "en": "Speaker at DevOpsDays Taipei 2026" },
+      "type": { "en": "DevOpsDays Speaker" },
+      "link": "https://devopsdays.tw/2026/session/4723"
+    },
+    {
       "imageUrl": "",
       "title": { "en": "Trader Risk Radar: Risk Analysis & Ranking API for On-Chain Perpetual Traders" },
       "type": { "en": "Side Project" },
       "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
-    },
-    {
-      "imageUrl": "https://cdn.coding-afternoon.com/images/titles/GSI.png",
-      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD" },
-      "type": { "en": "Blog" },
-      "link": "https://github.com/CodeMachine0121/GSI-Protocol#"
     },
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/titles/golang-strong.png",

@@ -109,14 +109,14 @@
   ],
   "projects": [
     {
+      "title": { "en": "Speaker at DevOpsDays Taipei 2026", "zh": "擔任 DevOpsDays Taipei 2026 講者" },
+      "type": { "en": "DevOpsDays Speaker", "zh": "DevOpsDays 演講者" },
+      "link": "https://devopsdays.tw/2026/session/4723"
+    },
+    {
       "title": { "en": "Trader Risk Radar: Risk Analysis & Ranking API for On-Chain Perpetual Traders", "zh": "Trader Risk Radar:鏈上永續合約交易員的風險分析與排行 API" },
       "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
-    },
-    {
-      "title": { "en": "GSI Protocol: Boosting Efficiency and Agility in AI-Driven SDD", "zh": "GSI 協議:在 AI 驅動的 SDD 中提升效率與敏捷性" },
-      "type": { "en": "Blog", "zh": "部落格" },
-      "link": "https://github.com/CodeMachine0121/GSI-Protocol#"
     },
     {
       "title": { "en": "From 0 to 1: Golang TDD with AI", "zh": "從 0 到 1:Golang TDD with AI" },
