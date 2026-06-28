@@ -112,3 +112,4 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
 
 - **規劃文件**：iThome 2026 系列的完整路線圖（Day 01–30 標題、日期、進度）見 [`.claude/docs/ithome-2026-series-plan.md`](.claude/docs/ithome-2026-series-plan.md)。新增或調整系列文章前先參閱。
 - **撰寫規範**：標題層級、frontmatter、檔名與系列連貫性等規則見 [`.claude/rules/blog-writing-style.md`](.claude/rules/blog-writing-style.md)。其中最重要的一條：**文章正文標題一律從 h2（`##`）開始，不使用 h1。**
+- **多代理協作撰寫**：當需要用多個 sub-agent 各寫一篇再整合成定稿時，流程見 [`.claude/rules/blog-multi-agent-drafting.md`](.claude/rules/blog-multi-agent-drafting.md)（N 篇完整草稿並行 → 1 個整合者擇優融合 → 主流程驗證）。

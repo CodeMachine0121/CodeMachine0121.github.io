@@ -59,8 +59,8 @@
 | 30 | 打造你的 Pattern Language：總結與未來——建立私有 Agent 生態系 | 2026-07-22 |
 
 ## 目前進度
-- 已完成：Day 01–08。
-- 待撰寫：Day 09 起（CoT、ToT…）。
+- 已完成：Day 01–09。
+- 待撰寫：Day 10 起（ToT、Skeleton-of-Thought…）。
 
 ## Side Project 練習題（各 Pattern 日）
 
