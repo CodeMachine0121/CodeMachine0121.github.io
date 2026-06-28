@@ -10,7 +10,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 純推理（如 Chain-of-Thought）有一個致命弱點：它**只在模型腦中跑，從不接觸外部世界**。當推理脫離真實狀態時，模型會自信地產生幻覺。ReAct 的設計哲學就是對治這件事：**讓「推理 (Reasoning)」與「行動 (Acting)」交錯進行，用每一次行動的真實「觀察 (Observation)」來校正下一步推理。**
 
-### 1. 為什麼需要 ReAct？
+## 1. 為什麼需要 ReAct？
 想像你要 Agent「找出專案中所有沒被測試覆蓋的 public function」。
 
 *   **純 CoT 的做法：** 模型在腦中「想像」專案結構，一口氣推理出一份清單——但它從沒真的讀過檔案，結果往往是憑訓練記憶捏造的。
@@ -18,7 +18,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 差別不在「聰不聰明」，而在**有沒有跟環境形成回饋迴路**。
 
-### 2. ReAct 的核心循環：Thought → Action → Observation
+## 2. ReAct 的核心循環：Thought → Action → Observation
 ReAct 把 Agent 的認知拆成一個不斷重複的三段式循環：
 
 ```text
@@ -35,10 +35,10 @@ ReAct 把 Agent 的認知拆成一個不斷重複的三段式循環：
 
 關鍵在於 **Thought 必須引用上一個 Observation 的事實**——這條紀律強迫模型「看著真實結果說話」，而不是自由發揮。
 
-### 3. `.claude/` 中的協議實作
+## 3. `.claude/` 中的協議實作
 我們把 ReAct 的循環紀律「編譯」進規則檔，確保 Agent 不會跳過觀察、直接臆測到底。
 
-#### `.claude/rules/react-protocol.md`
+### `.claude/rules/react-protocol.md`
 ```markdown
 # ReAct 執行協議
 
@@ -55,7 +55,7 @@ ReAct 把 Agent 的認知拆成一個不斷重複的三段式循環：
 - 只有當證據足以支撐結論時，才允許輸出 `Action: Finish`。
 ```
 
-### 4. 一段真實的 ReAct Trace
+## 4. 一段真實的 ReAct Trace
 以「找出未被測試覆蓋的 public function」為例，Agent 的執行軌跡會長這樣：
 
 ```text
@@ -74,14 +74,14 @@ Action: Finish → 回報這 3 個未覆蓋的函式
 
 注意每個 `Thought` 都緊扣前一個 `Observation`——這就是 ReAct 抗幻覺的核心機制。
 
-### 5. 深度分析：ReAct vs CoT vs ToT
+## 5. 深度分析：ReAct vs CoT vs ToT
 *   **CoT (Chain-of-Thought)：** 線性推理鏈，**純內在思考、不與環境互動**。適合封閉式問題（數學、邏輯推導）。
 *   **ToT (Tree-of-Thought)：** 樹狀展開多條推理路徑再評估、回溯。適合**搜索空間大、需要試錯**的問題。
 *   **ReAct：** 推理與行動交錯，**引入外部觀察**。適合需要與檔案系統、API、工具互動的 Agent 任務——也就是軟體工程的日常。
 
 三者並非互斥：成熟的 Agent 常在 ReAct 的 `Thought` 階段內嵌 CoT 來深化單步推理。
 
-### 6. Critical Thinking：ReAct 的代價
+## 6. Critical Thinking：ReAct 的代價
 ReAct 不是免費的，它的成本來自那個「循環」本身：
 
 *   **延遲與 Token 成本：** 每個 Thought-Action-Observation 都是一次往返，多步任務的 Token 消耗遠高於一次性 CoT。

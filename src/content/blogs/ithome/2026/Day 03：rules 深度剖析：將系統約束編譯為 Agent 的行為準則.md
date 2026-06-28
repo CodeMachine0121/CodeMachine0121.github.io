@@ -10,7 +10,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 許多人以為 Rules 只是「寫給 AI 看的注意事項」，於是寫下一堆「請你務必……」、「請不要……」的請求句。但這種寫法注定失敗。Rules 的本質不是「請求 (Request)」，而是**「編譯 (Compilation)」**——我們要做的，是把人類模糊的工程意圖，編譯成 Agent 在每一個決策節點都能無歧義執行的行為準則。
 
-### 1. Rules 的本質：約束即規格 (Constraint as Specification)
+## 1. Rules 的本質：約束即規格 (Constraint as Specification)
 在傳統軟體中，規格定義了「程式該做什麼」；在 Agentic Workflow 中，Rules 定義了「Agent 不該怎麼想」。
 
 這是一個關鍵的視角轉換。LLM 的預設狀態是**「最大熵 (Maximum Entropy)」**——它擁有無限的可能性，因此會發散。Rules 的作用，就是透過約束來**降低熵值**，將 Agent 的行為空間收斂到我們期望的軌道上。
@@ -20,7 +20,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 一個好的 Rule，必須是**可被驗證 (Verifiable)** 的。如果你無法判斷 Agent 是否「違反」了某條規則，那它就不是規則，只是雜訊。
 
-### 2. 規則的三種型態：Directive、Constraint、Heuristic
+## 2. 規則的三種型態：Directive、Constraint、Heuristic
 並非所有規則都具有同等的強制力。在撰寫 `rules/` 時，我們必須明確區分三種型態，並用不同的語氣詞 (Modal Verbs) 來標示其優先級：
 
 | 型態                  | 語氣詞               | 作用            |           範例            |
@@ -31,23 +31,23 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 這套分層讓 Agent 在面對衝突時，能依照優先級進行裁決。當 `MUST` 與 `SHOULD` 相牴觸時，Agent 永遠以 `MUST` 為準。這正是把「人類的價值排序」編譯進系統的方式。
 
-### 3. 撰寫高品質 Rule 的四個原則
+## 3. 撰寫高品質 Rule 的四個原則
 
-#### A. 原子性 (Atomicity)
+### A. 原子性 (Atomicity)
 一條規則只描述一件事。把「程式碼要乾淨且要有測試且要有文件」拆成三條獨立規則。原子化的規則才能被獨立驗證、獨立除錯。
 
-#### B. 可觀測性 (Observability)
+### B. 可觀測性 (Observability)
 規則必須描述「可被外部觀察到的行為」，而非「內在的心理狀態」。
 *   **不可觀測：** 「請仔細思考後再回答。」
 *   **可觀測：** 「回答前，MUST 先輸出一段 `<reasoning>` 區塊列出你的決策依據。」
 
-#### C. 觸發條件明確 (Explicit Trigger)
+### C. 觸發條件明確 (Explicit Trigger)
 好的規則是 `WHEN [情境] → THEN [行為]` 的結構。模糊的全域規則會被 Agent 在長上下文中遺忘；綁定明確觸發條件的規則，則能在對的時機被精準喚醒。
 
-#### D. 提供逃生口 (Escape Hatch)
+### D. 提供逃生口 (Escape Hatch)
 過度剛性的規則會讓 Agent 陷入死鎖。對於 `SHOULD` 級別的規則，應明確定義「在什麼情況下可以偏離，以及偏離時必須做什麼」。例如：「SHOULD 複用既有函式；若既有函式無法滿足需求，必須在 commit message 中說明新增的理由。」
 
-### 4. 規則衝突解決機制 (Conflict Resolution)
+## 4. 規則衝突解決機制 (Conflict Resolution)
 當專案規模擴大，`rules/` 下的檔案越來越多，衝突無可避免。我們需要建立明確的**優先級裁決鏈 (Precedence Chain)**：
 
 ```text
@@ -59,7 +59,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 這條裁決鏈的意義在於：**它讓 Agent 的行為在面對矛盾時依然可預測。** 當一個任務指令要求「快速完成」，卻與「MUST 撰寫測試」的安全紅線衝突時，Agent 不會自行妥協，而是依照裁決鏈停下來請求 Human-in-the-loop 確認。
 
-### 5. Critical Thinking：規則的邊際效益遞減
+## 5. Critical Thinking：規則的邊際效益遞減
 最後，一個反直覺的觀念：**規則並非越多越好。**
 
 每一條規則都會佔用 Agent 的上下文預算 (Context Budget)，並增加決策時的計算負擔。當你寫下第 100 條規則時，前 50 條的遵守率可能已經開始下降——這就是 **「規則過載 (Rule Overload)」**。

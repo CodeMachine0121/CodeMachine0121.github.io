@@ -10,10 +10,10 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 這就是 **`.claude/commands/`** 存在的意義：**將複雜的 Workflow 封裝成可預測的「指令介面 (Interface)」。**
 
-### 1. 什麼是 Command 協議？
+## 1. 什麼是 Command 協議？
 在 Claude Code 的架構中，Command 是 Agent 的「快捷鍵」。它不是隨機的聊天指令，而是預定義好的 **「任務入口點 (Task Entry Point)」**。透過 `commands/`，我們將複雜的規則集與技能鏈，對應到一個簡單的 `/指令`。
 
-### 2. 目錄結構與定義規範
+## 2. 目錄結構與定義規範
 Claude Code 會自動掃描 `.claude/commands/` 目錄下的 Markdown 定義檔。**指令名稱直接來自「檔名」**（`tdd.md` 對應 `/tdd`），檔案結構則是「頂部 YAML frontmatter + 下方 Prompt 內文」。
 
 這裡有一個關鍵觀念要先釐清：**Command 的內文本質上是一段「可重用的 Prompt 範本」，而不是會被執行的程式。** 當你輸入 `/tdd`，Claude Code 會把這段文字展開後餵給 Agent，由 Agent 理解並行動；它不會像 runtime 一樣去「跑」一支腳本。
@@ -34,13 +34,13 @@ allowed-tools: Bash(bun test:*), Read, Edit
 3. 若測試失敗，將診斷結果作為上下文，提出並套用修復方案
 ```
 
-### 3. 使用方式：從「對話」轉向「指令導向」
+## 3. 使用方式：從「對話」轉向「指令導向」
 這是架構設計的關鍵轉變：
 *   **傳統開發 (Chat-driven)：** 開發者輸入：「幫我檢查程式有沒有錯，如果有錯幫我修好。」（AI 此時會進入隨機試錯模式）
 *   **協議開發 (Command-driven)：** 開發者輸入：`/tdd`。
     *   **Agent 的行為：** Claude Code 直接將上下文鎖定在 `tdd-protocol.md` 的規則集，並嚴格遵循定義好的執行節點，不再進行無意義的聊天。
 
-### 4. 深度設計：指令的「邊界守護」
+## 4. 深度設計：指令的「邊界守護」
 Command 不僅僅是觸發器，更可以扮演 **「環境初始化工具」** 的角色。
 
 > ⚠️ 注意：以下三個機制（狀態驗證、上下文掛載、環境預設）是**本系列自訂的協議設計模式**，並非 Claude Code 內建會自動執行的行為。它們都是透過 Command 內文的 Prompt 指示，引導 Agent 主動去完成的。
@@ -51,7 +51,7 @@ Command 不僅僅是觸發器，更可以扮演 **「環境初始化工具」** 
 2.  **上下文掛載 (Context Mounting)：** 透過 `@` 語法主動引用相關的技術規範文件（例如存放在 `.claude/docs/` 下的文件），確保 Agent 了解當前的業務背景。
 3.  **環境預設 (Environment Preset)：** 在 frontmatter 以 `allowed-tools`、`model` 等欄位收斂 Agent 的能力範圍，或在內文明確要求 Agent 提高輸出嚴謹度。
 
-### 5. Critical Thinking: 抽象層的維護成本
+## 5. Critical Thinking: 抽象層的維護成本
 將所有邏輯都寫在 Command 定義中會產生一個問題：**「抽象過度 (Over-abstraction)」**。
 *   **風險：** 當 Pattern 複雜到需要透過 5 個指令串聯時，開發者會混淆指令的職責。
 *   **解法：** 遵循 **「One Command, One Pattern」** 原則。一個 Command 對應一個完整的 Pattern 實例。如果該 Pattern 太複雜，請將其拆解為子指令（例如 `/tdd` 啟動主流程，`/tdd-fix` 執行修復細節），並明確寫在 `commands/README.md` 中。
