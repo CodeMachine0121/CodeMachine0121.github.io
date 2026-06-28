@@ -3,6 +3,8 @@ import { createBdd } from 'playwright-bdd';
 
 const { When, Then } = createBdd();
 
+let expectedPos: { x: number; y: number } | null = null;
+
 When('I triple-click in the left margin', async ({ page }) => {
   const box = await page.locator('article').boundingBox();
   if (!box) throw new Error('article not found');
@@ -41,6 +43,29 @@ When('I click the sticky note color swatch', async ({ page }) => {
 
 Then('the sticky note color should be {string}', async ({ page }, color: string) => {
   await expect(page.locator('.sticky-note').last()).toHaveAttribute('data-color', color);
+});
+
+When('I drag the sticky note by {int},{int}', async ({ page }, dx: number, dy: number) => {
+  const note = page.locator('.sticky-note').last();
+  const before = await note.boundingBox();
+  const bar = page.locator('.sticky-note__bar').last();
+  const handle = await bar.boundingBox();
+  if (!before || !handle) throw new Error('note not found');
+  const sx = handle.x + handle.width / 2;
+  const sy = handle.y + handle.height / 2;
+  await page.mouse.move(sx, sy);
+  await page.mouse.down();
+  await page.mouse.move(sx + dx, sy + dy, { steps: 8 });
+  await page.mouse.up();
+  expectedPos = { x: before.x + dx, y: before.y + dy };
+});
+
+Then('the sticky note should be at the dragged position', async ({ page }) => {
+  if (!expectedPos) throw new Error('no expected position recorded');
+  const box = await page.locator('.sticky-note').last().boundingBox();
+  if (!box) throw new Error('note not found');
+  expect(Math.abs(box.x - expectedPos.x)).toBeLessThanOrEqual(6);
+  expect(Math.abs(box.y - expectedPos.y)).toBeLessThanOrEqual(6);
 });
 
 Then('the sticky-notes layer should be present', async ({ page }) => {

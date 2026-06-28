@@ -18,6 +18,7 @@ const STORAGE_PREFIX = 'sticky-notes:';
 
 let notes: Note[] = [];
 let root: HTMLElement | null = null;
+let drag: { note: Note; el: HTMLElement; dx: number; dy: number } | null = null;
 
 function uid(): string {
   return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -76,6 +77,12 @@ function renderNote(note: Note): HTMLElement {
 
   const bar = document.createElement('div');
   bar.className = 'sticky-note__bar';
+  bar.addEventListener('pointerdown', (e) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    e.preventDefault();
+    drag = { note, el, dx: e.clientX - note.x, dy: e.clientY - note.y };
+    el.classList.add('is-dragging');
+  });
 
   const color = document.createElement('button');
   color.className = 'sticky-note__color';
@@ -120,6 +127,21 @@ function addNote(x: number, y: number): void {
   el.querySelector<HTMLElement>('.sticky-note__text')?.focus();
 }
 
+function onPointerMove(e: PointerEvent): void {
+  if (!drag) return;
+  drag.note.x = e.clientX - drag.dx;
+  drag.note.y = e.clientY - drag.dy;
+  drag.el.style.left = drag.note.x + 'px';
+  drag.el.style.top = drag.note.y + 'px';
+}
+
+function onPointerUp(): void {
+  if (!drag) return;
+  drag.el.classList.remove('is-dragging');
+  drag = null;
+  save();
+}
+
 function onTripleClick(e: MouseEvent): void {
   if (e.detail !== 3) return;
   if (window.innerWidth < DESKTOP_MIN) return;
@@ -141,4 +163,6 @@ export function initStickyNotes(): void {
   if (!root) return;
   load();
   document.addEventListener('click', onTripleClick);
+  document.addEventListener('pointermove', onPointerMove);
+  document.addEventListener('pointerup', onPointerUp);
 }
