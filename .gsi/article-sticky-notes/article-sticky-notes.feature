@@ -162,3 +162,11 @@ Feature: Article Sticky Notes
   Scenario: TC-20 on a desktop screen the hamburger button is not shown
     Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
     Then the sticky-notes button should be hidden
+
+  Scenario: TC-21 typed note text survives a reload even without blurring
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    And I type "不失焦也要存" into the focused note without blurring
+    And I reload the page
+    Then there should be 1 sticky notes
+    And the sticky note should contain "不失焦也要存"

@@ -160,10 +160,14 @@ function renderNote(note: Note): HTMLElement {
   text.setAttribute('contenteditable', 'true');
   text.setAttribute('role', 'textbox');
   text.textContent = note.text;
-  text.addEventListener('blur', () => {
+  // Save live as the user types so refreshing mid-edit never loses content
+  // (blur alone misses a refresh while the note still has focus).
+  const syncText = () => {
     note.text = text.textContent ?? '';
     save();
-  });
+  };
+  text.addEventListener('input', syncText);
+  text.addEventListener('blur', syncText);
 
   const resize = document.createElement('div');
   resize.className = 'sticky-note__resize';

@@ -34,6 +34,12 @@ When('I type {string} into the new sticky note', async ({ page }, text: string) 
   await note.fill(text);
 });
 
+When('I type {string} into the focused note without blurring', async ({ page }, text: string) => {
+  // The note is auto-focused after creation; type via the keyboard and do NOT
+  // move focus away, reproducing a user who refreshes mid-edit.
+  await page.keyboard.type(text);
+});
+
 When('I blur the sticky note', async ({ page }) => {
   await page.locator('.sticky-note__text').last().blur();
 });
