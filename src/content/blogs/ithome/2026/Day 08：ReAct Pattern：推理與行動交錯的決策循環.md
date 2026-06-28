@@ -6,7 +6,7 @@ image: ""
 parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的 30 天實戰"
 ---
 
-進入第二階段「決策、推理與結構化模式」，我們從最核心、也是讓 Agent 之所以成為 Agent 的模式——**ReAct (Reasoning + Acting)** 開始。在第一階段（Day 01–07），我們把 `.claude/` 的規則、技能、指令與知識庫鋪好，並整合成可一鍵初始化的樣板；今天起進入第二階段，要為 Agent 裝上真正的「思考骨架」。
+進入第二階段「決策、推理與結構化模式」，我們從最核心、也是讓 Agent 之所以成為 Agent 的模式——**ReAct (Reasoning + Acting)** 開始。在第一階段（Day 01–07），我們把 Claude Code 的內建機制——CLAUDE.md 記憶、rules、skills、subagents、hooks——都鋪好，並整合成一個可一鍵初始化的 starter；今天起進入第二階段，要為 Agent 裝上真正的「思考骨架」。
 
 純推理（如 Chain-of-Thought）有一個致命弱點：它**只在模型腦中跑，從不接觸外部世界**。當推理脫離真實狀態時，模型會自信地產生幻覺。ReAct 的設計哲學就是對治這件事：**讓「推理 (Reasoning)」與「行動 (Acting)」交錯進行，用每一次行動的真實「觀察 (Observation)」來校正下一步推理。**
 
