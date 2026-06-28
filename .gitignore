@@ -31,3 +31,6 @@ pnpm-debug.log*
 
 test-results/*
 .claude/*
+# 共享給 repo 的 Agent 文件與規範（其餘 .claude/ 仍維持本地）
+!.claude/docs/
+!.claude/rules/

@@ -105,3 +105,10 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+
+## 部落格 / iThome 系列
+
+撰寫或修改 `src/content/blogs/**` 的文章時：
+
+- **規劃文件**：iThome 2026 系列的完整路線圖（Day 01–30 標題、日期、進度）見 [`.claude/docs/ithome-2026-series-plan.md`](.claude/docs/ithome-2026-series-plan.md)。新增或調整系列文章前先參閱。
+- **撰寫規範**：標題層級、frontmatter、檔名與系列連貫性等規則見 [`.claude/rules/blog-writing-style.md`](.claude/rules/blog-writing-style.md)。其中最重要的一條：**文章正文標題一律從 h2（`##`）開始，不使用 h1。**
