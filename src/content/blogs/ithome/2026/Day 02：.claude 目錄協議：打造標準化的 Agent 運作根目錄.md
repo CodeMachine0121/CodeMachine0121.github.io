@@ -25,7 +25,7 @@ parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的
 
 #### A. rules/ (Behavioral Constraints)
 這裡存放的是讓 Agent「遵守紀律」的 Markdown 檔案。
-*   **作用：** 強制 AI 遵守特定的決策邏輯。例如 `gsi-protocol.md` 會規定 Agent 在解決問題時，必須先拆解目標。
+*   **作用：** 強制 AI 遵守特定的決策邏輯。例如 `react-protocol.md` 會規定 Agent 在解決問題時，必須交錯「推理」與「行動」，每一步都踩在真實觀察上。
 *   **深度設計：** 將每個 Workflow Pattern 定義為一個規則檔，Claude Code 在啟動時會讀取這些規則，自動「載入」該模式的思考方式。
 
 #### B. skills/ (Functional Capabilities)

@@ -1,12 +1,12 @@
 ---
-title: "Day 04：Commands 與執行擴充：定義 Agent 的斜線指令協議"
-datetime: "2026-06-26"
+title: "Day 05：commands/ 與執行擴充：定義 Agent 的斜線指令協議"
+datetime: "2026-06-27"
 description: "探討 `.claude/commands/` 的實作機制，將複雜的 Workflow Pattern 封裝為可呼叫的 CLI 指令，降低 AI 協作的認知負載。"
 image: ""
 parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的 30 天實戰"
 ---
 
-在 Day 02 與 Day 03 中，我們建立了 Agent 的「大腦邏輯 (`rules/`)」與「執行手腳 (`skills/`)」。然而，如果每次要啟動一個複雜的 Pattern，都需要對 AI 進行冗長的說明（例如：「請依照 TDD 流程執行，先跑測試，再診斷，再 Patch...」），不僅降低效率，還容易因描述誤差導致 Agent 偏離流程。
+在 Day 03 與 Day 04 中，我們建立了 Agent 的「大腦邏輯 (`rules/`)」與「執行手腳 (`skills/`)」。然而，如果每次要啟動一個複雜的 Pattern，都需要對 AI 進行冗長的說明（例如：「請依照 TDD 流程執行，先跑測試，再診斷，再 Patch...」），不僅降低效率，還容易因描述誤差導致 Agent 偏離流程。
 
 這就是 **`.claude/commands/`** 存在的意義：**將複雜的 Workflow 封裝成可預測的「指令介面 (Interface)」。**
 
@@ -63,4 +63,4 @@ Command 不僅僅是觸發器，更可以扮演 **「環境初始化工具」** 
 2.  在檔案中定義該指令對應的 `rules/` 與 `skills/` 的連結。
 3.  打開 Claude Code，嘗試使用你定義的指令。觀察 Agent 是否會根據指令名稱，直接讀取對應的 `rules` 並進入預期工作狀態。
 
-*明天 Day 05，我們將深入剖析 `docs/` 資料夾，探討如何建立一套讓 Agent 能快速索引的「架構知識庫」，徹底解決 AI 在大型專案中「喪失大局觀」的痛點。*
+*明天 Day 06，我們將深入剖析 `docs/` 資料夾，探討如何建立一套讓 Agent 能快速索引的「架構知識庫」，徹底解決 AI 在大型專案中「喪失大局觀」的痛點。*

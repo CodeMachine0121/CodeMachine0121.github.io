@@ -1,5 +1,5 @@
 ---
-title: "Day 03：Rules 深度剖析：將系統約束編譯為 Agent 的行為準則"
+title: "Day 03：rules/ 深度剖析：將系統約束編譯為 Agent 的行為準則"
 datetime: "2026-06-25"
 description: "深入解析 .claude/rules/ 目錄的撰寫哲學，探討如何將模糊的人類意圖編譯為 Agent 可嚴格遵守的行為準則，並建立規則的分層、優先級與衝突解決機制。"
 image: ""
