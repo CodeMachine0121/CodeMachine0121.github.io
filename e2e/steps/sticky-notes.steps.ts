@@ -33,6 +33,10 @@ When('I reload the page', async ({ page }) => {
   await page.reload();
 });
 
+When('I click the sticky note delete button', async ({ page }) => {
+  await page.locator('.sticky-note__delete').last().click();
+});
+
 Then('the sticky note should contain {string}', async ({ page }, text: string) => {
   await expect(page.locator('.sticky-note__text').last()).toContainText(text);
 });

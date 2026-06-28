@@ -100,6 +100,7 @@ function renderNote(note: Note): HTMLElement {
   del.type = 'button';
   del.setAttribute('aria-label', '刪除便利貼');
   del.textContent = '×';
+  del.addEventListener('click', () => removeNote(note));
 
   bar.append(color, del);
 
@@ -115,6 +116,12 @@ function renderNote(note: Note): HTMLElement {
 
   el.append(bar, text);
   return el;
+}
+
+function removeNote(note: Note): void {
+  notes = notes.filter((n) => n.id !== note.id);
+  root?.querySelector(`[data-note-id="${note.id}"]`)?.remove();
+  save();
 }
 
 function addNote(x: number, y: number): void {

@@ -43,3 +43,12 @@ Feature: Article Sticky Notes
     When I reload the page
     Then there should be 1 sticky notes
     And the sticky note should be at the dragged position
+
+  Scenario: TC-06 the X button deletes a note and removes it from storage
+    Given I am on the "/blogs/clean-architecture-with-asp-dotnet-core-10" page
+    When I triple-click in the left margin
+    Then there should be 1 sticky notes
+    When I click the sticky note delete button
+    Then there should be 0 sticky notes
+    When I reload the page
+    Then there should be 0 sticky notes
