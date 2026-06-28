@@ -99,7 +99,7 @@
 
 ## 撰寫慣例（重點摘要，完整規範見 [`blog-writing-style`](../rules/blog-writing-style.md)）
 - **標題層級從 h2（`##`）開始**，子節用 h3（`###`）；正文不寫 h1（標題由模板從 frontmatter `title` 渲染）。
-- frontmatter 必填：`title`、`datetime`、`description`、`image`、`parent`。
+- frontmatter 必填：`title`、`datetime`、`description`、`image`；`parent` 為系列文章專屬（單篇不加）。
 - 檔名不可含 `/`（會被當成路徑分隔）；標題中的 `rules/`、`docs/` 等斜線只寫在 frontmatter `title`，檔名用無斜線版本。
 - 每篇結尾以「明天 Day N＋1」預告銜接，開頭可呼應前一天，維持系列連貫。
 - 圖片與 CV 等資產放 Cloudflare R2，不放 `public/`。
