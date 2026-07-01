@@ -47,11 +47,16 @@
       "sub_title": "Cafler",
       "years": "2026 – Present",
       "details": {
-        "en": "Asia-region service integration for a global vehicle-care platform, using .NET Core.",
-        "zh": "為全球車輛護理平台進行亞洲區域服務整合,使用 .NET Core。"
+        "en": "Built two .NET Core backends (Commercial + OS) for a global vehicle-care platform, driving its Taiwan-market expansion with Clean Architecture, CQRS, and TDD.",
+        "zh": "為全球車輛護理平台建置 Commercial 與 OS 兩套 .NET Core 後端,主導台灣市場擴張與第三方在地整合,採 Clean Architecture、CQRS 與 TDD。"
       },
       "achievements": [
-        { "en": "Built cross-regional .NET Core services supporting Asia-market business operations", "zh": "構建支持亞洲市場業務運營的跨區域 .NET Core 服務" }
+        { "en": "Built an entire CRM Client-360 platform from scratch (Client, Vehicle, Appointment, Budget, WorkOrder, Invoice) as MediatR vertical slices, with 360 read models, dashboards, and multi-tenant (WorkshopId) isolation", "zh": "從零建置整個 CRM 客戶 360 平台 (Client、Vehicle、Appointment、Budget、WorkOrder、Invoice),以 MediatR 垂直切片實作,含 360 讀取模型、儀表板與多租戶 (WorkshopId) 隔離" },
+        { "en": "Integrated the LINE Messaging API for the Taiwan market: webhook HMAC signature verification, push/reply client, Flex-card messages, link-code client binding, and LINE as a Hangfire-scheduled appointment notification channel", "zh": "為台灣市場串接 LINE Messaging API:webhook HMAC 簽章驗證、推播/回覆、Flex 卡片、link-code 客戶綁定,並將 LINE 作為 Hangfire 排程的預約通知管道" },
+        { "en": "Delivered CarQuality third-party integrations: a payment gateway whose transaction state machine uses atomic conditional updates to prevent concurrent-checkout races, full e-invoicing lifecycle (issue/void/allowance with provider-failure rollback), and a Hangfire stock-import job", "zh": "建置 CarQuality 第三方整合:金流交易狀態機以原子條件更新防止併發重複結帳、電子發票全生命週期 (開立/作廢/折讓,含 provider 失敗回滾),以及 Hangfire 庫存匯入排程" },
+        { "en": "Implemented Taiwan localization domain rules: a country-scoped national-document catalog, country-dispatched document-number validators (Spanish DNI/NIE vs Taiwan ID/business number), required-field guards, and Taiwan tire specification attributes", "zh": "實作台灣在地化領域規則:國別證件目錄、依國別分派的證號驗證器 (西班牙 DNI/NIE vs 台灣身分證/統編)、必填欄位守門與台灣輪胎規格欄位" },
+        { "en": "Built the commercial proposals subsystem (per-line discounts, price snapshotting, an atomic per-country proposal-number allocator) and a MobilityConfigs/Rates pricing engine", "zh": "建置商務端提案子系統 (逐筆折扣、價格快照、依國別產號的原子序號配置器) 與 MobilityConfigs/Rates 計價引擎" },
+        { "en": "Engineered cross-cutting infrastructure with EF Core SaveChanges interceptors — field-level audit logging and workshop-scoped license-plate uniqueness — plus a roles and module-permission access-control system", "zh": "以 EF Core SaveChanges 攔截器打造跨切面基礎建設 — 欄位級稽核日誌與工作坊範圍車牌唯一性 — 以及角色與模組權限存取控制系統" }
       ]
     },
     {
