@@ -4,6 +4,7 @@ datetime: "2026-06-28"
 description: "把 docs 和設定塞進 .claude/ 目錄，不代表 AI 真的看得到。這篇釐清「放進目錄」和「進入 context」的差別，並把 Day 02–05 的成果收斂成一個可直接 clone 的 starter。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 從一個令人洩氣的早上說起

@@ -4,6 +4,7 @@ datetime: "2026-07-02"
 description: "要 agent 一口氣生出結構性強的大東西，線性寫到後面常常前後不一致、越寫越歪。這篇講清楚 Skeleton-of-Thought：為什麼「先立骨架、再平行填肉」能穩住一致性，它和「先規劃再執行」「平行化」的本質差異在哪，並在範例專案用它一次生出整組 API endpoints 的骨架。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 越寫越歪的那個下午

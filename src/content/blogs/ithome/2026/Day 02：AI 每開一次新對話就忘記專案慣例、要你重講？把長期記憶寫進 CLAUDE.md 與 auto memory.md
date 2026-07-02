@@ -4,6 +4,7 @@ datetime: "2026-06-24"
 description: "就算 Claude Code 會先掃過專案，早期沒程式碼可掃、負向約束與你心裡的技術決定它一樣讀不到。把這些關鍵慣例寫進 CLAUDE.md 與 auto memory，變成 agent 啟動就自動載入的長期記憶——但別忘了：context 會被讀，不保證被遵守。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 從昨天的專案接著說

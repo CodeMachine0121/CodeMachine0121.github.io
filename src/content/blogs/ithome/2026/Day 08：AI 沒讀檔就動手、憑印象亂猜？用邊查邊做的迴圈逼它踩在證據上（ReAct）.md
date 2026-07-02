@@ -4,6 +4,7 @@ datetime: "2026-06-30"
 description: "昨天的 CoT 只在腦中把推理攤開，一旦要碰檔案、打 API 就會憑印象瞎猜。今天補上「行動」那一塊：用 Thought → Action → Observation 的迴圈，逼 agent 每一步都踩在真實觀察上，而不是想像上。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 從一次自信滿滿的瞎猜說起

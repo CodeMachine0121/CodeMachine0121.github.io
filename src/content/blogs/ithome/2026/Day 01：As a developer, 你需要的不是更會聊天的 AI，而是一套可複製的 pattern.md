@@ -4,6 +4,7 @@ datetime: "2026-06-23"
 description: "AI 不是不夠聰明，是每次都要重新哄它、結果不可複製。這個系列想換個做法：與其追求更會下 prompt，不如把注意力放在你替 agent 設計的迴圈，並用一個會真的上線的 Go 後端服務把它一天一天包成一個能自己跑的迴圈。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 一個每天都在發生的場景

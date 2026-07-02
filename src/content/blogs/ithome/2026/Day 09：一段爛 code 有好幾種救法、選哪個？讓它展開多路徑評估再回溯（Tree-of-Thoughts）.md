@@ -4,6 +4,7 @@ datetime: "2026-07-01"
 description: "有些問題不是一條路走到底就能解決的，而是有好幾種救法、需要攤開來比。這篇談 Tree-of-Thoughts：讓 agent 展開多條路徑、各自評分、選優、回溯淘汰劣枝，以及什麼時候這樣做才划算。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 從一段怎麼看都不順眼的 code 說起

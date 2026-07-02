@@ -11,12 +11,31 @@ import type { Series, ArticleSortOrder } from '../types/series';
 export type BlogEntry = CollectionEntry<'blogs'>;
 
 /**
+ * 判斷文章是否應顯示（非草稿）
+ *
+ * frontmatter 標記 `draft: true` 的文章不列出、不建置頁面。
+ */
+export function isPublished(blog: BlogEntry): boolean {
+  return !blog.data.draft;
+}
+
+/**
+ * 取得所有「已發布」文章（過濾掉 draft: true）
+ *
+ * 全站取用文章一律走此函式，確保草稿在列表、系列、RSS、單篇頁一致隱藏。
+ */
+export async function getPublishedBlogs(): Promise<BlogEntry[]> {
+  const allBlogs = await getCollection('blogs');
+  return allBlogs.filter(isPublished);
+}
+
+/**
  * 生成所有系列的清單
- * 
+ *
  * @returns 系列陣列，按名稱字母順序排列
  */
 export async function generateSeriesList(): Promise<Series[]> {
-  const allBlogs = await getCollection('blogs');
+  const allBlogs = await getPublishedBlogs();
   const withParent = allBlogs.filter(blog => blog.data.parent?.trim());
 
   const seriesMap = new Map<string, BlogEntry[]>();
@@ -131,7 +150,7 @@ function sortByDateAsc(a: BlogEntry, b: BlogEntry): number {
  * @returns 前一篇與後一篇文章的物件
  */
 export async function getAdjacentPosts(currentSlug: string): Promise<{ prevPost: BlogEntry | null; nextPost: BlogEntry | null }> {
-  const allBlogs = await getCollection('blogs');
+  const allBlogs = await getPublishedBlogs();
   const standaloneBlogs = allBlogs.filter(blog => !blog.data.parent);
   const sortedBlogs = standaloneBlogs.sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
 
@@ -155,7 +174,7 @@ export async function getAdjacentPosts(currentSlug: string): Promise<{ prevPost:
  * @returns 前一篇與後一篇文章的物件
  */
 export async function getAdjacentSeriesPosts(currentSlug: string, seriesName: string): Promise<{ prevPost: BlogEntry | null; nextPost: BlogEntry | null }> {
-  const allBlogs = await getCollection('blogs');
+  const allBlogs = await getPublishedBlogs();
   const seriesBlogs = allBlogs.filter(blog => blog.data.parent === seriesName);
   const sortedBlogs = sortArticlesBySeries(seriesBlogs);
 

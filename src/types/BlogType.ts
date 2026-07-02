@@ -9,5 +9,6 @@ export interface Blog {
         image?: string;
 parent?: string;
         seriesIndex?: number;
+        draft?: boolean;
     }
 }

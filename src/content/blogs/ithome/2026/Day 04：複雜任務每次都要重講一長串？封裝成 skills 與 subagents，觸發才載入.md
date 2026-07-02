@@ -4,6 +4,7 @@ datetime: "2026-06-26"
 description: "有些複雜任務你每次都得對 AI 重講一長串前提與步驟。把它封裝成 skill 或 subagent，讓能力在被觸發時才載入，省 context、按需啟動，還能重複使用。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 又要把那段話重打一次

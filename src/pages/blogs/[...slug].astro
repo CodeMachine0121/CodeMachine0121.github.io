@@ -1,5 +1,5 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
 import Layout from '../../layouts/Layout.astro';
@@ -8,10 +8,10 @@ import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import GiscusComments from '../../components/common/GiscusComments.astro';
 import BackToTop from '../../components/common/BackToTop.astro';
 import StickyNotes from '../../components/common/StickyNotes.astro';
-import { getAdjacentPosts, getAdjacentSeriesPosts } from '../../utils/series';
+import { getAdjacentPosts, getAdjacentSeriesPosts, getPublishedBlogs } from '../../utils/series';
 
 export const getStaticPaths = async () => {
-    const blogs = await getCollection("blogs");
+    const blogs = await getPublishedBlogs();
     return blogs.map(blog => ({
         params: { slug: blog.id },
         props: { blog }

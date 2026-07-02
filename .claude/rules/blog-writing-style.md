@@ -30,6 +30,15 @@ image: ""
 parent: "AI Agent Workflow Patterns：從架構設計到自動化開發協議的 30 天實戰"
 ```
 
+- **`draft`：草稿開關（可選，boolean）。** 加上 `draft: true` 的文章會從**文章列表、系列頁、上下篇導航、RSS** 一併隱藏，且**不會被建置出頁面**（連網址都不存在）。省略此欄位等同 `draft: false`（正常顯示）。
+  - 用途：文章寫好但還沒到發佈日、或整個系列尚未上線時，先掛 `draft: true` 佔位，到發佈時再把該篇的 `draft: true` 拿掉（或改成 `false`）。
+  - 過濾邏輯集中在 `src/utils/series.ts` 的 `getPublishedBlogs()`，全站取用文章一律走它，草稿在各處一致隱藏。
+
+```yaml
+# 尚未發佈的文章加這一行；發佈時移除
+draft: true
+```
+
 ## 3. 檔名
 
 - 檔名 **NEVER** 含 ASCII 斜線 `/`（會被當成路徑分隔，破壞 URL slug）。

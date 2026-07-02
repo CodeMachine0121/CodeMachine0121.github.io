@@ -4,6 +4,7 @@ datetime: "2026-06-29"
 description: "面對需要一步步推導的封閉式邏輯題，AI 常常跳過中間步驟、直接給一個看起來合理卻算錯的答案。這篇談怎麼逼它把推理攤開、想清楚再下 code，用 prompt chaining 把推導和實作拆成兩步。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 從一段對不起來的去重邏輯說起

@@ -4,6 +4,7 @@ datetime: "2026-06-25"
 description: "把開發慣例寫成 rules，AI 卻還是照自己的意思做事。這篇釐清 rules 屬於「會讀、但不保證遵守」的層級，該寫什麼、不能期待它擋下什麼，以及怎麼把它寫得真的有用。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 昨天寫進了記憶，今天它還是不聽

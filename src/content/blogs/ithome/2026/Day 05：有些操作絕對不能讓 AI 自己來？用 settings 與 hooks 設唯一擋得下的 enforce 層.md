@@ -4,6 +4,7 @@ datetime: "2026-06-27"
 description: "把危險動作交給 AI 自己判斷，遲早會出事。這篇釐清 context、invoke、enforce 三層的分工，說明為什麼只有 hooks 與 permissions 才真的擋得下動作，並在範例專案裡設一道實際攔得住刪檔的閘。"
 image: ""
 parent: "2026 ithome-鐵人賽: 從 Prompt 到 Loop：與 Claude Code 協作的自主開發迴圈實戰 系列"
+draft: true
 ---
 
 ## 能幹一點，也就危險一點
