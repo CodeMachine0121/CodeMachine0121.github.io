@@ -13,16 +13,16 @@
       "sub_title": "Cafler",
       "years": "2026 - Present",
       "details": {
-        "en": "Built two .NET Core backends (Commercial + OS) for a global vehicle-care platform, driving its Taiwan-market expansion using Clean Architecture, CQRS, and TDD."
+        "en": "Built two .NET Core backends (Commercial + OS) from scratch for a global vehicle-care platform, powering its Taiwan-market expansion using Clean Architecture, CQRS, and TDD."
       },
       "achievements": [
         { "en": "Built two .NET backends (Commercial + OS) for the platform" },
-        { "en": "CRM Client-360 platform (CQRS vertical slices, multi-tenant)" },
-        { "en": "LINE Messaging API integration (Taiwan)" },
-        { "en": "CarQuality payment gateway + e-invoicing integration" },
-        { "en": "Taiwan market localization (national documents, validators, tire specs)" },
-        { "en": "Audit logging & license-plate uniqueness via EF Core interceptors" },
-        { "en": "Commercial proposals & mobility pricing engine" }
+        { "en": "Architected the CRM Client-360 platform (CQRS vertical slices, multi-tenant)" },
+        { "en": "Led the LINE Messaging API integration (Taiwan)" },
+        { "en": "Drove the CarQuality payment gateway + e-invoicing integration" },
+        { "en": "Designed & implemented Taiwan market localization (national documents, validators, tire specs)" },
+        { "en": "Established audit logging & license-plate uniqueness via EF Core interceptors" },
+        { "en": "Owned the commercial proposals & mobility pricing engine" }
       ]
     },
     {
