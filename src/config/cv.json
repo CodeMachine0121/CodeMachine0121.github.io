@@ -3,7 +3,7 @@
     "name": "James Hsueh",
     "job": "Full Stack Software Engineer",
     "location": "Taiwan",
-    "email": "james.afternoon.dev@gmail.com",
+    "email": "asdfg55887@gmail.com",
     "summary": {
       "en": "Full Stack Software Engineer with 4+ years building microservices and backend systems in fintech and enterprise domains. Works mainly in .NET Core, Golang, and cloud platforms (Azure, Oracle Cloud, Kubernetes); CKAD-certified, applying the same TDD and hexagonal-architecture discipline across both languages. Runs the Coding Afternoon tech blog — writing mainly about Golang (design patterns, TDD, concurrency) — and has spoken twice at GDG Kaohsiung.",
       "zh": "4 年以上微服務與後端系統開發經驗的全棧軟體工程師,涵蓋金融科技與企業領域。主要使用 .NET Core、Golang 與雲端平台 (Azure、Oracle Cloud、Kubernetes);獲得 CKAD 認證,在兩種語言上應用相同的 TDD 與六邊形架構原則。經營 Coding Afternoon 技術部落格 — 主要撰寫 Golang (設計模式、TDD、併發) — 並在 GDG Kaohsiung 發表過兩次演講。"
@@ -61,17 +61,19 @@
     },
     {
       "title": "Backend Software Engineer",
-      "sub_title": "Doutify Tech",
+      "sub_title": "Duotify Tech",
       "years": "2024 – 2026",
       "details": {
-        "en": "Migrated a credit-loan platform to microservices; set up cloud infrastructure on Oracle Cloud.",
-        "zh": "將信用貸款平台遷移至微服務;在 Oracle Cloud 設置雲端基礎設施。"
+        "en": "Migrated a credit-loan platform to microservices; set up cloud infrastructure on Oracle Cloud Platform (OCP); introduced a Spec-Driven Development workflow to the team.",
+        "zh": "將信用貸款平台遷移至微服務;在 Oracle Cloud Platform (OCP) 設置雲端基礎設施;為團隊導入規格驅動開發工作流程。"
       },
       "achievements": [
         { "en": "Migrated the credit loan system from a monolith to microservices", "zh": "將信用貸款系統從單體遷移至微服務" },
         { "en": "Redesigned the strategy module to separate business rules from loan-processing logic, so new loan rules can be added without changing core flows", "zh": "重設計策略模組,將業務規則與貸款處理邏輯分離,使新規則可直接新增而無需修改核心流程" },
+        { "en": "Introduced a GitHub Spec-Driven Development (SDD) workflow to the team, piloting adoption with GitHub Spec Kit", "zh": "為團隊導入 GitHub 規格驅動開發 (SDD) 工作流程,先以 GitHub Spec Kit 試行導入" },
+        { "en": "Found Spec Kit too process-heavy for the team, so tailored a lighter-weight SDD workflow and rolled it out across our projects", "zh": "發現 Spec Kit 流程對團隊負擔過重,因而調整出更輕量的 SDD 工作流程並推廣至各專案" },
         { "en": "Implemented SSO/OAuth authentication shared across internal services", "zh": "實現跨內部服務的共享 SSO/OAuth 認證" },
-        { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud (OCI)", "zh": "使用 Azure DevOps 實現 CI/CD 自動化,並在 Oracle Cloud (OCI) 上部署生產服務" },
+        { "en": "Automated CI/CD with Azure DevOps and deployed production services on Oracle Cloud Platform (OCP)", "zh": "使用 Azure DevOps 實現 CI/CD 自動化,並在 Oracle Cloud Platform (OCP) 上部署生產服務" },
         { "en": "Set up test environments (OracleDB, Redis, identity services) for local verification", "zh": "建置測試環境 (OracleDB、Redis、身份服務) 用於本地驗證" }
       ]
     },
@@ -166,7 +168,7 @@
     },
     {
       "iconName": "Email",
-      "link": "mailto:james.afternoon.dev@gmail.com"
+      "link": "mailto:asdfg55887@gmail.com"
     }
   ]
 }

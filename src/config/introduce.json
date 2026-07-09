@@ -27,14 +27,16 @@
     },
     {
       "title": "Backend Software Engineer",
-      "sub_title": "Doutify Tech",
+      "sub_title": "Duotify Tech",
       "years": "2024 - 2026",
       "details": {
-        "en": "Developed and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability."
+        "en": "Developed and optimized backend services for loan system. Implemented microservices architecture to improve scalability and maintainability. Introduced a Spec-Driven Development workflow to the team."
       },
       "achievements": [
         { "en": "Re-Construct Credit Loan System" },
         { "en": "Re-Construct Strategy Module" },
+        { "en": "Introduced GitHub Spec-Driven Development (SDD) workflow to the team, piloting with GitHub Spec Kit" },
+        { "en": "Tailored a lighter-weight SDD workflow after Spec Kit proved too heavy, and rolled it out across projects" },
         { "en": "Implement Login System with SSO/OAuth" },
         { "en": "Setup Azure DevOps CI/CD" },
         { "en": "Setup OCP (Oracle Cloud Platform) Deployment" },
