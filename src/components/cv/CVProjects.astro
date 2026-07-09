@@ -39,7 +39,7 @@ function badgeStyle(type: string): string {
       const localizedType = getLocalizedText(item.type as any, lang);
       return (
         <li class="cv-project-row">
-          <span>
+          <span class="cv-project-title">
             {item.link ? (
               <a
                 href={item.link}

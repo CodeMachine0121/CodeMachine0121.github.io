@@ -281,6 +281,14 @@
   &:hover { color: $cv-accent; }
 }
 
+// Every project row fits on one line at the paper's content width; the PDF's
+// SVG-foreignObject render is fractionally narrower, so CJK titles wrap their
+// last token. During PDF capture only, keep titles on a single line to match
+// the webpage. Scoped to capture so the responsive (mobile) page can still wrap.
+.cv-pdf-capture .cv-project-title {
+  white-space: nowrap;
+}
+
 .cv-project-text {
   font-family: $cv-font-body;
   font-size: $cv-fs-body;

@@ -21,7 +21,7 @@
     },
     {
       "title": { "en": "Product Ownership", "zh": "產品所有權" },
-      "description": { "en": "Coding Afternoon blog built and run solo — content, site, and subscription automation.", "zh": "Coding Afternoon 部落格獨自構建與運營 — 內容、網站與訂閱自動化。" }
+      "description": { "en": "Coding Afternoon blog built and run solo — content and site.", "zh": "Coding Afternoon 部落格獨自構建與運營 — 內容與網站。" }
     },
     {
       "title": { "en": "Reliability", "zh": "系統可靠性" },
@@ -38,7 +38,7 @@
         "zh": "技術教育部落格 (coding-afternoon.com)，獨自構建與運營。"
       },
       "achievements": [
-        { "en": "Operate the platform end to end: content, site, and an automated subscription flow", "zh": "端對端管理平台:內容、網站與自動化訂閱流程" },
+        { "en": "Operate the platform end to end: content and site", "zh": "端對端管理平台:內容與網站" },
         { "en": "Authored technical series on Golang (design patterns, TDD with AI, goroutine concurrency) and blockchain, plus the open-source EccSDK NuGet package", "zh": "撰寫 Golang(設計模式、AI 輔助 TDD、Goroutine 並發) 與區塊鏈技術系列,並開源 EccSDK NuGet 套件" }
       ]
     },
@@ -51,11 +51,11 @@
         "zh": "為全球車輛護理平台從零建置 Commercial 與 OS 兩套 .NET Core 後端,支撐台灣市場擴張,採 Clean Architecture、CQRS 與 TDD。"
       },
       "achievements": [
-        { "en": "Architected and built the entire CRM Client-360 platform from scratch (Client, Vehicle, Appointment, Budget, WorkOrder, Invoice) as MediatR vertical slices, with 360 read models, dashboards, and multi-tenant (WorkshopId) isolation", "zh": "主導架構並從零建置整個 CRM 客戶 360 平台 (Client、Vehicle、Appointment、Budget、WorkOrder、Invoice),以 MediatR 垂直切片實作,含 360 讀取模型、儀表板與多租戶 (WorkshopId) 隔離" },
-        { "en": "Led the Taiwan-market LINE Messaging API integration end to end: webhook HMAC signature verification, push/reply client, Flex-card messages, link-code client binding, and LINE as a Hangfire-scheduled appointment notification channel", "zh": "主導台灣市場的 LINE Messaging API 端對端串接:webhook HMAC 簽章驗證、推播/回覆、Flex 卡片、link-code 客戶綁定,並將 LINE 作為 Hangfire 排程的預約通知管道" },
-        { "en": "Drove the CarQuality third-party integrations: a payment gateway whose transaction state machine uses atomic conditional updates to prevent concurrent-checkout races, full e-invoicing lifecycle (issue/void/allowance with provider-failure rollback), and a Hangfire stock-import job", "zh": "主導 CarQuality 第三方整合:金流交易狀態機以原子條件更新防止併發重複結帳、電子發票全生命週期 (開立/作廢/折讓,含 provider 失敗回滾),以及 Hangfire 庫存匯入排程" },
-        { "en": "Designed and implemented the Taiwan localization domain rules: a country-scoped national-document catalog, country-dispatched document-number validators (Spanish DNI/NIE vs Taiwan ID/business number), required-field guards, and Taiwan tire specification attributes", "zh": "主導設計並實作台灣在地化領域規則:國別證件目錄、依國別分派的證號驗證器 (西班牙 DNI/NIE vs 台灣身分證/統編)、必填欄位守門與台灣輪胎規格欄位" },
-        { "en": "Owned the commercial proposals subsystem (per-line discounts, price snapshotting, an atomic per-country proposal-number allocator) and a MobilityConfigs/Rates pricing engine", "zh": "獨力負責商務端提案子系統 (逐筆折扣、價格快照、依國別產號的原子序號配置器) 與 MobilityConfigs/Rates 計價引擎" },
+        { "en": "Architected and built the entire CRM Client-360 platform from scratch (Client, Vehicle, Appointment, Budget, WorkOrder, Invoice) as MediatR vertical slices, with 360 read models, dashboards, and multi-tenant (WorkshopId) isolation", "zh": "從零建置整個 CRM 客戶 360 平台 (Client、Vehicle、Appointment、Budget、WorkOrder、Invoice),以 MediatR 垂直切片實作,含 360 讀取模型、儀表板與多租戶 (WorkshopId) 隔離" },
+        { "en": "Led the Taiwan-market LINE Messaging API integration end to end: webhook HMAC signature verification, push/reply client, Flex-card messages, link-code client binding, and LINE as a Hangfire-scheduled appointment notification channel", "zh": "負責台灣市場的 LINE Messaging API 端對端串接:webhook HMAC 簽章驗證、推播/回覆、Flex 卡片、link-code 客戶綁定,並將 LINE 作為 Hangfire 排程的預約通知管道" },
+        { "en": "Drove the CarQuality third-party integrations: a payment gateway whose transaction state machine uses atomic conditional updates to prevent concurrent-checkout races, full e-invoicing lifecycle (issue/void/allowance with provider-failure rollback), and a Hangfire stock-import job", "zh": "負責 CarQuality 第三方整合:金流交易狀態機以原子條件更新防止併發重複結帳、電子發票全生命週期 (開立/作廢/折讓,含 provider 失敗回滾),以及 Hangfire 庫存匯入排程" },
+        { "en": "Designed and implemented the Taiwan localization domain rules: a country-scoped national-document catalog, country-dispatched document-number validators (Spanish DNI/NIE vs Taiwan ID/business number), required-field guards, and Taiwan tire specification attributes", "zh": "設計並實作台灣在地化領域規則:國別證件目錄、依國別分派的證號驗證器 (西班牙 DNI/NIE vs 台灣身分證/統編)、必填欄位守門與台灣輪胎規格欄位" },
+        { "en": "Owned the commercial proposals subsystem (per-line discounts, price snapshotting, an atomic per-country proposal-number allocator) and a MobilityConfigs/Rates pricing engine", "zh": "負責商務端提案子系統 (逐筆折扣、價格快照、依國別產號的原子序號配置器) 與 MobilityConfigs/Rates 計價引擎" },
         { "en": "Established the cross-cutting infrastructure with EF Core SaveChanges interceptors — field-level audit logging and workshop-scoped license-plate uniqueness — plus a roles and module-permission access-control system", "zh": "打造跨切面基礎建設 — 以 EF Core SaveChanges 攔截器實作欄位級稽核日誌與工作坊範圍車牌唯一性 — 以及角色與模組權限存取控制系統" }
       ]
     },

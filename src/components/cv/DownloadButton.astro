@@ -52,6 +52,9 @@ const { fileName } = Astro.props;
     const animated = paper.querySelectorAll<HTMLElement>('.cv-animate');
     animated.forEach(el => { el.style.opacity = '1'; el.style.animation = 'none'; });
 
+    // Capture-only styling (e.g. keep project titles on one line in the PDF)
+    paper.classList.add('cv-pdf-capture');
+
     // Scroll to top — prevents element-offset bugs in canvas libraries
     const savedScrollY = window.scrollY;
     window.scrollTo(0, 0);
@@ -69,9 +72,21 @@ const { fileName } = Astro.props;
       ]);
 
       const SCALE = 2;
+      // html-to-image renders into an SVG <foreignObject> whose width is
+      // subpixel-rounded, leaving the render a fraction narrower than the live
+      // page. Latin text only breaks at spaces so it survives, but CJK can break
+      // between any two characters, so that shortfall causes spurious wraps in
+      // the Chinese CV. Pin the capture to an integer width (+1px safety) that
+      // matches the on-screen paper so wrapping is identical to the webpage.
+      const rect = paper.getBoundingClientRect();
+      const captureW = Math.ceil(rect.width) + 1;
+      const captureH = Math.ceil(rect.height);
       const canvas = await (window as any).htmlToImage.toCanvas(paper, {
         pixelRatio: SCALE,
         backgroundColor: '#ffffff',
+        width: captureW,
+        height: captureH,
+        style: { width: `${captureW}px`, height: `${captureH}px` },
       });
 
       // PDF page = exact content dimensions → single page, no scaling, exact match
@@ -102,6 +117,7 @@ const { fileName } = Astro.props;
     } catch (err) {
       console.error('PDF generation failed:', err);
     } finally {
+      paper.classList.remove('cv-pdf-capture');
       animated.forEach(el => { el.style.opacity = ''; el.style.animation = ''; });
       window.scrollTo(0, savedScrollY);
       setDefault();
