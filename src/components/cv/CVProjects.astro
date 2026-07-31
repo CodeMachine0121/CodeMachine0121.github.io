@@ -13,17 +13,18 @@ const visibleItems = items.filter(p => p.title.en);
 
 type BadgePalette = { bg: string; color: string };
 const badgePalette: Record<string, BadgePalette> = {
-  'Blog':                 { bg: '#EFF6FF', color: '#1D4ED8' },
-  '部落格':              { bg: '#EFF6FF', color: '#1D4ED8' },
-  'Blog Series':          { bg: '#EEF2FF', color: '#4338CA' },
+  'Blog Series':        { bg: '#EEF2FF', color: '#4338CA' },
   '部落格系列':          { bg: '#EEF2FF', color: '#4338CA' },
-  'SDK':                  { bg: '#F0FDF4', color: '#15803D' },
-  'Certification':        { bg: '#FFFBEB', color: '#B45309' },
+  'Open Source':        { bg: '#F0FDF4', color: '#15803D' },
+  '開源專案':            { bg: '#F0FDF4', color: '#15803D' },
+  'Side Project':       { bg: '#ECFEFF', color: '#0E7490' },
+  '個人專案':            { bg: '#ECFEFF', color: '#0E7490' },
+  'Certification':      { bg: '#FFFBEB', color: '#B45309' },
   '認證':                { bg: '#FFFBEB', color: '#B45309' },
-  'GDG Kaohsiung Speaker':{ bg: '#FFF1F2', color: '#BE123C' },
-  'GDG Kaohsiung 演講者':{ bg: '#FFF1F2', color: '#BE123C' },
-  'DevOpsDays Speaker':   { bg: '#F5F3FF', color: '#6D28D9' },
-  'DevOpsDays 演講者':    { bg: '#F5F3FF', color: '#6D28D9' },
+  'GDG Kaohsiung Talk': { bg: '#FFF1F2', color: '#BE123C' },
+  'GDG Kaohsiung 演講':  { bg: '#FFF1F2', color: '#BE123C' },
+  'Conference Talk':    { bg: '#F5F3FF', color: '#6D28D9' },
+  '研討會演講':          { bg: '#F5F3FF', color: '#6D28D9' },
 };
 const defaultPalette: BadgePalette = { bg: '#F4F4F5', color: '#52525B' };
 
@@ -33,26 +34,30 @@ function badgeStyle(type: string): string {
 }
 ---
 
-<CVSection title={lang === 'zh' ? '專案與亮點' : 'Projects &amp; Highlights'}>
+<CVSection title={lang === 'zh' ? '專案、演講與認證' : 'Projects, Talks & Certifications'}>
   <ul class="cv-projects-list">
     {visibleItems.map((item) => {
       const localizedType = getLocalizedText(item.type as any, lang);
+      const description = item.description ? getLocalizedText(item.description as any, lang) : '';
       return (
         <li class="cv-project-row">
-          <span class="cv-project-title">
-            {item.link ? (
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="cv-project-link"
-              >
-                {getLocalizedText(item.title as any, lang)}
-              </a>
-            ) : (
-              <span class="cv-project-text">{getLocalizedText(item.title as any, lang)}</span>
-            )}
-          </span>
+          <div class="cv-project-main">
+            <span class="cv-project-title">
+              {item.link ? (
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="cv-project-link"
+                >
+                  {getLocalizedText(item.title as any, lang)}
+                </a>
+              ) : (
+                <span class="cv-project-text">{getLocalizedText(item.title as any, lang)}</span>
+              )}
+            </span>
+            {description && <span class="cv-project-desc">{description}</span>}
+          </div>
           <span class="cv-badge" style={badgeStyle(localizedType)}>
             {localizedType}
           </span>

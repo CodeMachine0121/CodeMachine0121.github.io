@@ -1,0 +1,14 @@
+---
+import type { Language } from '../../types/cv';
+
+interface Props {
+  text: string;
+  lang?: Language;
+}
+const { text, lang = 'en' } = Astro.props;
+---
+
+<div class="cv-looking-for cv-animate">
+  <span class="cv-looking-for__label">{lang === 'zh' ? '尋找中' : 'Looking for'}</span>
+  <p class="cv-looking-for__text">{text}</p>
+</div>

@@ -1,7 +1,8 @@
 ---
 import CVHeader from '../../components/cv/CVHeader.astro';
+import CVLookingFor from '../../components/cv/CVLookingFor.astro';
 import CVSummary from '../../components/cv/CVSummary.astro';
-import CVHighlights from '../../components/cv/CVHighlights.astro';
+import CVSkills from '../../components/cv/CVSkills.astro';
 import CVExperience from '../../components/cv/CVExperience.astro';
 import CVEducation from '../../components/cv/CVEducation.astro';
 import CVProjects from '../../components/cv/CVProjects.astro';
@@ -23,8 +24,12 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const language: Language = isValidLanguage(lang) ? lang : 'en';
 
-const { basic, highlights, experiences, education, projects, socialLinks } = cvData;
+const { basic, skills, experiences, side_projects, education, projects, socialLinks } = cvData;
 const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
+
+const sideProjectsTitle = language === 'zh' ? '技術寫作與開源' : 'Writing & Open Source';
+// The browser's print dialog derives the suggested PDF filename from <title>.
+const pageTitle = `${basic.name} - ${basic.job} - CV`;
 ---
 
 <!doctype html>
@@ -42,7 +47,7 @@ const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
       rel="stylesheet"
     />
 
-    <title>{basic.name} – CV</title>
+    <title>{pageTitle}</title>
   </head>
 
   <body>
@@ -55,8 +60,8 @@ const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
     </a>
 
     <!-- Download PDF & Language Switcher -->
-    <div class="cv-toolbar">
-      <DownloadButton fileName={basic.cv_file_name} />
+    <div class="cv-toolbar no-print">
+      <DownloadButton label={language === 'zh' ? '存成 PDF' : 'Save as PDF'} />
       <LanguageSwitcher currentLang={language} />
     </div>
 
@@ -65,11 +70,17 @@ const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
       <div id="cv-content" class="cv-paper">
         <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
-        <CVSummary summary={getLocalizedText(basic.summary as any, language)} />
-        {highlights && highlights.length > 0 && <CVHighlights items={highlights} lang={language} />}
+        {basic.looking_for && (
+          <CVLookingFor text={getLocalizedText(basic.looking_for as any, language)} lang={language} />
+        )}
+        <CVSummary summary={getLocalizedText(basic.summary as any, language)} lang={language} />
+        {skills && skills.length > 0 && <CVSkills groups={skills} lang={language} />}
         <CVExperience items={experiences} lang={language} />
-        <CVEducation items={education} lang={language} />
+        {side_projects && side_projects.length > 0 && (
+          <CVExperience items={side_projects} lang={language} title={sideProjectsTitle} />
+        )}
         <CVProjects items={projects} lang={language} />
+        <CVEducation items={education} lang={language} />
       </div>
     </div>
 

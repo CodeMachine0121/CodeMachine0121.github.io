@@ -1,0 +1,22 @@
+---
+import CVSection from './CVSection.astro';
+import { getLocalizedText } from '../../utils/i18n';
+import type { SkillGroup, Language } from '../../types/cv';
+
+interface Props {
+  groups: SkillGroup[];
+  lang?: Language;
+}
+const { groups, lang = 'en' } = Astro.props;
+---
+
+<CVSection title={lang === 'zh' ? '技術能力' : 'Skills'}>
+  <dl class="cv-skills">
+    {groups.map((group) => (
+      <div class="cv-skill-row">
+        <dt class="cv-skill-category">{getLocalizedText(group.category as any, lang)}</dt>
+        <dd class="cv-skill-items">{group.items.join('  ·  ')}</dd>
+      </div>
+    ))}
+  </dl>
+</CVSection>

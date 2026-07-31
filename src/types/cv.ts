@@ -5,47 +5,55 @@ export interface SocialLink {
 
 export type Language = 'en' | 'zh';
 
+export interface LocalizedText {
+  en: string;
+  zh?: string;
+}
+
 export interface BasicInfo {
   name: string;
   job: string;
   location?: string;
   email?: string;
-  summary: { en: string; zh?: string };
+  looking_for?: LocalizedText;
+  summary: LocalizedText;
   cv_file_name: string;
 }
 
-export interface HighlightItem {
-  title: { en: string; zh?: string };
-  description: { en: string; zh?: string };
-}
-
-export interface CvData {
-  basic: BasicInfo;
-  highlights?: HighlightItem[];
-  experiences: ExperienceItem[];
-  education: EducationItem[];
-  projects: ProjectItem[];
-  socialLinks: SocialLink[];
+export interface SkillGroup {
+  category: LocalizedText;
+  items: string[];
 }
 
 export interface ExperienceItem {
   title: string;
   sub_title: string;
   years: string;
-  details?: { en: string; zh?: string };
-  achievements?: { en: string; zh?: string }[];
+  details?: LocalizedText;
+  achievements?: LocalizedText[];
 }
 
 export interface EducationItem {
   title: string;
   sub_title: string;
   years: string;
-  details?: { en: string; zh?: string };
+  details?: LocalizedText;
 }
 
 export interface ProjectItem {
-  title: { en: string; zh?: string };
-  type: { en: string; zh?: string };
+  title: LocalizedText;
+  description?: LocalizedText;
+  type: LocalizedText;
   link: string;
   imageUrl?: string;
+}
+
+export interface CvData {
+  basic: BasicInfo;
+  skills?: SkillGroup[];
+  experiences: ExperienceItem[];
+  side_projects?: ExperienceItem[];
+  education: EducationItem[];
+  projects: ProjectItem[];
+  socialLinks: SocialLink[];
 }

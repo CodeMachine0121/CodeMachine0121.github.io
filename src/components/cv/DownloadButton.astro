@@ -1,126 +1,29 @@
 ---
 interface Props {
-  fileName: string;
+  label?: string;
 }
-const { fileName } = Astro.props;
+const { label = 'Save as PDF' } = Astro.props;
 ---
 
-<button
-  id="download-pdf-btn"
-  data-filename={fileName}
-  class="no-print cv-download-btn"
->
+<button id="print-pdf-btn" class="no-print cv-download-btn" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
   </svg>
-  <span>Export PDF</span>
+  <span>{label}</span>
 </button>
 
 <script>
-  const btn = document.getElementById('download-pdf-btn') as HTMLButtonElement;
-  const fileName = btn?.dataset.filename ?? 'cv.pdf';
-
-  const ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>`;
-
-  function setLoading(text: string) {
-    btn.disabled = true;
-    btn.innerHTML = `<span class="cv-spinner" aria-hidden="true"></span><span>${text}</span>`;
-  }
-  function setDefault() {
-    btn.disabled = false;
-    btn.innerHTML = `${ICON_SVG}<span>Export PDF</span>`;
-  }
-
-  function loadScript(src: string, globalKey: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if ((window as any)[globalKey]) { resolve(); return; }
-      const s = document.createElement('script');
-      s.src = src;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error(`Failed to load ${src}`));
-      document.head.appendChild(s);
-    });
-  }
+  // The PDF is produced by the browser's own print pipeline rather than a
+  // canvas snapshot, so the output keeps a real text layer: selectable,
+  // searchable, and parseable by applicant tracking systems. Layout,
+  // pagination and page size come from the @media print rules in cv.scss.
+  const btn = document.getElementById('print-pdf-btn');
 
   btn?.addEventListener('click', async () => {
-    const paper = document.getElementById('cv-content') as HTMLElement | null;
-    if (!paper) return;
-
-    setLoading('Preparing…');
-
-    // Reveal all animated sections before capture
-    const animated = paper.querySelectorAll<HTMLElement>('.cv-animate');
-    animated.forEach(el => { el.style.opacity = '1'; el.style.animation = 'none'; });
-
-    // Capture-only styling (e.g. keep project titles on one line in the PDF)
-    paper.classList.add('cv-pdf-capture');
-
-    // Scroll to top — prevents element-offset bugs in canvas libraries
-    const savedScrollY = window.scrollY;
-    window.scrollTo(0, 0);
-    await new Promise(r => setTimeout(r, 120));
+    // Sections start at opacity 0 until the IntersectionObserver reveals them.
+    // The print stylesheet forces them visible, but waiting on fonts first
+    // avoids a fallback-font first page in some browsers.
     await document.fonts.ready;
-
-    try {
-      setLoading('Generating…');
-
-      // html-to-image renders via SVG foreignObject — the browser's own engine,
-      // so ALL CSS (flex, grid, gap, etc.) is pixel-perfect.
-      await Promise.all([
-        loadScript('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js', 'htmlToImage'),
-        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf'),
-      ]);
-
-      const SCALE = 2;
-      // html-to-image renders into an SVG <foreignObject> whose width is
-      // subpixel-rounded, leaving the render a fraction narrower than the live
-      // page. Latin text only breaks at spaces so it survives, but CJK can break
-      // between any two characters, so that shortfall causes spurious wraps in
-      // the Chinese CV. Pin the capture to an integer width (+1px safety) that
-      // matches the on-screen paper so wrapping is identical to the webpage.
-      const rect = paper.getBoundingClientRect();
-      const captureW = Math.ceil(rect.width) + 1;
-      const captureH = Math.ceil(rect.height);
-      const canvas = await (window as any).htmlToImage.toCanvas(paper, {
-        pixelRatio: SCALE,
-        backgroundColor: '#ffffff',
-        width: captureW,
-        height: captureH,
-        style: { width: `${captureW}px`, height: `${captureH}px` },
-      });
-
-      // PDF page = exact content dimensions → single page, no scaling, exact match
-      const PX_TO_MM = 25.4 / 96;
-      const pdfW = (canvas.width / SCALE) * PX_TO_MM;
-      const pdfH = (canvas.height / SCALE) * PX_TO_MM;
-
-      const { jsPDF } = (window as any).jspdf;
-      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: [pdfW, pdfH], compress: true });
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
-
-      // Overlay clickable links
-      const pr = paper.getBoundingClientRect();
-      paper.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(a => {
-        if (!a.href || a.href.startsWith('#') || a.href.startsWith('javascript')) return;
-        const r = a.getBoundingClientRect();
-        pdf.link(
-          (r.left - pr.left) * PX_TO_MM,
-          (r.top  - pr.top)  * PX_TO_MM,
-          r.width  * PX_TO_MM,
-          r.height * PX_TO_MM,
-          { url: a.href }
-        );
-      });
-
-      pdf.save(fileName);
-
-    } catch (err) {
-      console.error('PDF generation failed:', err);
-    } finally {
-      paper.classList.remove('cv-pdf-capture');
-      animated.forEach(el => { el.style.opacity = ''; el.style.animation = ''; });
-      window.scrollTo(0, savedScrollY);
-      setDefault();
-    }
+    window.print();
   });
 </script>

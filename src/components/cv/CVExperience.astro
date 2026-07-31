@@ -7,11 +7,14 @@ import type { ExperienceItem, Language } from '../../types/cv';
 interface Props {
   items: ExperienceItem[];
   lang?: Language;
+  /** Overrides the default "Experience" heading — used by the side-projects section. */
+  title?: string;
 }
-const { items, lang = 'en' } = Astro.props;
+const { items, lang = 'en', title } = Astro.props;
+const heading = title ?? (lang === 'zh' ? '工作經驗' : 'Experience');
 ---
 
-<CVSection title={lang === 'zh' ? '工作經驗' : 'Experience'}>
+<CVSection title={heading}>
   <div>
     {items.map((item) => (
       <CVTimelineEntry

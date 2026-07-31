@@ -1,12 +1,14 @@
 ---
 import CVSection from './CVSection.astro';
+import type { Language } from '../../types/cv';
 
 interface Props {
   summary: string;
+  lang?: Language;
 }
-const { summary } = Astro.props;
+const { summary, lang = 'en' } = Astro.props;
 ---
 
-<CVSection title="Summary">
+<CVSection title={lang === 'zh' ? '簡介' : 'Summary'}>
   <p class="cv-summary">{summary}</p>
 </CVSection>
