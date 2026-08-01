@@ -4,7 +4,7 @@ datetime: "2026-09-16"
 description: "一根 K 線就是一段時間內所有成交的 summary statistics，五個數字而已。這篇把 OHLCV 拆開看：五個欄位各自回答什麼問題、時間框架怎麼選、時間戳單位與時區有哪些會算錯的地方，最後從官方批次檔拿到 BTC/USDT 現貨日線、存成 parquet、畫出第一張 K 線圖。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## 紅綠棒子只是一種畫法
@@ -525,7 +525,7 @@ if __name__ == "__main__":
 驗收標準，五項全過才算完成：
 
 1. `uv run python -m quantbot.ingest.fetch_klines` 跑完不噴錯，印出 181 根 K 線（2026 年 1 月 1 日到 6 月 30 日），缺漏 0 根。
-2. 印出來的 dtypes 裡，`open`／`high`／`low`／`close`／`volume` 是 `float64`，`trade_count` 是 `int64`，`close_time` 是 `datetime64[ns, UTC]`。
+2. 印出來的 dtypes 裡，`open`／`high`／`low`／`close`／`volume` 是 `float64`，`trade_count` 是 `int64`，`close_time` 是帶 UTC 的 `datetime64`。時間解析度會跟著來源 epoch 的單位走：pandas 2.0 之後 `to_datetime` 不再一律轉成奈秒，微秒時間戳讀進來就是 `datetime64[us, UTC]`，2025 年之前的毫秒檔則是 `datetime64[ms, UTC]`。要檢查的是 `tz` 是 UTC，不是某個特定解析度。
 3. `data/klines/BTCUSDT-spot-1d.parquet` 存在；用 `pd.read_parquet` 讀回來，index 是 tz-aware 的 UTC `DatetimeIndex`，第一根的 open_time 是 `2026-01-01 00:00:00+00:00`。
 4. `notebooks/day02-BTCUSDT-1d.html` 打開後看得到 K 線與成交量兩層圖，滑鼠移到任一根上面會跳出 OHLC 四個數字。
 5. 把 `resample_ohlcv` 那段驗證跑一次，1m 聚合出來的日線跟官方日線逐欄差異全部是 0。
