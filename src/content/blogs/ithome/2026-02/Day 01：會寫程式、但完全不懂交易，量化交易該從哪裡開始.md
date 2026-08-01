@@ -369,9 +369,9 @@ volumes:
 
 ## Reference
 
-- Binance 現貨市占數字的報導來源，引用 CoinGecko 2026 年第二季交易所報告 — Crypto Briefing, "Binance dominant amid spot volume drop"：https://cryptobriefing.com/binance-dominant-amid-spot-volume-drop/
-- 官方免費歷史批次資料的檔案結構與下載方式 — Binance Public Data：https://github.com/binance/binance-public-data
-- 各家歷史行情 API 的粒度、覆蓋範圍與方案比較 — CoinGecko, "Best Historical Crypto Data APIs"：https://www.coingecko.com/learn/best-historical-crypto-data-apis
-- 免費層額度與是否含歷史 OHLCV 的比較（含 CoinMarketCap 免費層限制） — CoinMarketCap Academy, "Best Free Crypto API in 2026: Free Tier Comparison"：https://coinmarketcap.com/academy/article/best-free-crypto-api-in-2026-free-tier-comparison
-- 機構級 tick 與 L2 掛單簿歷史資料的涵蓋範圍與價位 — Tardis.dev：https://tardis.dev/
-- 衍生品資料（資金費率、未平倉、清算）的 API 規格 — CoinGlass API Documentation：https://docs.coinglass.com/
+- [Binance 現貨市占數字的報導來源，引用 CoinGecko 2026 年第二季交易所報告 — Crypto Briefing, "Binance dominant amid spot volume drop"](https://cryptobriefing.com/binance-dominant-amid-spot-volume-drop/)
+- [官方免費歷史批次資料的檔案結構與下載方式 — Binance Public Data](https://github.com/binance/binance-public-data)
+- [各家歷史行情 API 的粒度、覆蓋範圍與方案比較 — CoinGecko, "Best Historical Crypto Data APIs"](https://www.coingecko.com/learn/best-historical-crypto-data-apis)
+- [免費層額度與是否含歷史 OHLCV 的比較（含 CoinMarketCap 免費層限制） — CoinMarketCap Academy, "Best Free Crypto API in 2026: Free Tier Comparison"](https://coinmarketcap.com/academy/article/best-free-crypto-api-in-2026-free-tier-comparison)
+- [機構級 tick 與 L2 掛單簿歷史資料的涵蓋範圍與價位 — Tardis.dev](https://tardis.dev/)
+- [衍生品資料（資金費率、未平倉、清算）的 API 規格 — CoinGlass API Documentation](https://docs.coinglass.com/)

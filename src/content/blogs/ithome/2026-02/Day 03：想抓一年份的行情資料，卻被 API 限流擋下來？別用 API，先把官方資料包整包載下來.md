@@ -729,8 +729,8 @@ python -m quantbot.ingest.binance \
 
 ## Reference
 
-- 批次檔的目錄結構、檔案格式與 checksum 說明 — Binance Public Data：https://github.com/binance/binance-public-data
-- K 線端點的單次上限、weight 與 IP 層級限流規則 — Binance Spot API Documentation：https://developers.binance.com/docs/binance-spot-api-docs
-- 現貨 testnet 的申請與端點 — Binance Spot Testnet：https://testnet.binance.vision/
-- 統一介面、`fetch_ohlcv` 的參數語意與 async 用法 — ccxt Manual：https://docs.ccxt.com/
-- Demo 方案的額度與 `/coins/{id}/ohlc` 的粒度規則 — CoinGecko API Documentation：https://docs.coingecko.com/
+- [批次檔的目錄結構、檔案格式與 checksum 說明 — Binance Public Data](https://github.com/binance/binance-public-data)
+- [K 線端點的單次上限、weight 與 IP 層級限流規則 — Binance Spot API Documentation](https://developers.binance.com/docs/binance-spot-api-docs)
+- [現貨 testnet 的申請與端點 — Binance Spot Testnet](https://testnet.binance.vision/)
+- [統一介面、`fetch_ohlcv` 的參數語意與 async 用法 — ccxt Manual](https://docs.ccxt.com/)
+- [Demo 方案的額度與 `/coins/{id}/ohlc` 的粒度規則 — CoinGecko API Documentation](https://docs.coingecko.com/)

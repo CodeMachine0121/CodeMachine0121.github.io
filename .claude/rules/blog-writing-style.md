@@ -89,7 +89,19 @@ draft: true
 - 判準：一句話拿掉之後，讀者少掉的是**資訊**還是**鼓勵**？少掉鼓勵就拿掉。
 - 保留**帶資訊的評價**——「第五項不是可有可無的裝飾，它同時檢查了欄位對映、時間戳單位、時區、聚合邊界四件事」這種說明了理由的句子不算獎勵式說辭。
 
-## 10. 不在文章中點名具體書籍與作者
+## 10. Reference 區塊：用 Markdown 連結，NEVER 貼裸 URL
+
+- 文末 `## Reference` 的每一條 **MUST** 是 `- [說明 — 來源名稱](URL)`：整段文字當連結文字，URL 只出現在括號裡。
+- **NEVER** 寫成 `- 說明 — 來源名稱：https://…`（裸 URL 會在版面上換行斷裂，也不能點）。
+- 「說明」講清楚這條連結替文章擔保了什麼（哪個數字、哪個參數、哪條規則），不要只寫來源名稱。連結文字裡可以有行內程式碼（`` `ewm()` ``）。
+
+```markdown
+## Reference
+
+- [kline 十二個欄位的定義與 timeframe 清單 — Binance Spot API Documentation, Market Data Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints)
+```
+
+## 11. 不在文章中點名具體書籍與作者
 
 - 即使文章內容取材自某本書，正文 **NEVER** 出現具體書名（如《極限程式設計實戰》《Extreme Programming Explained》）或作者姓名（如 Kent Beck、Ron Jeffries）。改用泛指的說法（「經典 XP」「XP 很早就談的四個變數」「一句老話」）。
 - 例外：演講者／引路人這類個人提及（如「Ruddy 老師演講建議把舊書拿出來跟 AI 討論」）可保留，那是系列的敘事起點，不是引用特定書目。

@@ -544,7 +544,7 @@ if __name__ == "__main__":
 
 ## Reference
 
-- 官方批次資料的目錄結構、檔案格式與 checksum 說明 — Binance Public Data：https://github.com/binance/binance-public-data
-- 批次檔下載入口 — data.binance.vision：https://data.binance.vision/
-- kline 十二個欄位的定義與 timeframe 清單 — Binance Spot API Documentation, Market Data Endpoints：https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints
-- Candlestick 圖的完整參數 — Plotly Python, Candlestick Charts：https://plotly.com/python/candlestick-charts/
+- [官方批次資料的目錄結構、檔案格式與 checksum 說明 — Binance Public Data](https://github.com/binance/binance-public-data)
+- [批次檔下載入口 — data.binance.vision](https://data.binance.vision/)
+- [kline 十二個欄位的定義與 timeframe 清單 — Binance Spot API Documentation, Market Data Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints)
+- [Candlestick 圖的完整參數 — Plotly Python, Candlestick Charts](https://plotly.com/python/candlestick-charts/)

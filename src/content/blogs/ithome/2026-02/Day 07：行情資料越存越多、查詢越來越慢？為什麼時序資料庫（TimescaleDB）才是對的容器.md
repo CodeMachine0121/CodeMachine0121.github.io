@@ -631,8 +631,8 @@ FROM   show_chunks('candles',
 
 ## Reference
 
-- hypertable 與分區間隔的選擇建議 — Timescale Documentation, "Hypertables"：https://docs.tigerdata.com/use-timescale/latest/hypertables/
-- continuous aggregate 的重新整理政策與 materialized_only 的行為 — Timescale Documentation, "Continuous aggregates"：https://docs.tigerdata.com/use-timescale/latest/continuous-aggregates/
-- 壓縮的 segmentby／orderby 設定與 2.18 之後的 columnstore 命名 — Timescale Documentation, "Compression"：https://docs.tigerdata.com/use-timescale/latest/compression/
-- `copy_records_to_table` 的用法與限制 — asyncpg Documentation, "Connection.copy_records_to_table"：https://magicstack.github.io/asyncpg/current/api/index.html
-- `ON CONFLICT` 子句的語意與 EXCLUDED 的用法 — PostgreSQL Documentation, "INSERT"：https://www.postgresql.org/docs/current/sql-insert.html
+- [hypertable 與分區間隔的選擇建議 — Timescale Documentation, "Hypertables"](https://docs.tigerdata.com/use-timescale/latest/hypertables/)
+- [continuous aggregate 的重新整理政策與 materialized_only 的行為 — Timescale Documentation, "Continuous aggregates"](https://docs.tigerdata.com/use-timescale/latest/continuous-aggregates/)
+- [壓縮的 segmentby／orderby 設定與 2.18 之後的 columnstore 命名 — Timescale Documentation, "Compression"](https://docs.tigerdata.com/use-timescale/latest/compression/)
+- [`copy_records_to_table` 的用法與限制 — asyncpg Documentation, "Connection.copy_records_to_table"](https://magicstack.github.io/asyncpg/current/api/index.html)
+- [`ON CONFLICT` 子句的語意與 EXCLUDED 的用法 — PostgreSQL Documentation, "INSERT"](https://www.postgresql.org/docs/current/sql-insert.html)

@@ -618,7 +618,7 @@ quantbot/
 
 ## Reference
 
-- `ewm()` 的 `adjust`、`ignore_na` 與各種週期指定方式的完整定義 — pandas User Guide, "Exponentially weighted windows"：https://pandas.pydata.org/docs/user_guide/window.html#exponentially-weighted-window
-- `ewm()` 各參數的行為說明 — pandas API Reference, `DataFrame.ewm`：https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.ewm.html
-- 對照組使用的 `ema()` 實作與預設值（含 `sma` 種子開關） — pandas-ta：https://github.com/twopirllc/pandas-ta
-- Numba 對遞迴迴圈的加速方式與限制（Day 26 會用到） — Numba Documentation, "Compiling Python code with @jit"：https://numba.readthedocs.io/en/stable/user/jit.html
+- [`ewm()` 的 `adjust`、`ignore_na` 與各種週期指定方式的完整定義 — pandas User Guide, "Exponentially weighted windows"](https://pandas.pydata.org/docs/user_guide/window.html#exponentially-weighted-window)
+- [`ewm()` 各參數的行為說明 — pandas API Reference, `DataFrame.ewm`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.ewm.html)
+- [對照組使用的 `ema()` 實作與預設值（含 `sma` 種子開關） — pandas-ta](https://github.com/twopirllc/pandas-ta)
+- [Numba 對遞迴迴圈的加速方式與限制（Day 26 會用到） — Numba Documentation, "Compiling Python code with @jit"](https://numba.readthedocs.io/en/stable/user/jit.html)
