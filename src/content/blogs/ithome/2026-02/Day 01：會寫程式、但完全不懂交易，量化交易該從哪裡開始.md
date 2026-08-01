@@ -163,7 +163,7 @@ exit:
 
 | 用途    | 選型                            | 一句話理由                                                |
 |-------|-------------------------------|------------------------------------------------------|
-| 語言    | Python 3.12                   | 量化生態系最完整；算得慢的部分交給 numpy 與 Numba                      |
+| 語言    | Python 3.14                   | 量化生態系最完整；算得慢的部分交給 numpy 與 Numba                      |
 | 歷史回補  | data.binance.vision           | 免費、不吃 rate limit（Day 03）                             |
 | 連線與下單 | ccxt ＋ 原生 websockets          | REST signing 不自己手刻，即時資料走原生 WS 才控制得住重連（Day 03、Day 09） |
 | 非同步   | asyncio ＋ aiohttp             | 爬取與行情訂閱是 I/O bound，不用 threading                      |
@@ -184,10 +184,26 @@ exit:
 
 ```bash
 uv init quantbot && cd quantbot
-uv python pin 3.12
+uv python pin 3.14
 uv add pandas numpy ccxt asyncpg pydantic-settings pyyaml
 uv add --dev pytest pytest-asyncio ruff
 ```
+
+接著補一段 `uv init` 不會順手產生的東西。`uv init` 建出來的是 application 形態的專案，`pyproject.toml` 裡沒有 `[build-system]`，uv 只會把依賴裝進 `.venv`，不會把專案本身裝進去。結果是 `import quantbot` 在某些情境下解析不到——等一下跑測試就會遇到。在 `pyproject.toml` 末尾加上這三行：
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+然後同步一次：
+
+```bash
+uv sync
+```
+
+輸出裡會看到 `+ quantbot==0.1.0 (from file:///.../quantbot)`，代表專案已經以 editable 模式裝進 venv 了。改了程式碼不需要重新安裝，但從此無論從哪個目錄、用哪種方式啟動，`import quantbot` 都指向同一份原始碼。這件事今天只影響測試跑不跑得起來，到 Day 27 把服務塞進 Docker 時會再受用一次。
 
 目錄不要一次全建好。這 30 天會一天長一塊，今天只需要能跑測試的最小骨架：
 
@@ -202,7 +218,7 @@ quantbot/
 │   └── docker-compose.yml
 ├── .env.example
 ├── .gitignore
-├── pyproject.toml
+├── pyproject.toml      # 記得補 [build-system]
 └── README.md
 ```
 
@@ -212,7 +228,6 @@ quantbot/
 
 ```python
 # quantbot/config.py
-from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -225,12 +240,9 @@ class Settings(BaseSettings):
     binance_api_secret: str = ""
     binance_testnet: bool = True
 
-    postgres_dsn: str = Field(
-        default="postgresql://quantbot:changeme@localhost:5432/market",
-        description="TimescaleDB 連線字串",
-    )
+    postgres_dsn: str = "postgresql://quantbot:changeme@localhost:5432/market"
 
-    default_symbol: str = "BTC/USDT"
+    default_symbol: str = "BTCUSDT"
     default_market: str = "spot"
 
 
@@ -259,6 +271,48 @@ __pycache__/
 data/
 *.parquet
 ```
+
+### 第一個測試：守住 testnet 這個預設值
+
+今天只有一個實作，但它已經值得兩個測試。要測的不是 pydantic 會不會讀 `.env`，那是套件的事；要測的是**這個專案的兩條約定**：安全預設沒有被誰翻掉，以及要切環境只能透過環境變數。
+
+```python
+# tests/test_config.py
+from quantbot.config import Settings
+
+
+def test_safe_defaults_declared_on_class():
+    """預設值宣告在類別上，不受 .env、環境變數與工作目錄影響。"""
+    assert Settings.model_fields["binance_testnet"].default is True
+    assert Settings.model_fields["binance_api_key"].default == ""
+    assert Settings.model_fields["default_market"].default == "spot"
+
+
+def test_env_can_override(monkeypatch, tmp_path):
+    """切正式環境靠環境變數，不靠改 config.py 的預設值。"""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("BINANCE_TESTNET", "false")
+    monkeypatch.setenv("BINANCE_API_KEY", "dummy-key")
+
+    settings = Settings()
+
+    assert settings.binance_testnet is False
+    assert settings.binance_api_key == "dummy-key"
+```
+
+兩個測試都刻意繞過同一個陷阱：`env_file=".env"` 是相對路徑，相對於當下的工作目錄。所以第一個測試乾脆不建物件，直接看宣告在類別上的預設值；第二個測試要建物件，就用 `monkeypatch.chdir(tmp_path)` 先切到一個空目錄，確保那裡沒有 `.env` 可讀。少了這一步，測試會不會過就取決於本機根目錄那份 `.env` 寫了什麼、以及 pytest 是從哪個目錄跑起來的——在自己機器上綠燈、CI 上紅燈，多半是這個原因。
+
+第二個測試用的是 `Settings()`，跟 `config.py` 最後一行同一個寫法。pydantic-settings 有 `Settings(_env_file=None)` 這種底線參數可以在單次實例化時關掉讀檔，看起來更省事，但那條路 production 從來不會走，測起來就等於在驗一個實際上用不到的組態模式。
+
+```bash
+uv run pytest -q
+```
+
+如果這裡噴的是 `ModuleNotFoundError: No module named 'quantbot'`，那就是前面那三行 `[build-system]` 沒加、或者加了沒 `uv sync`。這個錯訊很容易讓人以為是目錄結構錯了，其實不是——同一份程式碼，`uv run python -m pytest` 會過，`uv run pytest` 會失敗。差別在 `-m` 會把當下的工作目錄放進 `sys.path`，而直接跑 `pytest` 這支 console script 不會；至於 pytest 自己插進 `sys.path` 的是 `tests/`（從測試檔往上找第一個沒有 `__init__.py` 的目錄），不是專案根目錄。所以在專案沒被安裝進 venv 的情況下，兩種跑法的結果會不一樣。
+
+`uv sync` 之後就不必記這些差異了：專案在 venv 裡，兩種跑法都一樣。
+
+pytest-asyncio 今天用不到，先裝著。Day 03 開始有 async 的擷取邏輯，那時候會用上。
 
 ### 起一個 TimescaleDB
 
@@ -299,7 +353,7 @@ volumes:
 驗收標準，四項全過才算完成：
 
 1. `docker compose -f docker/docker-compose.yml up -d` 之後，`docker compose ps` 看到 timescaledb 狀態是 `healthy`。
-2. `uv run pytest` 跑得動，至少有一個測試通過（測 `Settings` 能載入、`binance_testnet` 預設為 `True` 就夠）。
+2. `uv run pytest` 跑得動，上面那兩個測試都過（預設值落在 testnet、環境變數蓋得掉預設值）。注意要用 `uv run pytest`，不是 `uv run python -m pytest`——前者過了才代表專案真的裝進 venv 了。
 3. `.env.example` 存在且已進版控；`.env` 存在但 `git status` 看不到它。
 4. README 裡有一張「本系列用哪些資料源、各自負責什麼」的表，內容就是上面那張五類 provider 表的精簡版。之後每引入一個新來源就更新它。
 
