@@ -4,7 +4,7 @@ datetime: "2026-09-18"
 description: "SMA 只有一行 rolling().mean()，但算錯的方式有三種：暖身期的 NaN 被填掉、資料缺漏讓視窗悄悄變長、以及用當根收盤價假設當根開盤成交。這篇把三個都拆開講，附 for loop 與向量化差 3000 倍的實測、跟 pandas-ta 的誤差對照，以及會標出交叉點的 Plotly 圖。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## 資料有了，接下來要從裡面算出東西
@@ -13,7 +13,7 @@ draft: true
 
 把這張表畫成圖，看到的是價格上上下下。第一個想問的問題大概是「現在是往上還是往下」，而這個問題沒辦法直接從 `close` 那一欄看出來，因為每一根都在跳。移動平均就是回答這個問題最基本的工具，也是接下來三天（Day 04 的 SMA、Day 05 的 EMA、Day 06 的 RSI）裡最單純的一個。
 
-單純到什麼程度？核心是一行：
+單純到什麼程度？核心是一行 pandas。`rolling(20)` 開一個滑動視窗，每前進一根就往回取最近 20 根，`.mean()` 對視窗裡的值取平均：
 
 ```python
 df["close"].rolling(20).mean()
@@ -71,15 +71,13 @@ for period in (20, 60, 200):
 
 有件事要講清楚，而且會在這個系列裡重複很多次：**指標是描述，不是預測。** 黃金交叉不代表接下來會漲，它只是陳述「短期均價剛剛越過長期均價」這個事實已經發生。由於均線本身就落後，交叉發生時價格通常已經動過一段了。在來回震盪的行情裡，兩條線會反覆交叉，產生一連串很快就反向的訊號。這不是指標壞掉，這就是低通濾波器在震盪訊號上該有的行為。
 
-### 未來函數：本系列第一次正式警告
+## 訊號什麼時候才存在：未來函數
 
-現在講今天最重要的一段。
+前面講的落後是低通濾波器的性質，換什麼參數都躲不掉。接下來這件事不一樣，它是我們自己寫出來的錯誤。
 
-`rolling(20).mean()` 在第 t 根算出來的值，**包含第 t 根的收盤價**。這件事本身完全正確，SMA 的定義就是含當根。問題不在數值，在於**這個數值什麼時候才存在**。
+回頭看前面那條 SMA 的公式，最後一項是 `close[t]`，也就是第 t 根**自己的收盤價**。這件事本身完全正確，SMA 的定義就是含當根。問題不在數值，在於**這個數值什麼時候才存在**：第 t 根的收盤價要等這根 K 線走完才會確定，所以 `sma[t]` 這個數字，最早也是在第 t 根結束的那一瞬間才成立。
 
-第 t 根的收盤價，要等這根 K 線走完才會確定。所以 `sma[t]` 這個數字，最早也是在第 t 根結束的那一瞬間才成立。
-
-然後看 DataFrame。第 t 列上有 `open`、`high`、`low`、`close`、`sma_20`，它們並排在同一列。人的直覺會把「同一列」讀成「同一個時間點」，但一根 K 線是**一段時間區間**，區間有開頭也有結尾。更明確的線索在索引上：Day 02 定的慣例是索引存 `open_time`，也就是說**這一列的索引寫的是開盤時間，欄位裡裝的卻是收盤才知道的價格**。
+然後看算完之後的表。第 t 列上有 `open`、`high`、`low`、`close`、`sma_20`，它們並排在同一列。人的直覺會把「同一列」讀成「同一個時間點」，但一根 K 線是**一段時間區間**，區間有開頭也有結尾。更明確的線索在索引上：Day 02 定的慣例是索引存 `open_time`，也就是說**這一列的索引寫的是開盤時間，欄位裡裝的卻是收盤才知道的價格**。
 
 於是很容易寫出這樣的東西：在第 t 列判斷「這裡有黃金交叉」，然後假設用第 t 列的 `open` 成交。這就是**未來函數**（look-ahead bias）：用了第 t 根結束才知道的資訊，去做第 t 根開始時的決定。中間隔了一整根 K 線的漲跌。
 
@@ -101,7 +99,7 @@ for period in (20, 60, 200):
 
 還有一個同源的錯誤，是 Day 02 提過的：**最後一根 K 線通常還沒收完**。在 14:37 抓下來的 1 小時資料，最後一根是 14:00 的，它的 `close` 只是「目前為止」的價格，下一分鐘就會變。拿它算出來的均線是一個會自己改變的數字。做歷史驗證時要把它丟掉，實盤時要等收線確認才處理。
 
-工程上的解法很直接：**訊號一律往後位移一根**，代表最快只能在下一根成交。等一下的實作會做這件事。到了 Day 16，這個位移會被寫進策略引擎，變成引擎的行為而不是靠每個策略自己記得，因為積木化之後策略數量會變多，靠人記得一定會漏。而 Day 19 我們會把引擎的位移**故意關掉**跑一次，看報酬會誇張到什麼程度。
+工程上的解法很直接：**訊號一律往後位移一根**，代表最快只能在下一根成交。等一下實作的 `CrossoverSignals` 會用兩個屬性把這件事做進型別裡，讀哪一個屬性就決定了拿到的是「事件發生的那一根」還是「能下單的那一根」。到了 Day 16，這個位移會被寫進策略引擎，變成引擎的行為而不是靠每個策略自己記得，因為積木化之後策略數量會變多，靠人記得一定會漏。而 Day 19 我們會把引擎的位移**故意關掉**跑一次，看報酬會誇張到什麼程度。
 
 ## 用 pandas 算 SMA
 
@@ -779,7 +777,137 @@ class PlotlyCrossoverChartRenderer:
 - `xaxis_rangeslider_visible=False`。Plotly 的 K 線圖預設帶一條範圍滑桿，會佔掉三分之一的高度，而圖上直接拉方框就能縮放。
 - 標題與軸標題從 `instrument` 長出來，不是手寫字串。時區與市場不寫出來，三個月後自己也會懷疑。
 
-畫出來之後，用互動縮放做三件檢查：
+### 組起來，跑一次
+
+到目前為止每個類別都能單獨用，但沒有任何一個地方把它們接在一起。那個地方是 `entrypoints/`：全專案唯一知道所有具體型別的一層。指標、訊號、圖表三者只在這一支檔案裡碰面，上面的 domain 誰也不認識誰。
+
+```python
+# quantbot/entrypoints/crossover_chart_command.py
+"""讀回補好的 parquet，算兩條 SMA、找出交叉，印出訊號並輸出互動圖。
+
+    uv run python -m quantbot.entrypoints.crossover_chart_command \
+        --symbol BTC/USDT --market spot --timeframe 1h --fast 20 --slow 60
+"""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+import pandas as pd
+
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.indicators.crossover_signals import CrossoverSignals
+from quantbot.domain.indicators.sma import SMA
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.market import Market
+from quantbot.domain.values.timeframe import Timeframe
+from quantbot.infrastructure.charting.plotly_crossover_chart_renderer import (
+    PlotlyCrossoverChartRenderer,
+)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--symbol", default="BTC/USDT")
+    parser.add_argument("--market", default="spot", choices=[m.value for m in Market])
+    parser.add_argument("--timeframe", default="1h")
+    parser.add_argument("--fast", type=int, default=20)
+    parser.add_argument("--slow", type=int, default=60)
+    parser.add_argument("--source", type=Path, default=Path("data/klines"))
+    parser.add_argument("--out", type=Path, default=Path("notebooks"))
+    return parser.parse_args()
+
+
+def main() -> int:
+    arguments = parse_arguments()
+    instrument = Instrument(
+        symbol=arguments.symbol,
+        market=Market(arguments.market),
+        timeframe=Timeframe(arguments.timeframe),
+    )
+    series = CandleSeries(
+        instrument,
+        pd.read_parquet(arguments.source / f"{instrument.storage_key}.parquet"),
+    )
+
+    # 這裡是組裝根：指標、訊號、圖表三個具體型別只在這一支檔案裡碰面
+    fast = SMA(arguments.fast, expected_timeframe=instrument.timeframe)
+    slow = SMA(arguments.slow, expected_timeframe=instrument.timeframe)
+    crosses = CrossoverSignals(fast.compute(series), slow.compute(series))
+
+    # 事件那一根與最快能成交的那一根並排，差的那一根就是位移
+    events = pd.DataFrame(
+        {
+            "golden": crosses.golden,
+            "entry": crosses.entry,
+            "death": crosses.death,
+            "exit": crosses.exit,
+        }
+    )
+    fired = events.loc[events.any(axis=1)]
+
+    print(f"{len(series)} 根 K 線：{series.open_times[0]} → {series.open_times[-1]}")
+    print(
+        f"黃金交叉 {int(crosses.golden.sum())} 次，"
+        f"死亡交叉 {int(crosses.death.sum())} 次"
+    )
+    print(fired.head(10))
+
+    arguments.out.mkdir(parents=True, exist_ok=True)
+    chart_path = arguments.out / f"day04-{instrument.storage_key}-crossover.html"
+    PlotlyCrossoverChartRenderer(
+        fast_period=arguments.fast, slow_period=arguments.slow
+    ).render(series).write_html(chart_path)
+    print(f"圖：{chart_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+這支指令是**讀** parquet，不是抓資料，所以要先有那個檔。Day 03 的範例抓的是 1 分鐘線，今天用的是 1 小時線，所以先用同一支回補指令補一份 1h 下來——同一條管線，只換 `--timeframe`：
+
+```bash
+uv run python -m quantbot.entrypoints.backfill_command \
+    --symbol BTC/USDT --market spot --timeframe 1h \
+    --start 2025-01-01 --end 2026-08-02 --out data/klines
+```
+
+```
+13872 根，缺 0 根，覆蓋率 100.0000%
+```
+
+1 小時線一年半只有一萬多根，比 Day 03 那份 1 分鐘的八十幾萬根小兩個數量級，批次檔幾秒就下載完。缺漏 0 根這件事等一下有用：`SMA` 建構時傳了 `expected_timeframe`，網格只要有洞就會丟 `IrregularIndexError`，整支指令會直接停在那裡。
+
+檔案就位之後：
+
+```bash
+uv run python -m quantbot.entrypoints.crossover_chart_command \
+    --symbol BTC/USDT --market spot --timeframe 1h --fast 20 --slow 60
+```
+
+```
+13872 根 K 線：2025-01-01 00:00:00+00:00 → 2026-08-01 23:00:00+00:00
+黃金交叉 126 次，死亡交叉 127 次
+                           golden  entry  death   exit
+open_time
+2025-01-06 01:00:00+00:00   False  False   True  False
+2025-01-06 02:00:00+00:00   False  False  False   True
+2025-01-06 04:00:00+00:00    True  False  False  False
+2025-01-06 05:00:00+00:00   False   True  False  False
+2025-01-07 22:00:00+00:00   False  False   True  False
+2025-01-07 23:00:00+00:00   False  False  False   True
+2025-01-10 18:00:00+00:00    True  False  False  False
+2025-01-10 19:00:00+00:00   False   True  False  False
+2025-01-13 09:00:00+00:00   False  False   True  False
+2025-01-13 10:00:00+00:00   False  False  False   True
+```
+
+這份輸出把今天講的兩件事都攤在同一張表上。第一件是位移：每個 `golden` 或 `death` 的下一列，才是對應的 `entry` 或 `exit`，兩者永遠不會落在同一根。第二件是交叉的密度——13,872 根裡有 253 次交叉，平均每 55 根一次，而且 01-06 那組黃金交叉距離前一次死亡交叉只有 3 根。SMA(20) 與 SMA(60) 在 1 小時線上就是這麼常翻面，這也是為什麼交叉本身不能直接當策略用，後面幾天會一直回到這件事。
+
+最後一行印出 `notebooks/day04-spot_BTCUSDT_1h-crossover.html`，用瀏覽器打開它。用互動縮放做三件檢查：
 
 1. **拉到資料最開頭。** 前 59 根應該只有 K 線、沒有慢線，而且**不應該有任何交叉標記**。有的話就是 `previously_ready` 那個保護沒生效。
 2. **隨便挑一個標記放大。** 確認標記那一根的前一根，快慢線的上下關係確實是反過來的。這是驗證「事件」而不是「狀態」。
@@ -796,6 +924,8 @@ quantbot/
 │   └── crossover_signals.py         CrossoverSignals
 ├── infrastructure/charting/
 │   └── plotly_crossover_chart_renderer.py
+├── entrypoints/
+│   └── crossover_chart_command.py   組裝根：把上面三者接起來
 └── tests/domain/indicators/
     └── test_sma.py
 ```
@@ -805,8 +935,8 @@ quantbot/
 1. `uv run pytest tests/domain/indicators/test_sma.py` 全綠，且包含這四個邊界案例：資料少於視窗長度、只有一根 K 線、空序列、索引有缺漏。
 2. 跟 `pandas-ta` 的對照測試通過，`rtol=1e-9`、`atol=0`，並且 NaN 的位置完全一致。如果環境裡沒有 TA-Lib，在測試裡加一句註解說明這個對照走的是同一條 pandas 路徑，等 Day 06 再補上真正獨立的對照。
 3. `SMA(20, expected_timeframe=Timeframe("1h")).compute(series)` 餵一份缺了幾根的資料會丟 `IrregularIndexError`，而不是回傳一個看起來正常的數字。
-4. notebook 產出的圖，前 59 根沒有任何交叉標記，且每個標記的前一根快慢線關係確實相反。
-5. 把 `crosses.golden` 與 `crosses.entry` 並排印出來，確認整條往後位移了剛好一根。這一項現在看起來像多餘的檢查，Day 19 會用到它。
+4. 先用 Day 03 的 `backfill_command` 補一份 `--timeframe 1h` 的 parquet（缺漏要是 0 根），再跑 `uv run python -m quantbot.entrypoints.crossover_chart_command --symbol BTC/USDT --market spot --timeframe 1h --fast 20 --slow 60`，不噴錯並產出 `notebooks/day04-spot_BTCUSDT_1h-crossover.html`。打開它，前 59 根沒有任何交叉標記，且每個標記的前一根快慢線關係確實相反。
+5. 同一支指令印出來的訊號表裡，每個 `golden` 的下一列才是 `entry`、每個 `death` 的下一列才是 `exit`，沒有任何一列同時為真。這一項現在看起來像多餘的檢查，Day 19 會用到它。
 6. `uv run mypy quantbot` 與 `uv run lint-imports` 全過。後者會擋掉一件事：`domain/indicators/` 底下 NEVER 出現 `import plotly`。今天新增了一個圖表類別，正是最容易把畫圖的東西順手寫進指標模組的時候。
 
 順帶記一件事在 README 或註解裡：**今天所有的數字都來自 Day 03 回補的 BTC/USDT 現貨 1 小時 parquet，源頭是 `data.binance.vision` 的批次檔加上 REST 補的最後幾天。** 這個系列到最後會有三條擷取路徑跟兩個對照組，等到某天發現一個數字不合理時，「這張表是誰給的」是第一個要問的問題。
