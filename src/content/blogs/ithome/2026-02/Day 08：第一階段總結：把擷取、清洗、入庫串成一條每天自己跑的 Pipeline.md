@@ -733,6 +733,112 @@ if __name__ == "__main__":
 
 注意最後那個 exit code。管線不是「跑完就算成功」，而是「回補後還有缺口、有致命異常、或對照組沒過，就回傳非 0」。cron 抓得到 exit code，Day 25 接上 Telegram 告警時，這一行就是觸發條件。
 
+### 跑起來
+
+這支指令會寫資料庫，所以 schema 要先在。兩件前置，順序不能顛倒：
+
+```bash
+# 1. 資料庫起來
+docker compose -f docker/docker-compose.yml up -d
+
+# 2. 套用 Day 07 的三個 migration（已經套過的話會印「沒有待套用的 migration」）
+uv run python -m quantbot.infrastructure.persistence.migrate
+```
+
+不需要先跑 Day 03 的 `backfill_command`。管線自己會盤點缺口、自己決定走批次還是 REST、自己入庫——那正是今天在做的事。空資料庫直接跑就可以：
+
+```bash
+uv run python -m quantbot.entrypoints.ingest_pipeline_command
+```
+
+設定檔涵蓋三個交易對、五組 instrument、資料從 2024-01-01 起算，所以第一次跑會下載不少東西。跑完長這樣：
+
+```
+=== quantbot data integrity report ===
+run_at : 2026-08-02T10:49:47.496355+00:00
+
+spot_BTCUSDT_1m
+  預期 / 實際    1,360,009 / 44,640   (3.28%)
+  回補前缺口     2 段, 共 1315369 根
+  本次寫入       archive 1311840 / rest 3529
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 0 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.36%    PASS
+
+spot_BTCUSDT_1h
+  預期 / 實際    22,666 / 0   (0.00%)
+  回補前缺口     1 段, 共 22666 根
+  本次寫入       archive 22608 / rest 58
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 0 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.36%    PASS
+
+spot_ETHUSDT_1m
+  預期 / 實際    1,360,009 / 0   (0.00%)
+  回補前缺口     1 段, 共 1360009 根
+  本次寫入       archive 1356480 / rest 3529
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 4 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.71%    PASS
+
+spot_ETHUSDT_1h
+  預期 / 實際    22,666 / 0   (0.00%)
+  回補前缺口     1 段, 共 22666 根
+  本次寫入       archive 22608 / rest 58
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 0 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.71%    PASS
+
+spot_SOLUSDT_1h
+  預期 / 實際    22,666 / 0   (0.00%)
+  回補前缺口     1 段, 共 22666 根
+  本次寫入       archive 22608 / rest 58
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 0 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.70%    PASS
+
+result : PASS（0 個未通過）
+exit   : 0
+```
+
+有幾行值得停下來看。
+
+**第一行的 `44,640 / 3.28%`。** 這是 Day 07 那句 `backfill_command --store` 灌進去的 2025 年 3 月，管線盤點時看到它已經在庫裡，於是缺口算出來是兩段而不是一整段——中間那個月被跳過了。沒跑過 Day 07 的話這裡會是 `0 / 0.00%`、缺口一段，結果完全一樣，只是少省一點事。
+
+**每一行的 `archive` 與 `rest` 是分開計數的。** BTC 1m 是 1,311,840 根走批次檔、3,529 根走 REST，切點就是 Day 03 那條「月檔次月初才上傳」的規則：上個月以前走批次，這個月走 REST。這也是為什麼管線寫進資料庫的 `source` 分得出來，而 `backfill_command --store` 只能一律寫 `'backfill'`。
+
+**`spot_ETHUSDT_1m` 的 `price_jump 4`。** 四根被標記為單根跳動過大。它們照樣入庫了——`price_jump` 是提示不是拒收，因為加密貨幣真的會在幾分鐘內跳幾個百分點，而清洗階段沒有資格替我們判斷那是壞資料還是真行情。`ohlc_invalid` 才是會被擋下來的那種。
+
+**exit code 是 0。** 五組全數 PASS，cron 不會告警。
+
+接著三分鐘後原封不動再跑一次，這次的報告才是重點：
+
+```
+=== quantbot data integrity report ===
+run_at : 2026-08-02T10:52:55.152031+00:00
+
+spot_BTCUSDT_1m
+  預期 / 實際    1,360,012 / 1,360,009   (100.00%)
+  回補前缺口     1 段, 共 3 根
+  本次寫入       rest 3
+  回補後缺口     0 段
+  異常標記       negative_value 0 / ohlc_invalid 0 / price_jump 0 / zero_volume 0
+  對照組 coingecko（容許 1.00%）    最大相對差 0.36%    PASS
+
+spot_BTCUSDT_1h
+  預期 / 實際    22,666 / 22,666   (100.00%)
+  回補前缺口     0 段, 共 0 根
+  本次寫入       無
+  回補後缺口     0 段
+  對照組 coingecko（容許 1.00%）    最大相對差 0.36%    PASS
+```
+
+（其餘三組跟 `spot_BTCUSDT_1h` 一樣，都是「本次寫入 無」。）
+
+三個 1h 的 instrument 全部是「本次寫入 無」，一根都沒重寫。兩個 1m 的各補了 3 根——那不是重複寫入，那就是這三分鐘裡真的新產生的三根 1 分鐘 K 線，而且它們走 `rest`，因為這個月的月檔還不存在。
+
+冪等在這裡不是靠「記得跑過了」，是三層各擋一半：管線先盤點缺口，沒缺就不抓；抓回來的資料走 `ON CONFLICT DO NOTHING`，撞到主鍵就跳過；而「最後一根還沒收完」由 `closed_only` 在入庫前就丟掉，所以進行式的 K 線根本沒有機會被寫進去、再也改不掉。任何一層單獨都不夠。
+
 ### 測試：只對最外層做替身
 
 ```python
@@ -954,7 +1060,7 @@ quantbot/
 
 其他全部是前面五天寫好的東西被**第二次使用**：Day 03 的兩條 `CandleSource`、路由、缺漏偵測、對照組，Day 07 的 repository。
 
-報告長這樣：
+前面貼的兩份報告都是 PASS。對照組真的沒過的時候長這樣，這也是唯一會讓 exit code 變成 1 的常見情況：
 
 ```
 === quantbot data integrity report ===
@@ -983,8 +1089,8 @@ exit   : 1
 
 驗收標準，六項全過才算完成：
 
-1. 空資料庫跑第一次，跑完報告顯示每個交易對的「回補後缺口」都是 0 段。
-2. 立刻再跑一次。`SELECT count(*)` 的結果跟第一次跑完之後完全相同，報告的「本次寫入」是空的。這是冪等。
+1. 先 `docker compose -f docker/docker-compose.yml up -d` 與 `uv run python -m quantbot.infrastructure.persistence.migrate`（Day 07 的三個 migration），再空資料庫跑第一次。跑完報告顯示每個交易對的「回補後缺口」都是 0 段。
+2. 立刻再跑一次。報告的「本次寫入」是空的，或者只有這中間真的新收線的那幾根；`SELECT count(*)` 不會多出任何重複列。這是冪等。
 3. 手動 `DELETE` 掉中間一段（例如三個月前的一整天，以及昨天的十分鐘），再跑一次。兩段都補回來了，而且報告裡標出前者走 archive、後者走 rest。這是路由邏輯。
 4. 故意把清洗前的某幾列 `high` 與 `low` 對調，確認那幾列出現在報告的 `ohlc_invalid` 裡而且沒有進資料庫。
 5. 對照組全數 PASS，exit code 為 0；或者有 FAIL 但報告明確指出是哪一天、差多少，exit code 為 1。

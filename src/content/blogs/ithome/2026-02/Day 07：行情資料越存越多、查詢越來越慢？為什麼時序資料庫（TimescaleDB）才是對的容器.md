@@ -129,8 +129,8 @@ CREATE TABLE IF NOT EXISTS candles (
     low         DOUBLE PRECISION NOT NULL,
     close       DOUBLE PRECISION NOT NULL,
     volume      DOUBLE PRECISION NOT NULL,   -- 成交量，以基礎幣計價
-    trades      INTEGER,                     -- 成交筆數，Day 12 會用到
-    source      TEXT             NOT NULL,   -- 'binance_vision' | 'binance_rest'
+    trade_count INTEGER,                     -- 成交筆數，Day 12 會用到
+    source      TEXT             NOT NULL,   -- 'archive' | 'rest' | 'backfill'
     ingested_at TIMESTAMPTZ      NOT NULL DEFAULT now(),
     CONSTRAINT candles_pkey PRIMARY KEY (symbol, market, timeframe, open_time)
 );
@@ -192,7 +192,7 @@ SELECT set_chunk_time_interval('candles', INTERVAL '14 days');
 
 ```sql
 INSERT INTO candles (symbol, market, timeframe, open_time,
-                     open, high, low, close, volume, trades, source)
+                     open, high, low, close, volume, trade_count, source)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 ON CONFLICT (symbol, market, timeframe, open_time) DO NOTHING;
 ```
@@ -207,9 +207,9 @@ ON CONFLICT (symbol, market, timeframe, open_time) DO NOTHING;
 ON CONFLICT (symbol, market, timeframe, open_time) DO UPDATE
 SET open = EXCLUDED.open, high = EXCLUDED.high, low = EXCLUDED.low,
     close = EXCLUDED.close, volume = EXCLUDED.volume,
-    trades = EXCLUDED.trades, source = EXCLUDED.source,
+    trade_count = EXCLUDED.trade_count, source = EXCLUDED.source,
     ingested_at = now()
-WHERE candles.source = 'binance_rest' AND EXCLUDED.source = 'binance_vision';
+WHERE candles.source = 'rest' AND EXCLUDED.source = 'archive';
 ```
 
 二是不小心寫進了還沒收完的那一根。這是 `DO NOTHING` 最危險的地方：Day 02 提過最後一根 K 線是進行式，如果在 09:47:30 抓到 09:47 這根、把當下的 close 寫進去，之後每次重跑都會被 `DO NOTHING` 跳過，那個錯的收盤價會**永遠留在資料庫裡**，而且不會有任何錯誤訊息。
@@ -550,25 +550,32 @@ TimescaleDB 的 `first()` 與 `last()` 是明確指定「按哪一欄排序取�
 
 ```sql
 -- quantbot/infrastructure/persistence/migrations/002_aggregates.sql
-CREATE MATERIALIZED VIEW candles_5m
+CREATE MATERIALIZED VIEW IF NOT EXISTS candles_5m
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT
     symbol,
     market,
+    '5m'::TEXT AS timeframe,
     time_bucket(INTERVAL '5 minutes', open_time) AS open_time,
-    first(open, open_time) AS open,
-    max(high)              AS high,
-    min(low)               AS low,
-    last(close, open_time) AS close,
-    sum(volume)            AS volume,
-    sum(trades)            AS trades
+    first(open, open_time)    AS open,
+    max(high)                 AS high,
+    min(low)                  AS low,
+    last(close, open_time)    AS close,
+    sum(volume)               AS volume,
+    sum(trade_count)::INTEGER AS trade_count
 FROM candles
 WHERE timeframe = '1m'
-GROUP BY symbol, market, open_time
+GROUP BY symbol, market, time_bucket(INTERVAL '5 minutes', open_time)
 WITH NO DATA;
 ```
 
-`1h` 版本只要把 `INTERVAL '5 minutes'` 換掉。也可以把 1h 疊在 `candles_5m` 上（hierarchical continuous aggregate，2.9 之後支援），少掃一次原始資料；但每疊一層就多一層重新整理延遲，而這份資料的量沒有大到需要這樣省，兩個都直接建在 `candles` 上比較好推理。
+有兩個地方寫起來很像但會直接失敗，值得單獨標出來。
+
+**`GROUP BY` 一定要重寫完整的 `time_bucket(...)`，不能寫輸出別名 `open_time`。** 這裡的別名跟來源欄位同名，而 Postgres 在 `GROUP BY` 遇到同時是輸出別名與來源欄位的識別字時，解析成**來源欄位**。於是分組分的是原始的每分鐘時間戳，TimescaleDB 檢查時找不到時間桶，直接回 `continuous aggregate view must include a valid time bucket function`。
+
+**`timeframe` 是常數欄位，不是分組欄位。** 來源已經被 `WHERE timeframe = '1m'` 限定，但讀出來的東西要能回答「我是 5m」，`CandleRepository` 才查得到它——它的 `read()` 一律帶 `WHERE symbol = $1 AND market = $2 AND timeframe = $3`。少了這一欄，`candles_5m` 建得起來卻永遠查不到東西。continuous aggregate 允許 SELECT 清單裡有常數，寫成 `'5m'::TEXT AS timeframe` 就好。
+
+`1h` 版本只要把兩處 `INTERVAL '5 minutes'` 一起換掉，常數欄位也跟著改成 `'1h'`。也可以把 1h 疊在 `candles_5m` 上（hierarchical continuous aggregate，2.9 之後支援），少掃一次原始資料；但每疊一層就多一層重新整理延遲，而這份資料的量沒有大到需要這樣省，兩個都直接建在 `candles` 上比較好推理。
 
 `materialized_only = true` 這個設定值得單獨講。設成 `false` 的話，TimescaleDB 會在查詢時把「已經物化的部分」加上「原始表裡還沒物化的最新資料」union 起來一併回傳，看起來很貼心。問題是那批最新資料裡可能包含一個**還沒滿五分鐘的 bucket**，於是查到的最後一根 5m K 線是半根，而它長得跟完整的一根一模一樣。這就是 Day 02 講的「最後一根 K 線是進行式」在聚合層再出現一次，而且更難察覺。設成 `true` 只會看到已經封好的 bucket，代價是資料會落後一點，而那個落後是可控且可預期的。
 
@@ -646,6 +653,188 @@ rsi_values = RSI(14).compute(series)
 
 從資料庫讀出來的東西，跟從批次檔回補回來的東西，是同一個型別。指標不必知道差別，這就是 Day 03 把「一段 K 線」做成 entity 的第二次回報。
 
+### migrate.py：一句一句送，不能整份送
+
+```python
+# quantbot/infrastructure/persistence/migrate.py
+"""依序套用 migrations/ 底下的 .sql，套用過的跳過。
+
+uv run python -m quantbot.infrastructure.persistence.migrate
+"""
+
+from __future__ import annotations
+
+import asyncio
+from pathlib import Path
+
+from quantbot.infrastructure.persistence.postgres_database import PostgresDatabase
+
+
+class SqlMigrationRunner:
+    """用 schema_migrations 記錄套用過哪些檔案，跑第二次不會重複執行。
+
+    每一句 SQL 分開送，NEVER 把整個檔案當一句：CREATE MATERIALIZED VIEW
+    ... WITH (timescaledb.continuous) 與 CALL refresh_continuous_aggregate()
+    都不能在交易區塊裡跑，而多句一起送會被 Postgres 包成隱式交易。
+    代價是一個檔案跑到一半失敗不會整份回滾，所以每一句都要能重跑
+    （IF NOT EXISTS / if_not_exists => TRUE）。
+    """
+
+    TRACKING_DDL = """
+    CREATE TABLE IF NOT EXISTS schema_migrations (
+        filename   TEXT        NOT NULL PRIMARY KEY,
+        applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+    """
+
+    def __init__(self, database: PostgresDatabase, *, directory: Path) -> None:
+        self._database = database
+        self._directory = directory
+
+    async def run(self) -> list[str]:
+        """套用還沒套用過的檔案，回傳這次實際跑了哪些。"""
+        pool = await self._database.pool()
+        async with pool.acquire() as connection:
+            await connection.execute(self.TRACKING_DDL)
+            applied = {
+                row["filename"]
+                for row in await connection.fetch(
+                    "SELECT filename FROM schema_migrations"
+                )
+            }
+
+            freshly_applied: list[str] = []
+            for path in sorted(self._directory.glob("*.sql")):
+                if path.name in applied:
+                    continue
+                for statement in self.statements(path.read_text(encoding="utf-8")):
+                    await connection.execute(statement)
+                await connection.execute(
+                    "INSERT INTO schema_migrations (filename) VALUES ($1)", path.name
+                )
+                freshly_applied.append(path.name)
+            return freshly_applied
+
+    @staticmethod
+    def statements(sql: str) -> list[str]:
+        """把一份 .sql 拆成一句一句。
+
+        只處理這個專案自己寫的 migration：拿掉 -- 註解，再以分號切開。
+        這些 SQL 裡沒有字串字面值或函式本體帶分號，所以夠用；
+        要支援任意 SQL 的話該換成真正的 parser。
+        """
+        stripped = "\n".join(line.split("--", 1)[0] for line in sql.splitlines())
+        return [
+            statement.strip() for statement in stripped.split(";") if statement.strip()
+        ]
+
+
+async def main() -> int:
+    directory = Path(__file__).parent / "migrations"
+    runner = SqlMigrationRunner(PostgresDatabase.from_settings(), directory=directory)
+    applied = await runner.run()
+
+    if applied:
+        for filename in applied:
+            print(f"套用 {filename}")
+    else:
+        print("沒有待套用的 migration")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(asyncio.run(main()))
+```
+
+`statements()` 那個拆句子的動作是被逼出來的，不是為了漂亮。整份 SQL 一次送出去時，Postgres 會把它包成一個隱式交易，而 `CALL refresh_continuous_aggregate()` 在交易區塊裡會直接失敗：
+
+```
+ERROR:  refresh_continuous_aggregate() cannot run inside a transaction block
+```
+
+代價要講清楚：一個檔案跑到第三句才失敗，前兩句不會回滾。所以每一句 SQL 都必須能重跑——這就是每個 `CREATE` 都帶 `IF NOT EXISTS`、每個政策都帶 `if_not_exists => TRUE` 的原因，不是防禦性寫法，是這個設計的必要條件。
+
+### 跑起來
+
+資料庫先起來，然後套用 migration：
+
+```bash
+docker compose -f docker/docker-compose.yml up -d
+uv run python -m quantbot.infrastructure.persistence.migrate
+```
+
+```
+套用 001_candles.sql
+套用 002_aggregates.sql
+套用 003_compression.sql
+```
+
+再跑一次，什麼都不會發生：
+
+```bash
+uv run python -m quantbot.infrastructure.persistence.migrate
+```
+
+```
+沒有待套用的 migration
+```
+
+**要查現在套用到哪裡，讀 `schema_migrations` 就是全部的答案**——migrate.py 只認這張表：
+
+```sql
+SELECT filename, applied_at FROM schema_migrations ORDER BY filename;
+```
+
+```
+      filename       |          applied_at
+---------------------+-------------------------------
+ 001_candles.sql     | 2026-08-02 10:48:07.052066+00
+ 002_aggregates.sql  | 2026-08-02 10:48:07.068547+00
+ 003_compression.sql | 2026-08-02 10:48:07.070087+00
+```
+
+這張表跟資料庫的真實狀態是兩件事，值得分開確認。三句就夠：
+
+```sql
+-- 表在不在、主鍵對不對
+\d+ candles
+
+-- 是不是 hypertable
+SELECT hypertable_name FROM timescaledb_information.hypertables;
+
+-- 兩個聚合表建起來了沒，materialized_only 有沒有生效
+SELECT view_name, materialized_only
+FROM   timescaledb_information.continuous_aggregates;
+```
+
+```
+ hypertable_name
+-----------------
+ candles
+
+ view_name  | materialized_only
+------------+-------------------
+ candles_1h | t
+ candles_5m | t
+```
+
+schema 就位之後，Day 03 的回補指令加上 `--store` 就會多寫一份進資料庫：
+
+```bash
+uv run python -m quantbot.entrypoints.backfill_command \
+    --symbol BTC/USDT --market spot --timeframe 1m \
+    --start 2025-03-01 --end 2025-04-01 --store
+```
+
+```
+44640 根，缺 0 根，覆蓋率 100.0000%
+寫入 candles：新增 44640 列
+```
+
+44,640 就是 31 天 × 1,440 分鐘，一根不多一根不少。
+
+有一件事這支指令做不到，要先講：它交出來的是**整段合併好**的資料，分不出哪幾根來自批次檔、哪幾根來自 REST，所以 `source` 欄位一律寫 `'backfill'`。逐段標記來源是明天管線的事，它按 `FetchInstruction` 一段一段寫，所以報告裡才分得出 `archive` 幾根、`rest` 幾根。
+
 ## 陷阱與驗證
 
 ### 時區：從容器到 DataFrame 都要是 UTC
@@ -687,8 +876,15 @@ WHERE symbol = 'BTC/USDT' AND market = 'spot' AND timeframe = '1m';
 ```bash
 # 2. 把同一段資料原封不動再入庫一次
 uv run python -m quantbot.entrypoints.backfill_command --symbol BTC/USDT \
-    --market spot --timeframe 1m --start 2024-03-01 --end 2024-04-01 --store
+    --market spot --timeframe 1m --start 2025-03-01 --end 2025-04-01 --store
 ```
+
+```
+44640 根，缺 0 根，覆蓋率 100.0000%
+寫入 candles：新增 0 列
+```
+
+「新增 0 列」不是沒寫進去，是 44,640 列全部撞到主鍵被跳過了。`COPY` 照樣把資料送進暫存表，擋下來的是最後那句 `INSERT ... ON CONFLICT DO NOTHING`。
 
 ```sql
 -- 3. 列數必須一模一樣，而且沒有任何一組鍵出現兩次
@@ -709,7 +905,13 @@ WHERE high < low OR high < open OR high < close
    OR low  > open OR low  > close OR volume < 0;
 ```
 
-也是 0 列。這句檢查在 Day 03 的欄位對映寫錯時會立刻抓到（例如把 high 跟 low 的欄位順序調換），而那種錯用肉眼看 DataFrame 是看不出來的。完整的缺漏偵測是明天的主題，今天先確認手上這批沒有明顯壞掉。
+```
+ count
+-------
+     0
+```
+
+也是 0。這句檢查在 Day 03 的欄位對映寫錯時會立刻抓到（例如把 high 跟 low 的欄位順序調換），而那種錯用肉眼看 DataFrame 是看不出來的。完整的缺漏偵測是明天的主題，今天先確認手上這批沒有明顯壞掉。
 
 ### continuous aggregate 的重新整理與資料延遲
 
@@ -756,10 +958,10 @@ FROM   show_chunks('candles',
 
 驗收標準，六項全過才算完成：
 
-1. `uv run python -m quantbot.infrastructure.persistence.migrate` 跑完之後，`\d+ candles` 看得到主鍵是 `(symbol, market, timeframe, open_time)`，且 `SELECT * FROM timescaledb_information.hypertables;` 裡有 `candles`。
-2. `uv run python -m quantbot.entrypoints.backfill_command --symbol BTC/USDT --market spot --timeframe 1m --start 2024-03-01 --end 2024-04-01 --store` 能把 Day 03 回補的資料灌進去，輸出實際新增的列數（3 月是 44,640 列）。
+1. `uv run python -m quantbot.infrastructure.persistence.migrate` 印出套用的三個檔名；**再跑一次印「沒有待套用的 migration」**。`SELECT filename, applied_at FROM schema_migrations ORDER BY filename;` 三列都在，`\d+ candles` 看得到主鍵是 `(symbol, market, timeframe, open_time)`，且 `SELECT hypertable_name FROM timescaledb_information.hypertables;` 裡有 `candles`。
+2. `uv run python -m quantbot.entrypoints.backfill_command --symbol BTC/USDT --market spot --timeframe 1m --start 2025-03-01 --end 2025-04-01 --store` 輸出「新增 44640 列」（31 天 × 1,440 分鐘）。
 3. **同一句指令再跑一次，輸出的新增列數是 0**，而且上面那句 `GROUP BY ... HAVING count(*) > 1` 回 0 列。
-4. `SELECT count(*) FROM candles_5m WHERE symbol = 'BTC/USDT';` 拿得到 8,928 列（44,640 ÷ 5），且隨機抽一根跟自己用 pandas `resample("5min")` 算出來的 OHLCV 完全一致。
+4. `CALL refresh_continuous_aggregate('candles_5m', NULL, NULL);` 之後，`SELECT count(*) FROM candles_5m WHERE symbol = 'BTC/USDT';` 拿得到 8,928 列（44,640 ÷ 5），`candles_1h` 是 744 列（31 × 24），且隨機抽一根跟自己用 pandas `resample("5min")` 算出來的 OHLCV 完全一致。注意那句 `CALL` 要單獨送，跟別的語句一起送會被包進交易區塊而失敗。
 5. **這幾項驗收一律用真的 PostgreSQL 跑，NEVER 用替身。** 把寫入通道換成替身，驗到的只會是替身自己的行為——冪等、交易邊界、聚合正確性這三件事，替身一個都保證不了。所以它們是 `tests/infrastructure/persistence/` 底下的整合測試，用 pytest marker 跟單元測試分開，沒有連線字串時 skip 並印出原因，不假裝通過。
 6. `uv run lint-imports` 全過。今天新增的是這個系統的第二個 I/O 邊界，最容易發生的錯誤是 domain 為了方便直接 import 了 `asyncpg`——那條契約會擋住它。
 
