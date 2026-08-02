@@ -4,7 +4,7 @@ datetime: "2026-09-19"
 description: "EMA 把權重按指數往回衰減，反應比 SMA 快，代價是雜訊也跟著放大。這篇講清楚平滑係數 α 與週期 n 的關係、EMA 為什麼沒有真正的起始點，以及它作為本系列第一個不能直接向量化的指標，該用 ewm 怎麼寫、adjust 參數該選哪一個，最後跟 pandas-ta 對到 1e-9 以內。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## 昨天那條線，永遠晚幾根才轉彎
@@ -73,14 +73,14 @@ ema[i] = α * close[i]
 
 形狀差在哪裡，看數字最清楚。以 n=20（α ≈ 0.0952）為例：
 
-| 涵蓋範圍 | SMA(20) 的權重合計 | EMA(20) 的權重合計 |
-|---|---|---|
-| 最近 1 根 | 5.0% | 9.5% |
-| 最近 5 根 | 25.0% | 39.4% |
-| 最近 10 根 | 50.0% | 63.2% |
-| 最近 20 根 | 100.0% | 86.5% |
-| 最近 40 根 | 100.0% | 98.2% |
-| 更早的資料 | 0% | 1.8% |
+| 涵蓋範圍    | SMA(20) 的權重合計 | EMA(20) 的權重合計 |
+|---------|---------------|---------------|
+| 最近 1 根  | 5.0%          | 9.5%          |
+| 最近 5 根  | 25.0%         | 39.4%         |
+| 最近 10 根 | 50.0%         | 63.2%         |
+| 最近 20 根 | 100.0%        | 86.5%         |
+| 最近 40 根 | 100.0%        | 98.2%         |
+| 更早的資料   | 0%            | 1.8%          |
 
 兩件事值得注意。第一，EMA 給最新那根的權重接近 SMA 的兩倍，這就是它反應比較快的來源。第二，EMA 的權重不會歸零，40 根以前的資料還留著 1.8%，只是小到不影響結果。順著這個看，EMA(20) 的半衰期是 `ln(0.5) / ln(1-α) ≈ 6.9` 根，大約七根之後，一筆資料的影響力就只剩一半。
 
@@ -119,11 +119,11 @@ ema20 = klines["close"].ewm(span=20, adjust=False).mean()
 
 速度上這條路完全夠用。拿一年份的 1 分鐘 K 線（525,600 根）實測：
 
-| 寫法 | 耗時 |
-|---|---|
-| `close.ewm(span=20, adjust=False).mean()` | 約 2 ms |
-| `close.rolling(20).mean()`（昨天的 SMA，對照用） | 約 2 ms |
-| 同樣邏輯用 Python 迴圈手寫 | 約 64 ms |
+| 寫法                                        | 耗時      |
+|-------------------------------------------|---------|
+| `close.ewm(span=20, adjust=False).mean()` | 約 2 ms  |
+| `close.rolling(20).mean()`（昨天的 SMA，對照用）   | 約 2 ms  |
+| 同樣邏輯用 Python 迴圈手寫                         | 約 64 ms |
 
 `ewm` 跟真正向量化的 `rolling` 幾乎同一個量級，Python 迴圈慢 30 倍以上。這個 30 倍現在還無關緊要，64 ms 根本感覺不到。它會在什麼時候變成問題，等一下講。
 
@@ -633,15 +633,111 @@ class PlotlySmoothingComparisonRenderer:
         return int(np.sum(np.sign(slope[1:]) != np.sign(slope[:-1])))
 ```
 
-用起來三行：
+### 組起來，跑一次
+
+指標與 renderer 都在了，但沒有東西把它們接起來。跟昨天一樣，那個地方是 `entrypoints/`：
 
 ```python
-series = CandleSeries(
-    instrument, pd.read_parquet("data/klines/spot_BTCUSDT_1h.parquet")
+# quantbot/entrypoints/smoothing_comparison_command.py
+"""讀回補好的 parquet，在跌得最急的一段上對照 SMA 與 EMA，輸出互動圖。
+
+    uv run python -m quantbot.entrypoints.smoothing_comparison_command \
+        --symbol BTC/USDT --market spot --timeframe 1h --period 20
+"""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+import pandas as pd
+
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.indicators.ema import EMA
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.market import Market
+from quantbot.domain.values.timeframe import Timeframe
+from quantbot.infrastructure.charting.plotly_smoothing_comparison_renderer import (
+    PlotlySmoothingComparisonRenderer,
 )
-renderer = PlotlySmoothingComparisonRenderer(period=20)
-renderer.render(series, renderer.steepest_drop(series)).show()
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--symbol", default="BTC/USDT")
+    parser.add_argument("--market", default="spot", choices=[m.value for m in Market])
+    parser.add_argument("--timeframe", default="1h")
+    parser.add_argument("--period", type=int, default=20)
+    parser.add_argument("--source", type=Path, default=Path("data/klines"))
+    parser.add_argument("--out", type=Path, default=Path("notebooks"))
+    return parser.parse_args()
+
+
+def main() -> int:
+    arguments = parse_arguments()
+    instrument = Instrument(
+        symbol=arguments.symbol,
+        market=Market(arguments.market),
+        timeframe=Timeframe(arguments.timeframe),
+    )
+    series = CandleSeries(
+        instrument,
+        pd.read_parquet(arguments.source / f"{instrument.storage_key}.parquet"),
+    )
+
+    renderer = PlotlySmoothingComparisonRenderer(period=arguments.period)
+    # 切片在 renderer 裡是最後一步：兩條線先在完整資料上算完，段落才切得出正確的暖機
+    segment = renderer.steepest_drop(series)
+    flips = renderer.direction_flips(series)
+
+    print(f"{len(series)} 根 K 線：{series.open_times[0]} → {series.open_times[-1]}")
+    print(
+        f"跌最急的一段：{segment.open_times[0]} → {segment.open_times[-1]}"
+        f"（{len(segment)} 根）"
+    )
+    print(f"換方向次數：SMA {flips['sma']} 次，EMA {flips['ema']} 次")
+    warmup = EMA(arguments.period).required_warmup_bar_count()
+    print(f"EMA({arguments.period}) 建議預留的暖機根數：{warmup}")
+
+    arguments.out.mkdir(parents=True, exist_ok=True)
+    chart_path = arguments.out / f"day05-{instrument.storage_key}-smoothing.html"
+    renderer.render(series, segment).write_html(chart_path)
+    print(f"圖：{chart_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 ```
+
+這支指令是讀 parquet，不是抓資料。手上還沒有 1 小時那份的話，先用 Day 03 的回補指令補一份下來——同一條管線，只換 `--timeframe`：
+
+```bash
+uv run python -m quantbot.entrypoints.backfill_command \
+    --symbol BTC/USDT --market spot --timeframe 1h \
+    --start 2025-01-01 --end 2026-08-02 --out data/klines
+```
+
+```
+13872 根，缺 0 根，覆蓋率 100.0000%
+```
+
+昨天已經補過的話這一步會全部命中 `data/raw/` 的快取，不會重下。接著跑對照：
+
+```bash
+uv run python -m quantbot.entrypoints.smoothing_comparison_command \
+    --symbol BTC/USDT --market spot --timeframe 1h --period 20
+```
+
+```
+13872 根 K 線：2025-01-01 00:00:00+00:00 → 2026-08-01 23:00:00+00:00
+跌最急的一段：2025-02-26 19:00:00+00:00 → 2025-03-08 18:00:00+00:00（240 根）
+換方向次數：SMA 1509 次，EMA 1807 次
+EMA(20) 建議預留的暖機根數：100
+圖：notebooks/day05-spot_BTCUSDT_1h-smoothing.html
+```
+
+`steepest_drop` 自己找出來的那段是 2025 年 3 月初，六根 K 線內的跌幅在整份樣本裡最深。段落是 240 根、也就是中心點前後各 120 根，這個寬度是為了讓急跌前後的走勢都留在畫面上。
 
 `steepest_drop` 回傳的是一個 `CandleSeries` 而不是一張 DataFrame，所以「切出來的這一段是哪個 instrument」不會在傳遞過程中掉。而**兩條線是在完整資料上算完再切片的**，不是先切片再算——切出來的那一小段前面沒有暖機資料，EMA 的起始值會失真，那正是這一天在講的種子問題。這個順序寫在 `render` 裡，呼叫端沒有機會弄反。
 
@@ -657,13 +753,13 @@ renderer.render(series, renderer.steepest_drop(series)).show()
 
 ### 代價：雜訊也跟著放大
 
-統計從同一個 renderer 問出來就好，因為兩條線它已經會算了：
+統計不用另外寫，同一個 renderer 已經會算：`direction_flips` 數的是每條線換了幾次方向，次數越多代表線越常來回擺動。剛才那支指令印出來的就是它：
 
-```python
-print(renderer.direction_flips(series))   # {'sma': 34, 'ema': 36}
+```
+換方向次數：SMA 1509 次，EMA 1807 次
 ```
 
-在同一段樣本上，EMA 的翻轉次數大約是 SMA 的 1.5 到 2 倍。這個數字跟前面「早兩三根反應」是同一件事的兩面：EMA 對最新資料更敏感，所以真的有事發生時它先動，沒事只是隨機晃動時它也先動。
+一年半的 1 小時線上，EMA 比 SMA 多擺動兩成。換 `--period 10` 是 2,164 對 2,667，換 `--period 60` 是 815 對 1,025，比例都落在 1.2 到 1.25 之間，所以這不是某個週期挑得剛好。這個差距跟前面「早兩三根反應」是同一件事的兩面：EMA 對最新資料更敏感，所以真的有事發生時它先動，沒事只是隨機晃動時它也先動。
 
 所以 EMA **不是** SMA 的升級版，兩者是在同一條軸上取不同的位置：
 
@@ -690,6 +786,9 @@ quantbot/
 ├── infrastructure/charting/
 │   ├── plotly_crossover_chart_renderer.py        Day 04
 │   └── plotly_smoothing_comparison_renderer.py   今天
+├── entrypoints/
+│   ├── crossover_chart_command.py                Day 04
+│   └── smoothing_comparison_command.py           今天：組裝根
 └── tests/
     ├── reference/reference_ema.py                今天：手寫遞迴參考實作
     └── domain/indicators/test_ema.py             今天
@@ -701,7 +800,7 @@ quantbot/
 2. 兩個對照都在測試裡，而且 `pandas-ta` 那條在沒裝套件時 skip 而不是 fail。跟 `ReferenceEMA` 的最大誤差小於 `1e-9`。
 3. `EMA` 繼承 `Indicator`，只實作了 `name` 與 `_compute`；`compute()` 的四條契約由基底擔保，沒有在 `EMA` 裡重寫一次。
 4. 程式碼裡沒有任何 Python 層的 `for` 迴圈遍歷 K 線，唯一的迴圈在 `tests/reference/reference_ema.py`，而它只在測試裡跑。
-5. 圖畫得出來，而且在急跌那一段能明確看到 EMA 比 SMA 早兩到三根往下。
+5. 手上沒有 1 小時那份 parquet 的話，先用 Day 03 的 `backfill_command` 補一份（`--timeframe 1h`，缺漏要是 0 根），再跑 `uv run python -m quantbot.entrypoints.smoothing_comparison_command --symbol BTC/USDT --market spot --timeframe 1h --period 20`。它會印出換方向次數並產出 `notebooks/day05-spot_BTCUSDT_1h-smoothing.html`；打開圖，在急跌那一段能明確看到 EMA 比 SMA 早兩到三根往下。
 6. 能回答這個問題：只讀最近 50 根 K 線就開始算 EMA(20)，算出來的值可以信嗎？（不行，warm-up 不足，前面幾百根還沒收斂。`EMA(20).required_warmup_bar_count()` 給的 100 根是最低要求。）
 
 第六項不是刁難。它是這一天真正要留下的東西：遞迴指標的值取決於從哪裡開始算，而這件事在研究環境裡幾乎不會出事，會在上線重啟的那一刻出事。
