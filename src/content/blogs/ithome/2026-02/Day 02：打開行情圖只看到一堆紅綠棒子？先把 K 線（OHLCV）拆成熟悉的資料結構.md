@@ -9,7 +9,9 @@ draft: false
 
 ## 紅綠棒子只是一種畫法
 
-昨天我們把 `quantbot` 的骨架建起來了：設定集中在 `config.py`、密鑰走 `.env`、`docker compose` 起得動一個 TimescaleDB。專案是空的，但它跑得起來。
+昨天我們把 `quantbot` 的骨架建起來了：設定集中在 `config.py`、密鑰走 `.env`、`docker compose` 起得動一個 TimescaleDB，四層的資料夾也開好了，只是全部是空的。專案跑得起來，但還沒有任何領域知識。
+
+今天要往 `domain/` 填第一批東西。而且會發現一件事：**「把 K 線拆成熟悉的資料結構」跟「決定哪些值屬於 domain」根本是同一個工作**——K 線是什麼、粒度有哪幾種、時間戳怎麼解讀，這些都是換掉交易所也不會變的知識，所以它們是核心。
 
 今天要往管線最左邊那一格填第一筆資料。在那之前，先解決一件讓很多人卡住的事：打開任何一個行情網站，畫面上是一堆密密麻麻的紅綠棒子，每根棒子中間有身體、上下有鬚，滑鼠移上去會跳出四五個數字。它看起來像是需要某種解讀能力才能看懂的東西。
 
@@ -128,21 +130,7 @@ https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1d/BTCUSDT-1d-2026-
 
 13 位數是毫秒，16 位數是微秒。Binance 從 2025 年 1 月起把 public data 的時間戳換成微秒，同一個資料源、同一個檔名格式，跨過那個月份單位就變了。在 `pd.to_datetime` 裡寫死 `unit="ms"`，2025 年之後的資料會被解析成西元五萬多年。
 
-正確做法是用數量級判斷，不要假設：
-
-```python
-def detect_epoch_unit(epochs: pd.Series) -> str:
-    """用數量級判斷 epoch 整數的時間單位，NEVER 寫死。
-
-    2020 年代的時間戳：秒約 1.7e9、毫秒約 1.7e12、微秒約 1.7e15。
-    """
-    magnitude = int(epochs.max())
-    if magnitude < 10**11:
-        return "s"
-    if magnitude < 10**14:
-        return "ms"
-    return "us"
-```
+正確做法是用數量級判斷，不要假設：2020 年代的時間戳，秒約 1.7e9、毫秒約 1.7e12、微秒約 1.7e15，三者差三個數量級，不可能誤判。等一下這段會變成 `CandleColumns.to_utc`——「epoch 整數怎麼解讀」是 K 線這個概念的一部分，不是某支下載腳本的私事。
 
 **第二，時間戳是開盤時間還是收盤時間。** 官方 CSV 兩個都給，但很多 API 與資料商只給一個，而且不一定會說明是哪一個。這個差異在日線上是整整一天。判斷方法是拿第一列的時間戳，看它是不是落在一個整齊的邊界上：1d 的 open_time 會是當天 00:00:00 整，close_time 則是 23:59:59.999999。
 
@@ -154,26 +142,9 @@ def detect_epoch_unit(epochs: pd.Series) -> str:
 
 CSV 讀進來預設會被 pandas 猜型別，價格欄位有時候會猜成 `object`。這個系列的做法是 `dtype=str` 全部讀成字串，再明確轉一次，出錯會在轉型那行就炸掉，不會安靜地帶著錯誤型別往下跑。價格用 `float64`，NEVER 用 `float32`，BTC 的價格加上小數位已經吃掉不少有效位數。
 
-另一件事是 K 線不保證連續。某個時間桶裡完全沒有成交，交易所就不會產生那根 K 線，index 會直接跳過去。BTC/USDT 現貨幾乎不會發生，但成交冷清的交易對很常見，所以要有一個檢查：
+另一件事是 K 線不保證連續。某個時間桶裡完全沒有成交，交易所就不會產生那根 K 線，index 會直接跳過去。BTC/USDT 現貨幾乎不會發生，但成交冷清的交易對很常見，所以要有一個檢查。
 
-```python
-# Binance 的 timeframe 字串跟 pandas 的 freq 字串不一樣，要對映，不要直接傳。
-# pandas 的 "1m" 不是分鐘，"1min" 才是。
-PANDAS_FREQ: dict[str, str] = {
-    "1m": "1min",
-    "5m": "5min",
-    "15m": "15min",
-    "1h": "1h",
-    "4h": "4h",
-    "1d": "1D",
-}
-
-
-def find_gaps(frame: pd.DataFrame, freq: str) -> pd.DatetimeIndex:
-    """回傳預期存在、但資料裡沒有的 K 線起始時間。"""
-    expected = pd.date_range(frame.index[0], frame.index[-1], freq=freq, tz="UTC")
-    return expected.difference(frame.index)
-```
+檢查要用到一張對照表，而它本身就是個地雷：**Binance 的 timeframe 字串跟 pandas 的 freq 字串不一樣**。pandas 的 `"1m"` 不是分鐘（那是月），`"1min"` 才是。這種對照表如果散在三個檔案裡，遲早有一份會漏改，所以它等一下會住進 `Timeframe` 這個值物件。
 
 至於 `SettingWithCopyWarning`：下面的模組用 `raw[FLOAT_COLUMNS].astype("float64")` 開場，`astype` 回傳的是新物件不是 view，接著加欄位不會觸發那個警告。改寫成先切片再指派就會看到它。
 
@@ -185,173 +156,452 @@ def find_gaps(frame: pd.DataFrame, freq: str) -> pd.DatetimeIndex:
 
 問題出在把這張表存下來、之後拿它做計算的時候。歷史上的每一根都是收完的定局，只有最後那一根不是。用它算出來的判斷，在事後看起來成立，但在當下那個時間點，那個數字根本還不存在。這種「用了當時還不知道的資訊」的錯誤有個正式名稱，Day 04 會正式介紹它，今天先建立一個習慣：**進到資料表裡的 K 線，一律只有收完的。**
 
-判斷方法就是 close_time：
+判斷方法是拿 timeframe 反推：當下這一刻落在哪一根裡，那一根就是還沒收完的，往前退一格才是最後一根定局。這個判斷等一下會變成 `CandleSeries.closed_only()`——它是「一段 K 線」自己該知道的事，不是每個呼叫端各自記得的事。
+
+批次檔裡不會有未收完的 K 線（月檔是整月結束後才上傳的），但明天接上 REST 之後就會有。這個方法現在寫，之後每條路徑都會經過它。
+
+### 先填 domain：四個值與一個實體
+
+昨天講的規則在今天第一次用上：**這些東西換掉交易所也不會變，所以它們是核心。** 交易對怎麼寫、粒度有哪幾種、K 線有哪些欄位、時間戳怎麼解讀——這些是 K 線這個概念本身，不是 Binance 的細節。
+
+先是四個值物件。它們全部是 frozen dataclass 或列舉，不可變、沒有 I/O：
 
 ```python
-def drop_unclosed_bar(
-    frame: pd.DataFrame, now: pd.Timestamp | None = None
-) -> pd.DataFrame:
-    """丟掉還沒收完的最後一根 K 線。
+from __future__ import annotations
 
-    close_time 還在未來，就代表那根的 high/low/close/volume 都還會變。
+from collections.abc import Mapping
+from dataclasses import dataclass
+from enum import StrEnum
+from types import MappingProxyType
+from typing import ClassVar
+
+import pandas as pd
+
+
+# quantbot/domain/values/market.py
+class Market(StrEnum):
+    """交易的市場。
+
+    現貨與永續合約的資料 NEVER 混用，所以它是列舉而不是字串——拼錯的市場
+    名稱在建立 Instrument 的那一刻就會失敗，不會等到組出網址才發現。
     """
-    current_time = now if now is not None else pd.Timestamp.now(tz="UTC")
-    return frame.loc[frame["close_time"] <= current_time]
+
+    SPOT = "spot"
+    USD_MARGINED_PERPETUAL = "usdm"
+
+
+# quantbot/domain/values/time_range.py
+@dataclass(frozen=True)
+class TimeRange:
+    """半開區間 [start, end)。
+
+    右端開區間是整個專案的慣例：它讓「還沒收完的那一根」自然被排除，
+    也讓連續兩段查詢不會在邊界重複拿到同一根 K 線。
+    """
+
+    start: pd.Timestamp
+    end: pd.Timestamp
+
+    def __post_init__(self) -> None:
+        for name, moment in (("start", self.start), ("end", self.end)):
+            if moment.tz is None:
+                raise ValueError(f"{name} 必須是 tz-aware 的 UTC 時間")
+        if self.end < self.start:
+            raise ValueError(f"end 早於 start：{self.start} → {self.end}")
+
+    @property
+    def duration(self) -> pd.Timedelta:
+        return self.end - self.start
+
+    def clamp_end(self, latest_end: pd.Timestamp) -> TimeRange:
+        """把右端收到 latest_end 以內。用來擋掉還沒收完的那一根。"""
+        return TimeRange(self.start, min(self.end, latest_end))
+
+    def is_empty(self) -> bool:
+        return self.end <= self.start
+
+
+# quantbot/domain/values/timeframe.py
+@dataclass(frozen=True)
+class Timeframe:
+    """K 線的粒度，以及由它推導出的所有換算。
+
+    「一根多長」「pandas 的 freq 字串是什麼」「這根收完了沒」「這段期間該有
+    哪些開盤時間」是同一份知識的四個面向，所以它們住在一起。
+    NEVER 在別處再寫第二份 timeframe 對照表。
+    """
+
+    value: str
+
+    # Binance 的 timeframe 字串跟 pandas 的 freq 字串不一樣：pandas 的 "1m" 不是分鐘
+    PANDAS_FREQUENCIES: ClassVar[Mapping[str, str]] = MappingProxyType(
+        {
+            "1s": "1s",
+            "1m": "1min",
+            "5m": "5min",
+            "15m": "15min",
+            "1h": "1h",
+            "4h": "4h",
+            "1d": "1D",
+        }
+    )
+
+    def __post_init__(self) -> None:
+        if self.value not in self.PANDAS_FREQUENCIES:
+            raise ValueError(f"未知的 timeframe：{self.value}")
+
+    @property
+    def pandas_frequency(self) -> str:
+        return self.PANDAS_FREQUENCIES[self.value]
+
+    @property
+    def step(self) -> pd.Timedelta:
+        """一根 K 線的長度。"""
+        return pd.Timedelta(self.pandas_frequency)
+
+    def floor(self, moment: pd.Timestamp) -> pd.Timestamp:
+        """moment 落在哪一根 K 線裡，回傳那根的開盤時間。"""
+        return moment.floor(self.pandas_frequency)
+
+    def latest_closed_open_time(self, now: pd.Timestamp) -> pd.Timestamp:
+        """最後一根**已經收盤**的 K 線的開盤時間。
+
+        floor(now) 是當下那根還在跳動的 K 線，所以要再退一格。
+        """
+        return self.floor(now) - self.step
+
+    def expected_open_times(self, period: TimeRange) -> pd.DatetimeIndex:
+        """這段期間內所有應該存在的開盤時間，一律 UTC。"""
+        return pd.date_range(
+            start=period.start.ceil(self.pandas_frequency),
+            end=period.end,
+            freq=self.pandas_frequency,
+            tz="UTC",
+            inclusive="left",
+        )
+
+    def __str__(self) -> str:
+        return self.value
+
+
+# quantbot/domain/values/instrument.py
+@dataclass(frozen=True)
+class Instrument:
+    """要處理的是哪一段行情：交易對、市場、粒度。
+
+    market 沒有預設值，型別也不是字串：現貨與永續 NEVER 混用這條規矩，靠的是
+    「不合法的組合連物件都建不出來」，不是靠註解提醒。
+
+    網址規則不在這裡。那是 data.binance.vision 的細節，屬於 infrastructure；
+    這個值只描述「哪一段行情」，換一家交易所它一個字都不用改。
+    """
+
+    symbol: str  # ccxt 寫法，帶斜線：BTC/USDT
+    market: Market
+    timeframe: Timeframe
+
+    @property
+    def native_symbol(self) -> str:
+        """交易所原生寫法，沒有斜線：BTCUSDT。轉換只寫在這裡一份。"""
+        return self.symbol.replace("/", "").upper()
+
+    @property
+    def storage_key(self) -> str:
+        """落地檔名與報告標題的前綴，例如 spot_BTCUSDT_1m。
+
+        market 在鍵值裡，所以現貨與永續從落地那一刻就是兩個檔案。
+        """
+        return f"{self.market}_{self.native_symbol}_{self.timeframe}"
 ```
 
-批次檔裡不會有未收完的 K 線（月檔是整月結束後才上傳的），但明天接上 REST 之後就會有。這個函式現在寫，之後每條路徑都會經過它。
+三個地方值得說明。
 
-### 完整模組
+`Market` 是列舉而不是字串。Day 01 的第三條選型原則說「現貨資料 NEVER 拿去回測永續合約策略」，而這就是那條規則第一次變成程式碼：拼錯的市場名稱在建立 `Instrument` 的那一刻就會失敗。
 
-先補三個套件：
+`Timeframe` 收掉了前面那張 Binance 與 pandas 的 freq 對照表，而且把跟粒度有關的推導全部放在一起：一根多長、pandas 的 freq 字串是什麼、當下這一刻的哪一根還沒收完、這段期間該有哪些開盤時間。這四件事本來會散成三份各自維護的對照表。`latest_closed_open_time` 就是前面「最後一根還沒收完」那節的答案。
 
-```bash
-uv add httpx pyarrow plotly
-```
+`Instrument` 裡**沒有網址**。`storage_key` 會被拿去當檔名，而 market 是它的必填欄位，所以現貨與永續從落地那一刻就是兩個檔案，不是靠自律分開的。
+
+接著是欄位語彙。它知道欄位叫什麼、什麼型別、epoch 整數怎麼解讀，但**不知道官方 CSV 的第幾欄是什麼**——那是 Binance 的格式知識，等一下會待在 parser 裡：
 
 ```python
-# quantbot/ingest/binance_vision.py
-"""從 data.binance.vision 取得現貨 K 線，轉成全專案統一的 DataFrame schema。
+# quantbot/domain/values/candle_columns.py
+from __future__ import annotations
 
-資料來源：Binance 官方 public data dump（現貨 monthly klines）。
-免費、不消耗 API 額度；當月的月檔要到次月頭幾天才會上傳。
-"""
+from typing import ClassVar, Literal
 
+import pandas as pd
+
+
+class CandleColumns:
+    """K 線的欄位語彙：叫什麼、什麼型別、對齊成什麼形狀。
+
+    整個專案只有這裡知道欄位清單。要注意它**不**知道「官方 CSV 的第幾欄是
+    什麼」——那是 Binance 的格式知識，屬於 infrastructure 的 parser。
+    """
+
+    OPEN_TIME: ClassVar[str] = "open_time"
+    FLOAT_COLUMNS: ClassVar[tuple[str, ...]] = (
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "quote_volume",
+        "taker_buy_base_volume",
+        "taker_buy_quote_volume",
+    )
+    INTEGER_COLUMNS: ClassVar[tuple[str, ...]] = ("trade_count",)
+
+    @classmethod
+    def all_columns(cls) -> tuple[str, ...]:
+        """落地後的欄位與順序。每條資料來源都要對齊到這一份。"""
+        return cls.FLOAT_COLUMNS + cls.INTEGER_COLUMNS
+
+    @classmethod
+    def conform(cls, candles: pd.DataFrame) -> pd.DataFrame:
+        """轉型並補齊欄位，讓每條來源都產出同一種表。
+
+        批次檔有 12 欄，REST 只回 6 欄。不先對齊就 concat，欄位順序會隨著哪條
+        路徑先進來而變，而缺的整數欄會被迫轉成 float，所以整數欄用可空的 Int64。
+        """
+        conformed = pd.DataFrame(index=candles.index)
+        for column in cls.FLOAT_COLUMNS:
+            conformed[column] = (
+                candles[column].astype("float64")
+                if column in candles
+                else pd.Series(float("nan"), index=candles.index, dtype="float64")
+            )
+        for column in cls.INTEGER_COLUMNS:
+            conformed[column] = (
+                candles[column].astype("Int64")
+                if column in candles
+                else pd.Series(pd.NA, index=candles.index, dtype="Int64")
+            )
+        return conformed.sort_index()
+
+    @staticmethod
+    def to_utc(epochs: pd.Series) -> pd.Series:
+        """epoch 整數轉 UTC 時間，單位用數量級判斷，NEVER 寫死。
+
+        毫秒是 13 位數（約 1.7e12），微秒是 16 位數（約 1.7e15），差三個數量級。
+        """
+        numeric = pd.to_numeric(epochs)
+        magnitude = int(numeric.max()) if len(numeric) else 0
+        unit: Literal["s", "ms", "us"]
+        if magnitude < 10**11:
+            unit = "s"
+        elif magnitude < 10**14:
+            unit = "ms"
+        else:
+            unit = "us"
+        return pd.to_datetime(numeric, unit=unit, utc=True)
+```
+
+`conform` 每次都把表整理成同一種形狀：欄位順序固定、價格是 `float64`、成交筆數是可空的 `Int64`。前面說「CSV 讀進來預設會被 pandas 猜型別，價格欄位有時候會猜成 object」，這一段就是那個問題的統一解法，而且它只寫一次。
+
+最後是實體。一段 K 線不只是一張 DataFrame：「重疊時誰說了算」「哪一根還沒收完」「切片的邊界含不含端點」「怎麼聚合成粗粒度」這四條規則，如果不給它們一個家，就會散到每個呼叫端各寫一次：
+
+```python
+# quantbot/domain/entities/candle_series.py
+from __future__ import annotations
+
+import pandas as pd
+
+from quantbot.domain.values.candle_columns import CandleColumns
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.time_range import TimeRange
+from quantbot.domain.values.timeframe import Timeframe
+
+
+class CandleSeries:
+    """一段 K 線，以及它自己知道怎麼做的那些事。
+
+    直接傳 DataFrame 也能跑，但「重疊時誰說了算」「哪一根還沒收完」「切片的
+    邊界含不含端點」這些規則就會散到每個呼叫端各寫一次，而它們每一條都是
+    安靜出錯的那種。所以它們是這個類別的方法。
+    """
+
+    def __init__(self, instrument: Instrument, candles: pd.DataFrame) -> None:
+        self.instrument = instrument
+        self._candles = CandleColumns.conform(candles)
+
+    @classmethod
+    def empty(cls, instrument: Instrument) -> CandleSeries:
+        index = pd.DatetimeIndex([], tz="UTC", name=CandleColumns.OPEN_TIME)
+        return cls(instrument, pd.DataFrame(index=index))
+
+    @property
+    def frame(self) -> pd.DataFrame:
+        """底層的 DataFrame。指標與圖表吃這個。"""
+        return self._candles
+
+    @property
+    def open_times(self) -> pd.DatetimeIndex:
+        return pd.DatetimeIndex(self._candles.index)
+
+    def __len__(self) -> int:
+        return len(self._candles)
+
+    def is_empty(self) -> bool:
+        return self._candles.empty
+
+    def merge(self, other: CandleSeries) -> CandleSeries:
+        """併入另一段。**重疊時以 self 為準**。
+
+        呼叫端因此可以用順序表達權威性：批次檔是定稿、REST 是暫時的，
+        所以寫 archive.merge(rest)，而不是反過來。
+        """
+        if other.instrument != self.instrument:
+            raise ValueError(
+                f"不同的 instrument 不可合併：{self.instrument} / {other.instrument}"
+            )
+        # 先去重再排序，順序不能倒過來：sort_index() 預設是 quicksort，**不穩定**，
+        # 同一個時間戳的兩列誰留下來會變成隨機的。concat 的順序是確定的，
+        # 所以在還沒排序的表上 keep="first"，self 才真的勝出。
+        combined = pd.concat([self._candles, other.frame])
+        return CandleSeries(
+            self.instrument, combined[~combined.index.duplicated(keep="first")]
+        )
+
+    def restricted_to(self, period: TimeRange) -> CandleSeries:
+        """切出 [start, end) 這段。右端開區間，跟 TimeRange 的語意一致。"""
+        index = self.open_times
+        selected = (index >= period.start) & (index < period.end)
+        return CandleSeries(self.instrument, self._candles.loc[selected])
+
+    def closed_only(self, now: pd.Timestamp) -> CandleSeries:
+        """丟掉還沒收完的那一根。
+
+        Day 02 講過最後一根 K 線是進行式；它一旦入庫，
+        ON CONFLICT DO NOTHING 就再也不會更新它了。
+        """
+        latest = self.instrument.timeframe.latest_closed_open_time(now)
+        return CandleSeries(self.instrument, self._candles.loc[:latest])
+
+    def resample(self, timeframe: Timeframe) -> CandleSeries:
+        """聚合成更粗的粒度。交易所產生日線的方式就是這樣。
+
+        五個欄位的規則各不相同，寫錯不會報錯、圖也畫得出來，所以這段只寫一次，
+        放在 K 線自己身上。label="left" 是因為索引存的是開盤時間。
+        """
+        aggregated = self._candles.resample(
+            timeframe.pandas_frequency, label="left", closed="left"
+        ).agg(
+            open=("open", "first"),
+            high=("high", "max"),
+            low=("low", "min"),
+            close=("close", "last"),
+            volume=("volume", "sum"),
+            quote_volume=("quote_volume", "sum"),
+            taker_buy_base_volume=("taker_buy_base_volume", "sum"),
+            taker_buy_quote_volume=("taker_buy_quote_volume", "sum"),
+            trade_count=("trade_count", "sum"),
+        )
+        coarser = Instrument(
+            symbol=self.instrument.symbol,
+            market=self.instrument.market,
+            timeframe=timeframe,
+        )
+        return CandleSeries(coarser, aggregated.dropna(subset=["open"]))
+
+    def with_identity_columns(self) -> pd.DataFrame:
+        """加上 symbol 與 market 欄，給落地用。"""
+        labelled = self._candles.copy()
+        labelled["symbol"] = self.instrument.symbol
+        labelled["market"] = str(self.instrument.market)
+        return labelled
+```
+
+`merge` 裡那句「先去重再排序」不是風格問題，順序倒過來就是錯的：**`sort_index()` 預設用 quicksort，不是穩定排序**，同一個時間戳的兩列排完之後誰在前面不保證。今天只抓月檔還踩不到，明天批次與 REST 的重疊區間就會踩到，所以規則現在就寫對。
+
+`resample` 是前面那段 SQL 的 pandas 版：`first`／`max`／`min`／`last`／`sum` 五條規則各不相同，寫錯不會報錯、圖也畫得出來。把它放在 K 線自己身上，全專案就只有一份聚合邏輯。`label="left"` 是因為索引存的是開盤時間。
+
+### 再填 infrastructure：CSV 的格式知識
+
+「第幾欄是什麼」「有沒有標頭」屬於 Binance，所以它住在 infrastructure：
+
+```python
+# quantbot/infrastructure/binance/binance_candle_csv_parser.py
 from __future__ import annotations
 
 import io
 import zipfile
+from typing import ClassVar
 
-import httpx
 import pandas as pd
 
-BASE_URL = "https://data.binance.vision/data/spot/monthly/klines"
-
-# 官方 CSV 沒有標頭列，欄位順序寫死在這裡，來源是 Binance public data 文件。
-RAW_COLUMNS: list[str] = [
-    "open_time",
-    "open",
-    "high",
-    "low",
-    "close",
-    "volume",
-    "close_time",
-    "quote_volume",
-    "trade_count",
-    "taker_buy_base_volume",
-    "taker_buy_quote_volume",
-    "ignore",
-]
-
-FLOAT_COLUMNS: list[str] = ["open", "high", "low", "close", "volume", "quote_volume"]
-
-PANDAS_FREQ: dict[str, str] = {
-    "1m": "1min",
-    "5m": "5min",
-    "15m": "15min",
-    "1h": "1h",
-    "4h": "4h",
-    "1d": "1D",
-}
+from quantbot.domain.values.candle_columns import CandleColumns
 
 
-def detect_epoch_unit(epochs: pd.Series) -> str:
-    """用數量級判斷 epoch 整數的時間單位，NEVER 寫死。"""
-    magnitude = int(epochs.max())
-    if magnitude < 10**11:
-        return "s"
-    if magnitude < 10**14:
-        return "ms"
-    return "us"
+class BinanceCandleCsvParser:
+    """把批次 zip 解成一張 K 線的表。實作 domain 的 CandleParser。
 
+    「第幾欄是什麼」是這個類別獨有的知識。官方 CSV 沒有標頭，順序只能查文件，
+    而順序錯了不會報錯，只會安靜地把成交筆數當成價格用——所以它關在這裡一份。
 
-def download_monthly_klines(symbol: str, timeframe: str, month: str) -> pd.DataFrame:
-    """下載單一月份的現貨 K 線 zip，回傳未經轉換的原始欄位。
-
-    Args:
-        symbol: 交易所格式的現貨交易對，例如 "BTCUSDT"。
-        timeframe: K 線的時間框架，例如 "1d"、"1h"、"1m"。
-        month: 月份，格式 "YYYY-MM"。
+    解壓與解析都是 CPU 使用密集的，呼叫端要用 asyncio.to_thread 丟出事件迴圈。
     """
-    url = f"{BASE_URL}/{symbol}/{timeframe}/{symbol}-{timeframe}-{month}.zip"
-    response = httpx.get(url, timeout=60.0, follow_redirects=True)
-    response.raise_for_status()
 
-    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
-        csv_bytes = archive.read(archive.namelist()[0])
-
-    return pd.read_csv(
-        io.BytesIO(csv_bytes), header=None, names=RAW_COLUMNS, dtype=str
+    # 12 欄，順序來自 Binance public data 文件。最後一欄 ignore 官方保留不用，
+    # 但它佔一個位置，少算一欄後面全錯。
+    COLUMN_ORDER: ClassVar[tuple[str, ...]] = (
+        "open_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "close_time",
+        "quote_volume",
+        "trade_count",
+        "taker_buy_base_volume",
+        "taker_buy_quote_volume",
+        "ignore",
     )
 
+    def parse(self, payload: bytes) -> pd.DataFrame:
+        raw = self._extract_single_csv(payload)
+        candles = pd.read_csv(
+            io.BytesIO(raw),
+            header=None,
+            names=list(self.COLUMN_ORDER),
+            skiprows=1 if self._has_header_row(raw) else 0,
+        )
+        open_times = CandleColumns.to_utc(candles["open_time"])
+        open_times.name = CandleColumns.OPEN_TIME
+        return CandleColumns.conform(candles.set_index(open_times))
 
-def normalize_klines(raw: pd.DataFrame) -> pd.DataFrame:
-    """把原始欄位轉成統一 schema：UTC 的 DatetimeIndex ＋ float64 的 OHLCV。"""
-    open_time = pd.to_numeric(raw["open_time"])
-    close_time = pd.to_numeric(raw["close_time"])
-    unit = detect_epoch_unit(open_time)
+    @staticmethod
+    def _extract_single_csv(payload: bytes) -> bytes:
+        with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+            return archive.read(archive.namelist()[0])
 
-    frame = raw[FLOAT_COLUMNS].astype("float64")
-    frame["trade_count"] = raw["trade_count"].astype("int64")
-    frame["close_time"] = pd.to_datetime(close_time, unit=unit, utc=True)
-    frame.index = pd.to_datetime(open_time, unit=unit, utc=True)
-    frame.index.name = "open_time"
+    @staticmethod
+    def _has_header_row(raw: bytes) -> bool:
+        """2025 年起的檔案多了一行標頭。
 
-    return frame.sort_index()
-
-
-def drop_unclosed_bar(
-    frame: pd.DataFrame, now: pd.Timestamp | None = None
-) -> pd.DataFrame:
-    """丟掉還沒收完的最後一根 K 線。"""
-    current_time = now if now is not None else pd.Timestamp.now(tz="UTC")
-    return frame.loc[frame["close_time"] <= current_time]
-
-
-def find_gaps(frame: pd.DataFrame, freq: str) -> pd.DatetimeIndex:
-    """回傳預期存在、但資料裡沒有的 K 線起始時間。"""
-    expected = pd.date_range(frame.index[0], frame.index[-1], freq=freq, tz="UTC")
-    return expected.difference(frame.index)
-
-
-def load_klines(symbol: str, timeframe: str, months: list[str]) -> pd.DataFrame:
-    """下載多個月份並接成一張表：排序、去重、丟掉未收完的那一根。"""
-    monthly = [
-        normalize_klines(download_monthly_klines(symbol, timeframe, month))
-        for month in months
-    ]
-    combined = pd.concat(monthly).sort_index()
-    combined = combined[~combined.index.duplicated(keep="last")]
-
-    return drop_unclosed_bar(combined)
-
-
-def resample_ohlcv(frame: pd.DataFrame, freq: str) -> pd.DataFrame:
-    """把細粒度 K 線聚合成粗粒度，交易所產生日線的方式就是這樣。"""
-    aggregated = frame.resample(freq, label="left", closed="left").agg(
-        open=("open", "first"),
-        high=("high", "max"),
-        low=("low", "min"),
-        close=("close", "last"),
-        volume=("volume", "sum"),
-        trade_count=("trade_count", "sum"),
-    )
-    return aggregated.dropna(subset=["open"])
+        用「第一格是不是數字」偵測，不寫死年份——格式再改一次也不用改判斷邏輯。
+        """
+        first_cell = raw[: raw.find(b",")].decode("utf-8", errors="ignore").strip()
+        return not first_cell.lstrip("-").isdigit()
 ```
 
-全部向量化，沒有一行在遍歷 K 線。這是全系列的一條規矩：`resample().agg()` 不只是比較快，邊界也比手寫迴圈難寫錯。
+這個類別是全專案唯一知道欄位順序的地方。順序錯了不會報錯，只會安靜地把成交筆數當成價格用——所以把它關在一個檔案裡，比讓它散在每支讀檔的程式裡好檢查。
+
+至於下載，今天只有一支 `httpx.get`，就寫在等一下的 entrypoint 裡。**只抓六個檔、只有一條路徑，還不值得為它抽一個介面。** 明天要抓幾百個檔、還要在批次與 REST 之間切換，那時候才會有 `CandleSource`。過早抽象跟過晚抽象一樣糟，差別只在前者看起來比較勤勞。
 
 ## 用資料證明「丟掉了什麼」
 
-先驗證 `resample_ohlcv` 真的重現了交易所的聚合邏輯。抓同一個月的 1m 與 1d，把 1m 聚合成日線，跟官方日線逐欄相減：
+先驗證 `CandleSeries.resample` 真的重現了交易所的聚合邏輯。抓同一個月的 1m 與 1d，把 1m 聚合成日線，跟官方日線逐欄相減：
 
 ```python
-minute = load_klines("BTCUSDT", "1m", ["2026-06"])
-daily = load_klines("BTCUSDT", "1d", ["2026-06"])
+minute = load_month(Timeframe("1m"), "2026-06")   # entrypoint 裡那支 helper
+daily = load_month(Timeframe("1d"), "2026-06")
 
-rebuilt = resample_ohlcv(minute, PANDAS_FREQ["1d"])
+rebuilt = minute.resample(Timeframe("1d"))
 columns = ["open", "high", "low", "close", "volume"]
-print((rebuilt[columns] - daily[columns]).abs().max())
+print((rebuilt.frame[columns] - daily.frame[columns]).abs().max())
 ```
 
 ```
@@ -367,25 +617,27 @@ volume    0.0
 那反過來，摘要沒帶到的是什麼？拿 1m 資料算一個 OHLCV 算不出來的量：**當天價格實際走過的總路程**。把每分鐘的漲跌幅取絕對值加起來就是了。
 
 ```python
-minute_move = minute["close"].pct_change().abs()
-path_length = minute_move.resample("1D").sum() * 100
-bar_range = (daily["high"] - daily["low"]) / daily["open"] * 100
+minute_moves = minute.frame["close"].pct_change().abs()
+path_percentage = minute_moves.resample("1D").sum() * 100
+bar_range_percentage = (
+    (daily.frame["high"] - daily.frame["low"]) / daily.frame["open"] * 100
+)
 
 comparison = pd.DataFrame(
     {
-        "range_pct": bar_range.round(2),
-        "path_pct": path_length.round(1),
-        "trade_count": daily["trade_count"],
+        "range_percentage": bar_range_percentage.round(2),
+        "path_percentage": path_percentage.round(1),
+        "trade_count": daily.frame["trade_count"],
     }
 )
 print(comparison.loc[["2026-06-08", "2026-06-28"]])
 ```
 
 ```
-                           range_pct  path_pct  trade_count
+                           range_percentage  path_percentage  trade_count
 open_time
-2026-06-08 00:00:00+00:00       2.83      86.7      4887564
-2026-06-28 00:00:00+00:00       2.73      45.1      2299232
+2026-06-08 00:00:00+00:00                  2.83             86.7      4887564
+2026-06-28 00:00:00+00:00                  2.73             45.1      2299232
 ```
 
 這兩天在日線上長得幾乎一樣：高低幅度都是 2.8% 上下，都是收黑。但一天的價格在那個區間裡來回走了 86.7%，另一天只走了 45.1%，成交筆數差了一倍以上。如果規則是在日內做判斷，這兩天完全是不同的環境，而日線的五個數字一個字都沒提到這件事。
@@ -398,122 +650,190 @@ open_time
 
 五個數字，就畫五個數字。上半張是 OHLC 的蠟燭，下半張是 volume 的長條，共用同一條時間軸。
 
-```python
-# quantbot/plotting.py
-"""K 線繪圖。OHLCV 五個欄位全部畫出來，不要只畫價格。"""
+圖表放 `infrastructure/charting/`，因為它認識 plotly。domain 那邊不知道有畫圖這件事，所以之後換成 matplotlib、或是把資料丟給前端畫，K 線的資料結構一行都不用改：
 
+```python
+# quantbot/infrastructure/charting/plotly_candle_chart_renderer.py
 from __future__ import annotations
 
-import pandas as pd
+from typing import ClassVar
+
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from quantbot.domain.entities.candle_series import CandleSeries
 
-def plot_ohlcv(frame: pd.DataFrame, title: str) -> go.Figure:
-    """畫出 K 線與成交量的雙層圖。
 
-    Args:
-        frame: 需要 UTC 的 DatetimeIndex 與 open/high/low/close/volume 欄位。
-        title: 圖表標題，MUST 標明交易對與市場類型。
+class PlotlyCandleChartRenderer:
+    """K 線與成交量的雙層圖。OHLCV 五個欄位全部畫出來，不要只畫價格。
+
+    它住在 infrastructure，因為它認識 plotly。domain 那邊不知道有畫圖這件事，
+    所以之後換成 matplotlib 或前端畫圖，K 線的資料結構一行都不用改。
     """
-    figure = make_subplots(
-        rows=2,
-        cols=1,
-        shared_xaxes=True,
-        row_heights=[0.72, 0.28],
-        vertical_spacing=0.04,
-        subplot_titles=(
-            "價格 open / high / low / close（USDT）",
-            "成交量 volume（BTC）",
-        ),
-    )
 
-    figure.add_trace(
-        go.Candlestick(
-            x=frame.index,
-            open=frame["open"],
-            high=frame["high"],
-            low=frame["low"],
-            close=frame["close"],
-            name="OHLC",
-            increasing_line_color="#26a69a",
-            decreasing_line_color="#ef5350",
-        ),
-        row=1,
-        col=1,
-    )
+    CANDLE_UP: ClassVar[str] = "#26a69a"
+    CANDLE_DOWN: ClassVar[str] = "#ef5350"
+    VOLUME_BAR: ClassVar[str] = "#78909c"
 
-    figure.add_trace(
-        go.Bar(
-            x=frame.index,
-            y=frame["volume"],
-            name="volume",
-            marker_color="#78909c",
-        ),
-        row=2,
-        col=1,
-    )
+    def render(self, series: CandleSeries) -> go.Figure:
+        candles = series.frame
+        instrument = series.instrument
 
-    figure.update_layout(
-        title=title,
-        height=720,
-        showlegend=False,
-        template="plotly_dark",
-        xaxis_rangeslider_visible=False,
-    )
-    figure.update_xaxes(title_text="時間（UTC）", row=2, col=1)
-
-    return figure
+        figure = make_subplots(
+            rows=2,
+            cols=1,
+            shared_xaxes=True,
+            row_heights=[0.72, 0.28],
+            vertical_spacing=0.04,
+            subplot_titles=(
+                "價格 open / high / low / close (USDT)",
+                f"成交量 volume ({instrument.symbol.split('/')[0]})",
+            ),
+        )
+        figure.add_trace(
+            go.Candlestick(
+                x=candles.index,
+                open=candles["open"],
+                high=candles["high"],
+                low=candles["low"],
+                close=candles["close"],
+                name="OHLC",
+                increasing_line_color=self.CANDLE_UP,
+                decreasing_line_color=self.CANDLE_DOWN,
+            ),
+            row=1,
+            col=1,
+        )
+        figure.add_trace(
+            go.Bar(
+                x=candles.index,
+                y=candles["volume"],
+                name="volume",
+                marker_color=self.VOLUME_BAR,
+            ),
+            row=2,
+            col=1,
+        )
+        figure.update_layout(
+            # 標題從 instrument 長出來，不手寫字串：市場類型與粒度一定會標到
+            title=(
+                f"{instrument.symbol} {instrument.market} "
+                f"{instrument.timeframe}（data.binance.vision）"
+            ),
+            height=720,
+            showlegend=False,
+            template="plotly_dark",
+            xaxis_rangeslider_visible=False,
+        )
+        figure.update_xaxes(title_text="時間（UTC）", row=2, col=1)
+        return figure
 ```
 
 `xaxis_rangeslider_visible=False` 是刻意關掉的。Plotly 的 Candlestick 預設會在下面掛一條縮圖式的區間選擇器，在雙層圖裡它會擠掉成交量那一格。要縮放的話直接在圖上框選就好。
 
 `template="plotly_dark"` 純粹是個人偏好，換成 `plotly_white` 也可以。重點是軸要標清楚單位：時間是 UTC、價格是 USDT、成交量是 BTC 顆數。這三個標記之後每一張圖都要有，因為很快就會同時看好幾張不同來源的圖。
 
+標題是從 `instrument` 長出來的，不是傳進來的字串。這樣它一定會標到市場類型與粒度——而「圖上沒寫是現貨還是永續」正是之後看圖看到一半會突然不確定的那種事。
+
 ## 今日交付物
 
-`quantbot/ingest/binance_vision.py` 與 `quantbot/plotting.py` 兩個模組，加上一支把它們串起來的腳本：
+`domain/` 有了第一批東西，`infrastructure/` 有了兩個實作，加上一支把它們串起來的 entrypoint：
+
+```
+quantbot/
+├── domain/
+│   ├── values/     market.py, time_range.py, timeframe.py,
+│   │               instrument.py, candle_columns.py
+│   └── entities/   candle_series.py
+├── infrastructure/
+│   ├── binance/    binance_candle_csv_parser.py
+│   └── charting/   plotly_candle_chart_renderer.py
+└── entrypoints/    fetch_candles_command.py
+```
 
 ```python
-# quantbot/ingest/fetch_klines.py
-"""取得 BTC/USDT 現貨日線 K 線，存成 parquet 並輸出 K 線圖。
+# quantbot/entrypoints/fetch_candles_command.py
+"""抓一段月檔 K 線、存成 parquet、畫出 K 線圖。
 
-用法：
-    uv run python -m quantbot.ingest.fetch_klines
+uv run python -m quantbot.entrypoints.fetch_candles_command
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from quantbot.config import settings
-from quantbot.ingest.binance_vision import PANDAS_FREQ, find_gaps, load_klines
-from quantbot.plotting import plot_ohlcv
+import httpx
+import pandas as pd
 
-# config 裡的 default_symbol 是 ccxt 格式的 "BTC/USDT"，
-# 批次檔用的是 "BTCUSDT"。命名怎麼統一是明天 Day 03 的事，今天先手動去掉斜線。
-SYMBOL = settings.default_symbol.replace("/", "")
-TIMEFRAME = "1d"
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.market import Market
+from quantbot.domain.values.timeframe import Timeframe
+from quantbot.infrastructure.binance.binance_candle_csv_parser import (
+    BinanceCandleCsvParser,
+)
+from quantbot.infrastructure.charting.plotly_candle_chart_renderer import (
+    PlotlyCandleChartRenderer,
+)
+
+BASE_URL = "https://data.binance.vision/data/spot/monthly/klines"
 MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+DATA_DIRECTORY = Path("data/klines")
+CHART_DIRECTORY = Path("notebooks")
 
-DATA_DIR = Path("data/klines")
-CHART_DIR = Path("notebooks")
+
+def download_monthly_archive(instrument: Instrument, month: str) -> bytes:
+    """下載單一月份的 zip。
+
+    今天只抓六個檔、只有一條路徑，所以不需要介面，直接呼叫就好。
+    明天要抓幾百個檔、還要在批次與 REST 之間切換，那時候才值得抽一個 CandleSource。
+    """
+    symbol = instrument.native_symbol
+    timeframe = instrument.timeframe
+    url = f"{BASE_URL}/{symbol}/{timeframe}/{symbol}-{timeframe}-{month}.zip"
+    response = httpx.get(url, timeout=60.0, follow_redirects=True)
+    response.raise_for_status()
+    return response.content
 
 
 def main() -> None:
-    klines = load_klines(SYMBOL, TIMEFRAME, MONTHS)
-    gaps = find_gaps(klines, PANDAS_FREQ[TIMEFRAME])
+    instrument = Instrument(
+        symbol="BTC/USDT", market=Market.SPOT, timeframe=Timeframe("1d")
+    )
+    parser = BinanceCandleCsvParser()
 
-    print(f"{len(klines)} 根 K 線：{klines.index[0]} → {klines.index[-1]}")
-    print(f"缺漏 {len(gaps)} 根")
-    print(klines.dtypes)
+    monthly = [
+        CandleSeries(
+            instrument, parser.parse(download_monthly_archive(instrument, month))
+        )
+        for month in MONTHS
+    ]
+    series = monthly[0]
+    for later in monthly[1:]:
+        series = series.merge(later)
+    series = series.closed_only(pd.Timestamp.now(tz="UTC"))
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    CHART_DIR.mkdir(parents=True, exist_ok=True)
+    # 缺漏偵測今天只是兩行；Day 03 會把它變成 DataIntegrityService
+    expected = pd.date_range(
+        series.open_times[0],
+        series.open_times[-1],
+        freq=instrument.timeframe.pandas_frequency,
+        tz="UTC",
+    )
+    missing = expected.difference(series.open_times)
 
-    klines.to_parquet(DATA_DIR / f"{SYMBOL}-spot-{TIMEFRAME}.parquet")
-    chart = plot_ohlcv(klines, f"{SYMBOL} 現貨 {TIMEFRAME}（data.binance.vision）")
-    chart.write_html(CHART_DIR / f"day02-{SYMBOL}-{TIMEFRAME}.html")
+    print(f"{len(series)} 根 K 線：{series.open_times[0]} → {series.open_times[-1]}")
+    print(f"缺漏 {len(missing)} 根")
+    print(series.frame.dtypes)
+
+    DATA_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    CHART_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    series.with_identity_columns().to_parquet(
+        DATA_DIRECTORY / f"{instrument.storage_key}.parquet"
+    )
+    PlotlyCandleChartRenderer().render(series).write_html(
+        CHART_DIRECTORY / f"day02-{instrument.storage_key}.html"
+    )
 
 
 if __name__ == "__main__":
@@ -522,13 +842,17 @@ if __name__ == "__main__":
 
 存 parquet 不存 CSV，理由是 parquet 帶著型別走。CSV 存出去之後 `float64` 跟 tz-aware 的 index 都會退化成字串，下次讀進來要重轉一次，重轉就有機會轉錯。Day 01 的 `.gitignore` 已經把 `data/` 與 `*.parquet` 擋掉了，資料不進版控。
 
-驗收標準，五項全過才算完成：
+注意那支 `download_monthly_archive` 是 module-level 函式，而昨天訂的規矩是「交付物級別的程式碼一律收進類別」。這是刻意的例外，而且它有期限：`entrypoints/` 的組裝與 `main()` 本來就是規矩允許的地方，而下載那幾行明天就會搬進 `BinanceArchiveCandleSource`。**今天不抽象，是因為今天只有一條路徑；明天抽象，是因為明天有兩條。**
 
-1. `uv run python -m quantbot.ingest.fetch_klines` 跑完不噴錯，印出 181 根 K 線（2026 年 1 月 1 日到 6 月 30 日），缺漏 0 根。
-2. 印出來的 dtypes 裡，`open`／`high`／`low`／`close`／`volume` 是 `float64`，`trade_count` 是 `int64`，`close_time` 是帶 UTC 的 `datetime64`。時間解析度會跟著來源 epoch 的單位走：pandas 2.0 之後 `to_datetime` 不再一律轉成奈秒，微秒時間戳讀進來就是 `datetime64[us, UTC]`，2025 年之前的毫秒檔則是 `datetime64[ms, UTC]`。要檢查的是 `tz` 是 UTC，不是某個特定解析度。
-3. `data/klines/BTCUSDT-spot-1d.parquet` 存在；用 `pd.read_parquet` 讀回來，index 是 tz-aware 的 UTC `DatetimeIndex`，第一根的 open_time 是 `2026-01-01 00:00:00+00:00`。
-4. `notebooks/day02-BTCUSDT-1d.html` 打開後看得到 K 線與成交量兩層圖，滑鼠移到任一根上面會跳出 OHLC 四個數字。
-5. 把 `resample_ohlcv` 那段驗證跑一次，1m 聚合出來的日線跟官方日線逐欄差異全部是 0。
+驗收標準，七項全過才算完成：
+
+1. `uv run python -m quantbot.entrypoints.fetch_candles_command` 跑完不噴錯，印出 181 根 K 線（2026 年 1 月 1 日到 6 月 30 日），缺漏 0 根。
+2. 印出來的 dtypes 裡，五個價量欄位是 `float64`，`trade_count` 是 `Int64`（可空的整數，因為明天的 REST 路徑不會給這一欄）。index 是帶 UTC 的 `datetime64`；時間解析度會跟著來源 epoch 的單位走：pandas 2.0 之後 `to_datetime` 不再一律轉成奈秒，微秒時間戳讀進來就是 `datetime64[us, UTC]`。要檢查的是 `tz` 是 UTC，不是某個特定解析度。
+3. `data/klines/spot_BTCUSDT_1d.parquet` 存在；用 `pd.read_parquet` 讀回來，index 是 tz-aware 的 UTC `DatetimeIndex`，第一根的 open_time 是 `2026-01-01 00:00:00+00:00`。檔名是 `Instrument.storage_key` 產生的，所以市場類型一定在檔名裡。
+4. `notebooks/day02-spot_BTCUSDT_1d.html` 打開後看得到 K 線與成交量兩層圖，滑鼠移到任一根上面會跳出 OHLC 四個數字。
+5. 把 `resample` 那段驗證跑一次，1m 聚合出來的日線跟官方日線逐欄差異全部是 0。
+6. `uv run pytest` 全綠。今天至少要有一條測試盯著 `CandleSeries.resample`：餵兩小時的假 1 分鐘資料，斷言 open 取第一根、close 取最後一根、volume 相加。
+7. `uv run ruff check quantbot tests`、`uv run mypy`、`uv run lint-imports` 全過。第三個今天第一次真的有意義——`domain/` 底下有東西了，而它 NEVER 出現 `import httpx`。
 
 第五項不是可有可無的裝飾。它同時檢查了欄位對映、時間戳單位、時區、聚合邊界四件事，只要其中任何一項錯了都不會通過。這個系列往後每加一個計算，都會用類似的方式找一個獨立的東西來對。
 
@@ -538,9 +862,9 @@ if __name__ == "__main__":
 
 ## 明天
 
-今天用一行 `httpx.get` 就拿到了一個月的資料，看起來抓歷史資料沒什麼難的。換個規模就不一樣了：抓一整年的 1 分鐘 K 線。
+今天用一行 `httpx.get` 就拿到了六個月的資料，看起來抓歷史資料沒什麼難的。換個規模就不一樣了：抓一整年的 1 分鐘 K 線。
 
-多數人的第一反應是去打 API，然後就會遇到限流。Binance 的 klines 端點單次上限 1000 根，一年的 1 分鐘 K 線是 525,600 根，翻頁要翻五百多次，而每個 IP 每分鐘只有 2400 weight 可以用。明天 Day 03 我們把這筆帳算清楚，然後設計一條正確的路：大量歷史走批次下載，最近幾天的缺口才用 REST 補，兩條路徑分開設計、在入庫時對齊。另外把今天欠的東西補上：交易對命名、現貨與永續合約的差別、checksum 驗證，以及 API key 該怎麼放才不會外流。
+多數人的第一反應是去打 API，然後就會遇到限流。Binance 的 klines 端點單次上限 1000 根，一年的 1 分鐘 K 線是 525,600 根，翻頁要翻五百多次，而每個 IP 每分鐘只有 2400 weight 可以用。明天 Day 03 我們把這筆帳算清楚，然後設計一條正確的路：大量歷史走批次下載，最近幾天的缺口才用 REST 補，兩條路徑分開設計、在取得時對齊。今天寫的 `Timeframe`、`Instrument`、`CandleSeries` 明天一個字都不用改，要新增的是介面與 infrastructure——那正是分層要換來的東西。另外把今天欠的補上：現貨與永續合約的差別、checksum 驗證、限流與退避，以及 API key 該怎麼放才不會外流。
 
 ## Reference
 

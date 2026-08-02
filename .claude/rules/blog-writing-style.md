@@ -106,3 +106,13 @@ draft: true
 - 即使文章內容取材自某本書，正文 **NEVER** 出現具體書名（如《極限程式設計實戰》《Extreme Programming Explained》）或作者姓名（如 Kent Beck、Ron Jeffries）。改用泛指的說法（「經典 XP」「XP 很早就談的四個變數」「一句老話」）。
 - 例外：演講者／引路人這類個人提及（如「Ruddy 老師演講建議把舊書拿出來跟 AI 討論」）可保留，那是系列的敘事起點，不是引用特定書目。
 - 撰寫前若需要查證觀念的正確出處（書名、作者、章節），自己讀來源核對即可，但**不要把這些書目資訊寫進正文**。
+
+## 12. 程式碼架構（量化交易系列）
+
+適用範圍：iThome 2026 量化交易系列（`src/content/blogs/ithome/2026-02/**`）的所有 Python 產出。
+
+**完整規範見 [`quantbot-code-architecture.md`](./quantbot-code-architecture.md)**，撰寫或修改該系列的程式碼前 **MUST** 先讀它。三條最重要的：
+
+- **有實作專案**：`/Users/james/workspace/SideProjects/quantbot`。文章的類別名、模組路徑、依賴方向、技術選型 **MUST** 與它一致，動工前先讀該專案的 `CLAUDE.md`。
+- **分層與依賴方向**：`Entrypoint → Application → Domain ← Infrastructure`。domain NEVER import 其他層；對外介面用 `typing.Protocol`（住 `domain/interfaces/`，一檔一個），指標家族用 `abc.ABC`。程式碼區塊開頭 MUST 用註解標出檔案路徑。
+- **交付物級別的程式碼一律收進類別**，計算行為掛在物件的方法上。例外只有 `entrypoints/` 的 `main()`、pytest 測試與其 helper、以及刻意示範錯誤寫法的對照程式碼（如 Day 04 的 `sma_loop`）。

@@ -161,22 +161,23 @@ exit:
 
 需要的技術先用一張表帶過。每一項的完整理由留給真正用到的那一天，這裡各給一句話就好。
 
-| 用途    | 選型                            | 一句話理由                                                |
-|-------|-------------------------------|------------------------------------------------------|
-| 語言    | Python 3.14                   | 量化生態系最完整；算得慢的部分交給 numpy 與 Numba                      |
-| 歷史回補  | data.binance.vision           | 免費、不吃 rate limit（Day 03）                             |
-| 連線與下單 | ccxt ＋ 原生 websockets          | REST signing 不自己手刻，即時資料走原生 WS 才控制得住重連（Day 03、Day 09） |
-| 非同步   | asyncio ＋ aiohttp             | 爬取與行情訂閱是 I/O bound，不用 threading                      |
-| 資料處理  | pandas ＋ numpy                | 全系列一律向量化，NEVER 用 for loop 遍歷 K 線                     |
-| 儲存    | TimescaleDB ＋ asyncpg         | 時序資料要的是 hypertable 分區、時間桶聚合與壓縮（Day 07）               |
-| 指標    | 自己實作，pandas-ta 當對照組           | 自己算一遍才知道哪裡會錯（Day 04–06）                              |
-| 回測    | VectorBT                      | 向量化，跟前面的資料處理一脈相承（Day 19）                             |
-| 視覺化   | Plotly ＋ matplotlib           | 指標與績效一定要有圖，Plotly 可以縮放看細節                            |
-| 加速    | Numba                         | 遞迴型指標向量化不掉時才用（Day 26）                                |
-| 告警    | Telegram Bot API              | 免費、有官方 API、手機直接收（Day 25）                             |
-| 設定與密鑰 | pydantic-settings ＋ .env      | API key NEVER 寫進程式碼，NEVER 進版控（Day 03）                |
-| 測試    | pytest                        | 指標與策略邏輯要有測試，尤其是邊界情況                                  |
-| 部署    | Docker ＋ Docker Compose ＋ VPS | 本機與雲端同一份映像檔（Day 27）                                  |
+| 用途    | 選型                            | 一句話理由                                                    |
+|-------|-------------------------------|----------------------------------------------------------|
+| 語言    | Python 3.14                   | 量化生態系最完整；算得慢的部分交給 numpy 與 Numba                          |
+| 歷史回補  | data.binance.vision           | 免費、不吃 rate limit（Day 03）                                 |
+| 連線與下單 | ccxt ＋ 原生 websockets          | REST signing 不自己手刻，即時資料走原生 WS 才控制得住重連（Day 03、Day 09）     |
+| 非同步   | asyncio ＋ httpx               | 爬取與行情訂閱是 I/O bound，不用 threading；httpx 同一套 API 同時支援同步與非同步 |
+| 資料處理  | pandas ＋ numpy                | 全系列一律向量化，NEVER 用 for loop 遍歷 K 線                         |
+| 儲存    | TimescaleDB ＋ asyncpg         | 時序資料要的是 hypertable 分區、時間桶聚合與壓縮（Day 07）                   |
+| 指標    | 自己實作，pandas-ta 當對照組           | 自己算一遍才知道哪裡會錯（Day 04–06）                                  |
+| 回測    | VectorBT                      | 向量化，跟前面的資料處理一脈相承（Day 19）                                 |
+| 視覺化   | Plotly ＋ matplotlib           | 指標與績效一定要有圖，Plotly 可以縮放看細節                                |
+| 加速    | Numba                         | 遞迴型指標向量化不掉時才用（Day 26）                                    |
+| 告警    | Telegram Bot API              | 免費、有官方 API、手機直接收（Day 25）                                 |
+| 設定與密鑰 | pydantic-settings ＋ .env      | API key NEVER 寫進程式碼，NEVER 進版控（Day 03）                    |
+| 測試    | pytest                        | 指標與策略邏輯要有測試，尤其是邊界情況                                      |
+| 程式碼品質 | ruff ＋ mypy ＋ import-linter   | 格式、型別、以及「依賴方向有沒有長歪」都交給工具查，不靠人記                           |
+| 部署    | Docker ＋ Docker Compose ＋ VPS | 本機與雲端同一份映像檔（Day 27）                                      |
 
 ### 建專案
 
@@ -185,8 +186,8 @@ exit:
 ```bash
 uv init quantbot && cd quantbot
 uv python pin 3.14
-uv add pandas numpy ccxt asyncpg pydantic-settings pyyaml
-uv add --dev pytest pytest-asyncio ruff
+uv add pandas numpy httpx ccxt asyncpg pydantic-settings pyyaml pyarrow plotly
+uv add --dev pytest pytest-asyncio ruff mypy import-linter types-pyyaml
 ```
 
 接著補一段 `uv init` 不會順手產生的東西。`uv init` 建出來的是 application 形態的專案，`pyproject.toml` 裡沒有 `[build-system]`，uv 只會把依賴裝進 `.venv`，不會把專案本身裝進去。結果是 `import quantbot` 在某些情境下解析不到——等一下跑測試就會遇到。在 `pyproject.toml` 末尾加上這三行：
@@ -205,22 +206,138 @@ uv sync
 
 輸出裡會看到 `+ quantbot==0.1.0 (from file:///.../quantbot)`，代表專案已經以 editable 模式裝進 venv 了。改了程式碼不需要重新安裝，但從此無論從哪個目錄、用哪種方式啟動，`import quantbot` 都指向同一份原始碼。這件事今天只影響測試跑不跑得起來，到 Day 27 把服務塞進 Docker 時會再受用一次。
 
-目錄不要一次全建好。這 30 天會一天長一塊，今天只需要能跑測試的最小骨架：
+### 先決定程式碼要往哪個方向長
+
+在寫第一行實作之前，先把架構定下來。這件事今天做只花十分鐘，等到第八天有三十幾個檔案再做，就是一次重構。
+
+這個專案採 **Clean / Onion Architecture**，只有一條硬規則：**依賴方向一律指向核心。**
+
+```
+Entrypoint ───▶ Application ───▶ Domain ◀─── Infrastructure
+(CLI/組裝根)      (用例)           (核心)      (下載、解析、資料庫、圖表)
+                                    ▲
+                    quantbot/domain/interfaces/ 一介面一檔
+```
+
+| 層 | 放什麼 | 它不知道什麼 |
+|---|---|---|
+| `domain/` | K 線是什麼、指標怎麼算、缺漏怎麼定義、對外介面長什麼樣 | 不知道 Binance、不知道 PostgreSQL、不知道 plotly |
+| `application/` | 用例的編排：先查缺口、再取得、再入庫 | 不知道資料從哪來、存到哪去 |
+| `infrastructure/` | 下載、解析、SQL、畫圖，全部的外部技術 | 不知道誰會用它 |
+| `entrypoints/` | 組裝根：把具體實作注入用例，決定 exit code | 這是唯一知道全部具體型別的地方 |
+
+為什麼一個個人專案需要這個？因為這 30 天會換掉的東西比想像中多：Day 09 會多一條 WebSocket 的即時資料路徑、Day 19 的回測要在不打網路的情況下重跑同一套計算、Day 23 之後要在 testnet 與正式環境之間切換。這些全部都是「換掉最外層的實作，核心不動」——前提是核心真的不認識最外層。
+
+domain 只依「種類」分資料夾，不出現 `ingest/`、`backtest/` 這種概念資料夾：
+
+```
+quantbot/domain/
+├── values/        不可變的值：Instrument、Timeframe、TimeRange…（frozen dataclass 或 StrEnum）
+├── entities/      有行為的實體：CandleSeries（一段 K 線，含合併、切片的規則）
+├── indicators/    指標家族：Indicator 基底類別 ＋ SMA、EMA、RSI
+├── services/      跨物件的計算：路由、缺漏偵測、清洗、對照
+├── dto/           報告類的回傳形狀（Dto 後綴）
+└── interfaces/    對外介面，一個檔案一個
+```
+
+### 介面用 Protocol，家族骨架用 ABC
+
+Python 有兩種東西可以當「介面」，這個專案的分工是固定的：
+
+| 機制 | 語意 | 用在哪 |
+|---|---|---|
+| `typing.Protocol` | **結構型**：實作不繼承、不 import 抽象，型別檢查器在注入點驗證相容性 | 所有對外相依：資料來源、資料庫、時鐘 |
+| `abc.ABC` ＋ `@abstractmethod` | **名義型**：實作必須繼承，可以帶共用實作 | 同一家族要共用骨架，例如 Day 04 的 `Indicator` |
+
+前者是這個架構的關鍵。`Protocol` 讓實作**不需要 import 介面**——`infrastructure/` 裡的類別只是剛好有相容的方法簽章，相容性由 `mypy` 在組裝根那一行檢查。所以依賴箭頭真的是向內的，而不是靠自律維持。寫過 Go 的話，這就是 Go 的隱式介面；ABC 才是 Java 那種 `implements`。
+
+有兩件事要一起講明：**`Protocol` 沒有型別檢查器就只是註解**，所以 `mypy` 是驗收條件而不是加分項；另外 **NEVER 用 `@runtime_checkable` 加 `isinstance` 去驗介面**，它只比對方法名、不比對簽章，給的是假的安全感。
+
+### 命名：介面講能力，實作講技術
+
+| 種類 | 規則 | 例 |
+|---|---|---|
+| 介面 | 能力名，**不加 `I` 前綴**（Python 的慣例是 `Iterable` 不是 `IIterable`） | `CandleSource`、`CandleRepository` |
+| 實作 | 技術／來源前綴 ＋ 能力名 | `BinanceArchiveCandleSource`、`TimescaleCandleRepository` |
+| 角色後綴 | 只有七種：`Service`、`Application`、`Repository`、`Source`、`Parser`、`Renderer`、`Guard` | NEVER 出現 `Manager` / `Helper` / `Utils` |
+| 檔名 | snake_case，對齊主要型別 | `timescale_candle_repository.py` |
+
+還有一條會一路管到第 30 天的：**識別字一律全名，禁止英文單字的縮寫。** `candles` 不寫 `df`、`specification` 不寫 `spec`、`relative_difference` 不寫 `rel_diff`。例外只有領域縮寫與業界標準縮寫，它們是正式用語而不是省字：`OHLCV`、`SMA`、`EMA`、`RSI`、`UTC`、`CSV`、`API`、`SQL`。這條規則的實際好處要到 Day 20 之後才會感覺到——那時候會同時有指標、特徵、部位、成本四套東西，而 `val`、`res`、`df` 這種名字在四套東西之間是完全不可分辨的。
+
+### 把規矩交給工具
+
+規範寫在文件裡會被忘記，所以三條最重要的規則直接交給 CI。在 `pyproject.toml` 末尾補上：
+
+```toml
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ANN", "ARG", "B", "C4", "E", "F", "I", "N", "PD", "RUF", "SIM", "UP"]
+# RUF001-003 抓的是「看起來像 ASCII 的 Unicode 字元」，但這個專案的 docstring
+# 與註解是中文，全形標點會被整批誤報，所以關掉這三條。
+ignore = ["ANN401", "RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["quantbot"]
+
+[tool.importlinter]
+root_package = "quantbot"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "分層：依賴方向一律指向 domain"
+type = "layers"
+layers = ["quantbot.entrypoints", "quantbot.application", "quantbot.domain"]
+
+[[tool.importlinter.contracts]]
+name = "domain 不認識任何外部技術"
+type = "forbidden"
+source_modules = ["quantbot.domain"]
+forbidden_modules = ["httpx", "ccxt", "asyncpg", "plotly", "yaml", "quantbot.infrastructure"]
+```
+
+第三個是這三個裡面最有價值的。`ruff` 管格式、`mypy` 管型別，這兩件事大家都熟；而 `lint-imports` 管的是「有沒有人為了方便，在 domain 裡直接 import 了 asyncpg」——那是唯一會讓整個架構在三個禮拜內垮掉的動作，而且它在 code review 裡很難看出來，因為那一行看起來完全無害。
+
+```bash
+uv run ruff check quantbot tests
+uv run mypy
+uv run lint-imports
+```
+
+### 今天只建骨架
+
+目錄不要一次全建好。這 30 天會一天長一塊，今天只需要能跑測試的最小骨架，加上上面那幾個空資料夾：
 
 ```
 quantbot/
 ├── quantbot/
 │   ├── __init__.py
-│   └── config.py       # 今天唯一的實作
-├── tests/
+│   ├── config.py           # 今天唯一的實作
+│   ├── domain/             # 今天是空的，Day 02 開始填
+│   │   ├── values/
+│   │   ├── entities/
+│   │   ├── indicators/
+│   │   ├── services/
+│   │   ├── dto/
+│   │   └── interfaces/
+│   ├── application/
+│   ├── infrastructure/
+│   └── entrypoints/
+├── tests/                  # 目錄結構鏡射 quantbot/
 │   └── test_config.py
 ├── docker/
 │   └── docker-compose.yml
 ├── .env.example
 ├── .gitignore
-├── pyproject.toml      # 記得補 [build-system]
+├── pyproject.toml          # 記得補 [build-system] 與上面三段工具設定
 └── README.md
 ```
+
+空資料夾看起來有點多，但它們的作用是**讓「這個新檔案該放哪」永遠有答案**。每個資料夾記得放一個空的 `__init__.py`。
 
 ### 設定與密鑰
 
@@ -285,6 +402,7 @@ def test_safe_defaults_declared_on_class():
     """預設值宣告在類別上，不受 .env、環境變數與工作目錄影響。"""
     assert Settings.model_fields["binance_testnet"].default is True
     assert Settings.model_fields["binance_api_key"].default == ""
+    assert Settings.model_fields["binance_api_secret"].default == ""
     assert Settings.model_fields["default_market"].default == "spot"
 
 
@@ -348,16 +466,20 @@ volumes:
 
 ## 今日交付物
 
-`quantbot` 空專案，能跑起來、能跑測試、密鑰不會外洩、README 裡有一張資料源對照表。
+`quantbot` 空專案，能跑起來、能跑測試、密鑰不會外洩、分層骨架與三個檢查工具就位、README 裡有一張資料源對照表。
 
-驗收標準，四項全過才算完成：
+驗收標準，六項全過才算完成：
 
 1. `docker compose -f docker/docker-compose.yml up -d` 之後，`docker compose ps` 看到 timescaledb 狀態是 `healthy`。
 2. `uv run pytest` 跑得動，上面那兩個測試都過（預設值落在 testnet、環境變數蓋得掉預設值）。注意要用 `uv run pytest`，不是 `uv run python -m pytest`——前者過了才代表專案真的裝進 venv 了。
 3. `.env.example` 存在且已進版控；`.env` 存在但 `git status` 看不到它。
-4. README 裡有一張「本系列用哪些資料源、各自負責什麼」的表，內容就是上面那張五類 provider 表的精簡版。之後每引入一個新來源就更新它。
+4. `uv run ruff check quantbot tests`、`uv run mypy`、`uv run lint-imports` 三個都過。今天沒有實作，所以它們一定會過——重點是**現在就讓它們跑得動**，這樣第一次寫錯的那天，紅燈會當場出現，而不是三週後累積成一百個錯。
+5. 四層的資料夾都建好了，每個底下有 `__init__.py`，而且說得出「新檔案該放哪」的規則。
+6. README 裡有一張「本系列用哪些資料源、各自負責什麼」的表，內容就是上面那張五類 provider 表的精簡版。之後每引入一個新來源就更新它。
 
-第四項看起來像雜務，但它會在 Day 20 之後派上用場。發現某個回測結果不合理時，第一個要問的問題永遠是「這張表是誰給的」，而那時候專案裡已經有三種擷取路徑跟兩個對照組了。
+第六項看起來像雜務，但它會在 Day 20 之後派上用場。發現某個回測結果不合理時，第一個要問的問題永遠是「這張表是誰給的」，而那時候專案裡已經有三種擷取路徑跟兩個對照組了。
+
+至於第四項——今天跑三個空的檢查看起來很像儀式。它的價值在於**約束一旦沒有自動化，就等於不存在**。這 30 天會有很多次「先這樣寫，之後再整理」的時刻，而那個「之後」通常不會來；讓工具在當下就擋下來，比事後靠記性可靠得多。
 
 ## 免責聲明
 
@@ -365,7 +487,7 @@ volumes:
 
 ## 明天
 
-明天 Day 02，我們從資料 pipeline 最左邊那一格開始：打開行情圖只看到一堆紅綠棒子，那些棒子其實就是五個數字。我們會把 K 線（OHLCV）拆成熟悉的資料結構，講清楚為什麼是這五個數字、時間戳到底是開盤還是收盤、最後一根 K 線為什麼不能直接拿來用。也會留一個伏筆：這五個數字在壓縮的過程中，丟掉了一整段資訊，那段資訊要到 Day 09 才拿得回來。
+明天 Day 02，我們從資料 pipeline 最左邊那一格開始：打開行情圖只看到一堆紅綠棒子，那些棒子其實就是五個數字。我們會把 K 線（OHLCV）拆成熟悉的資料結構，講清楚為什麼是這五個數字、時間戳到底是開盤還是收盤、最後一根 K 線為什麼不能直接拿來用。今天建好的 `domain/values/` 與 `domain/entities/` 明天就會填進第一批東西，而且會發現「把 K 線拆成資料結構」跟「決定哪些值屬於 domain」根本是同一件事。也會留一個伏筆：這五個數字在壓縮的過程中，丟掉了一整段資訊，那段資訊要到 Day 09 才拿得回來。
 
 ## Reference
 

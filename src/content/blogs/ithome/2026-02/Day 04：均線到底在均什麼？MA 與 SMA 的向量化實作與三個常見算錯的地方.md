@@ -9,9 +9,9 @@ draft: true
 
 ## 資料有了，接下來要從裡面算出東西
 
-昨天 Day 03 你把回補管線寫好了，`ingest/binance.py` 能決定哪段走 `data.binance.vision` 的批次 zip、哪段走 REST 補洞，中斷了還能重跑。今天開始用它產出的資料。以下所有範例都吃同一張表：BTC/USDT **現貨**、1 小時 K 線，來源是 Day 03 存下來的 parquet，索引是 UTC 的 `DatetimeIndex`，值是 `open_time`（每根 K 線的開盤時間，這是 Day 02 定下來的慣例，等一下會很重要）。
+昨天 Day 03 把回補管線寫好了：`BackfillCandlesApplication` 會決定哪段走 `data.binance.vision` 的批次 zip、哪段走 REST 補洞，中斷了還能重跑，最後交出一個 `CandleSeries`。今天開始用它產出的資料。以下所有範例都吃同一張表：BTC/USDT **現貨**、1 小時 K 線，來源是 Day 03 存下來的 parquet，索引是 UTC 的 `DatetimeIndex`，值是 `open_time`（每根 K 線的開盤時間，這是 Day 02 定下來的慣例，等一下會很重要）。
 
-把這張表畫成圖，你會看到價格上上下下。你想問的第一個問題大概是「現在是往上還是往下」，而這個問題沒辦法直接從 `close` 那一欄看出來，因為每一根都在跳。移動平均就是回答這個問題最基本的工具，也是接下來三天（Day 04 的 SMA、Day 05 的 EMA、Day 06 的 RSI）裡最單純的一個。
+把這張表畫成圖，看到的是價格上上下下。第一個想問的問題大概是「現在是往上還是往下」，而這個問題沒辦法直接從 `close` 那一欄看出來，因為每一根都在跳。移動平均就是回答這個問題最基本的工具，也是接下來三天（Day 04 的 SMA、Day 05 的 EMA、Day 06 的 RSI）裡最單純的一個。
 
 單純到什麼程度？核心是一行：
 
@@ -53,9 +53,9 @@ for period in (20, 60, 200):
 200 99.5 99.5
 ```
 
-所以視窗長度不是「調得越大越準」的參數，它是一個取捨：n 越大越平滑、雜訊越少，但你看到轉折的時間也越晚。SMA(200) 在 1 小時線上大約落後 100 小時，也就是四天。
+所以視窗長度不是「調得越大越準」的參數，它是一個取捨：n 越大越平滑、雜訊越少，但看到轉折的時間也越晚。SMA(200) 在 1 小時線上大約落後 100 小時，也就是四天。
 
-那該選幾？20、60、200 是慣例，來源是股市的月、季、年交易日數的近似，跟加密貨幣 24/7 的節奏其實對不太起來。它們之所以還是被廣泛使用，很大一部分原因是很多人在看同樣的線。實際挑長度的依據應該是兩件事：你想濾掉多長的雜訊，以及你能忍受多少延遲。
+那該選幾？20、60、200 是慣例，來源是股市的月、季、年交易日數的近似，跟加密貨幣 24/7 的節奏其實對不太起來。它們之所以還是被廣泛使用，很大一部分原因是很多人在看同樣的線。實際挑長度的依據應該是兩件事：想濾掉多長的雜訊，以及能忍受多少延遲。
 
 這裡先擋一個念頭：現在**不要**去掃 5 到 200 每個長度都試一遍，挑歷史表現最好的那個。那樣做為什麼會出事、以及正確的做法是什麼，Day 21 整篇在講。今天先選 20 跟 60，因為要示範兩條線的交叉。
 
@@ -69,7 +69,7 @@ for period in (20, 60, 200):
 
 名字取得很戲劇化，但它描述的事情很平淡：最近這段時間的平均價，剛剛超過（或跌破）更長一段時間的平均價。就這樣。
 
-有件事要講清楚，而且會在這個系列裡重複很多次：**指標是描述，不是預測。** 黃金交叉不代表接下來會漲，它只是告訴你「短期均價剛剛越過長期均價」這個事實已經發生。由於均線本身就落後，交叉發生時價格通常已經動過一段了。在來回震盪的行情裡，兩條線會反覆交叉，產生一連串很快就反向的訊號。這不是指標壞掉，這就是低通濾波器在震盪訊號上該有的行為。
+有件事要講清楚，而且會在這個系列裡重複很多次：**指標是描述，不是預測。** 黃金交叉不代表接下來會漲，它只是陳述「短期均價剛剛越過長期均價」這個事實已經發生。由於均線本身就落後，交叉發生時價格通常已經動過一段了。在來回震盪的行情裡，兩條線會反覆交叉，產生一連串很快就反向的訊號。這不是指標壞掉，這就是低通濾波器在震盪訊號上該有的行為。
 
 ### 未來函數：本系列第一次正式警告
 
@@ -79,9 +79,9 @@ for period in (20, 60, 200):
 
 第 t 根的收盤價，要等這根 K 線走完才會確定。所以 `sma[t]` 這個數字，最早也是在第 t 根結束的那一瞬間才成立。
 
-然後看你的 DataFrame。第 t 列上有 `open`、`high`、`low`、`close`、`sma_20`，它們並排在同一列。人的直覺會把「同一列」讀成「同一個時間點」，但一根 K 線是**一段時間區間**，區間有開頭也有結尾。更明確的線索在索引上：Day 02 定的慣例是索引存 `open_time`，也就是說**這一列的索引寫的是開盤時間，欄位裡裝的卻是收盤才知道的價格**。
+然後看 DataFrame。第 t 列上有 `open`、`high`、`low`、`close`、`sma_20`，它們並排在同一列。人的直覺會把「同一列」讀成「同一個時間點」，但一根 K 線是**一段時間區間**，區間有開頭也有結尾。更明確的線索在索引上：Day 02 定的慣例是索引存 `open_time`，也就是說**這一列的索引寫的是開盤時間，欄位裡裝的卻是收盤才知道的價格**。
 
-於是很容易寫出這樣的東西：在第 t 列判斷「這裡有黃金交叉」，然後假設用第 t 列的 `open` 成交。這就是**未來函數**（look-ahead bias）：你用了第 t 根結束才知道的資訊，去做第 t 根開始時的決定。中間隔了一整根 K 線的漲跌。
+於是很容易寫出這樣的東西：在第 t 列判斷「這裡有黃金交叉」，然後假設用第 t 列的 `open` 成交。這就是**未來函數**（look-ahead bias）：用了第 t 根結束才知道的資訊，去做第 t 根開始時的決定。中間隔了一整根 K 線的漲跌。
 
 用實際的數字看。下面是一段十根的 1 小時資料（為了看清楚交叉，用短一點的 SMA(3) 與 SMA(5)）：
 
@@ -95,13 +95,13 @@ for period in (20, 60, 200):
 | 08:00 | 112.0 | 108.33 | 105.20 | False | **這根** |
 | 09:00 | 113.0 | 111.33 | 107.80 | False | |
 
-交叉發生在 07:00 那一根，但你要等 07:00 收完（也就是 08:00 整）才算得出 `SMA(3) = 104.67 > SMA(5) = 103.20`。這時 07:00 那根的開盤機會早就過去了，它的開盤價大約是 06:00 的收盤價 104。你實際最快能成交的地方是 08:00 那根的開盤，大約 109。
+交叉發生在 07:00 那一根，但要等 07:00 收完（也就是 08:00 整）才算得出 `SMA(3) = 104.67 > SMA(5) = 103.20`。這時 07:00 那根的開盤機會早就過去了，它的開盤價大約是 06:00 的收盤價 104。實際最快能成交的地方是 08:00 那根的開盤，大約 109。
 
-在這個例子裡，把成交點從 08:00 挪到 07:00 的開盤，等於憑空多賺 5 塊，接近 5%。一筆單 5%，而它不會噴任何錯誤、不會有警告、圖畫出來也很正常。它唯一的症狀就是**你的歷史驗證結果變得很好看**。而且錯得越嚴重，看起來越漂亮，所以它幾乎不可能靠「結果怪怪的」被發現。
+在這個例子裡，把成交點從 08:00 挪到 07:00 的開盤，等於憑空多賺 5 塊，接近 5%。一筆單 5%，而它不會噴任何錯誤、不會有警告、圖畫出來也很正常。它唯一的症狀就是**歷史驗證結果變得很好看**。而且錯得越嚴重，看起來越漂亮，所以它幾乎不可能靠「結果怪怪的」被發現。
 
-還有一個同源的錯誤，是 Day 02 提過的：**最後一根 K 線通常還沒收完**。你在 14:37 抓下來的 1 小時資料，最後一根是 14:00 的，它的 `close` 只是「目前為止」的價格，下一分鐘就會變。拿它算出來的均線是一個會自己改變的數字。做歷史驗證時要把它丟掉，實盤時要等收線確認才處理。
+還有一個同源的錯誤，是 Day 02 提過的：**最後一根 K 線通常還沒收完**。在 14:37 抓下來的 1 小時資料，最後一根是 14:00 的，它的 `close` 只是「目前為止」的價格，下一分鐘就會變。拿它算出來的均線是一個會自己改變的數字。做歷史驗證時要把它丟掉，實盤時要等收線確認才處理。
 
-工程上的解法很直接：**訊號一律往後位移一根**，代表最快只能在下一根成交。等一下的實作會做這件事。到了 Day 16，這個位移會被寫進策略引擎，變成引擎的行為而不是靠每個策略自己記得，因為積木化之後策略數量會變多，靠人記得一定會漏。而 Day 19 我們會把引擎的位移**故意關掉**跑一次，讓你親眼看到報酬會誇張到什麼程度。
+工程上的解法很直接：**訊號一律往後位移一根**，代表最快只能在下一根成交。等一下的實作會做這件事。到了 Day 16，這個位移會被寫進策略引擎，變成引擎的行為而不是靠每個策略自己記得，因為積木化之後策略數量會變多，靠人記得一定會漏。而 Day 19 我們會把引擎的位移**故意關掉**跑一次，看報酬會誇張到什麼程度。
 
 ## 用 pandas 算 SMA
 
@@ -139,119 +139,250 @@ def sma_loop(df: pd.DataFrame, period: int) -> pd.Series:
 
 不過速度只是第一個理由，另外兩個更重要：
 
-**邊界條件要自己處理，而且很容易錯。** 上面那個迴圈裡的 `i - period + 1`、`i + 1`、`i < period - 1` 三個地方，每一個都是 off-by-one 的機會。`rolling` 幫你處理掉了。
+**邊界條件要自己處理，而且很容易錯。** 上面那個迴圈裡的 `i - period + 1`、`i + 1`、`i < period - 1` 三個地方，每一個都是 off-by-one 的機會。`rolling` 把它們處理掉了。
 
-**for loop 讓未來函數變得太容易發生。** 當你手上有一個 `i` 可以自由運算時，`df.iloc[i + 1]` 跟 `df.iloc[i - 1]` 打起來一樣順手，而前者就是直接讀未來。向量化的寫法沒有這個入口：`shift()` 的正負號是明確宣告的，`rolling()` 永遠只往回看。少一個能寫錯的地方，就少一種不會噴錯的錯誤。
+**for loop 讓未來函數變得太容易發生。** 手上有一個 `i` 可以自由運算時，`df.iloc[i + 1]` 跟 `df.iloc[i - 1]` 打起來一樣順手，而前者就是直接讀未來。向量化的寫法沒有這個入口：`shift()` 的正負號是明確宣告的，`rolling()` 永遠只往回看。少一個能寫錯的地方，就少一種不會噴錯的錯誤。
 
 所以這個系列的規則是：**不用 for loop 遍歷 K 線**。真的遇到不能向量化的情況（Day 05 的 EMA 就是第一個），會明確講清楚為什麼，並且給出正確的做法。
 
-### 完整模組
+### 指標住在 domain
 
-`quantbot/indicators/ma.py`。這是純函式模組，不碰 I/O、不讀檔、不連資料庫，所以測試起來很單純：
+指標是純計算：它不碰網路、不讀檔、不知道資料是從批次檔還是 REST 來的。所以它屬於 domain，跟 Day 03 的值物件與 service 同一層。
+
+```
+quantbot/domain/indicators/
+├── indicator.py                 Indicator（抽象基底）
+├── irregular_index_error.py     IrregularIndexError
+├── sma.py                       SMA
+└── crossover_signals.py         CrossoverSignals
+```
+
+先訂契約。Day 03 的對外相依用的是 `Protocol`，這裡不一樣——指標是**一個家族**，它們有共用的骨架要給子類別，所以用 `abc.ABC`：
 
 ```python
-"""移動平均指標。純函式，不碰 I/O，方便測試與重用。"""
-
+# quantbot/domain/indicators/indicator.py
 from __future__ import annotations
+
+from abc import ABC, abstractmethod
 
 import pandas as pd
 
-__all__ = ["IrregularIndexError", "sma", "cross_signals", "delay_to_next_bar"]
+from quantbot.domain.entities.candle_series import CandleSeries
 
 
+class Indicator(ABC):
+    """所有指標的共同基底。
+
+    這裡用 ABC 而不是 Protocol，因為它有共用實作要給子類別：契約的前四條由
+    compute() 擔保，子類別只實作 name 與 _compute 兩件事。對外相依才用 Protocol。
+    """
+
+    def __init__(self, period: int, *, column: str = "close") -> None:
+        if period < 1:
+            raise ValueError(f"period 必須 >= 1，收到 {period}")
+        self.period = period
+        self.column = column
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """輸出 Series 的名字，慣例是 {indicator}_{period}。"""
+
+    @abstractmethod
+    def _compute(self, values: pd.Series) -> pd.Series:
+        """真正的計算。拿到的是已經轉好型別的單欄序列。"""
+
+    @property
+    def warmup_bar_count(self) -> int:
+        """暖機期幾根。SMA 覆寫成 period - 1，EMA 與 RSI 用這個預設值。"""
+        return self.period
+
+    def compute(self, series: CandleSeries) -> pd.Series:
+        """算出指標，回傳與輸入等長、index 完全相同的 Series。
+
+        這裡不檢查「index 有沒有排序」：CandleSeries 建構時就排好了，
+        不變式一旦放進型別，下游的防禦性檢查就是死碼。
+        """
+        candles = series.frame
+        if self.column not in candles.columns:
+            raise KeyError(f"沒有 {self.column!r} 欄：{list(candles.columns)}")
+
+        # astype 會複製，所以 _compute 怎麼寫都動不到呼叫端的資料
+        values = candles[self.column].astype("float64")
+        return self._compute(values).reindex(candles.index).rename(self.name)
+```
+
+契約有六條，前四條現在是程式碼而不是註解：
+
+1. **吃 `CandleSeries`，不吃裸 DataFrame。** 今天只用到收盤價一欄，看起來吃 Series 更精簡。但第二階段的特徵有的要 high、low、close、volume 四欄一起算，有的要吃掛單簿的欄位。介面今天訂死，那時候才不用回頭改十幾個呼叫點。取哪一欄由建構參數 `column` 決定。
+2. **回傳 Series，index 與輸入完全相同。** `compute()` 最後那句 `reindex(candles.index)` 就是這條。子類別在 `_compute` 裡不小心 `dropna()` 了也救得回來，因為缺掉的位置會補成 NaN 而不是讓序列變短。
+3. **暖機期一律 NaN，長度可預測。** `warmup_bar_count` 是屬性，SMA 覆寫成 `period - 1`，之後的 EMA 與 RSI 用預設的 `period`。Day 15 的 pipeline 靠它算整條特徵管線的 warm-up。
+4. **命名慣例 `{indicator}_{period}`。** `name` 是抽象屬性，不實作就建不出子類別；`compute()` 最後一定會把它貼上去，不會有指標忘記命名。
+5. **NEVER 修改輸入。** `astype("float64")` 會複製一份，所以 `_compute` 裡怎麼改都影響不到呼叫端。
+6. **NEVER 用到第 t 根之後的資料。** 前面講的未來函數，在這幾個指標裡靠 `rolling()`、`ewm()`、`diff()` 的預設語意自然成立，但每加一個新指標都要重新確認一次。這一條沒辦法交給基底類別擔保，只能靠 review 與測試。
+
+`Protocol` 與 `ABC` 的分工，到這裡就完整了：**對外相依用 Protocol（實作不 import 抽象），同一家族的共用骨架用 ABC（子類別繼承它）。** 兩者 NEVER 混用。
+
+然後是今天的主角：
+
+```python
+from __future__ import annotations
+
+from quantbot.domain.indicators.indicator import Indicator
+from quantbot.domain.indicators.irregular_index_error import IrregularIndexError
+
+import pandas as pd
+
+
+# quantbot/domain/indicators/irregular_index_error.py
 class IrregularIndexError(ValueError):
     """索引不是等間隔的完整時間網格，rolling 的視窗會涵蓋比預期更長的時間。"""
 
 
-def _validate(close: pd.Series, period: int, expected_freq: str | None) -> None:
-    if period < 1:
-        raise ValueError(f"period must be >= 1, got {period}")
-    if not isinstance(close.index, pd.DatetimeIndex):
-        raise TypeError("close.index must be a DatetimeIndex")
-    if not close.index.is_monotonic_increasing:
-        raise ValueError("close.index must be sorted ascending")
-    if expected_freq is None or len(close) == 0:
-        return
-    expected = pd.date_range(
-        start=close.index[0], end=close.index[-1], freq=expected_freq, tz=close.index.tz
-    )
-    missing = expected.difference(close.index)
-    if len(missing) > 0:
-        raise IrregularIndexError(
-            f"index has {len(missing)} missing bar(s) at {expected_freq}, "
-            f"first missing: {missing[0]}"
-        )
-
-
-def sma(close: pd.Series, period: int, *, expected_freq: str | None = None) -> pd.Series:
+# quantbot/domain/indicators/sma.py
+class SMA(Indicator):
     """簡單移動平均。
 
-    Args:
-        close: 收盤價序列，index 必須是排序過的 DatetimeIndex（一律 UTC）。
-        period: 視窗長度，單位是「幾根 K 線」，不是時間。
-        expected_freq: 給定時（例如 "1h"）會檢查索引是不是完整的等間隔網格，
-            有缺漏就丟 IrregularIndexError，避免視窗悄悄涵蓋更長的時間。
-
-    Returns:
-        與 close 等長同 index 的 Series，前 period-1 個位置是 NaN。
+    一個實例代表一條特定的均線：視窗長度與索引檢查在建構時就固定。
+    視窗長度的單位是「幾根 K 線」，不是時間——這個區別是第二個常見錯誤的來源。
     """
-    _validate(close, period, expected_freq)
-    return (
-        close.rolling(window=period, min_periods=period)
-        .mean()
-        .rename(f"sma_{period}")
-    )
+
+    def __init__(
+        self,
+        period: int,
+        *,
+        column: str = "close",
+        expected_timeframe: Timeframe | None = None,
+    ) -> None:
+        super().__init__(period, column=column)
+        # 給定時會檢查索引是不是完整的等間隔網格，避免視窗悄悄涵蓋更長的時間
+        self.expected_timeframe = expected_timeframe
+
+    @property
+    def name(self) -> str:
+        return f"sma_{self.period}"
+
+    @property
+    def warmup_bar_count(self) -> int:
+        return self.period - 1   # 只有 SMA 是 n-1
+
+    def _compute(self, values: pd.Series) -> pd.Series:
+        self._check_grid(values)
+        return values.rolling(window=self.period, min_periods=self.period).mean()
+
+    def _check_grid(self, values: pd.Series) -> None:
+        """宣告了 expected_timeframe 就確認網格完整，有洞直接失敗。
+
+        指標算不出正確結果時應該拒絕回傳，而不是回傳一個看起來正常的錯數字。
+        """
+        if self.expected_timeframe is None or values.empty:
+            return
+        if not isinstance(values.index, pd.DatetimeIndex):
+            raise TypeError("expected_timeframe 需要 DatetimeIndex")
+
+        expected = pd.date_range(
+            start=values.index[0],
+            end=values.index[-1],
+            freq=self.expected_timeframe.pandas_frequency,
+            tz=values.index.tz,
+        )
+        missing = expected.difference(values.index)
+        if len(missing) > 0:
+            raise IrregularIndexError(
+                f"{self.expected_timeframe} 的網格缺了 {len(missing)} 根，"
+                f"第一個缺漏在 {missing[0]}"
+            )
+```
+
+`expected_timeframe` 是**建構參數**而不是每次呼叫傳一次的引數：一條均線該不該檢查網格，是這條均線的性質，不該由每個呼叫端各自決定。指標算不出正確結果時應該拒絕回傳，而不是回傳一個看起來正常的錯數字。Day 08 的管線會保證入庫的資料沒有缺漏，這個檢查到那時候就變成安全網。
+
+交叉事件是另一件事，所以是另一個類別。注意它**不是** `Indicator` 的子類別——它吃的是兩條算好的線，不是 K 線：
+
+```python
+# quantbot/domain/indicators/crossover_signals.py
+from __future__ import annotations
+
+import pandas as pd
 
 
-def cross_signals(fast: pd.Series, slow: pd.Series) -> pd.DataFrame:
-    """由兩條均線算出交叉事件。
+class CrossoverSignals:
+    """兩條均線的交叉事件，以及最快能成交的那一根。
 
-    Returns:
-        DataFrame，欄位 golden（快線由下往上穿過慢線）與 death（由上往下）。
-        只有交叉發生的那一根為 True，兩邊都還是 NaN 的暖身期一律 False。
+    建構時就把事件算完，golden 與 death 是屬性。位移也放在這裡，因為
+    「訊號怎麼算出來」與「訊號什麼時候才能用」是同一件事的兩面，拆開放
+    就會有人只記得前者。
+
+    它不是 Indicator：它吃的是兩條算好的線，不是 K 線，所以沒有繼承那個基底。
     """
-    ready = fast.notna() & slow.notna()
-    above = (fast > slow) & ready
-    prev_above = above.shift(1, fill_value=False)
-    prev_ready = ready.shift(1, fill_value=False)
-    return pd.DataFrame(
-        {
-            "golden": above & ~prev_above & prev_ready,
-            "death": ~above & prev_above & ready,
-        },
-        index=fast.index,
-    )
 
+    def __init__(self, fast: pd.Series, slow: pd.Series) -> None:
+        ready = fast.notna() & slow.notna()
+        above = (fast > slow) & ready
+        previously_above = above.shift(1, fill_value=False)
+        previously_ready = ready.shift(1, fill_value=False)
 
-def delay_to_next_bar(signal: pd.Series) -> pd.Series:
-    """把「第 t 根收盤後才知道」的訊號延後一根，代表最快只能在 t+1 成交。"""
-    return signal.shift(1, fill_value=False).astype(bool)
+        # 只有狀態翻轉的那一根是 True，暖機期一律 False
+        self.golden = (above & ~previously_above & previously_ready).rename("golden")
+        self.death = (~above & previously_above & ready).rename("death")
+
+    @property
+    def table(self) -> pd.DataFrame:
+        """兩個訊號並排，方便印出來核對或落地。"""
+        return pd.concat([self.golden, self.death], axis=1)
+
+    @property
+    def entry(self) -> pd.Series:
+        """黃金交叉延後一根：最快只能在下一根成交。"""
+        return self.delay_to_next_bar(self.golden)
+
+    @property
+    def exit(self) -> pd.Series:
+        """死亡交叉延後一根。"""
+        return self.delay_to_next_bar(self.death)
+
+    @staticmethod
+    def delay_to_next_bar(signal: pd.Series) -> pd.Series:
+        """把「第 t 根收盤後才知道」的訊號延後一根，代表最快在 t+1 成交。"""
+        return signal.shift(1, fill_value=False).astype(bool)
 ```
 
 三個地方值得說明。
 
-`cross_signals` 用 `above & ~prev_above` 來抓交叉，只有**狀態翻轉的那一根**是 True，而不是「快線在上面」的整段期間都是 True。這兩者的差別在寫進場條件時是關鍵：前者是事件，一次交叉觸發一次；後者是狀態，會讓你每一根都想進場。
+`CrossoverSignals` 用 `above & ~previously_above` 來抓交叉，只有**狀態翻轉的那一根**是 True，而不是「快線在上面」的整段期間都是 True。這兩者的差別在寫進場條件時是關鍵：前者是事件，一次交叉觸發一次；後者是狀態，會讓每一根都想進場。
 
-`prev_ready` 那個條件在擋暖身期。慢線在前 59 根是 NaN，第 60 根第一次有值，如果那一根剛好快線在上面，不加這個條件就會誤判成一次交叉，但實際上沒有任何東西「穿過」了什麼。這種假訊號永遠出現在資料的最開頭，很容易被忽略。
+`previously_ready` 那個條件在擋暖身期。慢線在前 59 根是 NaN，第 60 根第一次有值，如果那一根剛好快線在上面，不加這個條件就會誤判成一次交叉，但實際上沒有任何東西「穿過」了什麼。這種假訊號永遠出現在資料的最開頭，很容易被忽略。
 
-`delay_to_next_bar` 是今天對未來函數的處理。它單獨抽成一個函式而不是散在呼叫端，是為了讓「什麼時候位移了」這件事在程式碼裡看得見。Day 16 會把它收進策略引擎。
+`entry` 與 `exit` 是今天對未來函數的處理。把位移做成類別的屬性、而不是散在呼叫端的一行 `shift`，是為了讓「什麼時候位移了」在程式碼裡看得見：讀 `crosses.golden` 拿到的是原始事件，讀 `crosses.entry` 拿到的是能下單的時間點，名字就把差別講完了。Day 16 會把這個位移收進策略引擎。
 
 用起來像這樣：
 
 ```python
-from quantbot.indicators.ma import sma, cross_signals, delay_to_next_bar
+import pandas as pd
 
-ohlcv = pd.read_parquet("data/BTCUSDT-spot-1h.parquet")  # Day 03 的產出
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.indicators.crossover_signals import CrossoverSignals
+from quantbot.domain.indicators.sma import SMA
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.market import Market
+from quantbot.domain.values.timeframe import Timeframe
 
-fast = sma(ohlcv["close"], 20, expected_freq="1h")
-slow = sma(ohlcv["close"], 60, expected_freq="1h")
-crosses = cross_signals(fast, slow)
+instrument = Instrument(
+    symbol="BTC/USDT", market=Market.SPOT, timeframe=Timeframe("1h")
+)
+# Day 03 的產出。之後 Day 07 入庫後，這一行會換成 CandleRepository.read()
+series = CandleSeries(
+    instrument, pd.read_parquet("data/klines/spot_BTCUSDT_1h.parquet")
+)
 
-entry = delay_to_next_bar(crosses["golden"])   # 這一根可以進場
-exit_ = delay_to_next_bar(crosses["death"])    # 這一根可以出場
+fast = SMA(20, expected_timeframe=instrument.timeframe)
+slow = SMA(60, expected_timeframe=instrument.timeframe)
+crosses = CrossoverSignals(fast.compute(series), slow.compute(series))
+
+entry_bars = crosses.entry   # 這幾根可以進場
+exit_bars = crosses.exit     # 這幾根可以出場
 ```
 
-（今天的簽章是 Series 進、Series 出。Day 06 寫完 RSI 之後會把三個指標的簽章統一，Day 15 再收進一套 `Feature` 介面，那時候策略引擎才能用字串把它們組起來。）
+那句 `CandleSeries(instrument, pd.read_parquet(...))` 現在看起來多包了一層，Day 07 之後它會換成 `await repository.read(instrument, period)`，而下面的四行完全不用改——這就是把「一段 K 線」做成型別的回報。
 
 ## 三個常見算錯的地方
 
@@ -267,25 +398,25 @@ sma_wrong_2 = close.rolling(20).mean().bfill()          # 用後面的值往前�
 sma_wrong_3 = close.rolling(20).mean().fillna(close)    # 用價格本身補
 ```
 
-第一種是最容易發生的，因為它看起來最合理，而且 `min_periods=1` 這個參數就長得像是為了解決這個問題而存在。它算出來的第 1 根是 SMA(1)、第 2 根是 SMA(2)，一路到第 20 根才真的是 SMA(20)。**欄位名字寫 sma_20，但前 19 個值不是 SMA(20)。** 後面拿去比大小、算交叉時，你不會知道自己在比什麼。
+第一種是最容易發生的，因為它看起來最合理，而且 `min_periods=1` 這個參數就長得像是為了解決這個問題而存在。它算出來的第 1 根是 SMA(1)、第 2 根是 SMA(2)，一路到第 20 根才真的是 SMA(20)。**欄位名字寫 sma_20，但前 19 個值不是 SMA(20)。** 後面拿去比大小、算交叉時，比的到底是什麼就講不清楚了。
 
 第二種更糟，`bfill()` 是直接把未來的值搬到前面來，這是最粗暴的未來函數。
 
-第三種讓均線在開頭那段完全貼著價格，於是快線慢線在第一根就相等，`cross_signals` 那個 `prev_ready` 的保護也失效。
+第三種讓均線在開頭那段完全貼著價格，於是快線慢線在第一根就相等，`CrossoverSignals` 那個 `previously_ready` 的保護也失效。
 
 正確做法是**留著 NaN，然後在下游明確處理它**：
 
-- 指標函式回傳原樣的 NaN，不做任何填補。這是 `sma()` 的行為。
-- 需要訊號的地方用布林運算把 NaN 自然吃掉，`NaN > 5` 會得到 `False`，這正是你要的（`cross_signals` 裡的 `ready` 就是在做這件事）。
+- 指標回傳原樣的 NaN，不做任何填補。這是 `Indicator.compute()` 的契約第三條。
+- 需要訊號的地方用布林運算把 NaN 自然吃掉，`NaN > 5` 會得到 `False`，這正是要的結果（`CrossoverSignals` 裡的 `ready` 就是在做這件事）。
 - 真的要拿去做統計時，明確把暖身期切掉：`result.loc[result.notna().idxmax():]`。
 
 推論一下就知道暖身期要多長：用 SMA(60) 的策略，前 59 根不能用；如果同時還用了 Day 06 的 RSI(14)，暖身期取兩者的最大值。這件事在 Day 16 會由條件樹自動算出來，今天先知道它存在。
 
-### 二、資料有缺漏，視窗就不是你以為的長度
+### 二、資料有缺漏，視窗就不是帳面上的長度
 
 這是 Day 02 到 Day 03 的資料品質問題的延伸，也是三個裡面最安靜的一個。
 
-`rolling(24)` 數的是**列數**，不是時間。如果你的 1 小時資料中間掉了 3 根（交易所維護、下載時漏了一段、或者回補管線有洞），那 24 列涵蓋的實際時間就變成 26 小時，而 pandas 不會有任何意見：
+`rolling(24)` 數的是**列數**，不是時間。如果 1 小時資料中間掉了 3 根（交易所維護、下載時漏了一段、或者回補管線有洞），那 24 列涵蓋的實際時間就變成 26 小時，而 pandas 不會有任何意見：
 
 ```python
 full_index = pd.date_range("2026-03-01", periods=30, freq="1h", tz="UTC")
@@ -300,11 +431,11 @@ print(with_gap.index[-1] - with_gap.index[-24]) # 1 days 02:00:00
 
 宣稱 24 小時的視窗，實際涵蓋 26 小時，末值差了 0.875。在這個線性的假資料上差異看起來很小，但真實的行情裡，缺漏往往發生在**行情最劇烈的時候**，因為那正是交易所最容易出狀況的時候。也就是說，缺掉的那幾根通常不是無關緊要的幾根。
 
-更麻煩的是這個錯誤會傳染。均線算錯了，交叉的位置就跟著偏，訊號的時間點就跟著偏，而你從頭到尾不會收到任何錯誤訊息。Day 08 那句「一根缺漏的 K 線可能讓你的均線算錯十天」講的就是這件事。
+更麻煩的是這個錯誤會傳染。均線算錯了，交叉的位置就跟著偏，訊號的時間點就跟著偏，而全程不會收到任何錯誤訊息。Day 08 那句「一根缺漏的 K 線可能讓均線算錯十天」講的就是這件事。
 
 有三種處理方式，按推薦順序：
 
-**一、在指標裡驗證索引，有洞就直接失敗。** 這是 `sma()` 的 `expected_freq` 參數在做的事。指標算不出正確結果時應該拒絕回傳，而不是回傳一個看起來正常的錯數字。Day 08 的管線會保證入庫的資料沒有缺漏，這個檢查到那時候就變成安全網。
+**一、在指標裡驗證索引，有洞就直接失敗。** 這是 `SMA` 的 `expected_timeframe` 參數在做的事，而它是建構參數而不是每次呼叫傳一次的引數：一條均線該不該檢查網格，是這條均線的性質，不該由每個呼叫端各自決定。指標算不出正確結果時應該拒絕回傳，而不是回傳一個看起來正常的錯數字。Day 08 的管線會保證入庫的資料沒有缺漏，這個檢查到那時候就變成安全網。
 
 **二、先把索引補成完整網格，缺的那幾根留 NaN。**
 
@@ -313,7 +444,7 @@ complete = with_gap.reindex(full_index)   # 缺的位置變成 NaN
 result = complete.rolling(24, min_periods=24).mean()
 ```
 
-這樣視窗涵蓋的時間就對了，而且缺漏的位置會讓對應的 24 個視窗全部變成 NaN，等於明確告訴你「這段期間的均線不可信」。不要在這裡對價格做插值補值，補出來的價格是你自己編的，它會讓下游以為那段時間有資料。
+這樣視窗涵蓋的時間就對了，而且缺漏的位置會讓對應的 24 個視窗全部變成 NaN，等於明確標示「這段期間的均線不可信」。不要在這裡對價格做插值補值，補出來的價格是自己編的，它會讓下游以為那段時間有資料。
 
 **三、改用時間視窗。**
 
@@ -327,14 +458,14 @@ result = close.rolling("24h").mean()
 
 原理前面講完了，這裡收一下工程上的檢查清單。這四條之後每次寫訊號都適用：
 
-1. **訊號到成交之間至少隔一根。** 用 `delay_to_next_bar()`，或等 Day 16 之後交給引擎。
+1. **訊號到成交之間至少隔一根。** 讀 `crosses.entry` 而不是 `crosses.golden`，或等 Day 16 之後交給引擎。
 2. **只要出現 `shift(-1)`、`bfill()`、`interpolate(method="time", limit_direction="both")`，先停下來想一遍。** 這三個都會把後面的值搬到前面。真的需要（例如算「未來 N 根的報酬」來檢驗特徵有沒有預測力，Day 10 會做）時，那個欄位一定只能當標籤用，NEVER 進到訊號裡。
 3. **標準化與統計量只能用滾動視窗，不能用整段資料。** `(close - close.mean()) / close.std()` 用到了整段歷史的平均與標準差，包含未來。要用 `close.rolling(n).mean()` 這種只往回看的版本。Day 12 做活躍度 z-score 時會再提一次。
 4. **丟掉最後一根還沒收完的 K 線。**
 
 第 2 條可以做成 lint 規則，第 1 條和第 4 條可以寫成測試。第 3 條目前只能靠 review，因為 `mean()` 本身沒有錯，錯的是套用範圍。
 
-## 怎麼證明你算的是對的
+## 怎麼證明算出來的是對的
 
 自己實作的每一個指標都要有對照組。這是這個系列跟其他指標教學最大的差別，也是唯一能確認「算出來的東西是不是 SMA」的方法。
 
@@ -343,10 +474,10 @@ result = close.rolling("24h").mean()
 ```python
 import pandas_ta as ta
 
-from quantbot.indicators.ma import sma
+from quantbot.domain.indicators.sma import SMA
 
-reference = ta.sma(ohlcv["close"], length=20)
-mine = sma(ohlcv["close"], 20)
+reference = ta.sma(series.frame["close"], length=20)
+mine = SMA(20).compute(series)
 
 diff = (mine - reference).abs()
 rel = (diff / reference.abs()).max()
@@ -355,9 +486,9 @@ print(f"max rel diff: {rel:.3e}")
 assert mine.isna().equals(reference.isna())   # NaN 的位置也要一致
 ```
 
-跑出來你會看到誤差是 `0.000e+00`，完全相同。
+跑出來誤差是 `0.000e+00`，完全相同。
 
-先別高興。這個結果其實暴露了一件事：**`pandas-ta` 的 `sma()` 在沒有 TA-Lib 的環境下，底層就是 `close.rolling(length, min_periods=length).mean()`，跟你寫的是同一行。** 誤差為 0 是因為你們在跑同一段程式碼，這個對照只驗證了「你有沒有把參數傳錯」，沒有驗證演算法。
+而這個結果其實暴露了一件事：**`pandas-ta` 的 `sma()` 在沒有 TA-Lib 的環境下，底層就是 `close.rolling(length, min_periods=length).mean()`，跟 `SMA.compute` 裡那一行一樣。** 誤差為 0 是因為兩邊在跑同一段程式碼，這個對照只驗證了「參數有沒有傳錯」，沒有驗證演算法。
 
 要讓對照組真的有意義，得讓它走一條**獨立實作**的路徑。`pandas-ta` 在偵測到 TA-Lib 時會預設改用 TA-Lib 的實作，而 TA-Lib 的 SMA 是增量式的 running sum（加新的、減舊的），跟 pandas 用的補償求和不是同一套演算法。這時候誤差就不會是 0 了。在一年份 1 分鐘、價格量級 6 萬的 BTC/USDT 現貨資料上，兩者的差距是：
 
@@ -371,9 +502,9 @@ assert mine.isna().equals(reference.isna())   # NaN 的位置也要一致
 所以驗收門檻要訂在相對誤差上，不是絕對誤差：
 
 ```python
-def test_sma_matches_reference_implementation(ohlcv):
-    reference = ta.sma(ohlcv["close"], length=20)
-    mine = sma(ohlcv["close"], 20)
+def test_matches_reference_implementation(series):
+    reference = ta.sma(series.frame["close"], length=20)
+    mine = SMA(20).compute(series)
     pd.testing.assert_series_equal(
         mine, reference, check_names=False, rtol=1e-9, atol=0
     )
@@ -381,209 +512,304 @@ def test_sma_matches_reference_implementation(ohlcv):
 
 `rtol=1e-9`，`atol=0`。用相對容差是因為 BTC 在 6 萬跟某個小幣在 0.0001 的合理絕對誤差差了八個數量級，訂絕對值會兩邊都不對。
 
-這個「對照組其實跟你跑同一段程式碼」的情況，在 SMA 上只是浪費一個測試，但到了 Day 06 的 RSI 就會變成實質問題：`pandas-ta` 有些指標的純 pandas 實作跟 TA-Lib 版本**數值本來就不一樣**（Wilder 平滑的初始值取法不同），那時候你得先決定自己要對齊哪一邊。所以現在就養成習慣：**用對照組之前，先確認它跟你不是同一份程式碼。**
+這個「對照組其實跑同一段程式碼」的情況，在 SMA 上只是浪費一個測試，但到了 Day 06 的 RSI 就會變成實質問題：`pandas-ta` 有些指標的純 pandas 實作跟 TA-Lib 版本**數值本來就不一樣**（Wilder 平滑的初始值取法不同），那時候得先決定要對齊哪一邊。所以現在就養成習慣：**用對照組之前，先確認它跟自己的實作不是同一份程式碼。**
 
 ### 邊界測試
 
-對照組驗證「一般情況算得對」，單元測試驗證「不一般的情況不會安靜地給出錯的答案」。`tests/test_ma.py`：
+對照組驗證「一般情況算得對」，單元測試驗證「不一般的情況不會安靜地給出錯的答案」。測試放 `tests/`，目錄鏡射 `quantbot/`，而且一律是黑箱：import 公開 API、只測公開行為。
 
 ```python
-import numpy as np
+# tests/domain/indicators/test_sma.py
 import pandas as pd
 import pytest
 
-from quantbot.indicators.ma import (
-    IrregularIndexError,
-    cross_signals,
-    delay_to_next_bar,
-    sma,
-)
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.indicators.crossover_signals import CrossoverSignals
+from quantbot.domain.indicators.irregular_index_error import IrregularIndexError
+from quantbot.domain.indicators.sma import SMA
+from quantbot.domain.values.instrument import Instrument
+from quantbot.domain.values.market import Market
+from quantbot.domain.values.timeframe import Timeframe
+
+HOURLY = Timeframe("1h")
+INSTRUMENT = Instrument(symbol="BTC/USDT", market=Market.SPOT, timeframe=HOURLY)
 
 
-def make_series(values: list[float], freq: str = "1h") -> pd.Series:
-    index = pd.date_range("2026-01-01", periods=len(values), freq=freq, tz="UTC")
-    return pd.Series(values, index=index, name="close")
+def make_series(closes: list[float]) -> CandleSeries:
+    """建一段測試用的 K 線。只有 close 有意義，其他欄位補得過得去就好。"""
+    index = pd.date_range(
+        "2026-01-01", periods=len(closes), freq="1h", tz="UTC", name="open_time"
+    )
+    return CandleSeries(
+        INSTRUMENT,
+        pd.DataFrame(
+            {
+                "open": closes,
+                "high": closes,
+                "low": closes,
+                "close": closes,
+                "volume": 1.0,
+            },
+            index=index,
+        ),
+    )
 
 
-def test_sma_matches_hand_computed_values():
-    close = make_series([1, 2, 3, 4, 5])
-    result = sma(close, period=3)
+def test_matches_hand_computed_values():
+    result = SMA(3).compute(make_series([1, 2, 3, 4, 5]))
     assert result.iloc[:2].isna().all()
     assert result.iloc[2] == pytest.approx(2.0)
     assert result.iloc[4] == pytest.approx(4.0)
 
 
+def test_output_name_and_warmup_come_from_the_instance():
+    indicator = SMA(20)
+    assert indicator.name == "sma_20"
+    assert indicator.warmup_bar_count == 19  # 只有 SMA 是 n-1
+    assert indicator.compute(make_series([1.0] * 25)).name == "sma_20"
+
+
+def test_index_is_never_changed():
+    series = make_series([float(i) for i in range(30)])
+    assert SMA(5).compute(series).index.equals(series.frame.index)
+
+
 def test_warmup_stays_nan_and_is_not_filled():
-    close = make_series([10, 20, 30, 40])
-    assert sma(close, period=3).isna().sum() == 2
+    assert SMA(3).compute(make_series([10, 20, 30, 40])).isna().sum() == 2
 
 
 def test_insufficient_data_returns_all_nan():
     """資料比視窗短：回傳等長的全 NaN，不是丟例外，也不是回傳短序列。"""
-    close = make_series([100, 101, 102])
-    result = sma(close, period=20)
+    result = SMA(20).compute(make_series([100, 101, 102]))
     assert len(result) == 3
     assert result.isna().all()
 
 
 def test_single_bar():
-    close = make_series([42.0])
-    assert sma(close, period=20).isna().all()
-    assert sma(close, period=1).iloc[0] == pytest.approx(42.0)
+    assert SMA(20).compute(make_series([42.0])).isna().all()
+    assert SMA(1).compute(make_series([42.0])).iloc[0] == pytest.approx(42.0)
 
 
 def test_empty_series():
-    assert sma(make_series([]), period=20).empty
+    assert SMA(20).compute(make_series([])).empty
 
 
-def test_missing_bars_raise_when_freq_declared():
-    close = make_series([1, 2, 3, 4, 5])
-    with_gap = close.drop(close.index[2])
+def test_missing_bars_raise_when_the_timeframe_is_declared():
+    series = make_series([1, 2, 3, 4, 5])
+    gapped = CandleSeries(INSTRUMENT, series.frame.drop(index=series.open_times[2]))
+
     with pytest.raises(IrregularIndexError):
-        sma(with_gap, period=3, expected_freq="1h")
+        SMA(3, expected_timeframe=HOURLY).compute(gapped)
 
 
-def test_missing_bars_silently_widen_window_without_check():
-    """沒宣告 expected_freq 時，缺漏會安靜地讓視窗變長。這個測試把行為釘住。"""
-    close = make_series([1, 2, 3, 4, 5])
-    with_gap = close.drop(close.index[2])
-    assert sma(with_gap, period=3).iloc[2] == pytest.approx((1 + 2 + 4) / 3)
+def test_missing_bars_silently_widen_the_window_without_the_check():
+    """沒宣告 expected_timeframe 時，缺漏會安靜地讓視窗變長。這個測試把行為釘住。"""
+    series = make_series([1, 2, 3, 4, 5])
+    gapped = CandleSeries(INSTRUMENT, series.frame.drop(index=series.open_times[2]))
+
+    assert SMA(3).compute(gapped).iloc[2] == pytest.approx((1 + 2 + 4) / 3)
 
 
-def test_invalid_period():
+def test_invalid_period_is_rejected_at_construction():
+    """視窗長度是建構參數，所以錯的值在建物件時就擋掉，不必等到算完。"""
     with pytest.raises(ValueError):
-        sma(make_series([1, 2, 3]), period=0)
+        SMA(0)
 
 
-def test_unsorted_index_rejected():
-    close = make_series([1, 2, 3])
-    with pytest.raises(ValueError):
-        sma(close.iloc[::-1], period=2)
+def test_candle_series_sorts_so_the_indicator_can_trust_the_order():
+    """指標裡沒有「index 有沒有排序」的檢查，因為 CandleSeries 保證了它。
+
+    把不變式放進型別，下游就不必各自防禦——而這條保證要有測試盯著。
+    """
+    series = make_series([1, 2, 3])
+    reversed_series = CandleSeries(INSTRUMENT, series.frame.iloc[::-1])
+
+    assert reversed_series.open_times.is_monotonic_increasing
+    assert SMA(2).compute(reversed_series).iloc[-1] == pytest.approx(2.5)
 
 
-def test_cross_signals_fire_once_on_the_crossing_bar():
-    fast = make_series([1, 2, 3, 4, 3, 2])
-    slow = make_series([3, 3, 3, 3, 3, 3])
-    crosses = cross_signals(fast, slow)
-    assert crosses["golden"].tolist() == [False, False, False, True, False, False]
-    assert crosses["death"].tolist() == [False, False, False, False, True, False]
+def test_crossover_fires_once_on_the_crossing_bar():
+    fast = pd.Series([1, 2, 3, 4, 3, 2], dtype="float64")
+    slow = pd.Series([3, 3, 3, 3, 3, 3], dtype="float64")
+    crosses = CrossoverSignals(fast, slow)
+
+    assert crosses.golden.tolist() == [False, False, False, True, False, False]
+    assert crosses.death.tolist() == [False, False, False, False, True, False]
+    assert list(crosses.table.columns) == ["golden", "death"]
 
 
-def test_cross_signals_ignore_warmup_nan():
+def test_crossover_ignores_the_first_bar_that_has_values():
     """慢線第一次有值的那一根，即使快線在上面也不算交叉。"""
-    fast = make_series([np.nan, np.nan, 5, 6])
-    slow = make_series([np.nan, np.nan, 4, 4])
-    assert not cross_signals(fast, slow)["golden"].iloc[2]
+    fast = pd.Series([float("nan"), float("nan"), 5.0, 6.0])
+    slow = pd.Series([float("nan"), float("nan"), 4.0, 4.0])
+    assert not CrossoverSignals(fast, slow).golden.iloc[2]
 
 
-def test_delay_to_next_bar_shifts_by_one():
-    signal = make_series([0, 1, 0, 1]).astype(bool)
-    assert delay_to_next_bar(signal).tolist() == [False, False, True, False]
+def test_entry_is_the_golden_cross_shifted_by_one_bar():
+    fast = pd.Series([1, 2, 3, 4, 3, 2], dtype="float64")
+    slow = pd.Series([3, 3, 3, 3, 3, 3], dtype="float64")
+    crosses = CrossoverSignals(fast, slow)
+
+    assert crosses.golden.tolist() == [False, False, False, True, False, False]
+    assert crosses.entry.tolist() == [False, False, False, False, True, False]
 ```
 
-`test_missing_bars_silently_widen_window_without_check` 那一條值得多說一句。它測的是一個**不理想的行為**，但把它釘進測試裡是有價值的：這個行為是 pandas 的預設語意，改不掉，所以要嘛你顯式宣告 `expected_freq` 讓它報錯，要嘛你就是接受它。測試寫在這裡，未來有人以為「rolling 應該會自動處理缺漏」時，一跑測試就知道不會。
+`test_missing_bars_silently_widen_the_window_without_the_check` 那一條值得多說一句。它測的是一個**不理想的行為**，但把它釘進測試裡是有價值的：這個行為是 pandas 的預設語意，改不掉，所以要嘛顯式宣告 `expected_timeframe` 讓它報錯，要嘛就是接受它。測試寫在這裡，未來有人以為「rolling 應該會自動處理缺漏」時，一跑測試就知道不會。
+
+`test_candle_series_sorts_so_the_indicator_can_trust_the_order` 是分層帶來的一個小紅利。`Indicator.compute` 裡沒有「index 有沒有排序」的檢查，因為 `CandleSeries` 建構時就排好了——**不變式放進型別之後，下游的防禦性檢查就是死碼**。但那條保證要有測試盯著，否則哪天有人把 `conform` 裡的 `sort_index()` 拿掉，錯誤會出現在離它很遠的地方。
+
+最後兩條測試是同一組資料的兩種讀法：`golden` 在第 4 根，`entry` 在第 5 根。把它們寫在一起，是因為這個差一根的關係就是今天講的未來函數，而它值得有一條測試盯著。
 
 ## 視覺化：把交叉標在圖上
 
 數字對了不代表邏輯對了。交叉點標在圖上肉眼掃一遍，能抓到單元測試抓不到的東西，例如訊號整段偏移一根、或者暖身期冒出了不該有的標記。
 
+圖表是 infrastructure：**domain 不知道 plotly 存在**。這條線的實際好處是，指標與訊號的程式碼不會被畫圖的細節污染，而換成 matplotlib 或前端畫圖時，要動的只有這個檔案。
+
 ```python
+# quantbot/infrastructure/charting/plotly_crossover_chart_renderer.py
 from __future__ import annotations
+
+from typing import ClassVar
 
 import pandas as pd
 import plotly.graph_objects as go
 
-from quantbot.indicators.ma import cross_signals, sma
+from quantbot.domain.entities.candle_series import CandleSeries
+from quantbot.domain.indicators.crossover_signals import CrossoverSignals
+from quantbot.domain.indicators.sma import SMA
 
 
-def plot_sma_crosses(
-    ohlcv: pd.DataFrame, fast_period: int = 20, slow_period: int = 60
-) -> go.Figure:
-    """K 線疊上兩條 SMA，並把黃金交叉與死亡交叉標在快線上。"""
-    fast = sma(ohlcv["close"], fast_period)
-    slow = sma(ohlcv["close"], slow_period)
-    crosses = cross_signals(fast, slow)
+class PlotlyCrossoverChartRenderer:
+    """K 線疊兩條 SMA，並把交叉標在快線上。
 
-    fig = go.Figure()
-    fig.add_trace(
-        go.Candlestick(
-            x=ohlcv.index,
-            open=ohlcv["open"],
-            high=ohlcv["high"],
-            low=ohlcv["low"],
-            close=ohlcv["close"],
-            name="BTC/USDT 現貨 1h",
-            increasing_line_color="#26a69a",
-            decreasing_line_color="#ef5350",
-        )
-    )
+    圖表在 infrastructure：domain 不知道 plotly 存在，所以換成 matplotlib
+    或前端畫圖時，指標與訊號一行都不用改。配色是類別常數，整個系列共用一組。
+    """
 
-    for series, name, color in (
-        (fast, f"SMA({fast_period})", "#f4a261"),
-        (slow, f"SMA({slow_period})", "#4c6ef5"),
-    ):
-        fig.add_trace(
-            go.Scatter(
-                x=series.index, y=series, name=name,
-                mode="lines", line=dict(width=1.6, color=color),
-            )
-        )
-
-    for flag, name, symbol, color in (
+    CANDLE_UP: ClassVar[str] = "#26a69a"
+    CANDLE_DOWN: ClassVar[str] = "#ef5350"
+    FAST_LINE: ClassVar[str] = "#f4a261"
+    SLOW_LINE: ClassVar[str] = "#4c6ef5"
+    MARKERS: ClassVar[tuple[tuple[str, str, str, str], ...]] = (
         ("golden", "黃金交叉", "triangle-up", "#2f9e44"),
         ("death", "死亡交叉", "triangle-down", "#c92a2a"),
-    ):
-        hit = crosses[flag]
-        fig.add_trace(
-            go.Scatter(
-                x=fast.index[hit], y=fast[hit], name=name, mode="markers",
-                marker=dict(
-                    symbol=symbol, size=12, color=color,
-                    line=dict(width=1, color="white"),
-                ),
+    )
+
+    def __init__(self, *, fast_period: int = 20, slow_period: int = 60) -> None:
+        self._fast = SMA(fast_period)
+        self._slow = SMA(slow_period)
+
+    def render(self, series: CandleSeries) -> go.Figure:
+        fast = self._fast.compute(series)
+        slow = self._slow.compute(series)
+        crosses = CrossoverSignals(fast, slow)
+
+        figure = go.Figure()
+        figure.add_trace(self._candles(series))
+        figure.add_trace(self._line(fast, self._fast.period, self.FAST_LINE))
+        figure.add_trace(self._line(slow, self._slow.period, self.SLOW_LINE))
+        for attribute, label, symbol, color in self.MARKERS:
+            figure.add_trace(
+                self._markers(fast, getattr(crosses, attribute), label, symbol, color)
             )
+        figure.update_layout(**self._layout(series))
+        return figure
+
+    def _candles(self, series: CandleSeries) -> go.Candlestick:
+        candles = series.frame
+        return go.Candlestick(
+            x=candles.index,
+            open=candles["open"],
+            high=candles["high"],
+            low=candles["low"],
+            close=candles["close"],
+            name=series.instrument.storage_key,
+            increasing_line_color=self.CANDLE_UP,
+            decreasing_line_color=self.CANDLE_DOWN,
         )
 
-    fig.update_layout(
-        title=f"BTC/USDT 現貨 1h：SMA({fast_period}) 與 SMA({slow_period}) 交叉",
-        xaxis_title="時間（UTC）",
-        yaxis_title="價格（USDT）",
-        xaxis_rangeslider_visible=False,
-        height=620,
-        hovermode="x unified",
-    )
-    return fig
+    @staticmethod
+    def _line(values: pd.Series, period: int, color: str) -> go.Scatter:
+        return go.Scatter(
+            x=values.index,
+            y=values,
+            name=f"SMA({period})",
+            mode="lines",
+            line={"width": 1.6, "color": color},
+        )
 
+    @staticmethod
+    def _markers(
+        fast: pd.Series, hit: pd.Series, label: str, symbol: str, color: str
+    ) -> go.Scatter:
+        # 標記畫在快線上：交叉是兩條線的事件，位置才對得起來
+        return go.Scatter(
+            x=fast.index[hit],
+            y=fast[hit],
+            name=label,
+            mode="markers",
+            marker={
+                "symbol": symbol,
+                "size": 12,
+                "color": color,
+                "line": {"width": 1, "color": "white"},
+            },
+        )
 
-fig = plot_sma_crosses(ohlcv)
-fig.write_html("notebooks/day04_sma_crosses.html")
+    def _layout(self, series: CandleSeries) -> dict[str, object]:
+        instrument = series.instrument
+        return {
+            "title": (
+                f"{instrument.symbol} {instrument.market} {instrument.timeframe}："
+                f"SMA({self._fast.period}) 與 SMA({self._slow.period}) 交叉"
+            ),
+            "xaxis_title": "時間（UTC）",
+            "yaxis_title": "價格（USDT）",
+            "xaxis_rangeslider_visible": False,
+            "height": 620,
+            "hovermode": "x unified",
+        }
 ```
 
 幾個刻意的選擇：
 
 - 標記畫在**快線上**而不是價格上。交叉是兩條線的事件，標在快線上位置才對得起來；標在 K 線的高低點會讓人以為訊號跟那根 K 線的極值有關。
-- `xaxis_rangeslider_visible=False`。Plotly 的 K 線圖預設帶一條範圍滑桿，會佔掉三分之一的高度，而你可以直接在圖上拉方框縮放。
-- 軸標題寫清楚「時間（UTC）」跟「價格（USDT）」。時區不寫出來，你自己三個月後也會懷疑。
+- 配色與標記樣式是類別常數。這張圖之後還會長出 EMA 版、RSI 副圖，共用同一組顏色才不會每篇的綠紅都不一樣。
+- `xaxis_rangeslider_visible=False`。Plotly 的 K 線圖預設帶一條範圍滑桿，會佔掉三分之一的高度，而圖上直接拉方框就能縮放。
+- 標題與軸標題從 `instrument` 長出來，不是手寫字串。時區與市場不寫出來，三個月後自己也會懷疑。
 
 畫出來之後，用互動縮放做三件檢查：
 
-1. **拉到資料最開頭。** 前 59 根應該只有 K 線、沒有慢線，而且**不應該有任何交叉標記**。有的話就是 `prev_ready` 那個保護沒生效。
+1. **拉到資料最開頭。** 前 59 根應該只有 K 線、沒有慢線，而且**不應該有任何交叉標記**。有的話就是 `previously_ready` 那個保護沒生效。
 2. **隨便挑一個標記放大。** 確認標記那一根的前一根，快慢線的上下關係確實是反過來的。這是驗證「事件」而不是「狀態」。
-3. **看震盪的那幾段。** 你會看到標記密集地成對出現，一個黃金交叉後面很快跟一個死亡交叉。這是均線交叉在震盪行情裡本來就會有的行為，看到它才表示你的圖是對的。
+3. **看震盪的那幾段。** 標記會密集地成對出現，一個黃金交叉後面很快跟一個死亡交叉。這是均線交叉在震盪行情裡本來就會有的行為，圖上沒有這個特徵反而要回去查。
 
 ## 今日交付物
 
-`quantbot/indicators/ma.py` 與 `tests/test_ma.py`，再加上一份畫出交叉圖的 notebook。
+```
+quantbot/
+├── domain/indicators/
+│   ├── indicator.py                 Indicator（ABC，六條契約）
+│   ├── irregular_index_error.py
+│   ├── sma.py                       SMA
+│   └── crossover_signals.py         CrossoverSignals
+├── infrastructure/charting/
+│   └── plotly_crossover_chart_renderer.py
+└── tests/domain/indicators/
+    └── test_sma.py
+```
 
-驗收標準，五項全過才算完成：
+驗收標準，六項全過才算完成：
 
-1. `uv run pytest tests/test_ma.py -q` 全綠，且包含這四個邊界案例：資料少於視窗長度、只有一根 K 線、空序列、索引有缺漏。
-2. 跟 `pandas-ta` 的對照測試通過，`rtol=1e-9`、`atol=0`，並且 NaN 的位置完全一致。如果你的環境沒有 TA-Lib，在測試裡加一句註解說明這個對照走的是同一條 pandas 路徑，等 Day 06 再補上真正獨立的對照。
-3. `sma(close, 20, expected_freq="1h")` 餵一份缺了幾根的資料會丟 `IrregularIndexError`，而不是回傳一個看起來正常的數字。
-4. `notebooks/day04_sma.ipynb` 產出的圖，前 59 根沒有任何交叉標記，且每個標記的前一根快慢線關係確實相反。
-5. 把 `delay_to_next_bar()` 前後的訊號序列並排印出來，確認整條往後位移了剛好一根。這一項現在看起來像多餘的檢查，Day 19 你會很慶幸自己做過。
+1. `uv run pytest tests/domain/indicators/test_sma.py` 全綠，且包含這四個邊界案例：資料少於視窗長度、只有一根 K 線、空序列、索引有缺漏。
+2. 跟 `pandas-ta` 的對照測試通過，`rtol=1e-9`、`atol=0`，並且 NaN 的位置完全一致。如果環境裡沒有 TA-Lib，在測試裡加一句註解說明這個對照走的是同一條 pandas 路徑，等 Day 06 再補上真正獨立的對照。
+3. `SMA(20, expected_timeframe=Timeframe("1h")).compute(series)` 餵一份缺了幾根的資料會丟 `IrregularIndexError`，而不是回傳一個看起來正常的數字。
+4. notebook 產出的圖，前 59 根沒有任何交叉標記，且每個標記的前一根快慢線關係確實相反。
+5. 把 `crosses.golden` 與 `crosses.entry` 並排印出來，確認整條往後位移了剛好一根。這一項現在看起來像多餘的檢查，Day 19 會用到它。
+6. `uv run mypy quantbot` 與 `uv run lint-imports` 全過。後者會擋掉一件事：`domain/indicators/` 底下 NEVER 出現 `import plotly`。今天新增了一個圖表類別，正是最容易把畫圖的東西順手寫進指標模組的時候。
 
-順帶記一件事在 README 或註解裡：**今天所有的數字都來自 Day 03 存下來的 BTC/USDT 現貨 1 小時 parquet，源頭是 `data.binance.vision` 的批次檔加上 REST 補的最後幾天。** 這個系列到最後會有三條擷取路徑跟兩個對照組，等到某天發現一個數字不合理時，「這張表是誰給的」是你要問的第一個問題。
+順帶記一件事在 README 或註解裡：**今天所有的數字都來自 Day 03 回補的 BTC/USDT 現貨 1 小時 parquet，源頭是 `data.binance.vision` 的批次檔加上 REST 補的最後幾天。** 這個系列到最後會有三條擷取路徑跟兩個對照組，等到某天發現一個數字不合理時，「這張表是誰給的」是第一個要問的問題。
 
 本系列為程式與資料工程的技術分享，所有策略與數字皆為教學範例，不構成投資建議；加密貨幣波動劇烈，實際交易請自行評估風險。
 

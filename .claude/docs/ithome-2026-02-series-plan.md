@@ -541,8 +541,26 @@ Day 01 與 Day 30 為開篇與總結，不受此骨架限制。
 
 - **系列規劃完成**（本文件為路線圖）。
 - **已完成撰稿：Day 00（賽前序章）＋ Day 01–08**（第一階段全部）。已通過驗證：frontmatter 六欄齊全且 `parent` 八篇完全一致、`draft: true`、檔名無斜線、`datetime` 2026-09-15 至 09-22 連續唯一、正文無 h1（`#` 僅出現在程式碼區塊內）、無 emoji、無死語、無第一人稱敘事、每篇有「明天 Day N＋1」預告、術語未提前於進度表出現。
+- **程式碼一律分層 ＋ 類別封裝（2026-08-02 完成改寫）**：Day 01–08 的 Python 產出已全部改成 Clean/Onion 分層，依賴方向一律指向 domain。規範見 [`quantbot-code-architecture.md`](../rules/quantbot-code-architecture.md)，唯一真相來源是實作專案 `/Users/james/workspace/SideProjects/quantbot`（該專案的 `CLAUDE.md`）。
+  - **Day 01**：**架構說明的家**。依賴方向圖、四層職責、domain 內部六個資料夾、`Protocol` 與 `ABC` 的分工、命名規則（介面能力名／實作技術前綴／七種角色後綴／禁縮寫）、以及三個自動化把關工具的 `pyproject.toml` 設定（ruff、mypy、import-linter）。今天只建空骨架，沒有實作。
+  - **Day 02**：往 `domain/` 填第一批東西。`domain/values/`（Market、TimeRange、Timeframe、Instrument、CandleColumns）、`domain/entities/candle_series.py`、`infrastructure/binance/binance_candle_csv_parser.py`、`infrastructure/charting/plotly_candle_chart_renderer.py`、`entrypoints/fetch_candles_command.py`。下載那幾行刻意留在 entrypoint 裡，並在文章裡說明「只有一條路徑時不抽介面」。
+  - **Day 03**：新增介面與取得路徑。`domain/values/source_kind.py`（SourceKind、FetchInstruction）、`domain/services/`（SourceRoutingService、DataIntegrityService、PriceCrossCheckService）、`domain/interfaces/`（CandleSource、CandleParser、ReferencePriceSource、Clock，皆為 Protocol）、`infrastructure/binance/` 五個類別、`infrastructure/coingecko/`、`application/backfill_candles_application.py`、`entrypoints/backfill_command.py`。Day 02 的值與 entity 一個字都不用改。
+  - **Day 04**：`Indicator`（ABC，六條契約）＋ `SMA` ＋ `CrossoverSignals` ＋ `PlotlyCrossoverChartRenderer`。基底類別提前到 Day 04，系列中途不再有「回頭統一簽章」的遷移。
+  - **Day 05**：`EMA` ＋ `tests/reference/reference_ema.py` ＋ `PlotlySmoothingComparisonRenderer`。
+  - **Day 06**：`RSI` ＋ `WilderSmoother` ＋ `INDICATORS` 註冊表 ＋ `ReferenceRSI` ＋ `PlotlyRelativeStrengthChartRenderer`。
+  - **Day 07**：`CandleRepository`（Protocol）＋ `PostgresDatabase` ＋ `TimescaleCandleRepository`。
+  - **Day 08**：`CandleSanitationService`、`PipelineConfiguration`、`PipelineReportDto`、`IngestPipelineApplication`、`YamlPipelineConfigurationLoader`、`TextPipelineReportRenderer`、`ingest_pipeline_command`。缺漏偵測／路由／對照組**沿用 Day 03 的 service，不再各寫一份**。
+- **技術選型對齊實作專案**：HTTP 一律 `httpx`（原本 Day 03／08 寫 aiohttp，但專案沒有這個依賴，跑不起來），Python 3.14、uv、pandas 3.x、ccxt、asyncpg、plotly、pytest ＋ pytest-asyncio。
+- **改寫時實測抓到的三個錯**（原文的數字／程式碼是錯的，已修正）：
+  1. `pd.read_csv(header=0, names=..., skiprows=1)` 會吃掉每個檔案的第一列資料（2025 年後的檔案都有標頭），已改成 `header=None`。
+  2. `pd.concat([...]).sort_index()` 之後才 `duplicated(keep="first")` 不可靠——`sort_index` 預設 quicksort 不穩定，實測只有 37% 的列保住該勝出的來源。已改成先去重再排序，並把這個實測寫進 Day 03。
+  3. Day 05 缺漏那節的 `ewm(span=3)` 數字寫錯（102.1667），pandas 3.0 實測是 102.375。
+- **同一次改寫也把 Day 03–08 的「你」全部清掉**（六篇皆為 0），對齊撰寫規範第 8 節。
+- **驗證方式**：文章裡標了 `# quantbot/...` 路徑的 44 個程式碼區塊，與 canonical 實作逐字比對一致（四個刻意的節錄／省略除外）；80 個單元測試在 Python 3.14 ＋ pandas 3.0.5 實跑通過。
 - **已知待辦（發佈前處理）**：
+  - Day 03 現在 1,296 行（把架構說明移到 Day 01、值與 entity 移到 Day 02 之後從 1,689 行降下來），仍是最長的一篇。剩下的長度來自它本來的內容：限流帳、雙軌設計、六個 Binance 類別、對照組。再要縮就得動內容而不是搬家。
   - Day 04 的 TA-Lib 對照誤差數字（1.1e-06／1.6e-11）是以重寫 running sum 推導的，非實跑 TA-Lib。要在有 TA-Lib 的環境重量一次，或改成不釘死的說法。
-  - Day 04／Day 06 的指標簽章已在 Day 06 補上遷移說明（`sma` 從吃 Series 改吃 DataFrame，`expected_freq` 更名 `validate_freq` 並保留為 keyword-only）。若之後回頭改 Day 04，兩篇要一起改。
-- **待撰寫：Day 01–30，全系列 30 篇尚未開始。**
-- 文章目錄 `src/content/blogs/ithome/2026-02/` 已建立、目前為空。
+  - Day 01 與 Day 02 都是 `draft: false`（已發佈）而這次一起改了，內容變動不小：Day 01 多了架構與工具設定、Day 02 的程式碼從模組層級函式改成分層的值與 entity。如果文章已經上到 iThome，那邊也要同步更新。
+  - Day 01 文章裡的 `Settings` 是早期狀態（沒有 `coingecko_api_key` 與 `raw_data_directory`），Day 03 才補上那兩欄——這是刻意的敘事差異，parity 檢查把它列為已知例外。
+  - 實作專案 `quantbot` 尚未搬到分層結構，待辦清單在該專案 `CLAUDE.md` 的「遷移狀態」一節。
+- **待撰寫：Day 09–30。**
