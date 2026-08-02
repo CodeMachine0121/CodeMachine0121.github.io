@@ -649,11 +649,11 @@ REST 這段只負責幾天的資料，但翻頁邏輯還是要寫對，因為 Da
 
 翻頁最容易錯的是游標怎麼推進。`fetch_ohlcv(symbol, timeframe, since=t)` 的 `since` 是**包含**的：回傳的第一根就是 `t` 那一根。所以下一頁的游標有三種寫法，只有一種對：
 
-| 下一頁的 since | 結果 |
-|---|---|
-| `last_open_time` | 重複拿到最後一根 |
-| `last_open_time + 2 * step` | 漏掉一根 |
-| `last_open_time + step` | 正確 |
+| 下一頁的 since                  | 結果       |
+|-----------------------------|----------|
+| `last_open_time`            | 重複拿到最後一根 |
+| `last_open_time + 2 * step` | 漏掉一根     |
+| `last_open_time + step`     | 正確       |
 
 ```python
 # quantbot/infrastructure/binance/binance_rest_candle_source.py

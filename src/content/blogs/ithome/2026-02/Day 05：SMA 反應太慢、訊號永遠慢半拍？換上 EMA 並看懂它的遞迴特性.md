@@ -387,7 +387,6 @@ import pytest
 
 from quantbot.domain.entities.candle_series import CandleSeries
 from quantbot.domain.indicators.ema import EMA
-from quantbot.domain.indicators.rsi import WilderSmoother
 from quantbot.domain.values.instrument import Instrument
 from quantbot.domain.values.market import Market
 from quantbot.domain.values.timeframe import Timeframe
@@ -444,10 +443,9 @@ def test_matches_pandas_ta_after_the_warmup():
 
 
 def test_alpha_is_two_over_n_plus_one():
-    """Wilder 平滑用 1/n，兩者差一倍，所以把公式釘在測試裡。"""
+    """明天的 Wilder 平滑用的是 1/n，跟這裡差將近一倍，所以先把公式釘住。"""
     assert EMA(20).alpha == pytest.approx(2 / 21)
     assert EMA(14).alpha == pytest.approx(2 / 15)
-    assert WilderSmoother(14).alpha == pytest.approx(1 / 14)
 
 
 def test_constant_series_equals_the_constant():
@@ -506,7 +504,7 @@ def test_invalid_arguments_are_rejected_at_construction():
 
 `test_constant_series_equals_the_constant` 看起來像廢話，但它是最便宜的公式檢查：只要權重沒有正確加總為 1，這個測試就會紅。
 
-`test_alpha_is_two_over_n_plus_one` 把明天的伏筆先埋好：兩個平滑係數並排斷言，明天要是把 `alpha=1/n` 寫成 `span=n`，紅的會是這一條。
+`test_alpha_is_two_over_n_plus_one` 把明天的伏筆先埋好。明天的 Wilder 平滑用的是 `1/n`，跟這裡的 `2/(n+1)` 差將近一倍，而那個差別是明天整篇最容易寫錯的地方——兩個係數並排斷言的那條測試明天才寫得出來，因為 `WilderSmoother` 明天才存在。
 
 ## 視覺化：同一段急跌，兩條線誰先低頭
 
