@@ -4,7 +4,7 @@ datetime: "2026-09-21"
 description: "市場資料只增不改、幾乎都用時間範圍查、量隨時間線性成長，這三個特性剛好是 hypertable 的最佳場景。這篇把 quantbot 的 schema 建起來，講清楚為什麼不是 parquet、不是純 PostgreSQL、也不是 InfluxDB，並用複合主鍵、COPY 批次寫入、continuous aggregate 與壓縮政策做出一條重跑不會產生重複列的入庫路徑。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## 六天過去，資料還躺在檔案系統裡
@@ -58,7 +58,7 @@ parquet 是好格式，這點沒有爭議：欄式儲存、壓縮率高、pandas
 
 ### 為什麼不是純 PostgreSQL
 
-先講公平話：純 PostgreSQL 撐得比想像中久。一張 `candles` 表加上 `(symbol, timeframe, open_time)` 的 btree 索引，幾百萬列的查詢在筆電上都是毫秒級，第一週不會遇到問題。
+純 PostgreSQL 其實撐得比想像中久。一張 `candles` 表加上 `(symbol, timeframe, open_time)` 的 btree 索引，幾百萬列的查詢在筆電上都是毫秒級，第一週不會遇到問題。
 
 它停下來的地方有四個：
 
