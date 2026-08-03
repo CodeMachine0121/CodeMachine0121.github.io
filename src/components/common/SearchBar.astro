@@ -1,13 +1,15 @@
-﻿---
+---
 export interface Props {
   placeholder?: string;
-  className?: string;
+  class?: string;
+  /** 輸入框的可存取名稱（不會顯示，但螢幕閱讀器會讀） */
+  label?: string;
 }
 
-const { placeholder = "搜尋文章...", className = "" } = Astro.props;
+const { placeholder = '搜尋文章...', class: className = '', label = '搜尋文章' } = Astro.props;
 ---
 
-<div class={`relative ${className}`}>
+<div class:list={['relative', className]}>
   <div class="relative">
     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-ink-soft">
       <svg
@@ -25,12 +27,28 @@ const { placeholder = "搜尋文章...", className = "" } = Astro.props;
         />
       </svg>
     </div>
-    <label for="blog-search"></label><input
+    <label class="sr-only" for="blog-search">{label}</label>
+    <input
       type="search"
       id="blog-search"
       class="hd-input !pl-11"
       placeholder={placeholder}
-      autocomplete="on"
+      autocomplete="off"
     />
   </div>
 </div>
+
+<style>
+  /* 視覺上隱藏，但保留給螢幕閱讀器 */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
