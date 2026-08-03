@@ -1,0 +1,116 @@
+---
+// 圖片模態視窗元件，用於放大檢視文章內文中的圖片
+---
+
+<div id="image-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 hidden" role="dialog" aria-modal="true" aria-label="圖片預覽">
+  <div class="relative max-w-screen-lg max-h-screen p-4">
+    <button id="close-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 z-10 hover:bg-gray-700" aria-label="關閉圖片預覽">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <img id="modal-image" src="" alt="" class="max-w-full max-h-[90vh] object-contain rounded shadow-lg" />
+  </div>
+</div>
+
+<script>
+  // 只有文章內文（markdown 產出的 .prose）裡、且沒有被連結包住的圖片才可放大。
+  // 列表縮圖、logo、頭像等本來就有自己的點擊行為，不該被攔截。
+  const ZOOMABLE_SELECTOR = '.prose img';
+
+  function isZoomable(target: EventTarget | null): target is HTMLImageElement {
+    return (
+      target instanceof HTMLImageElement &&
+      target.id !== 'modal-image' &&
+      target.matches(ZOOMABLE_SELECTOR) &&
+      target.closest('a') === null
+    );
+  }
+
+  function setupImageModal() {
+    const modal = document.getElementById('image-modal');
+    const modalImage = document.getElementById('modal-image') as HTMLImageElement | null;
+    const closeButton = document.getElementById('close-modal');
+
+    if (!modal || !modalImage || !closeButton) return;
+
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    };
+
+    // 事件委派：綁一次就好，動態插入的圖片同樣適用。
+    document.addEventListener('click', (event) => {
+      if (!isZoomable(event.target)) return;
+
+      modalImage.src = event.target.currentSrc || event.target.src;
+      modalImage.alt = event.target.alt || '';
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeButton.addEventListener('click', closeModal);
+
+    // 點擊背景關閉
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) closeModal();
+    });
+
+    // ESC 鍵關閉
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+  }
+
+  setupImageModal();
+</script>
+
+<style>
+  /* 可放大的內文圖片給一點可點擊的提示 */
+  :global(.prose img) {
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+  }
+
+  /* 被連結包住的內文圖片維持一般的連結行為 */
+  :global(.prose a img) {
+    cursor: pointer;
+  }
+
+  @media (min-width: 768px) {
+    :global(.prose img:hover) {
+      transform: scale(1.02);
+    }
+  }
+
+  #image-modal:not(.hidden) {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.prose img) {
+      transition: none;
+    }
+
+    #image-modal:not(.hidden) {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #close-modal {
+      top: 1rem;
+      right: 1rem;
+    }
+
+    #modal-image {
+      max-height: 85vh !important;
+    }
+  }
+</style>
