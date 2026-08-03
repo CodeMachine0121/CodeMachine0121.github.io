@@ -75,13 +75,37 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={shareImageUrl} />
 
-		<!-- Hand-Drawn Typography: Kalam + Patrick Hand (Latin) over LXGW WenKai TC (CJK) -->
+		<!--
+			Hand-Drawn Typography: Kalam + Patrick Hand (Latin) over LXGW WenKai TC (CJK).
+			以 media="print" 載入讓瀏覽器不把它們算進首屏阻塞資源，body 結尾的
+			module script（deferred）再把 media 切回 all。關閉 JS 時由 <noscript> 照常載入。
+		-->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap"
+			media="print"
+			data-async-font
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css"
+			media="print"
+			data-async-font
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css"
+			media="print"
+			data-async-font
+		/>
+		<noscript>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css" />
+		</noscript>
 
 		<title>{title}</title>
 
@@ -122,6 +146,12 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 
 		<script>
 			import '../scripts/animations.ts';
+
+			// 字型樣式表以 media="print" 送出以避開首屏阻塞；這支 module script 是
+			// deferred 的（首次繪製之後才跑），此時再把它們切回實際生效。
+			for (const link of document.querySelectorAll<HTMLLinkElement>('link[data-async-font]')) {
+				link.media = 'all';
+			}
 		</script>
 	</body>
 </html>
