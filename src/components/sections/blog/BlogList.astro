@@ -75,12 +75,14 @@ const seriesArticles = seriesList.flatMap(series =>
 
 <script>
   function initBlogSearch() {
-    const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
+    const searchInput = document.querySelector<HTMLInputElement>('#blog-search');
     const blogItems = Array.from(document.querySelectorAll<HTMLElement>('.blog-item'));
     const seriesCards = Array.from(document.querySelectorAll<HTMLElement>('.series-card'));
-    const noResults = document.getElementById('no-results');
+    const noResultsBox = document.querySelector<HTMLElement>('#no-results');
 
-    if (!searchInput || !noResults) return;
+    if (!searchInput || !noResultsBox) return;
+
+    const noResults = noResultsBox;
 
     const titleOf = (item: HTMLElement) => item.querySelector('h2')?.textContent?.toLowerCase() ?? '';
     const seriesOf = (item: HTMLElement) => (item.dataset.series ?? '').toLowerCase();
