@@ -48,17 +48,6 @@ export async function generateSeriesList(): Promise<Series[]> {
 }
 
 /**
- * 依 slug 尋找特定系列
- *
- * @param slug 系列的 URL slug
- * @returns 找到的系列或 null
- */
-export async function findSeriesBySlug(slug: string): Promise<Series | null> {
-  const allSeries = await generateSeriesList();
-  return allSeries.find(series => series.slug === slug) ?? null;
-}
-
-/**
  * 取得指定**單篇**文章的相鄰文章（閱讀順序：最新 → 最舊）
  */
 export async function getAdjacentPosts(currentId: string): Promise<AdjacentArticles<BlogEntry>> {
