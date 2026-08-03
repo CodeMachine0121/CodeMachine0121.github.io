@@ -11,14 +11,16 @@ export type BlogEntry = CollectionEntry<'blogs'>;
 
 /**
  * 系列資料結構
+ *
+ * 泛型參數讓純函式的測試可以用輕量替身，正式程式碼則沿用預設的 `BlogEntry`。
  */
-export interface Series {
+export interface Series<T = BlogEntry> {
   /** 系列名稱（原始名稱） */
   name: string;
   /** URL 安全的識別符 */
   slug: string;
   /** 屬於此系列的文章陣列 */
-  articles: BlogEntry[];
+  articles: T[];
   /** 文章總數 */
   count: number;
 }
