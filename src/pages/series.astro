@@ -2,14 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { generateSeriesList } from "../utils/series";
 
-// 使用新的系列聚合工具
 const seriesList = await generateSeriesList();
-
-// 開發時輸出系列資訊
-console.log('[series] total series =', seriesList.length);
-for (const series of seriesList) {
-  console.log(` - ${series.name}: ${series.count} 篇`);
-}
 ---
 
 <Layout title="系列文章">
