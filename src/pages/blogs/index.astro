@@ -9,6 +9,6 @@ const allBlogs: CollectionEntry<"blogs">[] =
 .sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
 ---
 
-<Layout title="Blogs">
+<Layout title="Blogs" description="所有文章：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。">
     <BlogList blogs={allBlogs} />
 </Layout>
