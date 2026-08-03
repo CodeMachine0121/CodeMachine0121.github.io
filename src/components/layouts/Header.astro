@@ -22,7 +22,14 @@ import { basic, menuItems } from "../../config/introduce.json";
       </nav>
 
       <!-- Mobile Menu Button -->
-      <button id="menu-btn" class="sm:hidden hd-icon-circle !w-10 !h-10" aria-label="Mobile open menu">
+      <button
+        id="menu-btn"
+        type="button"
+        class="sm:hidden hd-icon-circle !w-10 !h-10"
+        aria-label="開啟選單"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
         <Icon name="Menu" class="size-5" />
       </button>
 
@@ -58,6 +65,10 @@ import { basic, menuItems } from "../../config/introduce.json";
   const mobileMenu = document.getElementById('mobile-menu');
 
   menuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
+    const isOpen = mobileMenu?.classList.toggle('hidden') === false;
+
+    // 讓輔助技術知道選單目前是開還是關
+    menuBtn.setAttribute('aria-expanded', String(isOpen));
+    menuBtn.setAttribute('aria-label', isOpen ? '關閉選單' : '開啟選單');
   });
 </script>
