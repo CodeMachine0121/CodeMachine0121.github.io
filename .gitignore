@@ -26,7 +26,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-.github/*
 .netlify/
 
 test-results/*
