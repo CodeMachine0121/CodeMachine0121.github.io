@@ -9,10 +9,9 @@
       "zh": "尋找由團隊端到端負責領域系統的後端／平台工程職位 — .NET Core 或 Golang、Kubernetes 上的分散式服務。可接受遠端或台灣在地。"
     },
     "summary": {
-      "en": "Backend and platform engineer with 4 years building microservices and domain-heavy systems across fintech and enterprise. Ships production .NET Core services with Clean Architecture, CQRS, and TDD, and runs them on Kubernetes (CKAD-certified) across Azure and Oracle Cloud. Led a credit-loan monolith into 10+ microservices and replaced a heavyweight spec process with a lighter workflow the team adopted across 3–4 projects. Writes Golang and ships open source outside work — 80+ articles across long-form technical series at Coding Afternoon (6.4K monthly unique visitors) and an ECC cryptography SDK with 2.7K NuGet downloads.",
-      "zh": "4 年微服務與領域系統開發經驗的後端／平台工程師，橫跨金融科技與企業領域。以 Clean Architecture、CQRS 與 TDD 交付生產環境的 .NET Core 服務，並在 Azure 與 Oracle Cloud 的 Kubernetes 上營運（持有 CKAD 認證）。主導信用貸款單體系統拆分為 10 個以上微服務，並以自製的輕量流程取代過重的規格流程，獲團隊採用於 3 至 4 個專案。工作之外以 Golang 寫作與開源 — Coding Afternoon 累積 80 篇以上長篇技術系列文章（月不重複訪客 6.4K），並發布下載數 2.7K 的 ECC 密碼學 SDK。"
-    },
-    "cv_file_name": "james_cv.pdf"
+      "en": "Backend and platform engineer with 4 years building microservices and domain-heavy systems across fintech and enterprise. Ships production .NET Core services with Clean Architecture, CQRS, and TDD, and runs them on Kubernetes (CKAD-certified) across Azure and Oracle Cloud. Led a credit-loan monolith into 10+ microservices and replaced a heavyweight spec process with a lighter workflow the team adopted across 3–4 projects. Writes Golang and ships open source outside work — 80+ articles across long-form technical series at Coding Afternoon (6.4K monthly unique visitors). Alongside the backend track runs a blockchain and applied-cryptography one: a master's thesis on a Chameleon Hash based encryption scheme, an ECC cryptography SDK on NuGet with 2.7K downloads, a 30-day series building a redactable blockchain from scratch, and a risk-ranking API for on-chain perpetual-futures traders.",
+      "zh": "4 年微服務與領域系統開發經驗的後端／平台工程師，橫跨金融科技與企業領域。以 Clean Architecture、CQRS 與 TDD 交付生產環境的 .NET Core 服務，並在 Azure 與 Oracle Cloud 的 Kubernetes 上營運（持有 CKAD 認證）。主導信用貸款單體系統拆分為 10 個以上微服務，並以自製的輕量流程取代過重的規格流程，獲團隊採用於 3 至 4 個專案。工作之外以 Golang 寫作與開源 — Coding Afternoon 累積 80 篇以上長篇技術系列文章（月不重複訪客 6.4K）。後端主線之外另有一條區塊鏈與應用密碼學的脈絡：碩士論文為基於 Chameleon Hash 的加密方案、發布於 NuGet 且累計下載 2.7K 的 ECC 密碼學 SDK、30 天從零打造可修改區塊鏈的系列，以及一套鏈上永續合約交易員的風險排行 API。"
+    }
   },
   "skills": [
     {
@@ -33,7 +32,11 @@
     },
     {
       "category": { "en": "Integrations & Security", "zh": "整合與安全" },
-      "items": ["OAuth 2.0 / SSO", "Payment Gateways", "E-Invoicing", "LINE Messaging API", "Webhook HMAC Verification", "ECC Cryptography"]
+      "items": ["OAuth 2.0 / SSO", "Payment Gateways", "E-Invoicing", "LINE Messaging API", "Webhook HMAC Verification"]
+    },
+    {
+      "category": { "en": "Blockchain & Cryptography", "zh": "區塊鏈與密碼學" },
+      "items": ["Elliptic-Curve Cryptography (ECC)", "Chameleon Hash", "Redactable Blockchain", "On-Chain Data Analysis", "Perpetual Futures Risk Modelling", "Exchange Market-Data APIs"]
     }
   ],
   "experiences": [
@@ -46,11 +49,11 @@
         "zh": "建置支撐全球車輛護理平台台灣市場擴張的 .NET Core 後端，採用 Clean Architecture、CQRS 與 TDD。"
       },
       "achievements": [
-        { "en": "Architected and built the CRM Client-360 platform end to end — six domains (Client, Vehicle, Appointment, Budget, WorkOrder, Invoice) as MediatR vertical slices with multi-tenant isolation; now in trial operation ahead of the Taiwan launch", "zh": "端到端建置 CRM 客戶 360 平台 — 六個領域（Client、Vehicle、Appointment、Budget、WorkOrder、Invoice）以 MediatR 垂直切片實作並具多租戶隔離；目前試營運中，準備台灣上線" },
-        { "en": "Delivered the Taiwan market's primary customer channel by owning the LINE Messaging API integration end to end: HMAC-verified webhooks, link-code account binding, Flex-card messaging, and Hangfire-scheduled appointment notifications", "zh": "端到端負責 LINE Messaging API 整合，交付台灣市場的主要客戶溝通管道：HMAC 簽章驗證 webhook、link-code 帳號綁定、Flex 卡片訊息，以及 Hangfire 排程的預約通知" },
-        { "en": "Eliminated duplicate charges from concurrent checkout with an atomic conditional-update transaction state machine, and shipped the full e-invoicing lifecycle (issue / void / allowance) with rollback on provider failure", "zh": "以原子條件更新的交易狀態機消除併發結帳造成的重複扣款，並交付完整電子發票生命週期（開立／作廢／折讓），含 provider 失敗時的回滾機制" },
-        { "en": "Made one codebase serve two markets by designing country-dispatched document validators (Spanish DNI/NIE vs Taiwan ID and business number), a country-scoped document catalog, and Taiwan tire-specification attributes", "zh": "設計依國別分派的證件驗證器（西班牙 DNI/NIE 對台灣身分證與統一編號）、國別範圍的證件目錄與台灣輪胎規格欄位，使單一程式碼庫可同時服務兩個市場" },
-        { "en": "Established the cross-cutting infrastructure the whole platform relies on: EF Core interceptors for field-level audit logging and workshop-scoped license-plate uniqueness, plus role and module-level access control", "zh": "打造全平台共用的跨切面基礎建設：以 EF Core 攔截器實作欄位級稽核日誌與工作坊範圍的車牌唯一性，以及角色與模組層級的權限控管" }
+        { "en": "Built the CRM Client-360 platform end to end: six domains as MediatR vertical slices, multi-tenant isolated; now in pre-launch trial", "zh": "端到端建置 CRM 客戶 360 平台：六個領域以 MediatR 垂直切片實作、多租戶隔離，目前上線前試營運" },
+        { "en": "Owned Taiwan's main customer channel end to end on the LINE Messaging API: HMAC-verified webhooks, account binding, Flex messaging, Hangfire notifications", "zh": "端到端負責台灣主要客戶管道的 LINE Messaging API 整合：HMAC webhook 驗證、帳號綁定、Flex 訊息、Hangfire 排程通知" },
+        { "en": "Eliminated duplicate charges at concurrent checkout with an atomic transaction state machine; shipped e-invoicing (issue / void / allowance) with rollback", "zh": "以原子條件更新的交易狀態機消除併發結帳的重複扣款，並交付電子發票開立／作廢／折讓，含失敗回滾" },
+        { "en": "Made one codebase serve two markets with country-dispatched ID validators (Spanish DNI/NIE, Taiwan ID) and country-scoped document catalogs", "zh": "以依國別分派的證件驗證器（西班牙 DNI/NIE、台灣身分證與統一編號）與國別範圍的證件目錄，讓單一程式碼庫服務兩個市場" },
+        { "en": "Built the platform's cross-cutting layer: EF Core interceptors for field-level audit logging, plus role and module-level access control", "zh": "打造全平台共用的跨切面基礎建設：以 EF Core 攔截器實作欄位級稽核日誌，以及角色與模組層級權限控管" }
       ]
     },
     {
@@ -62,10 +65,10 @@
         "zh": "將信用貸款平台遷移至微服務，建置其 Oracle Cloud 基礎設施，並為團隊導入規格驅動開發。"
       },
       "achievements": [
-        { "en": "Migrated the credit-loan monolith into 10+ microservices, then redesigned the strategy module to separate business rules from loan processing — new loan rules now ship without touching core flows", "zh": "將信用貸款單體系統拆分為 10 個以上微服務，並重新設計策略模組，將業務規則與貸款處理邏輯分離 — 新增貸款規則不再需要動到核心流程" },
-        { "en": "Introduced spec-driven development to the team: piloted GitHub Spec Kit, found it too process-heavy in practice, and built a lighter-weight workflow the team adopted across 3–4 projects and that I use on all my open-source work", "zh": "為團隊導入規格驅動開發：先以 GitHub Spec Kit 試行，實務上發現流程過重，因而自製更輕量的工作流程，獲團隊採用於 3 至 4 個專案，我自己的開源專案也全數採用" },
-        { "en": "Implemented shared SSO/OAuth authentication so internal services stopped maintaining their own login paths", "zh": "實作跨內部服務共用的 SSO/OAuth 認證，使各服務不再各自維護登入流程" },
-        { "en": "Automated CI/CD with Azure DevOps and ran production services on Oracle Cloud (OCP), with reproducible local test environments (OracleDB, Redis, identity services) so features could be verified before merge", "zh": "以 Azure DevOps 自動化 CI/CD 並在 Oracle Cloud (OCP) 營運生產服務，同時建置可復現的本地測試環境（OracleDB、Redis、身分服務），讓功能在合併前即可驗證" }
+        { "en": "Split a credit-loan monolith into 10+ microservices, and decoupled the strategy module so new loan rules ship without touching core flows", "zh": "將信用貸款單體系統拆分為 10 個以上微服務，並解耦策略模組，使新增貸款規則不必動到核心流程" },
+        { "en": "Introduced spec-driven development: piloted GitHub Spec Kit, found it too heavy, and built a lighter workflow adopted across 3–4 projects", "zh": "導入規格驅動開發：試行 GitHub Spec Kit 後發現過重，自製更輕量的流程，獲團隊採用於 3 至 4 個專案" },
+        { "en": "Built shared SSO/OAuth so internal services stopped maintaining their own login paths", "zh": "實作共用 SSO/OAuth，使內部服務不再各自維護登入流程" },
+        { "en": "Automated CI/CD with Azure DevOps, ran production on Oracle Cloud (OCP), and made local test environments reproducible for pre-merge checks", "zh": "以 Azure DevOps 自動化 CI/CD、在 Oracle Cloud (OCP) 營運生產服務，並建置可復現的本地測試環境供合併前驗證" }
       ]
     },
     {
@@ -79,7 +82,7 @@
       "achievements": [
         { "en": "Led a 4–6 person intern team as Scrum Master, running workshops on hexagonal architecture, TDD, refactoring, Docker, and Kubernetes", "zh": "以 Scrum Master 身分帶領 4 至 6 人的實習生團隊，並舉辦六邊形架構、TDD、重構、Docker 與 Kubernetes 工作坊" },
         { "en": "Cut production issue detection from hours to minutes by building ELK monitoring across the Kubernetes services", "zh": "為 Kubernetes 服務建置 ELK 監控，將生產問題的發現時間從數小時縮短至數分鐘" },
-        { "en": "Refactored legacy payment code and closed defects that had stayed open for more than two years", "zh": "重構遺留的支付程式碼，並修復懸置超過兩年的缺陷" },
+        { "en": "Refactored legacy payment code and closed defects open for over two years", "zh": "重構遺留的支付程式碼，並修復懸置超過兩年的缺陷" },
         { "en": "Spoke twice at GDG Kaohsiung on Golang and developer tooling", "zh": "在 GDG Kaohsiung 發表兩場演講，主題為 Golang 與開發工具" }
       ]
     }
@@ -94,8 +97,8 @@
         "zh": "技術教育部落格 coding-afternoon.com — 內容、網站與基礎設施皆獨力完成。"
       },
       "achievements": [
-        { "en": "Published 80+ articles across long-form technical series on Golang (design patterns, goroutine concurrency, TDD with AI), .NET, and blockchain; the site now serves 6,390 unique visitors and 51,660 requests a month", "zh": "以長篇技術系列發表 80 篇以上文章，涵蓋 Golang（設計模式、Goroutine 並發、AI 輔助 TDD）、.NET 與區塊鏈；網站目前月不重複訪客 6,390 位、月請求數 51,660 次" },
-        { "en": "Open-sourced EccSDK, an elliptic-curve cryptography SDK published to NuGet — 2.7K downloads to date", "zh": "開源 EccSDK，一套發布於 NuGet 的橢圓曲線密碼學 SDK — 累計下載數 2.7K" }
+        { "en": "Published 80+ articles in long-form series on Golang, .NET, and blockchain; the site serves 6,390 unique visitors and 51,660 requests a month", "zh": "以長篇系列發表 80 篇以上文章，涵蓋 Golang、.NET 與區塊鏈；網站月不重複訪客 6,390、月請求 51,660" },
+        { "en": "Open-sourced EccSDK, an elliptic-curve cryptography SDK on NuGet — 2.7K downloads", "zh": "開源 EccSDK，一套發布於 NuGet 的橢圓曲線密碼學 SDK — 累計下載 2.7K" }
       ]
     }
   ],
@@ -118,11 +121,20 @@
     {
       "title": { "en": "Open Source SDK on NuGet: EccSDK", "zh": "NuGet 開源 SDK：EccSDK" },
       "description": {
-        "en": "Elliptic-curve cryptography SDK — 2.7K downloads.",
-        "zh": "橢圓曲線密碼學 SDK — 累計下載 2.7K。"
+        "en": "Elliptic-curve cryptography SDK for .NET, published on NuGet — 2.7K downloads.",
+        "zh": "發布於 NuGet 的 .NET 橢圓曲線密碼學 SDK — 累計下載 2.7K。"
       },
       "type": { "en": "Open Source", "zh": "開源專案" },
       "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
+    },
+    {
+      "title": { "en": "Build an Editable Blockchain", "zh": "打造可編輯的區塊鏈" },
+      "description": {
+        "en": "30-day iThome Ironman series building a redactable blockchain from scratch.",
+        "zh": "iThome 鐵人賽 30 天系列，從零打造可修改的區塊鏈。"
+      },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
     },
     {
       "title": { "en": "From 0 to 1: Golang TDD with AI", "zh": "從 0 到 1：Golang TDD with AI" },
@@ -141,15 +153,6 @@
       },
       "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
-    },
-    {
-      "title": { "en": "Build an Editable Blockchain", "zh": "打造可編輯的區塊鏈" },
-      "description": {
-        "en": "30-day iThome Ironman series building a redactable blockchain from scratch.",
-        "zh": "iThome 鐵人賽 30 天系列，從零打造可修改的區塊鏈。"
-      },
-      "type": { "en": "Blog Series", "zh": "部落格系列" },
-      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
     },
     {
       "title": { "en": "CKAD — Certified Kubernetes Application Developer", "zh": "CKAD — Kubernetes 應用開發者認證" },

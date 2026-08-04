@@ -6,12 +6,20 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.cv-animate {
+// Sections only start hidden when there is JS around to reveal them again. The
+// `cv-js` flag is set by an inline script in the page head, so with JS off — or
+// in a crawler or resume-screening bot that never runs it — the CV renders fully
+// visible. The document must never depend on the entrance animation firing:
+// everything below the header lives in a .cv-animate, so a stuck observer would
+// otherwise leave a page showing nothing but the name.
+.cv-js .cv-animate {
   opacity: 0;
+}
 
-  &.is-visible {
-    animation: cv-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+// Equal specificity to the rule above, declared later, and `forwards` holds the
+// keyframe's final opacity: 1 — so revealing wins.
+.cv-js .cv-animate.is-visible {
+  animation: cv-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

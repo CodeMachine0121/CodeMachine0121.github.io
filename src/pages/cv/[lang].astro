@@ -48,6 +48,13 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
     />
 
     <title>{pageTitle}</title>
+
+    <!--
+      Marks that JS is running, which is what lets the entrance animation hide
+      sections in the first place. Inline and in the head so it lands before
+      first paint (no flash of hidden content); without it the CV stays visible.
+    -->
+    <script is:inline>document.documentElement.classList.add('cv-js');</script>
   </head>
 
   <body>
@@ -86,21 +93,37 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
 
     <!-- Intersection Observer for entrance animations -->
     <script>
+      const sections = document.querySelectorAll('.cv-animate');
+
+      const reveal = (el: Element, delayMs = 0) => {
+        (el as HTMLElement).style.animationDelay = `${delayMs}ms`;
+        el.classList.add('is-visible');
+      };
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry, i) => {
             if (entry.isIntersecting) {
-              const el = entry.target as HTMLElement;
-              el.style.animationDelay = `${i * 40}ms`;
-              el.classList.add('is-visible');
-              observer.unobserve(el);
+              reveal(entry.target, i * 40);
+              observer.unobserve(entry.target);
             }
           });
         },
         { threshold: 0.05 }
       );
 
-      document.querySelectorAll('.cv-animate').forEach(el => observer.observe(el));
+      sections.forEach(el => observer.observe(el));
+
+      // Failsafe: the whole CV below the header is animated, so anything that
+      // stops the observer from firing — a zero-height viewport in a headless
+      // renderer, a bot that never scrolls — would hide the entire document.
+      // Reveal unconditionally shortly after load and stop observing.
+      window.setTimeout(() => {
+        sections.forEach(el => {
+          observer.unobserve(el);
+          if (!el.classList.contains('is-visible')) reveal(el);
+        });
+      }, 1200);
     </script>
   </body>
 </html>

@@ -17,7 +17,6 @@ export interface BasicInfo {
   email?: string;
   looking_for?: LocalizedText;
   summary: LocalizedText;
-  cv_file_name: string;
 }
 
 export interface SkillGroup {
