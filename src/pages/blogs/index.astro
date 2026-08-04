@@ -1,14 +1,11 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import Layout from '../../layouts/Layout.astro';
 import BlogList from '../../components/sections/blog/BlogList.astro';
 import { getPublishedBlogs } from '../../utils/series';
 
-const allBlogs: CollectionEntry<"blogs">[] =
-(await getPublishedBlogs())
-.sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
+const allBlogs = await getPublishedBlogs();
 ---
 
-<Layout title="Blogs">
+<Layout title="Blogs" description="所有文章：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。">
     <BlogList blogs={allBlogs} />
 </Layout>

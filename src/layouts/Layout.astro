@@ -2,37 +2,110 @@
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
 import LoadingScreen from '../components/common/LoadingScreen.astro';
+import ImageModal from '../components/common/ImageModal.astro';
+import defaultShareImage from '../assets/profile-picture.png';
 
 import '../styles/index.css';
 import '../styles/blog.css';
 import '../styles/handdrawn/index.scss';
-import ImageModal from "../content/ImageModal.astro";
 
 interface Props {
+	/** 分頁標題，會直接進 <title> 與 og:title */
 	title: string;
+	/** 一句話摘要，進 meta description 與 og:description；未給則用站台預設 */
+	description?: string;
+	/** 分享縮圖的網址（通常是文章 frontmatter 的 image）；未給則用站台預設圖 */
+	image?: string;
+	/** 文章頁傳 'article'，其餘維持 'website' */
+	type?: 'website' | 'article';
+	/** 文章發布日期（ISO），只有 type='article' 時有意義 */
+	publishedTime?: string;
+	/** 覆寫 canonical；預設用當前路徑 */
+	canonical?: string | URL;
+	/** 讓搜尋引擎不要收錄此頁（例如 404） */
+	noindex?: boolean;
 }
 
-const { title } = Astro.props;
+const SITE_NAME = 'Coding Afternoon';
+const DEFAULT_DESCRIPTION = '軟體開發技術分享：架構、測試、AI 協作與日常踩坑筆記。';
+
+const {
+	title,
+	description = DEFAULT_DESCRIPTION,
+	image,
+	type = 'website',
+	publishedTime,
+	canonical,
+	noindex = false,
+} = Astro.props;
+
+// Astro.site 由 astro.config.mjs 提供，靜態建置時一定存在
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site);
+const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" class="h-full" data-theme="light">
+<html lang="zh-Hant-TW" class="h-full" data-theme="light">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="sitemap" href="/sitemap-index.xml" />
-		<link rel="alternate" type="application/rss+xml" title="Coding Afternoon RSS Feed" href="/rss.xml" />
 		<meta name="generator" content={Astro.generator} />
 
-		<!-- Hand-Drawn Typography: Kalam + Patrick Hand (Latin) over LXGW WenKai TC (CJK) -->
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		{noindex && <meta name="robots" content="noindex, follow" />}
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS Feed`} href="/rss.xml" />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={SITE_NAME} />
+		<meta property="og:locale" content="zh_TW" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={shareImageUrl} />
+		{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={shareImageUrl} />
+
+		<!--
+			Hand-Drawn Typography: Kalam + Patrick Hand (Latin) over LXGW WenKai TC (CJK).
+			以 media="print" 載入讓瀏覽器不把它們算進首屏阻塞資源，body 結尾的
+			module script（deferred）再把 media 切回 all。關閉 JS 時由 <noscript> 照常載入。
+		-->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap"
+			media="print"
+			data-async-font
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css"
+			media="print"
+			data-async-font
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css"
+			media="print"
+			data-async-font
+		/>
+		<noscript>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Patrick+Hand&display=swap" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-regular.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.2.0/lxgwwenkaitc-bold.css" />
+		</noscript>
 
 		<title>{title}</title>
 
@@ -59,7 +132,6 @@ const { title } = Astro.props;
 				});
 		</script>
 	</head>
-	<ImageModal />
 	<body class="h-full flex flex-col overflow-x-hidden bg-default
 		text-default text-base selection:bg-secondary">
 		<LoadingScreen />
@@ -70,8 +142,16 @@ const { title } = Astro.props;
 			</div>
 		</section>
 		<Footer />
+		<ImageModal />
+
+		<script>
+			import '../scripts/animations.ts';
+
+			// 字型樣式表以 media="print" 送出以避開首屏阻塞；這支 module script 是
+			// deferred 的（首次繪製之後才跑），此時再把它們切回實際生效。
+			for (const link of document.querySelectorAll<HTMLLinkElement>('link[data-async-font]')) {
+				link.media = 'all';
+			}
+		</script>
 	</body>
-	<script>
-		import '../scripts/animations.ts';
-	</script>
 </html>

@@ -3,13 +3,12 @@ import type { APIContext } from 'astro';
 import { getPublishedBlogs } from '../utils/series';
 
 export async function GET(context: APIContext) {
-  // getPublishedBlogs 已過濾 draft: true 的文章
-  const blogs = await getPublishedBlogs();
-
-  // 額外過濾掉 not-deployed 資料夾的文章，並按日期排序（最新的在前）
-  const publishedBlogs = blogs
-    .filter(blog => !blog.id.includes('not-deployed'))
-    .sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
+  // getPublishedBlogs 已過濾 draft: true 的文章。
+  // 不必再排除 not-deployed：collection 的 loader base 是 src/content/blogs，
+  // 那個資料夾從來就不在裡面。
+  const publishedBlogs = (await getPublishedBlogs()).sort(
+    (a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime()
+  );
 
   return rss({
     title: 'Coding Afternoon',

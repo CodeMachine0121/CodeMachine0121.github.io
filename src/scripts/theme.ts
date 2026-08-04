@@ -1,34 +1,36 @@
-const themes = ['dark', 'light'];
+const themes = ['dark', 'light'] as const;
 
-const getCurrentTheme = () => document.documentElement.dataset.theme;
+type Theme = (typeof themes)[number];
 
-export const getNextTheme = () => {
-    const currentTheme = getCurrentTheme();
-    const indexThemeCurrent = themes.indexOf(currentTheme || 'dark');
+const getCurrentTheme = (): Theme =>
+    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 
-    return themes[(indexThemeCurrent + 1) % themes.length];
+export const getNextTheme = (): Theme => {
+    const indexThemeCurrent = themes.indexOf(getCurrentTheme());
+
+    return themes[(indexThemeCurrent + 1) % themes.length]!;
 };
 
+/**
+ * 讓按鈕顯示「下一個」主題的圖示。
+ *
+ * 兩顆圖示都在 DOM 裡，靠 `hidden` 決定誰出場。初始狀態由 ThemeToggle 自己的
+ * inline script 在解析當下就設定好，這裡只負責切換時的交叉淡入淡出——
+ * 不要在載入時呼叫它，否則兩顆圖示會同時出現到 setTimeout 觸發為止。
+ */
 export const updateToggleThemeIcon = () => {
-    const currentTheme = getCurrentTheme();
-    const currentIcon = document.querySelector(`#icon-theme-${currentTheme}`);
-    const themeNext = getNextTheme();
-    const nextIcon = document.querySelector(`#icon-theme-${themeNext}`);
+    const currentIcon = document.querySelector(`#icon-theme-${getCurrentTheme()}`);
+    const nextIcon = document.querySelector(`#icon-theme-${getNextTheme()}`);
 
-    // Add fade-out animation to current icon
-    currentIcon?.classList.add("theme-icon-exit");
+    currentIcon?.classList.add('theme-icon-exit');
 
-    // After animation, hide current and show next with fade-in
     setTimeout(() => {
-        currentIcon?.classList.add("hidden");
-        currentIcon?.classList.remove("theme-icon-exit");
-        nextIcon?.classList.remove("hidden");
-        nextIcon?.classList.add("theme-icon-enter");
+        currentIcon?.classList.add('hidden');
+        currentIcon?.classList.remove('theme-icon-exit');
+        nextIcon?.classList.remove('hidden');
+        nextIcon?.classList.add('theme-icon-enter');
 
-        // Remove enter class after animation completes
-        setTimeout(() => {
-            nextIcon?.classList.remove("theme-icon-enter");
-        }, 200);
+        setTimeout(() => nextIcon?.classList.remove('theme-icon-enter'), 200);
     }, 200);
 };
 
@@ -40,17 +42,4 @@ export const disableThemeTransition = () => {
     setTimeout(() => {
         document.documentElement.classList.remove('theme-transitioning');
     }, 300);
-};
-
-export const toggleMarkdownTheme = (newTheme: string) => {
-    const contentElement = document.getElementById('markdown');
-    if (!contentElement) {
-        return;
-    }
-
-    if (newTheme === "dark") {
-        contentElement.classList.add('prose-invert');
-    } else {
-        contentElement.classList.remove('prose-invert');
-    }
 };

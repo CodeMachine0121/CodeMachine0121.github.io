@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['selector', '[data-theme="dark"]'],
@@ -72,21 +74,11 @@ export default {
 										marginBottom: '2em',
 										borderRadius: '0.375rem',
 									},
-									'@media (max-width: 640px)': {
-										fontSize: '0.9375rem',
-										h1: {
-											fontSize: '1.75rem',
-										},
-										h2: {
-											fontSize: '1.5rem',
-										},
-										h3: {
-											fontSize: '1.25rem',
-										},
-										pre: {
-											fontSize: '0.8125rem',
-										},
-									},
+									// 手機版字級不要寫在這裡：@tailwindcss/typography 會把每個
+									// key 包成 `.prose :where(<key>)`，`@media` 於是變成
+									// `.prose :where(@media (max-width: 640px))` 這種無效選擇器，
+									// esbuild 只會丟一個 css-syntax-error 警告然後整段丟掉。
+									// 實際的手機版覆寫在 src/styles/blog.css。
 								},
 							},
 							dark: {
@@ -128,6 +120,6 @@ export default {
 		}
 	},
 	plugins: [
-		require('@tailwindcss/typography')
+		typography
 	],
 }

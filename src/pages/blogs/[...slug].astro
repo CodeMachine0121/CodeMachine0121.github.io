@@ -1,6 +1,6 @@
 ---
 import { render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
 
 import Layout from '../../layouts/Layout.astro';
 import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
@@ -10,35 +10,31 @@ import BackToTop from '../../components/common/BackToTop.astro';
 import StickyNotes from '../../components/common/StickyNotes.astro';
 import { getAdjacentPosts, getAdjacentSeriesPosts, getPublishedBlogs } from '../../utils/series';
 
-export const getStaticPaths = async () => {
+export const getStaticPaths = (async () => {
     const blogs = await getPublishedBlogs();
     return blogs.map(blog => ({
         params: { slug: blog.id },
         props: { blog }
     }));
-}
+}) satisfies GetStaticPaths;
 
-type Props = {
-    blog: CollectionEntry<"blogs">
-}
+const { blog } = Astro.props;
+const { Content } = await render(blog);
 
-const {blog} = Astro.props;
-const {Content} = await render(blog);
-
-let prevPost, nextPost;
-
-if (blog.data.parent) {
-    const adjacent = await getAdjacentSeriesPosts(blog.id, blog.data.parent);
-    prevPost = adjacent.prevPost;
-    nextPost = adjacent.nextPost;
-} else {
-    const adjacent = await getAdjacentPosts(blog.id);
-    prevPost = adjacent.prevPost;
-    nextPost = adjacent.nextPost;
-}
+// 「上一篇／下一篇」走閱讀順序：系列是第一篇→最後一篇，單篇是最新→最舊。
+// 兩者方向不同是刻意的，詳見 utils/series-core.ts 的 findAdjacent。
+const { prevPost, nextPost } = blog.data.parent
+    ? await getAdjacentSeriesPosts(blog.id, blog.data.parent)
+    : await getAdjacentPosts(blog.id);
 ---
 
-<Layout title={blog.data.title}>
+<Layout
+    title={blog.data.title}
+    description={blog.data.description}
+    image={blog.data.image}
+    type="article"
+    publishedTime={blog.data.datetime}
+>
     <ReadingProgress />
     <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <header class="mb-12 pb-8 border-b-[3px] border-dashed border-border">
@@ -78,10 +74,6 @@ if (blog.data.parent) {
     <StickyNotes />
 
     <script>
-        import { toggleMarkdownTheme } from "../../scripts/theme";
         import "../../scripts/mobileFixes";
-
-        const theme = document.documentElement.dataset.theme;
-        toggleMarkdownTheme(theme);
     </script>
 </Layout>

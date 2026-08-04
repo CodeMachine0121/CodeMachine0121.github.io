@@ -1,4 +1,7 @@
 {
-  "extends": "astro/tsconfigs/base",
-  "exclude": ["dist", "public", "e2e"]
+  "extends": "astro/tsconfigs/strict",
+  "exclude": ["dist", "public", "e2e"],
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  }
 }

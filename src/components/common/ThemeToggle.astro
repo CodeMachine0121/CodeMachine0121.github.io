@@ -2,16 +2,30 @@
 import { Icon } from 'astro-icon/components'
 ---
 
+{/*
+  按鈕顯示的是「按下去會切到哪個主題」的圖示，所以只有一顆該可見。
+  SSR 時 data-theme 固定是 light，先照那個狀態出圖，緊接著的 inline script
+  會在解析當下（首次繪製之前）依實際主題修正，避免兩顆圖示同時閃一下。
+*/}
 <button id="toggle-theme-button"
     aria-label="Toggle dark mode"
     class="theme-toggle-btn hd-icon-circle !w-10 !h-10">
-    <div id="icon-theme-light" class="theme-icon">
-        <Icon id='toggle-theme-icon' name={'Sun'} />
+    <div id="icon-theme-light" class="theme-icon hidden">
+        <Icon name="Sun" />
     </div>
     <div id="icon-theme-dark" class="theme-icon">
-        <Icon id='toggle-theme-icon' name={'Moon'} />
+        <Icon name="Moon" />
     </div>
 </button>
+
+<script is:inline>
+    (() => {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        // 顯示「下一個主題」的圖示：目前深色就給太陽，目前淺色就給月亮
+        document.getElementById('icon-theme-light')?.classList.toggle('hidden', !isDark);
+        document.getElementById('icon-theme-dark')?.classList.toggle('hidden', isDark);
+    })();
+</script>
 
 <style>
     .theme-toggle-btn {
@@ -55,28 +69,21 @@ import { Icon } from 'astro-icon/components'
 </style>
 
 <script>
-    import { toggleMarkdownTheme, updateToggleThemeIcon, enableThemeTransition, disableThemeTransition } from "../../scripts/theme";
+    import { updateToggleThemeIcon, enableThemeTransition, disableThemeTransition } from "../../scripts/theme";
 
     const button = document.getElementById('toggle-theme-button');
-    const getCurrentTheme = () => document.documentElement.dataset.theme;
 
     button?.addEventListener('click', () => {
-        const newTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+        const newTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
 
-        // Enable smooth color transitions
         enableThemeTransition();
 
-        // Change theme
+        // 先換圖示（它讀的是切換前的主題），再套用新主題
+        updateToggleThemeIcon();
+
         document.documentElement.dataset.theme = newTheme;
         localStorage.setItem('theme', newTheme);
 
-        // Update icon with animation
-        updateToggleThemeIcon();
-        toggleMarkdownTheme(newTheme);
-
-        // Disable transitions after animation completes
         disableThemeTransition();
     });
-
-    updateToggleThemeIcon();
 </script>

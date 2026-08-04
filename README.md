@@ -1,105 +1,78 @@
-# Astro Resume Theme
+# Coding Afternoon
 
-Astro Resume Theme is a fully customizable and responsive template, built to help you create a beautiful online resume or portfolio with ease. It is powered by Astro and styled using Tailwind CSS, making it fast, modern, and easy to work with.
+James Hsueh 的技術部落格與作品集，網址 <https://coding-afternoon.com>。
+以 Astro 建置為靜態站，推上 `main` 由 GitHub Actions 部署到 GitHub Pages。
 
-## Usage
+## 開發
 
-You can bootstrap a new Astro project using the following command:
+需要 [Bun](https://bun.sh)。
 
 ```bash
-# Bun
-bun create astro@latest --template wasutz/astro-resume-theme
-
-# bun 7+
-bun create astro@latest -- --template wasutz/astro-resume-theme
-
-# pnpm
-pnpm dlx create-astro --template wasutz/astro-resume-theme
-
-# yarn
-yarn create astro --template wasutz/astro-resume-theme
+bun install
+bun run dev        # http://localhost:4321
 ```
 
-## 🚀 Features
+## 指令
 
-- Tailwind CSS: Utilizes utility-first styling for rapid UI development.
-- Dark Mode: Built-in dark mode toggle for better UX.
-- Theme Customization: Easily adjustable in src/styles/theme.css.
-- Responsive Design: Optimized for mobile, tablet, and desktop devices.
-- MDX Support: Allows blog posts written in Markdown with JSX components.
-- Excellent Lighthouse/PageSpeed scores
-- SEO-friendly
+| 指令 | 作用 |
+| :--- | :--- |
+| `bun run dev` | 開發伺服器 |
+| `bun run build` | `astro check` 後輸出到 `dist/` |
+| `bun run preview` | 預覽 `dist/` |
+| `bun run lint` | ESLint（flat config，`no-console` 是 error） |
+| `bun run test` | `src/**/tests/` 的單元測試，不需要先建置 |
+| `bun run test:build` | `tests/` 的產物驗收測試，**需要先 `bun run build`** |
+| `bun run verify` | lint → test → build → test:build，與 CI 同一條 |
+| `bun run e2e` | Playwright BDD |
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-(Could be use 'bun' instead of bun)
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun run dev`             | Starts local dev server at `localhost:4321`      |
-| `bun run build`           | Build your production site to `./dist/`          |
-| `bun run preview`         | Preview your build locally, before deploying     |
-| `bun run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun run astro -- --help` | Get help using the Astro CLI                     |
-
-# Getting Started
-
-1) Initialize the project
-Run one of the commands listed in the Quick Start section.
-
-2) Customize your resume data
-Edit your resume data in `src/config/introduce.json`
-
-3) Customize theme colors
-Modify the color scheme by editing `src/styles/theme.ts` to match your personal branding.
-
-4) Replace your CV file
-Put your cv file in `src/public/cv` and then replace the file name in `src/config/introduce.json` (basic.cv_file_name)
-
-5) Run the project locally
-Once you’ve made your customizations, run the development server:
+## 結構
 
 ```
-bun run dev
+src/
+├── components/     # 版面、區塊與共用元件
+├── config/         # CV 與個人資訊的 JSON 資料
+├── content/blogs/  # 文章（Markdown），content collection 的來源
+├── layouts/        # Layout.astro：<head>、SEO meta、頁面外框
+├── pages/          # 路由
+├── styles/         # 全域樣式與 handdrawn 設計系統
+├── types/
+└── utils/
+    ├── series-core.ts   # 分組／排序／相鄰的純邏輯，無 Astro 相依
+    ├── series.ts        # astro:content 包裝
+    └── tests/           # 單元測試
+tests/              # 針對 dist/ 的產物驗收測試
 ```
 
-Open http://localhost:4321 in your browser to view the result 🚀
+測試檔放在所屬層級的 `tests/` 資料夾裡。
 
-## License
+## 寫文章
 
-Licensed under the MIT License, Copyright © Wasut Panyawiphat.
+文章放 `src/content/blogs/`，frontmatter：
 
-See [LICENSE](/LICENSE) for more information.
-
-## 系列文章頁（/series）
-
-本專案提供「系列文章」聚合頁，將具有 Frontmatter `parent` 的文章以系列分組顯示。
-
-- 路徑與導覽：
-  - 頁面路徑：`/series`
-  - Header 選單已新增「系列文章」，首頁亦提供入口連結
-- 文章標記（Frontmatter 範例）：
-  ```md
-  ---
-  title: "文章標題"
-  datetime: "YYYY-MM-DD"
-  description: "可選"
-  image: "可選"
-  parent: "系列主題名稱"     # 指定所屬系列
-  seriesIndex: 1              # 可選：系列內排序（小 → 大）
-  ---
-  ```
-- 排序規則：
-  - 系列卡片：依系列名稱字母序（locale：zh-TW）
-  - 系列內文章：先依 `seriesIndex` 升冪；若相同或未設定，依 `datetime` 由早到晚（舊 → 新）
-- 可近性：系列卡片可展開/收合，支援鍵盤（Enter/Space），ARIA 標註包含 `aria-controls`/`aria-expanded` 與 `role="region"`
-
-### 驗證（可選）
-
-執行以下指令列出各系列與文章數，並檢查排序是否符合規範：
-
+```yaml
+---
+title: "主標題：副標題"
+datetime: "YYYY-MM-DD"
+description: "一句話摘要，會進 meta description 與分享預覽。"
+image: ""          # 分享縮圖網址（放 Cloudflare R2）
+parent: "系列名稱"  # 系列文章才加；同系列必須完全一致
+draft: true        # 尚未發佈；會從列表、系列、RSS 與建置一併隱藏
+---
 ```
-node scripts/verify-series.mjs
-```
+
+`getPublishedBlogs()`（`src/utils/series.ts`）是全站取用文章的唯一入口，
+草稿的過濾集中在那裡。
+
+撰寫規範見 [`.claude/rules/blog-writing-style.md`](.claude/rules/blog-writing-style.md)。
+
+## 兩個容易誤會的地方
+
+- **「上一篇／下一篇」的方向在兩種列表刻意不同。** 兩者都是「閱讀順序上的前一篇」，
+  但系列是第一篇讀到最後一篇，單篇是最新讀到最舊，所以系列的「上一篇」比較舊、
+  單篇的「上一篇」比較新。`src/utils/tests/series-core.test.ts` 有測試鎖住這個行為。
+- **系列頁的 slug 就是網址。** `src/utils/tests/slugify.test.ts` 把已上線的四個
+  slug 寫死進測試，改 slug 規則若動到它們就是 404。
+
+## 授權
+
+程式碼採 [MIT](LICENSE)；`src/content/` 下的文章內容版權為作者所有。

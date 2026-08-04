@@ -1,0 +1,119 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Layout from '../../../layouts/Layout.astro';
+import BlogItem from '../../../components/sections/blog/BlogItem.astro';
+import { generateSeriesList } from '../../../utils/series';
+import { ARTICLES_PER_PAGE } from '../../../types/series';
+
+// 每一頁都是真實路徑（/series/foo、/series/foo/2 …），
+// 爬蟲與 sitemap 都看得到，不再是前端用 display:none 假裝的分頁。
+export const getStaticPaths = (async ({ paginate }) => {
+  const seriesList = await generateSeriesList();
+
+  return seriesList.flatMap(series =>
+    // series.articles 已是閱讀順序（第一篇在前），沿用它讓頁面順序與上一篇／下一篇一致
+    paginate(series.articles, {
+      params: { slug: series.slug },
+      pageSize: ARTICLES_PER_PAGE,
+      props: { series },
+    })
+  );
+}) satisfies GetStaticPaths;
+
+const { series, page } = Astro.props;
+
+const isFirstPage = page.currentPage === 1;
+const pageTitle = isFirstPage
+  ? `${series.name} - 系列文章`
+  : `${series.name} - 系列文章（第 ${page.currentPage} 頁）`;
+const description = `${series.name}：共 ${series.count} 篇的系列文章。`;
+---
+
+<Layout title={pageTitle} description={description}>
+  <section class="py-10 max-w-4xl mx-auto px-4">
+    <!-- 麵包屑導覽 -->
+    <nav class="mb-8" aria-label="麵包屑導覽">
+      <ol class="flex items-center flex-wrap gap-1 font-heading text-ink-soft">
+        <li class="flex items-center">
+          <a href="/series" class="hd-link">系列文章</a>
+        </li>
+        <li class="flex items-center">
+          <span class="mx-2 text-accent" aria-hidden="true">→</span>
+          <span class="text-ink">{series.name}</span>
+        </li>
+      </ol>
+    </nav>
+
+    <!-- 系列標題與資訊 -->
+    <div class="mb-10">
+      <span class="hd-label">Series</span>
+      <h1 class="font-heading text-4xl sm:text-5xl text-ink mt-5 mb-4 leading-tight">{series.name}</h1>
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="hd-badge">共 {series.count} 篇文章</span>
+        {page.lastPage > 1 && (
+          <span class="font-heading text-ink-soft">第 {page.currentPage} / {page.lastPage} 頁</span>
+        )}
+      </div>
+      <span class="hd-squiggle mt-6" aria-hidden="true"></span>
+    </div>
+
+    <!-- 文章清單 -->
+    {page.data.length === 0 ? (
+      <div class="text-center py-12">
+        <p class="font-heading text-2xl text-ink">此系列尚無文章。</p>
+        <p class="text-ink-soft mt-2">請稍後再回來查看更新。</p>
+      </div>
+    ) : (
+      <div class="space-y-6 mb-8">
+        {page.data.map((blog, index) => (
+          <BlogItem blog={blog} isFirst={isFirstPage && index === 0} />
+        ))}
+      </div>
+    )}
+
+    <!-- 分頁導覽 -->
+    {page.lastPage > 1 && (
+      <nav class="pagination-nav flex justify-center items-center mt-12" aria-label="分頁導覽">
+        <div class="pagination-controls flex items-center gap-4">
+          {page.url.prev ? (
+            <a href={page.url.prev} class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base" rel="prev">
+              ← 上一頁
+            </a>
+          ) : (
+            <span class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base opacity-50 cursor-not-allowed !shadow-none" aria-disabled="true">
+              ← 上一頁
+            </span>
+          )}
+
+          <span class="font-heading text-ink-soft px-1">
+            第 {page.currentPage} 頁，共 {page.lastPage} 頁
+          </span>
+
+          {page.url.next ? (
+            <a href={page.url.next} class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base" rel="next">
+              下一頁 →
+            </a>
+          ) : (
+            <span class="hd-btn hd-btn--secondary !min-h-0 !py-2 !text-base opacity-50 cursor-not-allowed !shadow-none" aria-disabled="true">
+              下一頁 →
+            </span>
+          )}
+        </div>
+      </nav>
+    )}
+  </section>
+</Layout>
+
+<style>
+  /* 響應式分頁 */
+  @media (max-width: 640px) {
+    .pagination-controls {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .pagination-controls > span:not([aria-disabled]) {
+      order: -1;
+    }
+  }
+</style>

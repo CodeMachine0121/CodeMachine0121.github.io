@@ -140,8 +140,9 @@ function renderNote(note: Note): HTMLElement {
   color.type = 'button';
   color.setAttribute('aria-label', '切換便利貼顏色');
   color.addEventListener('click', () => {
-    const next = (COLORS.indexOf(note.color) + 1) % COLORS.length;
-    note.color = COLORS[next];
+    const next = COLORS[(COLORS.indexOf(note.color) + 1) % COLORS.length];
+    if (!next) return;
+    note.color = next;
     el.dataset.color = note.color;
     save();
   });
@@ -223,9 +224,13 @@ function addNoteFromPanel(): void {
   const step = before % 6;
   addNote(20 + step * 12, 100 + step * 12);
   if (notes.length === before) return; // blocked by the soft cap
+
+  const added = notes[notes.length - 1];
+  if (!added) return;
+
   renderPanelList();
   // Jump straight to the detail page to write the content; back returns to list.
-  openDetail(notes[notes.length - 1]);
+  openDetail(added);
   detailTextEl?.focus();
 }
 

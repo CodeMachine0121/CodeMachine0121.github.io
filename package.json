@@ -10,6 +10,9 @@
     "astro": "astro",
     "check": "astro check",
     "lint": "eslint .",
+    "test": "bun test src",
+    "test:build": "bun test ./tests/",
+    "verify": "bun run lint && bun run test && bun run build && bun run test:build",
     "e2e": "bunx bddgen --config e2e/playwright.config.ts && bunx playwright test --config e2e/playwright.config.ts"
   },
   "dependencies": {
@@ -28,7 +31,12 @@
     "@playwright/test": "^1.60.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/bun": "latest",
-    "playwright-bdd": "^9.0.0"
+    "astro-eslint-parser": "^1",
+    "eslint": "^9",
+    "eslint-plugin-astro": "^1",
+    "globals": "^17.9.0",
+    "playwright-bdd": "^9.0.0",
+    "typescript-eslint": "^8"
   },
   "private": true,
   "peerDependencies": {

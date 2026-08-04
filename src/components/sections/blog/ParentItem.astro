@@ -1,8 +1,17 @@
 ---
-const { parentName, childrenCount } = Astro.props;
+interface Props {
+    /** 系列名稱 */
+    parentName: string;
+    /** 系列文章篇數 */
+    childrenCount: number;
+    /** 系列頁網址 */
+    href: string;
+}
+
+const { parentName, childrenCount, href } = Astro.props;
 ---
 
-<div class="parent-item mb-6 cursor-pointer group" data-parent={parentName}>
+<a href={href} class="parent-item block mb-6 group">
     <div class="hd-card hd-card--link hd-card--postit flex items-center justify-between gap-4 p-5">
         <div class="flex items-center gap-4">
             <!-- stacked-papers / folder icon in a rough circle -->
@@ -22,4 +31,4 @@ const { parentName, childrenCount } = Astro.props;
             </svg>
         </span>
     </div>
-</div>
+</a>

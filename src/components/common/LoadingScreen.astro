@@ -2,11 +2,26 @@
 // Loading screen component for smooth page transitions
 ---
 
+<!--
+  這是一層蓋滿視窗的遮罩，只靠 JS 移除。任何讓 JS 沒跑到的情況（腳本錯誤、
+  被擋下的 CDN、舊瀏覽器）都會讓整站變成一片空白，所以下面同時準備了兩道退路：
+  1. <noscript>：關閉 JS 時直接不顯示遮罩。
+  2. 逾時保險：即使事件因故沒觸發，也會在 FAILSAFE_MS 後自行收起。
+-->
 <div id="loading-screen" class="loading-screen" aria-live="polite" aria-label="Page loading">
     <div class="spinner" role="status">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+
+<noscript>
+    <style>
+        /* 沒有 JS 就沒有人會移除遮罩，直接不要顯示 */
+        #loading-screen {
+            display: none !important;
+        }
+    </style>
+</noscript>
 
 <style>
     .loading-screen {
@@ -66,8 +81,16 @@
 </style>
 
 <script>
-    // Hide loading screen when page is fully loaded
+    // 遮罩最多存在這麼久，之後不管資源載完沒有都收起來。
+    const FAILSAFE_MS = 3000;
+    const FADE_MS = 400;
+
+    let dismissed = false;
+
     function hideLoadingScreen() {
+        if (dismissed) return;
+        dismissed = true;
+
         const loader = document.getElementById('loading-screen');
         if (!loader) return;
 
@@ -75,17 +98,16 @@
         loader.classList.add('hidden');
 
         // Remove from DOM after animation completes
-        setTimeout(() => {
-            loader.remove();
-        }, 400);
+        setTimeout(() => loader.remove(), FADE_MS);
     }
 
-    // Wait for both DOM and all resources (images, fonts, etc.) to load
-    if (document.readyState === 'complete') {
-        // If already loaded (e.g., cached), hide immediately
-        hideLoadingScreen();
+    // 內容可讀就收起來，不必等圖片與第三方字型（那才是 load 事件在等的東西）。
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideLoadingScreen, { once: true });
     } else {
-        // Otherwise, wait for load event
-        window.addEventListener('load', hideLoadingScreen);
+        hideLoadingScreen();
     }
+
+    // 逾時保險：DOMContentLoaded 因故沒觸發時仍會收起遮罩。
+    setTimeout(hideLoadingScreen, FAILSAFE_MS);
 </script>
