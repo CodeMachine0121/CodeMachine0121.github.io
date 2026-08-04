@@ -57,7 +57,8 @@ function enhanceCodeBlocks() {
     // 確保代碼塊可以滾動
     (block as HTMLElement).style.overflowX = 'auto';
     (block as HTMLElement).style.maxWidth = '100%';
-    ((block as HTMLElement).style as any).WebkitOverflowScrolling = 'touch';
+    // 非標準但 iOS Safari 需要的慣性捲動屬性
+    (block as HTMLElement).style.setProperty('-webkit-overflow-scrolling', 'touch');
 
     // 在小屏幕上調整字體大小
     if (window.innerWidth <= 640) {

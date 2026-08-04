@@ -71,9 +71,9 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
         <CVHeader basic={basic} socialLinks={socialLinks} profilePicture={profilePicture} />
 
         {basic.looking_for && (
-          <CVLookingFor text={getLocalizedText(basic.looking_for as any, language)} lang={language} />
+          <CVLookingFor text={getLocalizedText(basic.looking_for, language)} lang={language} />
         )}
-        <CVSummary summary={getLocalizedText(basic.summary as any, language)} lang={language} />
+        <CVSummary summary={getLocalizedText(basic.summary, language)} lang={language} />
         {skills && skills.length > 0 && <CVSkills groups={skills} lang={language} />}
         <CVExperience items={experiences} lang={language} />
         {side_projects && side_projects.length > 0 && (

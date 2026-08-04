@@ -37,8 +37,8 @@ function badgeStyle(type: string): string {
 <CVSection title={lang === 'zh' ? '專案、演講與認證' : 'Projects, Talks & Certifications'}>
   <ul class="cv-projects-list">
     {visibleItems.map((item) => {
-      const localizedType = getLocalizedText(item.type as any, lang);
-      const description = item.description ? getLocalizedText(item.description as any, lang) : '';
+      const localizedType = getLocalizedText(item.type, lang);
+      const description = item.description ? getLocalizedText(item.description, lang) : '';
       return (
         <li class="cv-project-row">
           <div class="cv-project-main">
@@ -50,10 +50,10 @@ function badgeStyle(type: string): string {
                   rel="noopener noreferrer"
                   class="cv-project-link"
                 >
-                  {getLocalizedText(item.title as any, lang)}
+                  {getLocalizedText(item.title, lang)}
                 </a>
               ) : (
-                <span class="cv-project-text">{getLocalizedText(item.title as any, lang)}</span>
+                <span class="cv-project-text">{getLocalizedText(item.title, lang)}</span>
               )}
             </span>
             {description && <span class="cv-project-desc">{description}</span>}

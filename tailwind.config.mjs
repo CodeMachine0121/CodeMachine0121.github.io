@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['selector', '[data-theme="dark"]'],
@@ -118,6 +120,6 @@ export default {
 		}
 	},
 	plugins: [
-		require('@tailwindcss/typography')
+		typography
 	],
 }

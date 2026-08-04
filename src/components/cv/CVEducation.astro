@@ -18,7 +18,7 @@ const { items, lang = 'en' } = Astro.props;
         title={item.title}
         sub_title={item.sub_title}
         years={item.years}
-        details={getLocalizedText(item.details as any, lang)}
+        details={getLocalizedText(item.details, lang)}
       />
     ))}
   </div>

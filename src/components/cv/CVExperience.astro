@@ -21,14 +21,14 @@ const heading = title ?? (lang === 'zh' ? '工作經驗' : 'Experience');
         title={item.title}
         sub_title={item.sub_title}
         years={item.years}
-        details={getLocalizedText(item.details as any, lang)}
+        details={getLocalizedText(item.details, lang)}
       >
         {item.achievements && item.achievements.length > 0 && (
           <ul class="cv-achievements">
             {item.achievements.map((a) => (
               <li class="cv-achievement">
                 <span class="cv-bullet" aria-hidden="true"></span>
-                <span>{getLocalizedText(a as any, lang)}</span>
+                <span>{getLocalizedText(a, lang)}</span>
               </li>
             ))}
           </ul>

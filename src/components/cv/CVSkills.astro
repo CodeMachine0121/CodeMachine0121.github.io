@@ -14,7 +14,7 @@ const { groups, lang = 'en' } = Astro.props;
   <dl class="cv-skills">
     {groups.map((group) => (
       <div class="cv-skill-row">
-        <dt class="cv-skill-category">{getLocalizedText(group.category as any, lang)}</dt>
+        <dt class="cv-skill-category">{getLocalizedText(group.category, lang)}</dt>
         <dd class="cv-skill-items">{group.items.join('  ·  ')}</dd>
       </div>
     ))}

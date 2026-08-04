@@ -27,7 +27,13 @@ jobs:
       
       - name: Install dependencies
         run: bun install
-      
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Unit tests
+        run: bun run test
+
       - name: Build Astro site
         run: bun run build
       
