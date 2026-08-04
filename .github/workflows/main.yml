@@ -36,6 +36,9 @@ jobs:
 
       - name: Build Astro site
         run: bun run build
+
+      - name: Build output tests
+        run: bun run test:build
       
       - name: Setup Pages
         id: pages

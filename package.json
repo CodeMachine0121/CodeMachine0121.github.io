@@ -11,7 +11,8 @@
     "check": "astro check",
     "lint": "eslint .",
     "test": "bun test src",
-    "verify": "bun run lint && bun run test && bun run build",
+    "test:build": "bun test ./tests/",
+    "verify": "bun run lint && bun run test && bun run build && bun run test:build",
     "e2e": "bunx bddgen --config e2e/playwright.config.ts && bunx playwright test --config e2e/playwright.config.ts"
   },
   "dependencies": {
