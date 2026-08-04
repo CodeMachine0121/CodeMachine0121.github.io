@@ -3,6 +3,7 @@ import {
   findAdjacent,
   groupIntoSeries,
   isPublished,
+  selectLatestSeries,
   selectSeriesArticles,
   selectStandaloneArticles,
   sortArticlesBySeries,
@@ -252,5 +253,45 @@ describe('groupIntoSeries', () => {
 
   test('沒有任何系列時回傳空陣列', () => {
     expect(groupIntoSeries([article('x', '2026-01-01')])).toEqual([]);
+  });
+});
+
+describe('selectLatestSeries', () => {
+  test('取最近更新的系列，不是文章數最多的', () => {
+    const blogs = [
+      article('big1', '2025-01-01', { parent: '舊但很長的系列' }),
+      article('big2', '2025-01-02', { parent: '舊但很長的系列' }),
+      article('big3', '2025-01-03', { parent: '舊但很長的系列' }),
+      article('new1', '2026-06-01', { parent: '進行中的系列' }),
+    ];
+    expect(selectLatestSeries(blogs)?.name).toBe('進行中的系列');
+  });
+
+  test('比的是系列裡最新的一篇，不是第一篇', () => {
+    const blogs = [
+      // A 起步早但仍在更新
+      article('a1', '2024-01-01', { parent: 'A' }),
+      article('a2', '2026-06-01', { parent: 'A' }),
+      // B 整段都比較早
+      article('b1', '2025-01-01', { parent: 'B' }),
+      article('b2', '2025-02-01', { parent: 'B' }),
+    ];
+    expect(selectLatestSeries(blogs)?.name).toBe('A');
+  });
+
+  test('回傳的系列帶著排好序的文章與篇數', () => {
+    const blogs = [
+      article('day2', '2026-01-02', { parent: 'S', seriesIndex: 2 }),
+      article('day1', '2026-01-01', { parent: 'S', seriesIndex: 1 }),
+    ];
+    const latest = selectLatestSeries(blogs);
+
+    expect(latest?.count).toBe(2);
+    expect(latest?.articles.map(a => a.id)).toEqual(['day1', 'day2']);
+  });
+
+  test('完全沒有系列文章時回傳 null', () => {
+    expect(selectLatestSeries([article('standalone', '2026-01-01')])).toBeNull();
+    expect(selectLatestSeries([])).toBeNull();
   });
 });

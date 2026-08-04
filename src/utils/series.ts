@@ -25,6 +25,7 @@ export {
   selectStandaloneArticles,
   selectSeriesArticles,
   groupIntoSeries,
+  selectLatestSeries,
   findAdjacent,
   type ArticleLike,
   type AdjacentArticles,

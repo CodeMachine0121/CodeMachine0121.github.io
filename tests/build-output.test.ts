@@ -211,9 +211,20 @@ describe('系列分頁是真實路徑', () => {
 });
 
 describe('文章列表', () => {
-  test('每個系列都有入口，不是只有寫死的那一個', () => {
+  test('只掛一個系列入口', () => {
     const cards = [...read('blogs/index.html').matchAll(/data-series-name="([^"]*)"/g)];
-    expect(cards.length).toBeGreaterThanOrEqual(4);
+    expect(cards).toHaveLength(1);
+  });
+
+  test('掛的是最近更新的那個系列', () => {
+    const shown = read('blogs/index.html').match(/data-series-name="([^"]*)"/)?.[1];
+
+    // 從 /series 取實際的排序（generateSeriesList 已是最新在前），拿第一個來比對
+    const newestOnSeriesPage = read('series/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
+    const shownHref = read('blogs/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
+
+    expect(shown).toBeTruthy();
+    expect(shownHref).toBe(newestOnSeriesPage);
   });
 
   test('系列卡片連到實際存在的系列頁', () => {

@@ -181,3 +181,14 @@ export function groupIntoSeries<T extends ArticleLike>(blogs: readonly T[]): Ser
     }))
     .sort((a, b) => latestPublishedAt(b.articles) - latestPublishedAt(a.articles));
 }
+
+/**
+ * 取出最新更新的那個系列，也就是「目前正在進行中」的系列。
+ *
+ * 文章列表頁只掛這一個系列的入口；其餘系列走 /series。
+ *
+ * @returns 最新的系列；完全沒有系列文章時回傳 null
+ */
+export function selectLatestSeries<T extends ArticleLike>(blogs: readonly T[]): Series<T> | null {
+  return groupIntoSeries(blogs)[0] ?? null;
+}

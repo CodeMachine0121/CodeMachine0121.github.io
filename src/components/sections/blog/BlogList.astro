@@ -2,7 +2,7 @@
 import BlogItem from './BlogItem.astro';
 import ParentItem from './ParentItem.astro';
 import SearchBar from '../../common/SearchBar.astro';
-import { groupIntoSeries, selectStandaloneArticles, type BlogEntry } from '../../../utils/series';
+import { selectLatestSeries, selectStandaloneArticles, type BlogEntry } from '../../../utils/series';
 
 interface Props {
   blogs: BlogEntry[];
@@ -10,15 +10,13 @@ interface Props {
 
 const { blogs } = Astro.props;
 
-// 系列與單篇都由資料推導，不再寫死任何系列名稱。
-const seriesList = groupIntoSeries(blogs);
+// 這一頁的主角是單篇文章，系列只掛「目前進行中」那一個的入口，
+// 其餘系列走 /series。哪一個算最新由資料決定，不寫死系列名稱。
+const latestSeries = selectLatestSeries(blogs);
 const standaloneBlogs = selectStandaloneArticles(blogs);
 
-// 系列內的文章預設不列出（點系列卡片會進系列頁），
-// 但仍然放進 DOM，讓搜尋可以跨系列找到它們。
-const seriesArticles = seriesList.flatMap(series =>
-  series.articles.map(blog => ({ blog, seriesName: series.name }))
-);
+// 該系列的文章預設不列出（點卡片會進系列頁），但仍放進 DOM 讓搜尋找得到。
+const latestSeriesArticles = latestSeries?.articles ?? [];
 ---
 
 <section class="py-12">
@@ -34,18 +32,16 @@ const seriesArticles = seriesList.flatMap(series =>
       <SearchBar placeholder="搜尋文章標題或系列..." label="搜尋文章標題或系列" />
     </div>
 
-    <!-- 系列列表 -->
-    {seriesList.length > 0 && (
+    <!-- 進行中的系列 -->
+    {latestSeries && (
       <div id="series-list" class="mb-6">
-        {seriesList.map(series => (
-          <div class="series-card" data-series-name={series.name}>
-            <ParentItem
-              parentName={series.name}
-              childrenCount={series.count}
-              href={`/series/${series.slug}`}
-            />
-          </div>
-        ))}
+        <div class="series-card" data-series-name={latestSeries.name}>
+          <ParentItem
+            parentName={latestSeries.name}
+            childrenCount={latestSeries.count}
+            href={`/series/${latestSeries.slug}`}
+          />
+        </div>
       </div>
     )}
 
@@ -57,9 +53,9 @@ const seriesArticles = seriesList.flatMap(series =>
         </div>
       ))}
 
-      {/* 系列文章：預設隱藏，只在搜尋命中時出現 */}
-      {seriesArticles.map(({ blog, seriesName }) => (
-        <div class="blog-item hidden" data-series={seriesName}>
+      {/* 進行中系列的文章：預設隱藏，只在搜尋命中時出現 */}
+      {latestSeriesArticles.map(blog => (
+        <div class="blog-item hidden" data-series={latestSeries!.name}>
           <BlogItem blog={blog} isFirst={false} />
         </div>
       ))}
