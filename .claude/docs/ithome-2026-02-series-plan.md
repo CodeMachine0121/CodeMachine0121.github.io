@@ -295,7 +295,11 @@ CoinGlass 聚合 30+ 交易所的清算、未平倉量、資金費率，2026 已
 - 講什麼：回收 Day 02 埋的伏筆。一根 1 分鐘 K 線可能是 3 筆成交，也可能是 3000 筆；OHLCV 完全看不出差別。逐筆成交（Tick）與掛單簿（L2）各自補了什麼資訊。資料量級的現實：一天的 BTC tick 資料比一年的日線大好幾個數量級。
 - 交易概念補課：Tick、買賣價差、掛單簿的五檔／二十檔、深度、taker 與 maker。
 - 工程實作：用 WebSocket 訂閱 `@trade` 與 `@depth`；本地維護一份掛單簿快照（snapshot + incremental update 的合併邏輯，以及序號斷掉時要重新拉快照）；資料量控制——不要什麼都存，先想清楚要算什麼特徵再決定存什麼。
-- 資料來源提醒：**歷史的 tick 與掛單簿不必自己錄**——`data.binance.vision` 有 `aggTrades` 與 `bookTicker` 的批次檔可下載，跟 Day 03 同一條路徑。WebSocket 負責的是「從現在起往前累積」，兩者要能在同一張表裡接得起來（時間戳與欄位定義 MUST 統一）。這也是本階段唯一不設對照組的資料——這層粒度只信交易所原生。
+- 資料來源（**2026-08 查證後修正**）：`data.binance.vision` 的**現貨**只有三個資料集——`klines`、`aggTrades`、`trades`。**現貨沒有任何掛單簿批次檔**；`bookTicker` 與 `bookDepth` 只有 `futures/um` 那邊有，而現貨與永續 NEVER 混用（Day 01 原則第三條）。所以：
+  - **歷史逐筆成交**走 `aggTrades` 批次，跟 Day 03 同一條路徑，但**只用日檔**（月檔約 498 MB，日檔約 11 MB，一天 739,547 列）。
+  - **掛單簿只有自己從 WebSocket 錄**，沒有歷史。這決定了 Day 10 的 OBI 只能在錄下來的那幾段上驗證，而 Day 11–14 的特徵全部建在成交資料上（有完整歷史）。
+  - 對照組：這層資料沒有免費的第二個來源，但**把逐筆成交聚合回 K 線跟官方逐欄對帳**可以一次擔保欄位對映、時間戳單位、時區、聚合邊界、taker 方向五件事（實測九欄誤差 ≤ 2.4e-16）。
+  - 另一個查證到的坑：aggTrades 的時間戳在 **2025-01-01 從毫秒變成微秒**（2024-12-31 是 13 位、2025-01-01 是 16 位），所以 Day 02 那個「用數量級判斷單位」的決定在這裡兌現。
 - 今日交付物：`ingest/stream.py` 能訂閱即時成交與掛單簿，並在斷線後自動重連、重取快照；`aggTrades` 歷史批次已入庫，與即時串流的資料在邊界處無縫接上。
 
 **Day 10（2026-09-24）— 掛單簿買賣兩邊不對稱代表什麼？用 Order Book Imbalance 量化短線壓力**
@@ -540,7 +544,31 @@ Day 01 與 Day 30 為開篇與總結，不受此骨架限制。
 ## 目前進度
 
 - **系列規劃完成**（本文件為路線圖）。
-- **已完成撰稿：Day 00（賽前序章）＋ Day 01–08**（第一階段全部）。已通過驗證：frontmatter 六欄齊全且 `parent` 八篇完全一致、`draft: true`、檔名無斜線、`datetime` 2026-09-15 至 09-22 連續唯一、正文無 h1（`#` 僅出現在程式碼區塊內）、無 emoji、無死語、無第一人稱敘事、每篇有「明天 Day N＋1」預告、術語未提前於進度表出現。
+- **已完成撰稿：Day 00（賽前序章）＋ Day 01–15**（第一、二階段全部）。已通過驗證：全 16 篇 `parent` 完全一致、frontmatter 五欄齊全、檔名無斜線、`datetime` 2026-09-14 至 09-29 連續唯一、正文無 h1（`#` 僅出現在程式碼區塊內，以逐行判斷 fence 的腳本驗過）、無 emoji、無死語、Day 09–15 七篇零個「你」、每篇有「明天 Day N＋1」預告、標題無反引號。
+- **Day 09–15（第二階段）已完成撰稿與實作（2026-08-05）**。實作專案分支 `feat/microstructure-day-09-15`，七個 commit（Day 09 到 Day 15 各一個），每個 commit 都獨立驗過：pytest 由 67 路增長到 **248 passed／2 skipped**、mypy `--strict` 全過（168 檔）、ruff clean、import-linter 三條契約 kept。
+  - **Day 09**：`Listing`（symbol ＋ market，無粒度）、`TradeSeries`／`OrderBook`／`DepthSeries` 三個 entity、`OrderBookSequenceService`、`CandleAgreementService`、六個新 Protocol、`BinanceArchiveTradeSource`（只用日檔）、`BinanceWebsocketMessageSource`（重連只有一份）、`BinanceSnapshotRateGuard`、`agg_trades` 與 `order_book_depth` 兩張 hypertable。新增依賴 `websockets`。
+  - **Day 10**：`Feature` Protocol ＋ `MarketView` ＋ `MarketInput`（**介面在第一個特徵那天訂死，不留到 Day 15**）、`OrderBookImbalance`、`PredictivePowerService`（秩相關用 Pearson-on-ranks，不引入 scipy）。
+  - **Day 11**：`VWAP`（日內／滾動兩種累積、加權標準差用平移過的恆等式）、`VWAPDeviation`、`PriceSource`、`VWAPMode`。
+  - **Day 12**：`TradingActivity`（兩種基準，都排除當根；鐘點基準用 expanding 不用整段樣本）、`ATR`（是 Feature 不是 Indicator）、`ActivityMeasure`、`ActivityBaseline`。**`WilderSmoother` 留在 `rsi.py`**，ATR 直接重用它（不搬檔案，避免改動已發佈的 Day 06）。
+  - **Day 13**：`PriorExtreme`（存在的唯一理由是 `shift(1)`）、`Breakout`（第一個事件式特徵）、`LiquiditySwing`（唯一需要三種原料的特徵）、`BreakoutLabellingService`（**刻意看未來，產出標籤不是特徵**）、`BreakoutStatisticsService`。
+  - **Day 14**：`VolumeProfile`（值，不是 Feature——index 是價格）、`VolumeProfileService`（精算／近似兩條路徑）、`DistanceToPointOfControl`（第一個不能向量化的特徵）。
+  - **Day 15**：`FeatureRegistry` ＋ 每個特徵一個 `*Builder`（取代反射式分派）、`FeatureParameters`（型別檢查 ＋ `ensure_used()` 抓拼錯）、`FeatureSpecification`、`CandleIndicatorFeature`（Indicator 的轉接器）、`FeaturePipeline`（原料檢查、暖機用 `first_valid_index` 而非宣告值、以 `id(view)` 為鍵的快取）、`features.yaml`。
+- **Day 09–15 實跑取得的數字（文章引用的都是這些）**：
+  - 一天 BTC/USDT 現貨 aggTrades = 739,547 列（11.2 MB zip／64 MB CSV），展開後 2,668,919 筆真實成交；月檔 498 MB。
+  - 重建 K 線對帳：1,440 根九欄全過，價格四欄誤差 0、成交量四欄約 2.2e-16、`trade_count` 為 0。跨 2024-12-31／2025-01-01（毫秒→微秒分界）的兩天一次跑完也全過。
+  - 45 分鐘即時錄製：19,481 筆成交、2,553 筆深度摘要、26,991 筆掛單簿更新、丟棄 1、**重取快照 0 次**。
+  - OBI：2,507 個配對，往後 1 筆 IC 0.4291（t 23.78，五組單調）、5 筆 0.3911、30 筆 0.1379；三個深度（5／10／20）差在小數第二位；聚合到 1m 只有 44 個樣本、|t| < 1。頭尾差 0.37 bp 對來回手續費 20 bp。
+  - VWAP：同一根 K 線日內與滾動 60 相差 164 USDT，「超過 1 個標準差」28.70% 對 53.29%。
+  - 活躍度：13,848 根 1h，最冷清 05:00 UTC（0.69 倍）、最熱鬧 14:00 UTC（1.88 倍），差 2.71 倍；ATR(14) = 293.05 USDT（收盤價 0.47%）。
+  - 突破：1,356 次向上突破，守住 125 次（9.22%）；守住組的突破幅度 1.433 個 ATR、被打回來 0.377；兩側三個對照量方向一致。
+  - 流動性擺盪：賣方深度減少的樣本裡 **75.83% 以撤單為主**（中位數 0.081），買方 77.79%。
+  - Volume Profile：K 線近似對逐筆精算的價值區間重疊 1m 97.79%／5m 89.71%／1h 52.74%。
+  - 特徵管線：13 個特徵 × 13,848 列，切掉 169 根暖機期（宣告值 168，差 1 來自活躍度的 `shift(1)`）。
+- **實跑抓到的四個實作問題（都已修正並寫進文章）**：
+  1. **先拉快照再訂閱**會在兩者之間留下空窗，導致每次啟動必然多一次重取快照（實測固定為 1）。改成先訂閱、收到第一筆更新才拉快照之後是 0。
+  2. **緩衝只看列數不看時間**：深度摘要每秒一列，湊滿 5,000 列要 83 分鐘，那段時間的資料只存在記憶體裡。補上 `flush_interval_seconds`。
+  3. **成交的時間戳不是唯一的**，所以 `reindex(method="ffill")` 會丟 `ValueError: cannot reindex on an axis with duplicate labels`。改用 `merge_asof`。合成測試資料（每秒一筆）測不到這個。
+  4. **`shift()` 只認得「第幾格」不認得時間**：錄製中斷留下的 22 分鐘空白會讓「往後一秒的報酬」跨越那個空白。`forward_returns` 補上 `maximum_step`。
 - **程式碼一律分層 ＋ 類別封裝（2026-08-02 完成改寫）**：Day 01–08 的 Python 產出已全部改成 Clean/Onion 分層，依賴方向一律指向 domain。規範見 [`quantbot-code-architecture.md`](../rules/quantbot-code-architecture.md)，唯一真相來源是實作專案 `/Users/james/workspace/SideProjects/quantbot`（該專案的 `CLAUDE.md`）。
   - **Day 01**：**架構說明的家**。依賴方向圖、四層職責、domain 內部六個資料夾、`Protocol` 與 `ABC` 的分工、命名規則（介面能力名／實作技術前綴／七種角色後綴／禁縮寫）、以及三個自動化把關工具的 `pyproject.toml` 設定（ruff、mypy、import-linter）。今天只建空骨架，沒有實作。
   - **Day 02**：往 `domain/` 填第一批東西。`domain/values/`（Market、TimeRange、Timeframe、Instrument、CandleColumns）、`domain/entities/candle_series.py`、`infrastructure/binance/binance_candle_csv_parser.py`、`infrastructure/charting/plotly_candle_chart_renderer.py`、`entrypoints/fetch_candles_command.py`。下載那幾行刻意留在 entrypoint 裡，並在文章裡說明「只有一條路徑時不抽介面」。
@@ -565,4 +593,8 @@ Day 01 與 Day 30 為開篇與總結，不受此骨架限制。
   - Day 01 與 Day 02 都是 `draft: false`（已發佈）而這次一起改了，內容變動不小：Day 01 多了架構與工具設定、Day 02 的程式碼從模組層級函式改成分層的值與 entity。如果文章已經上到 iThome，那邊也要同步更新。
   - Day 01 文章裡的 `Settings` 是早期狀態（沒有 `coingecko_api_key` 與 `raw_data_directory`），Day 03 才補上那兩欄——這是刻意的敘事差異，parity 檢查把它列為已知例外。
   - 實作專案 `quantbot` 尚未搬到分層結構，待辦清單在該專案 `CLAUDE.md` 的「遷移狀態」一節。
-- **待撰寫：Day 09–30。**
+- **Day 09–15 撰稿時的兩個約束（後續撰稿沿用）**：
+  - **NEVER 再修改 Day 00–08 的文章內容。** 那八篇已發佈，所以新的一天 NEVER 搬動它們展示過的檔案或類別。Day 12 的 `WilderSmoother` 原本要照 Day 06 的預告搬到自己的檔案，最後留在 `rsi.py`、由 ATR 直接 import，就是這條約束的結果。
+  - **`domain/` 多了第七個資料夾 `features/`**（Day 01 的文章說六個）。這是 Day 09–15 唯一與 Day 01 敘述不一致的地方，處理方式是**不動 Day 01**，而在實作專案的 `CLAUDE.md` 記下七個資料夾的現況。
+- **文章與程式碼的一致性檢查**：寫了一支腳本抽出文章裡標了 `# quantbot/...` 路徑的程式碼區塊，逐段比對實作專案（允許節錄，但每個連續非空段落都要逐字出現）。Day 09–15 七篇共 84 個區塊，0 個不一致；Day 06 也一併驗過（5 個區塊，0 個不一致）。
+- **待撰寫：Day 16–30。**
