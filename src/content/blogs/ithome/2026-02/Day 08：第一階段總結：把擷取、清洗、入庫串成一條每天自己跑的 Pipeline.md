@@ -42,12 +42,12 @@ Day 05 的 EMA 與 Day 06 的 RSI 更麻煩一點。遞迴指標的每個值都�
 
 今天沒有新的 provider。用的還是 Day 03 那三條路徑，加上 Day 01 就講好的對照組：
 
-| 用途     | 來源                           | 這條 pipeline 裡負責哪一段           |
+| 用途     | 來源                           | 這條 pipeline 裡負責哪一段   |
 |--------|------------------------------|----------------------|
 | 大量歷史回補 | data.binance.vision 批次 zip   | 缺口在兩天以前、而且夠長的那些      |
 | 近期缺口回補 | Binance REST（透過 ccxt）        | 批次檔還沒上傳的那幾天，以及零星的小缺口 |
 | 即時串流   | Binance WebSocket            | 今天還沒接，Day 09 才進來     |
-| 對照驗證   | CoinGecko、CryptoDataDownload |  pipeline 最後一步的抽樣比對          |
+| 對照驗證   | CoinGecko、CryptoDataDownload | pipeline 最後一步的抽樣比對   |
 
 要注意批次檔有上傳延遲：daily zip 是隔日上傳，monthly 要等次月初。所以「昨天 00:00 UTC」之後的資料，不管缺口多長都只能走 REST。這個邊界會直接寫進路由邏輯。
 
@@ -998,9 +998,7 @@ async def test_a_failing_instrument_does_not_take_down_the_batch():
 
 ```
 # crontab -e
-5 * * * * cd /srv/quantbot && flock -n /tmp/quantbot-ingest.lock \
-    /usr/local/bin/uv run python -m quantbot.entrypoints.ingest_pipeline_command \
-    >> /var/log/quantbot/ingest.log 2>&1
+5 * * * * mkdir -p /var/log/quantbot && cd /var/apps/quantbot && /usr/local/bin/uv run python -m quantbot.entrypoints.ingest_pipeline_command >> /var/log/quantbot/ingest.log 2>&1 && tail -n 500 /var/log/quantbot/ingest.log > /tmp/ingest.tmp && mv /tmp/ingest.tmp /var/log/quantbot/ingest.log
 ```
 
 每小時第 5 分鐘跑，避開整點那一根 K 線剛收完、交易所還在寫入的那幾十秒。`flock -n` 是防止上一輪還沒跑完就啟動下一輪； pipeline 本身雖然冪等，但兩個行程同時對同一段做回補只是白白消耗 rate limit 額度。
@@ -1117,7 +1115,7 @@ exit   : 1
 | 05  | `EMA` ＋ `ReferenceEMA`                                 | EMA，遞迴指標的正確寫法，與兩個對照組誤差都在 1e-9 以內                             |
 | 06  | `RSI` ＋ `WilderSmoother` ＋ `INDICATORS`                | RSI，Wilder 平滑；三個指標在同一張註冊表裡，暖機期問得出來                           |
 | 07  | `CandleRepository` ＋ TimescaleDB 實作                    | hypertable、冪等寫入、1m 自動聚合出 5m 與 1h、壓縮政策                        |
-| 08  | `IngestPipelineApplication` ＋ 清洗 ＋ 報告                  | 一條 cron 叫得動的 pipeline ，跑完產出一份完整性報告與 exit code                        |
+| 08  | `IngestPipelineApplication` ＋ 清洗 ＋ 報告                  | 一條 cron 叫得動的 pipeline ，跑完產出一份完整性報告與 exit code                |
 
 把它整理成三件事：
 
