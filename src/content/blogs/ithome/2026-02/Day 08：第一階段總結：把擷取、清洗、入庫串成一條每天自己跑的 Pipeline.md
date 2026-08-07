@@ -1001,7 +1001,7 @@ async def test_a_failing_instrument_does_not_take_down_the_batch():
 5 * * * * mkdir -p /var/log/quantbot && cd /var/apps/quantbot && /usr/local/bin/uv run python -m quantbot.entrypoints.ingest_pipeline_command >> /var/log/quantbot/ingest.log 2>&1 && tail -n 500 /var/log/quantbot/ingest.log > /tmp/ingest.tmp && mv /tmp/ingest.tmp /var/log/quantbot/ingest.log
 ```
 
-每小時第 5 分鐘跑，避開整點那一根 K 線剛收完、交易所還在寫入的那幾十秒。`flock -n` 是防止上一輪還沒跑完就啟動下一輪； pipeline 本身雖然冪等，但兩個行程同時對同一段做回補只是白白消耗 rate limit 額度。
+這個 cronjob 會在每小時第 5 分鐘進專案目錄跑一次 ingest pipeline，把輸出與錯誤都寫到 /var/log/quantbot/ingest.log，最後只保留最近 500 行 log，避免 log 檔無限長大。
 
 Day 27 部署時這段會換成容器內的排程，跟其他服務一起用 Docker Compose 管，屆時 log 也會改成結構化輸出。今天先用 cron，因為它現在就能動。
 
