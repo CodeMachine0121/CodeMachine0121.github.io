@@ -972,11 +972,11 @@ class BinanceSnapshotRateGuard:
 
 Day 07 的 `candles` 是七天一個 chunk。這裡改成一天，因為同樣的列數對應的時間跨度差了兩三個數量級：
 
-| 表 | 一個 chunk | 為什麼 |
-|---|---|---|
-| `candles` | 7 天 | 一年的 1 分鐘 K 線是 52 萬列 |
-| `agg_trades` | 1 天 | 一天就是 74 萬列 |
-| `order_book_depth` | 1 天 | 每秒一列，一天 86,400 列 |
+| 表                  | 一個 chunk | 為什麼                 |
+|--------------------|----------|---------------------|
+| `candles`          | 7 天      | 一年的 1 分鐘 K 線是 52 萬列 |
+| `agg_trades`       | 1 天      | 一天就是 74 萬列          |
+| `order_book_depth` | 1 天      | 每秒一列，一天 86,400 列    |
 
 主鍵的設計也不一樣，而且有一個要交代的妥協：
 
@@ -1361,8 +1361,7 @@ quantbot/
 3. 同一條指令再跑一次：抓到的列數一樣，寫入 0 列，仍然通過。冪等要看得見。
 4. `uv run python -m quantbot.entrypoints.record_microstructure_command --symbol BTC/USDT --market spot --seconds 120` 跑完後，成交與深度摘要都有寫入，而且**重取快照次數是 0**。不是 0 的話先檢查是不是把「先拉快照再訂閱」的順序寫回去了。
 5. `uv run pytest` 全綠。掛單簿那組要包含掛量 0 移除、快照外新價位、兩側反向排序、空的一側四種情況；序號那組要包含九種決定與連續流不被誤判。
-6. `uv run mypy quantbot` 與 `uv run lint-imports` 全過。特別確認 domain 那幾個新檔案沒有 import 到 `websockets` 或 `httpx`，即時資料路徑是最容易讓技術細節漏進 domain 的地方。
-7. 讀得回來：`TimescaleTradeRepository.read()` 拿一天的資料出來，`aggregate_to_candles(Timeframe("1m"))` 得到 1,440 根，跟 `candles` 表裡同一天的 1 分鐘 K 線對得上。
+6. 讀得回來：`TimescaleTradeRepository.read()` 拿一天的資料出來，`aggregate_to_candles(Timeframe("1m"))` 得到 1,440 根，跟 `candles` 表裡同一天的 1 分鐘 K 線對得上。
 
 第 4 項是今天真正的重點。前三項是歷史資料對不對，第 4 項是即時路徑的狀態維護對不對，而後者沒有對照組可比，只能靠序號校驗的結果來判斷。那個「0 次」是它唯一的證據。
 
