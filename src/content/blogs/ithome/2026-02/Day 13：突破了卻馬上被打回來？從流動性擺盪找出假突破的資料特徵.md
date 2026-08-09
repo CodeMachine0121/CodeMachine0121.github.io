@@ -383,7 +383,7 @@ quantbot/
 2. `uv run pytest tests/domain/services/test_breakout_labelling_service.py` 全綠，含「往未來的視窗不含突破那一根」（用一根帶長下影線的突破 K 線，它仍要被標成守住）與「窗口不完整的尾巴要被丟掉」。
 3. `uv run pytest tests/domain/features/test_liquidity_swing.py` 全綠，含重複時間戳那個回歸測試——它守的是一個只在真實資料上出現的例外。
 4. `uv run python -m quantbot.entrypoints.breakout_command --symbol BTC/USDT --market spot --timeframe 1h --start 2025-01-01 --end 2026-08-01 --window 20 --horizon 10` 印出兩側的統計。**兩側的三個對照量方向要一致**（守住組的幅度、成交筆數、絕對報酬都比較高）。只有一側成立的話，先懷疑那段行情偏多或偏空。
-5. 手上有 Day 09 錄的資料之後，`uv run python -m quantbot.entrypoints.liquidity_swing_command`（區間換成自己錄的那段）印出「以撤單為主」的比例明顯過半。
+5. 手上有 Day 10 錄的那 45 分鐘之後，`uv run python -m quantbot.entrypoints.liquidity_swing_command`（區間換成自己錄的那段）印出「以撤單為主」的比例明顯過半。
 6. 打開 `notebooks/day13-spot_BTCUSDT_1h-breakout.html`：紅色往下三角密集出現在小波段頂部、綠色往上三角稀疏，而前高那條線是階梯狀的。
 7. `uv run mypy quantbot` 與 `uv run lint-imports` 全過。
 

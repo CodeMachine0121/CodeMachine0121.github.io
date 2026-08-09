@@ -22,6 +22,12 @@ draft: true
 | Day 14 | Volume Profile | K 線或成交 | **不是時間序列** |
 | Day 14 | 距離 POC | K 線 | 連續值 |
 
+表上有 13 個名字，而後面會出現三個不同的數字，先在這裡對齊：
+
+- **10 個 `Feature` 類別**——SMA、EMA、RSI 共用同一個轉接器類別（今天才寫），而 Volume Profile 根本不是 `Feature`。13 − 3 + 1 − 1 = 10。
+- **12 種 kind**——註冊表的鍵。三個指標雖然共用類別，但使用者要寫得出 `kind: rsi`，所以各自要有自己的字串。
+- **13 欄**——等一下實跑那份設定的輸出。同一個 kind 可以出現多次（兩個 `ema`、兩個 `breakout`、兩種活躍度）。
+
 每一個都能用，但要一起用得自己動手串。今天要做的事就是把它們收成一條管線，讓一份 YAML 能算出所有東西。
 
 而這一天有一個很硬的期限：**明天 Day 16 的策略積木會用字串去這張註冊表取特徵**，所以介面要在今天訂死。
@@ -92,7 +98,7 @@ Day 04 訂的 `Indicator` 契約很窄：吃 K 線的一個欄位、回一條序
 
 Day 06 已經有一張註冊表，三行就寫完了——一個 `{"sma": SMA, "ema": EMA, "rsi": RSI}` 的對映，取出來 `cls(period)` 就能用。那樣寫得通，因為三個指標的參數形狀完全一樣。
 
-今天有十種特徵，參數從 `period` 一個，到 `side ＋ window ＋ bucket_count` 三個都有。同樣的做法會變成 `cls(**parameters)`，也就是上一節說的那種反射式分派。
+今天註冊表上有十二種 kind，參數從 `period` 一個，到 `side ＋ window ＋ bucket_count` 三個都有。同樣的做法會變成 `cls(**parameters)`，也就是上一節說的那種反射式分派。
 
 所以中間多一層 `FeatureBuilder`（一個 Protocol，只要求 `kind` 與 `build`）。有了它，「obi 這個字串需要 depth_level 與 aggregation 兩個參數、後者只能是 mean 或 last」這件事變成一段有型別的普通程式碼，mypy 檢查得到，而且參數不合法時的錯誤訊息可以說清楚合法值是什麼。
 
@@ -183,20 +189,38 @@ features:
     period: 20
   - kind: ema
     period: 12
+  - kind: ema
+    period: 26
   - kind: rsi
     period: 14
   - kind: vwap
+    mode: session
+  - kind: vwap_deviation
     mode: session
   - kind: activity
     measure: trade_count
     baseline: rolling
     window: 168
+  - kind: activity
+    measure: absolute_return
+    baseline: rolling
+    window: 168
+  - kind: atr
+    period: 14
+  - kind: prior_extreme
+    side: high
+    window: 20
   - kind: breakout
     side: high
+    window: 20
+  - kind: breakout
+    side: low
     window: 20
   - kind: distance_to_poc
     window_days: 5
 ```
+
+十三項，對應等一下輸出的十三欄；`ema` 出現兩次、`breakout` 兩次、`activity` 兩次，這是同一個 kind 帶不同參數的樣子，也是為什麼名字裡一定要帶參數。
 
 理由是使用者要寫的東西越少越好，而「kind 是保留字」這件事只要講一次。代價是 `kind` 不能當參數名，而那不是任何特徵需要的參數名。
 
@@ -230,8 +254,8 @@ uv run python -m quantbot.entrypoints.features_command \
   ema_26                             可用  99.82%  最後    63,510.0870
   rsi_14                             可用  99.90%  最後        32.5531
   vwap_session                       可用 100.00%  最後    63,589.3512
-  vwap_session_deviation             可用  96.26%  最後        -0.9790
-  activity_trade_count_rolling_168   可用  98.61%  最後        -0.2376
+  vwap_session_deviation             可用  95.83%  最後        -0.9790
+  activity_trade_count_rolling_168   可用  98.79%  最後        -0.2376
   activity_absolute_return_rolling_168 可用  98.78%  最後        -0.5006
   atr_14                             可用  99.90%  最後       293.0471
   prior_high_20                      可用  99.86%  最後    64,496.6400
@@ -246,9 +270,9 @@ uv run python -m quantbot.entrypoints.features_command \
 
 **「需要原料：candles」是算出來的。** 這份設定沒有 OBI 與流動性擺盪，所以逐筆成交與掛單簿完全沒被讀進來。加一行 `kind: obi` 進去，這一行就會變成 `candles, depth`，而讀取的行為跟著變。
 
-**丟掉 169 根，而宣告的暖機期是 168。** 兩個數字差 1，那個 1 來自活躍度的 `shift(1)`。這正是「宣告值只是下限」的實際樣子：照 168 切會留下一列 NaN。
+**丟掉 169 根，而宣告的暖機期是 168。** 多出來的那一根來自 `activity_absolute_return_rolling_168`：絕對報酬本身要拿前一根的收盤價算對數報酬，所以它比 `activity_trade_count_rolling_168` 再晚一根才有值（兩者的可用比例 98.78% 對 98.79%，差的就是那一根）。管線取所有欄位裡最晚的那一個，於是切 169。這正是「宣告值只是下限」的實際樣子——照宣告的 168 切，剩下的表第一列就會留著一個 NaN。
 
-**`vwap_session_deviation` 只有 96.26% 可用。** 缺的那 3.74% 不在開頭——是每天開頭那幾根。日內 VWAP 在一天的第一根只累積了一根 K 線，加權標準差是 0，偏離度因此沒有定義（Day 11 那個「NEVER 回 inf」的處理）。一年半有 578 天，每天缺一根就是 578 根，佔 4.17%，跟實測的 3.74% 對得上（有些天的第一根之後標準差還是 0）。這是第三種不一致的另一個實例：那些 NaN 不是暖機期，而它們散在整段資料裡。
+**`vwap_session_deviation` 只有 95.83% 可用。** 缺的那 4.17% 不在開頭——是每天的第一根。日內 VWAP 在一天的第一根只累積了一根 K 線，加權標準差是 0，偏離度因此沒有定義（Day 11 那個「NEVER 回 inf」的處理）。這一段有 577 天，每天缺一根就是 577 根，正好是那 4.17%。這是第三種不一致的另一個實例：那些 NaN 不是暖機期，而它們散在整段資料裡。
 
 **兩個 breakout 的可用比例是 100%。** 事件式特徵在暖機期是 0 而不是 NaN（Day 13 訂的），所以它們永遠「有值」。這也是為什麼暖機期不能只看有沒有 NaN——一個全 0 的欄位跟一個算好的欄位在 NaN 上看不出差別。
 
@@ -321,7 +345,7 @@ ValueError: obi(depth_level=7)：沒有錄前 7 檔。錄下來的深度是 (5, 
 | 錯誤 | 症狀 |
 |---|---|
 | 先算比例再平均，順序寫反（Day 10） | 數字照樣落在 −1 到 +1 |
-| 加權變異數不平移（Day 11） | 有效位數少一半，值看起來正常 |
+| 加權變異數不平移（Day 11） | 精度少一半，值看起來正常 |
 | 當根算進自己的基準（Day 12） | 暴量的 z-score 被系統性低估 |
 | 鐘點基準用整段樣本（Day 12） | 100 倍暴量被壓成 5 以下 |
 | `rolling().max()` 含當根（Day 13） | 突破訊號完全消失 |
