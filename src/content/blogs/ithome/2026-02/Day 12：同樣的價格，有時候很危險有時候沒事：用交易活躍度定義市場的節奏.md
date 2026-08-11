@@ -304,6 +304,23 @@ ATR 吃三欄。硬要塞進 `Indicator` 只有兩條路：破壞它的契約（
 
 ## 實際跑一次
 
+今天用的是 **1 小時線、跨一年半**，粒度與範圍都跟前面幾天不一樣，所以先把資料補進來。Day 03 那支回補指令換個 `--timeframe` 就能用，`--store` 讓它除了落地 parquet 也寫進 `candles`：
+
+```bash
+uv run python -m quantbot.entrypoints.backfill_command \
+    --symbol BTC/USDT --market spot --timeframe 1h \
+    --start 2025-01-01 --end 2026-08-01 --store
+```
+
+```
+13848 根，缺 0 根，覆蓋率 100.0000%
+寫入 candles：新增 13848 列
+```
+
+「缺 0 根、覆蓋率 100%」是 Day 08 那套完整性檢查順手給的，而今天特別值得看一眼：時段節奏那張表是按鐘點分組取平均，某個鐘點少了幾根，那一格的倍數就會偏掉，而它不會報錯，只會給出一個看起來很正常的數字。已經在跑 Day 08 那條每天自己跑的 pipeline 的話，這一步會顯示「新增 0 列」，那也是對的——代表資料早就補齊了。
+
+資料備妥之後：
+
 ```bash
 uv run python -m quantbot.entrypoints.activity_command \
     --symbol BTC/USDT --market spot --timeframe 1h \
@@ -375,7 +392,7 @@ quantbot/
 1. `uv run pytest tests/domain/features/test_trading_activity.py` 全綠，包含「排除當根」與「鐘點基準只用過去」兩個測試。這兩個是今天的重點，它們守的都是不會報錯的錯誤。排除當根那一個要斷言正確版本的分數是含當根版本的兩倍以上。
 2. 鐘點基準那個測試要看到具體的落差：正確版本的 z-score 超過 100，一行 `transform("mean")` 版本小於 5。
 3. `uv run pytest tests/domain/features/test_average_true_range.py` 全綠，含真實區間第一筆是 NaN、跳空被算進去、與迴圈版對照組誤差小於 `1e-9`、ATR 是價格單位（價位差一千倍則 ATR 差一千倍）四項。
-4. `uv run python -m quantbot.entrypoints.activity_command --symbol BTC/USDT --market spot --timeframe 1h --start 2025-01-01 --end 2026-08-01` 印出時段節奏（最冷清與最熱鬧相差 2.7 倍上下）、兩種基準的分數與觸發比例、以及 ATR。
+4. 先用 `backfill_command` 把 1 小時線補到庫裡（`--timeframe 1h --start 2025-01-01 --end 2026-08-01 --store`），確認缺 0 根；再跑 `uv run python -m quantbot.entrypoints.activity_command --symbol BTC/USDT --market spot --timeframe 1h --start 2025-01-01 --end 2026-08-01`，印出時段節奏（最冷清與最熱鬧相差 2.7 倍上下）、兩種基準的分數與觸發比例、以及 ATR。**缺漏必須是 0**——少幾根 K 線不會讓這支指令失敗，只會讓那幾個鐘點的倍數偏掉。
 5. 兩種基準的「超過 +2 的比例」都明顯高於常態分布的 2.28%。這是活躍度厚尾的證據，不是計算錯誤。
 6. 打開 `notebooks/day12-spot_BTCUSDT_1h-activity.html`：週末整片偏冷、平日 14:00 那一欄最深，色階以 1.0 為中心。
 7. `uv run mypy quantbot` 與 `uv run lint-imports` 全過。
