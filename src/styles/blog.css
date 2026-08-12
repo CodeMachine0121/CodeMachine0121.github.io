@@ -147,6 +147,29 @@
   color: inherit;
 }
 
+/* Mermaid 圖 — 沿用程式碼區塊的手繪卡片，但內容置中且不用等寬字。
+   渲染完成前（或使用者停用 JS 時）留在畫面上的是原始碼，維持等寬與捲軸。 */
+.blog-content pre.mermaid {
+  text-align: center;
+  line-height: 1.4;
+}
+
+.blog-content pre.mermaid[data-rendered="true"] {
+  overflow-x: auto;
+}
+
+.blog-content pre.mermaid[data-rendered="true"] svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 圖裡的文字交給 mermaid 的 fontFamily 設定，不要被 code 的等寬字覆蓋。 */
+.blog-content pre.mermaid[data-rendered="true"] text,
+.blog-content pre.mermaid[data-rendered="true"] .nodeLabel,
+.blog-content pre.mermaid[data-rendered="true"] .edgeLabel {
+  font-family: inherit;
+}
+
 /* 圖片 — 硬偏移陰影 + 微歪斜框 */
 .blog-content img {
   margin-top: 1.75rem !important;

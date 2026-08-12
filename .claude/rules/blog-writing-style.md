@@ -50,9 +50,13 @@ draft: true
 - 每篇結尾以「明天 Day N＋1」預告銜接下一篇；開頭可呼應前一天，維持敘事連貫。
 - 撰寫 iThome 2026 系列前，**MUST** 先參閱 [`../docs/ithome-2026-series-plan.md`](../docs/ithome-2026-series-plan.md) 確認該篇的標題、日期與在路線圖中的定位。
 
-## 5. 資產
+## 5. 資產與圖表
 
 - 圖片、CV PDF 等資產放 Cloudflare R2，**NEVER** 放進 `public/`；frontmatter `image` 填 R2 連結。
+- **概念圖用 mermaid**：```mermaid 區塊會被 `src/plugins/remark-mermaid.mjs` 轉成 `<pre class="mermaid">`，由 `src/scripts/mermaid.ts` 在前端渲染，並跟著 `data-theme` 自動重畫。深淺色都要能看，所以 **NEVER 在圖裡寫死顏色**——需要強調時用 `stroke-width`、`stroke-dasharray` 這類不涉及色彩的樣式。
+  - 節點 id 用 ASCII（`priorHigh`），中文只放在 `["..."]` 標籤裡。
+  - **NEVER 用 ASCII 線框畫概念圖**：CJK 是全形、box-drawing 是半形，框線一定對不齊。ASCII 線框只留給「今日交付物」那種純英數的檔案樹。
+  - 圖不能取代文字：圖上出現的判讀重點（虛線代表什麼、粗框代表什麼），正文 MUST 也講一次。
 
 ## 6. 內文不使用 emoji
 
