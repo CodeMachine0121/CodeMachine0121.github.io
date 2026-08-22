@@ -115,7 +115,7 @@ class RiskLimits:
 第三階段的核心產出不是三個策略，是**一套能表達策略的語言**：
 
 ```yaml
-# quantbot/infrastructure/configuration/strategies/trend_ema_rsi.yaml
+# trend_ema_rsi.yaml 的精簡寫法（原檔用區塊式縮排，並且每一段都有註解）
 name: trend_ema_rsi
 features:
   - {kind: ema, period: 12}

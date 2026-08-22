@@ -346,8 +346,7 @@ async def test_replies_do_not_go_through_the_notification_ledger():
         except httpx.HTTPError as failure:
             # NEVER 把原始例外往上丟：它的字串裡有完整 URL，而 URL 裡有 token。
             raise RuntimeError(
-                f"Telegram 送不出通知（{type(failure).__name__}）："
-                f"{notification.title}"
+                f"Telegram 送不出通知（{type(failure).__name__}）：{notification.title}"
             ) from None
 ```
 
