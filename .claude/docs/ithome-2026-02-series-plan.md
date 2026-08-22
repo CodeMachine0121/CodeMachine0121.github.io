@@ -542,8 +542,33 @@ Day 01 與 Day 30 為開篇與總結，不受此骨架限制。
 - 術語只在「零基礎讀者的交易術語進度表」指定的那天首次出現，之後才能自由使用。
 
 ## 目前進度
+- **Day 23–30（第四階段）已完成撰稿與實作（2026-08-22）**。實作專案分支 `feat/production-day-23-30`，八個 commit（Day 23 到 Day 30 各一個），每個 commit 都獨立驗過：pytest 由 420 增長到 **661 passed／2 skipped**、mypy `--strict` 全過（322 檔）、ruff clean、import-linter 三條契約 kept。文章八篇 `draft: true`，`datetime` 2026-10-07 至 2026-10-14 連續唯一。
+  - **Day 23**：`FailureKind`（四類失敗）、`OrderIntent`／`OrderReceipt`（Decimal）、`RetryPolicy`（抖動只往下扣）、`CircuitBreaker`（第二個有狀態 entity，狀態由注入的 now 推導）、`OrderGateway`（**第八種角色後綴 `Gateway`**）、`GatewayError`（例外型別住 `domain/interfaces/`）、`Sleeper`、`ExecutionRetryService`、`PositionReconciliationService`、`PlaceOrderApplication`、`BinanceOrderGateway`／`BinanceFailureParser`、`place_order_command`（預設乾跑）。
+  - **Day 24**：`domain/sizing/`（**第九個 domain 資料夾**）四個 sizer ＋ `PositionSizerRegistry`、`TradeStatistics`（凱利）、`RiskLimits`（上限在積木之上，靠 `ensure_used()` 自己執行）、`PositionSizingService`、`EquitySimulationService`（只打亂順序不重抽）、`sizing.yaml` ＋ 載入器、`sizing_command`。三份策略設定各加一行 `atr`（暖機期比原本最長的短，所以前幾天的數字全部不變，已驗）。
+  - **Day 25**：`NotificationLevel`／`Notification`（`dedupe_key` 必填）、`NotificationLedger`（去重 ＋ 滑動預算，判定與記錄同一次呼叫）、`TradingControl`（四指令三狀態，只改狀態不下單）、`AlertRoutingService`（分級表寫在 docstring）、`PublishNotificationsApplication`、`ServeControlCommandsApplication`（授權在應用層、回覆不走帳本）、`infrastructure/telegram/` 四個類別、`notify_command`／`control_bot_command`。
+  - **Day 26**：`numba` 進主依賴、`DistanceToPointOfControl` 改寫（一個 `@njit(cache=True)` 核心）、`tests/reference/reference_point_of_control.py` 當對照組、`benchmark_command`（三種寫法並排 ＋ `--profile`）。`pyproject.toml` 記下 numba 為什麼不在 domain 的禁止清單上。
+  - **Day 27**：`DataFreshness`／`DataFreshnessService`（基準是最後一根**已收盤**的 K 線）、`HealthReportDto`、`CheckHealthApplication`、`health_command`（exit 0/1）、`docker/Dockerfile`（多階段、非 root、TZ=UTC）、`.dockerignore`（第一行是 `.env`）、四個服務的 `docker-compose.yml`、`.env.example`（原本是空的）。
+  - **Day 28**：`ConditionTrace`（整棵樹 ＋ `inverted` 旗標）、`Condition.trace()`（template method）、`DecisionRecord`、`DecisionSnapshotService`、`DecisionJournalRepository`、`005_decision_journal.sql`（**刻意不是 hypertable**）、`TimescaleDecisionJournalRepository`、`JsonDecisionLogRenderer`（不用 structlog）、`RecordDecisionsApplication`（correlation_id 由策略＋K 線推導，所以冪等）、`journal_command`。
+  - **Day 29**：`AnomalyKind`（六種）、`MarketAnomaly`、`SanityThresholds`（跳動門檻**不複製**，仍在 Day 08 的 service 上）、`MarketSanityReportDto`、`MarketSanityService`（重用 Day 08 ＋ Day 27）、`MarketCircuitBreaker`（**第二個熔斷器**，恢復要冷卻 ＋ 一根乾淨的資料）、`InspectMarketSanityApplication`、`sanity_command`、`tests/edge_cases/`（23 條故障注入）。
+  - **Day 30**：`README.md` 從零寫（原本是空的）＋ `CLAUDE.md` 更新到 Day 30 狀態。沒有新功能。
+- **Day 23–30 實跑取得的數字（文章引用的都是這些）**：
+  - 下單重試七種處境（seed 20261007）：兩次 5xx 送出 3 次、等 0.471／0.793 秒；限流等 4.714 秒；回報遺失查到 → **送出 1 次**；查不到 → 2；餘額不足 → 1；次數用完 → 4；斷路器先跳開 → 2。七種的 `client_order_id` 全部只有一個值。
+  - 下注比較（trend_ema_rsi、232 筆訊號、上限 100%）：滿倉 −63.54%／MDD −66.55%／破產 100%；固定 25% −21.35%／−23.07%／0%；波動率目標平均權重 83.3%、**最高要求 310.3%**、−52.84%；四分之一凱利 **0 筆交易**。上限收回 25% 之後三種幾乎變成同一種（被夾 48.4%）。均值回歸（28 筆）走凱利的退路押 5%、−0.12%；動能爆發滿倉破產機率 0.1%。
+  - 加速：19.21 秒 → 純 numpy 0.2327 秒（**82.6 倍，沒用到編譯器**）→ Numba 0.0086 秒（2,237 倍）。首次含編譯 0.556 秒、`cache=True` 之後 0.153 秒。13 個特徵的管線 0.034 秒。`longest_drawdown_bars` 的 Python 迴圈每次 0.457 毫秒——**最顯眼的 for 迴圈不是熱點，刻意不動**。
+  - 映像檔 1.20 GB（builder 1.27 GB，多階段只省 70 MB）；`.venv` 731 MB，llvmlite 169 MB／pyarrow 143 MB／pandas 77 MB。
+  - 決策日誌：2,000 根裡 28 次進場訊號、2 次被過濾否決。實例 `trend_ema_rsi-20260714T120000Z`：黃金交叉成立，rsi_14 = 71.46 擋掉它。
+  - 市況掃描：830,879 根 1 分鐘 K 線，最大單分鐘跳動 **4.290%**、門檻 5%、**零異常**；1 小時 13,848 根也是零。所以極端案例只能靠故障注入。
+- **Day 23–30 實跑抓到的六個實作問題（都已修正並寫進文章）**：
+  1. `RetryPolicy` 的抖動寫成「乘上 1 ± 0.25」，號稱上限 4 秒**實測最大 4.998 秒**。改成只往下扣。
+  2. ccxt 的 `RequestTimeout` 繼承 `NetworkError`，所以逾時會被歸成可重試 → 重複下單。要在 NetworkError 之前單獨攔。
+  3. 下注比較的 DTO 原本要求各列交易筆數相同，而**凱利對負期望策略給 0**，那一列是 0 筆。檢查改成 `bar_count` 相同，交易筆數變成一個要看的欄位。
+  4. `pd.Timedelta.value` 一律回奈秒，而索引的單位是微秒——五天的視窗變成五千天，且不會報錯。改用兩個 Timedelta 相除。
+  5. Numba 核心的浮點運算順序沒對齊 numpy，13,848 根裡 90 根差 2.29e-16。要複製 `i*step+lowest` 與 `(v-lowest)*(n/width)` 的順序，邊界修正只做一步。
+  6. `ConditionTrace.blocking_leaves()` 沒處理取反，於是「被否決的原因」印出一個空字串——而那正是最需要它的那一種紀錄。加上 `inverted` 旗標並讓期待值往下翻。
+  另外 Day 29 的故障注入抓到第 2 條的同一個形狀再出現一次：`InvalidNonce`（時鐘漂了）也繼承 `NetworkError`。
+- **架構規範的兩個擴充（已同步進 `quantbot-code-architecture.md` 與專案的 `CLAUDE.md`）**：角色後綴多一種 `Gateway`（會改變外部世界狀態的雙向通道），domain 多一個資料夾 `sizing/`；`@njit` 核心是「計算行為掛在方法上」的第四個例外。
 
-- **系列規劃完成**（本文件為路線圖）。
+- **系列規劃完成**（本文件為路線圖）。**Day 00 ＋ Day 01–30 全部撰稿完成**（31 篇），Day 00–21 已 `draft: false`，Day 22–30 掛 `draft: true` 等發佈日。
 - **已完成撰稿：Day 00（賽前序章）＋ Day 01–15**（第一、二階段全部）。已通過驗證：全 16 篇 `parent` 完全一致、frontmatter 五欄齊全、檔名無斜線、`datetime` 2026-09-14 至 09-29 連續唯一、正文無 h1（`#` 僅出現在程式碼區塊內，以逐行判斷 fence 的腳本驗過）、無 emoji、無死語、Day 09–15 七篇零個「你」、每篇有「明天 Day N＋1」預告、標題無反引號。
 - **Day 09–15（第二階段）已完成撰稿與實作（2026-08-05）**。實作專案分支 `feat/microstructure-day-09-15`，七個 commit（Day 09 到 Day 15 各一個），每個 commit 都獨立驗過：pytest 由 67 路增長到 **248 passed／2 skipped**、mypy `--strict` 全過（168 檔）、ruff clean、import-linter 三條契約 kept。
   - **Day 09**：`Listing`（symbol ＋ market，無粒度）、`TradeSeries`／`OrderBook`／`DepthSeries` 三個 entity、`OrderBookSequenceService`、`CandleAgreementService`、六個新 Protocol、`BinanceArchiveTradeSource`（只用日檔）、`BinanceWebsocketMessageSource`（重連只有一份）、`BinanceSnapshotRateGuard`、`agg_trades` 與 `order_book_depth` 兩張 hypertable。新增依賴 `websockets`。
