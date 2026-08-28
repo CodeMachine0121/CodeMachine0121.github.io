@@ -4,7 +4,7 @@ datetime: "2026-10-10"
 description: "先量測再優化。cProfile 說最慢的特徵有七成時間花在「每一根重建一次驗證過的 entity」，而全專案最顯眼的那個 Python for 迴圈每次只要 0.45 毫秒。三步下來 19.21 秒變成 0.0086 秒（2,237 倍），其中 82.6 倍完全沒用到編譯器。順帶記錄兩件事：讓數值逐根相同要複製 numpy 的運算順序，以及 Timedelta.value 一律回奈秒這個不會報錯的陷阱。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## Day 05 留下的那個尾巴

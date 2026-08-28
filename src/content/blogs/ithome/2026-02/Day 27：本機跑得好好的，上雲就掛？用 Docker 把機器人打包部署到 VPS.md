@@ -4,7 +4,7 @@ datetime: "2026-10-11"
 description: "容器化解決的是環境一致與掛掉自動重啟。這篇寫多階段 Dockerfile、把 .env 擋在映像檔外面、以及 compose 的 depends_on 為什麼一定要配 healthcheck。另外做一個真正有用的健康檢查——它問的不是「行程還在嗎」，是「資料還新嗎」，而基準必須是最後一根已收盤的 K 線。順帶量出多階段建置在這個專案只省了 70 MB，而真正的重量是昨天為了加速付的 169 MB。"
 image: ""
 parent: "2026 ithome-鐵人賽: 工程師的量化交易入門：從 K 線到可組合的交易策略引擎 系列"
-draft: true
+draft: false
 ---
 
 ## 從「跑得動」到「一直在跑」
