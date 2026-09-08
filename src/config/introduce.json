@@ -3,7 +3,7 @@
     "name": "James Hsueh",
     "job": "Full Stack Software Engineer",
     "summary": {
-      "en": "Experienced Software Engineer with expertise in backend systems, microservices architecture, and TDD."
+      "en": "A full-stack engineer with a product mindset. I build backends in .NET Core or Go and front ends in TypeScript, hold to Clean Architecture and TDD, and work with AI through a spec-driven workflow of my own."
     },
     "cv_file_name": "james_cv.pdf"
   },
@@ -13,16 +13,31 @@
       "sub_title": "Cafler",
       "years": "2026 - Present",
       "details": {
-        "en": "Built two .NET Core backends (Commercial + OS) from scratch for a global vehicle-care platform, powering its Taiwan-market expansion using Clean Architecture, CQRS, and TDD."
+        "en": "Backends for a global vehicle-care platform's expansion into the Taiwan market, built with Clean Architecture, CQRS, and TDD."
       },
       "achievements": [
-        { "en": "Built two .NET backends (Commercial + OS) for the platform" },
-        { "en": "Architected the CRM Client-360 platform (CQRS vertical slices, multi-tenant)" },
-        { "en": "Led the LINE Messaging API integration (Taiwan)" },
-        { "en": "Drove the CarQuality payment gateway + e-invoicing integration" },
-        { "en": "Designed & implemented Taiwan market localization (national documents, validators, tire specs)" },
-        { "en": "Established audit logging & license-plate uniqueness via EF Core interceptors" },
-        { "en": "Owned the commercial proposals & mobility pricing engine" }
+        { "en": "Backend: .NET" },
+        { "en": "Built both platforms, OS and Commercial, from zero to production" },
+        { "en": "Designed and implemented the finance module for the Asia market" },
+        { "en": "Designed and implemented the payment flow, including e-invoicing" },
+        { "en": "Designed and implemented the LINE bot hosting flow" },
+        { "en": "Designed and implemented audit logging with EF Core interceptors" },
+        { "en": "Built the market analysis dashboard" }
+      ]
+    },
+    {
+      "title": "Freelance Software Engineer",
+      "sub_title": "Hospital Health Check & Fitness Analytics Platform (Contract)",
+      "years": "2026 - Present",
+      "details": {
+        "en": "Contract build of a hospital's health check and fitness analytics platform — the back office, the mobile app, and the deployment behind them."
+      },
+      "achievements": [
+        { "en": "Backend: Golang / Gin · Frontend: TypeScript / Bun / Nuxt · Mobile: Kotlin Multiplatform · DB: PostgreSQL · DevOps: Docker Swarm" },
+        { "en": "Extracted the front end's UI into a standalone component library, with Storybook set up inside it" },
+        { "en": "Built role-based access control (RBAC) across the platform" },
+        { "en": "Implemented the SSO and OAuth sign-in flows" },
+        { "en": "Built the analysis of the health check and fitness measurements" }
       ]
     },
     {
@@ -85,6 +100,24 @@
   ],
   "projects": [
     {
+      "imageUrl": "https://cdn.coding-afternoon.com/images/go-trading.png",
+      "title": { "en": "GoTrading: Trading API with Live Streaming, Sandboxed Indicator Scripts & an LLM Assistant" },
+      "type": { "en": "Side Project" },
+      "link": "https://github.com/CodeMachine0121/go-trading"
+    },
+    {
+      "imageUrl": "https://cdn.coding-afternoon.com/images/ZenMD.png",
+      "title": { "en": "ZenMD: A Local Desktop Writing Environment That Never Interrupts You" },
+      "type": { "en": "Side Project" },
+      "link": "https://zenmd.coding-afternoon.com/en/"
+    },
+    {
+      "imageUrl": "https://cdn.coding-afternoon.com/images/2026-ithome.jpeg",
+      "title": { "en": "Quantitative Trading for Engineers: From K-Lines to a Composable Strategy Engine" },
+      "type": { "en": "Blog Series" },
+      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/9051"
+    },
+    {
       "imageUrl": "https://cdn.coding-afternoon.com/images/GSI%20Protocol.png",
       "title": { "en": "Speaker at DevOpsDays Taipei 2026" },
       "type": { "en": "DevOpsDays Speaker" },
@@ -104,12 +137,6 @@
     },
     {
       "imageUrl": "",
-      "title": { "en": "Sharing Tech Knowledge on Blog" },
-      "type": { "en": "Blog" },
-      "link": ""
-    },
-    {
-      "imageUrl": "",
       "title": { "en": "Side-Project: Build a Editable Blockchain" },
       "type": { "en": "Blog Series" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
@@ -125,24 +152,6 @@
       "title": { "en": "CKAD Certification" },
       "type": { "en": "Certification" },
       "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
-    },
-    {
-      "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*UA3a1oJsu7Yut0ToKMVduA.png",
-      "title": { "en": "Monitoring Discord Latency with Golang Bot" },
-      "type": { "en": "GDG Kaohsiung Speaker" },
-      "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-9/"
-    },
-    {
-      "imageUrl": "https://github.com/Narmis-E/onedark-wallpapers/blob/main/programs/od_vim.png?raw=true",
-      "title": { "en": "Turn Vim into an IDE" },
-      "type": { "en": "GDG Kaohsiung Speaker" },
-      "link": "https://gdg.community.dev/events/details/google-gdg-kaohsiung-presents-toocon-11/"
-    },
-    {
-      "imageUrl": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*uUpJRdN6ztiUC6SBafjgJQ.jpeg",
-      "title": { "en": "30 Design Patterns with Golang in 30 Days" },
-      "type": { "en": "Blog Series" },
-      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/5988?page=1"
     }
   ],
   "menuItems": [
