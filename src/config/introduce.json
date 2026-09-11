@@ -1,6 +1,7 @@
 {
   "basic": {
     "name": "James Hsueh",
+    "site_name": "Coding Afternoon",
     "job": "Full Stack Software Engineer",
     "summary": {
       "en": "A full-stack engineer with a product mindset. I build backends in .NET Core or Go and front ends in TypeScript, hold to Clean Architecture and TDD, and work with AI through a spec-driven workflow of my own."
