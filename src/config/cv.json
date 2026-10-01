@@ -54,12 +54,12 @@
       },
       "achievements": [
         { "en": "Backend: .NET", "zh": "Backend: .NET" },
-        { "en": "Built both platforms, OS and Commercial, from zero to production", "zh": "從 0 到 1 打造 OS 與 Commercial 兩個平台" },
-        { "en": "Designed and implemented the finance module for the Asia market", "zh": "設計並實作亞洲市場的財務模組" },
-        { "en": "Designed and implemented the payment flow: an atomic transaction state machine that rules out duplicate charges at concurrent checkout, plus e-invoicing (issue / void / allowance) with rollback", "zh": "設計並實作支付流程：以原子條件更新的交易狀態機杜絕併發結帳的重複扣款，並交付電子發票開立／作廢／折讓，含失敗回滾" },
-        { "en": "Designed and implemented the LINE bot hosting flow: HMAC-verified webhooks, account binding, Flex messaging, Hangfire notifications", "zh": "設計並實作 LINE Bot 的代管流程：HMAC webhook 驗證、帳號綁定、Flex 訊息、Hangfire 排程通知" },
-        { "en": "Designed and implemented field-level audit logging with EF Core interceptors", "zh": "以 EF Core 攔截器設計並實作欄位級稽核日誌" },
-        { "en": "Built the market analysis dashboard", "zh": "建置市場分析儀表板" }
+        { "en": "OS and Commercial platforms, built from zero to production", "zh": "OS 與 Commercial 雙平台（從 0 到 1）" },
+        { "en": "Finance module for the Asia market", "zh": "亞洲市場財務模組" },
+        { "en": "Payment flow, covering transaction state management, duplicate-charge prevention, and e-invoicing (issue / void / allowance)", "zh": "支付流程，含交易狀態管理、重複扣款防護、電子發票開立／作廢／折讓" },
+        { "en": "LINE bot hosting, covering verification, API key management, the apply flow, account binding, and scheduled notifications", "zh": "LINE Bot 代管，含驗證機制、API Key 管理、套用流程、帳號綁定與排程通知" },
+        { "en": "Field-level audit logging", "zh": "欄位級稽核日誌" },
+        { "en": "Market analysis dashboard", "zh": "市場分析儀表板" }
       ]
     },
     {
@@ -72,10 +72,10 @@
       },
       "achievements": [
         { "en": "Backend: Golang / Gin · Frontend: TypeScript / Bun / Nuxt · Mobile: Kotlin Multiplatform · DB: PostgreSQL · DevOps: Docker Swarm", "zh": "Backend: Golang / Gin · Frontend: TypeScript / Bun / Nuxt · Mobile: Kotlin Multiplatform · DB: PostgreSQL · DevOps: Docker Swarm" },
-        { "en": "Extracted the front end's UI into a standalone component library and set up Storybook inside it, so components are built and reviewed in isolation from the app", "zh": "將前端的 UI 抽離成獨立的元件庫，並在其中導入 Storybook，讓元件能脫離應用程式獨立開發與檢視" },
-        { "en": "Built role-based access control (RBAC) across the platform", "zh": "在平台上實作角色權限控管（RBAC）" },
-        { "en": "Implemented the SSO and OAuth sign-in flows", "zh": "實作 SSO 與 OAuth 的登入流程" },
-        { "en": "Built the analysis of the health check and fitness measurements that turns raw test values into the platform's reported results", "zh": "實作健檢與健身檢測數值的分析，將原始檢驗數據轉為平台呈現的結果" }
+        { "en": "Front-end UI component library with Storybook", "zh": "前端 UI 元件庫與 Storybook" },
+        { "en": "Platform-wide role-based access control (RBAC)", "zh": "全平台角色權限控管（RBAC）" },
+        { "en": "SSO and OAuth sign-in", "zh": "SSO 與 OAuth 登入" },
+        { "en": "Health check and fitness measurement analysis", "zh": "健檢與健身檢測數據分析" }
       ]
     },
     {
@@ -87,10 +87,10 @@
         "zh": "將信用貸款平台遷移至微服務，建置其 Oracle Cloud 基礎設施，並為團隊導入規格驅動開發。"
       },
       "achievements": [
-        { "en": "Split a credit-loan monolith into 10+ microservices, and decoupled the strategy module so new loan rules ship without touching core flows", "zh": "將信用貸款單體系統拆分為 10 個以上微服務，並解耦策略模組，使新增貸款規則不必動到核心流程" },
-        { "en": "Introduced spec-driven development: piloted GitHub Spec Kit, found it too heavy, and built a lighter workflow adopted across 3–4 projects", "zh": "導入規格驅動開發：試行 GitHub Spec Kit 後發現過重，自製更輕量的流程，獲團隊採用於 3 至 4 個專案" },
-        { "en": "Built shared SSO/OAuth so internal services stopped maintaining their own login paths", "zh": "實作共用 SSO/OAuth，使內部服務不再各自維護登入流程" },
-        { "en": "Automated CI/CD with Azure DevOps, ran production on Oracle Cloud (OCP), and made local test environments reproducible for pre-merge checks", "zh": "以 Azure DevOps 自動化 CI/CD、在 Oracle Cloud (OCP) 營運生產服務，並建置可復現的本地測試環境供合併前驗證" }
+        { "en": "Microservice migration of a credit-loan platform, covering a 10+ service split and a decoupled loan-strategy module", "zh": "信用貸款平台微服務化，含 10 個以上服務拆分與貸款策略模組解耦" },
+        { "en": "Spec-driven development workflow, a lightweight in-house process adopted across 3–4 projects", "zh": "規格驅動開發流程導入，自製輕量流程並於 3 至 4 個專案採用" },
+        { "en": "Shared SSO / OAuth sign-in for internal services", "zh": "內部服務共用 SSO／OAuth 登入" },
+        { "en": "CI/CD and cloud operations, covering Azure DevOps, Oracle Cloud (OCP), and reproducible local test environments", "zh": "CI/CD 與雲端維運，含 Azure DevOps、Oracle Cloud (OCP) 與本地測試環境" }
       ]
     },
     {
@@ -102,10 +102,10 @@
         "zh": "支付處理與第三方 API 整合，以 TDD 與六邊形架構開發。"
       },
       "achievements": [
-        { "en": "Led a 4–6 person intern team as Scrum Master, running workshops on hexagonal architecture, TDD, refactoring, Docker, and Kubernetes", "zh": "以 Scrum Master 身分帶領 4 至 6 人的實習生團隊，並舉辦六邊形架構、TDD、重構、Docker 與 Kubernetes 工作坊" },
-        { "en": "Cut production issue detection from hours to minutes by building ELK monitoring across the Kubernetes services", "zh": "為 Kubernetes 服務建置 ELK 監控，將生產問題的發現時間從數小時縮短至數分鐘" },
-        { "en": "Refactored legacy payment code and closed defects open for over two years", "zh": "重構遺留的支付程式碼，並修復懸置超過兩年的缺陷" },
-        { "en": "Spoke twice at GDG Kaohsiung on Golang and developer tooling", "zh": "在 GDG Kaohsiung 發表兩場演講，主題為 Golang 與開發工具" }
+        { "en": "Scrum Master for a 4–6 person intern team, plus workshops on hexagonal architecture, TDD, refactoring, Docker, and Kubernetes", "zh": "實習生團隊 Scrum Master（4 至 6 人），含六邊形架構、TDD、重構、Docker、Kubernetes 工作坊" },
+        { "en": "ELK monitoring for Kubernetes services (issue detection cut from hours to minutes)", "zh": "Kubernetes 服務 ELK 監控（問題發現時間由數小時縮短至數分鐘）" },
+        { "en": "Legacy payment code refactoring, including defects open for over two years", "zh": "遺留支付程式碼重構，含懸置兩年以上的缺陷修復" },
+        { "en": "GDG Kaohsiung speaker: two talks on Golang and developer tooling", "zh": "GDG Kaohsiung 講者：Golang 與開發工具，共兩場" }
       ]
     }
   ],
@@ -119,8 +119,8 @@
         "zh": "技術教育部落格 coding-afternoon.com — 內容、網站與基礎設施皆獨力完成。"
       },
       "achievements": [
-        { "en": "Published 80+ articles in long-form series on Golang, .NET, and blockchain; the site serves 6,390 unique visitors and 51,660 requests a month", "zh": "以長篇系列發表 80 篇以上文章，涵蓋 Golang、.NET 與區塊鏈；網站月不重複訪客 6,390、月請求 51,660" },
-        { "en": "Open-sourced EccSDK, an elliptic-curve cryptography SDK on NuGet — 2.7K downloads", "zh": "開源 EccSDK，一套發布於 NuGet 的橢圓曲線密碼學 SDK — 累計下載 2.7K" }
+        { "en": "80+ technical articles (6,390 unique visitors and 51,660 requests a month)", "zh": "技術文章 80 篇以上（月不重複訪客 6,390、月請求 51,660）" },
+        { "en": "EccSDK: open-source elliptic-curve cryptography SDK on NuGet (2.7K downloads)", "zh": "EccSDK：NuGet 開源橢圓曲線密碼學 SDK（累計下載 2.7K）" }
       ]
     }
   ],
