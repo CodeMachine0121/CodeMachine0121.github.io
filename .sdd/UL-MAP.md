@@ -3,10 +3,10 @@
 **Project:** Coding Afternoon（CodeMachine0121.github.io）
 **Bounded Context:** 個人技術部落格與作品集——文章發布與閱讀（文章／系列／草稿／導覽／搜尋／便利貼）、個人介紹與作品集、履歷（CV）
 **Maintainer:** James Hsueh
-**Last Updated:** 2026-10-04
+**Last Updated:** 2026-10-04（blog-ui-redesign：新增閱讀時間／目錄／主題偏好，便利貼與作品集篩選標記淘汰）
 
 > 本表由程式碼考古（Archeology）產生，掃描範圍：`src/content.config.ts`、`src/types/`、`src/utils/`、`src/scripts/`、`src/pages/`、`src/components/`、`src/config/*.json`。
-> 所有列目前皆為 `Archeology`，需經維護者確認後改為 `Confirmed`。
+> 考古所得的列為 `Archeology`，需經維護者確認後改為 `Confirmed`；blog-ui-redesign 訪談確認的新詞為 `Confirmed`。
 
 ---
 
@@ -38,16 +38,22 @@
 | 留言 | `GiscusComments`（Giscus，以文章標題 `mapping=title` 對應） | 文章底部留言區 | 以 GitHub Discussions 承載；跟隨站台主題切換 | Archeology |
 | 閱讀進度 | `ReadingProgress` | 頁面頂端進度條 | 純呈現 | Archeology |
 
-### 1.2 便利貼（Sticky Notes）
+| 預估閱讀時間（Reading Time） | （待架構決定） | 「N 分鐘」 | 中文字數 ÷ 400 ＋ 英文字數 ÷ 200，相加後無條件進位，最少 1 分鐘；程式碼內容計入。顯示於文章頁、文章列表、首頁最新文章、系列頁 | Confirmed |
+| 文章目錄（Table of Contents） | （待架構決定） | 目錄 | 列出文章的章與節兩層；章少於 2 個不顯示；寬螢幕在正文旁並標出目前位置，手機在文章開頭預設收合 | Confirmed |
+| 章／節 | 正文的第二層／第三層標題（正文從第二層起） | 文章小標 | 章 = 文章最上層小標；節 = 章底下一層；更深的小標不列入目錄 | Confirmed |
+| 主題偏好 | `<html data-theme>`＋讀者瀏覽器保存的選擇 | 主題切換鈕 | 讀者手動選擇優先，否則依裝置設定；無法保存時僅本次有效 | Confirmed |
+| 首頁最新文章 | （待架構決定） | 首頁「最新文章」 | 已發布文章依發布日期新到舊取 5 篇（單篇與系列文章皆算） | Confirmed |
+
+### 1.2 便利貼（改版後淘汰）（Sticky Notes）
 
 | Domain Term | Technical Name | User-Facing Label | Definition & Business Rules | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| 便利貼（Sticky Note） | `Note`（`stickyNotes.ts`）、`.sticky-note` | 便利貼 | 讀者在文章頁自建的筆記；欄位 `id`、`text`、`color`、`x`、`y`、選填 `w`/`h` | Archeology |
-| 便利貼存放 | `STORAGE_PREFIX` + `location.pathname`（`sticky-notes:/blogs/...`） | — | 每篇文章各自一份，存讀者瀏覽器 `localStorage`；儲存失敗時本次瀏覽仍可用 | Archeology |
-| 便利貼上限 | `MAX_NOTES`（20） | 「便利貼數量已達上限（20 張）」 | 每篇文章最多 20 張；超過時不新增並短暫提示 | Archeology |
-| 便利貼面板 | `sticky-notes-panel`、`sticky-notes-fab` | 「我的便利貼」「便利貼內容」 | 列表檢視＋單張詳情檢視；手機唯一入口（桌機亦可用） | Archeology |
-| 垃圾桶區 | `sticky-notes-trash`、`TRASH_THRESHOLD`（90px） | 「拖到這裡刪除」 | 拖曳便利貼到視窗頂端 90px 內放開即刪除 | Archeology |
-| 便利貼最小尺寸 | `MIN_W`（120）、`MIN_H`（80） | — | 縮放時不得小於此尺寸 | Archeology |
+| 便利貼（Sticky Note） | `Note`（`stickyNotes.ts`）、`.sticky-note` | 便利貼 | 讀者在文章頁自建的筆記；欄位 `id`、`text`、`color`、`x`、`y`、選填 `w`/`h` | To Be Deleted |
+| 便利貼存放 | `STORAGE_PREFIX` + `location.pathname`（`sticky-notes:/blogs/...`） | — | 每篇文章各自一份，存讀者瀏覽器 `localStorage`；儲存失敗時本次瀏覽仍可用 | To Be Deleted |
+| 便利貼上限 | `MAX_NOTES`（20） | 「便利貼數量已達上限（20 張）」 | 每篇文章最多 20 張；超過時不新增並短暫提示 | To Be Deleted |
+| 便利貼面板 | `sticky-notes-panel`、`sticky-notes-fab` | 「我的便利貼」「便利貼內容」 | 列表檢視＋單張詳情檢視；手機唯一入口（桌機亦可用） | To Be Deleted |
+| 垃圾桶區 | `sticky-notes-trash`、`TRASH_THRESHOLD`（90px） | 「拖到這裡刪除」 | 拖曳便利貼到視窗頂端 90px 內放開即刪除 | To Be Deleted |
+| 便利貼最小尺寸 | `MIN_W`（120）、`MIN_H`（80） | — | 縮放時不得小於此尺寸 | To Be Deleted |
 
 ### 1.3 個人介紹、作品集與履歷
 
@@ -83,13 +89,15 @@
 | 產生系列代稱 | `createSlug()` | 系列分組時 | 決定 `/series/{slug}` 網址 | |
 | 搜尋文章 | `initBlogSearch()` / `applySearch()`（`BlogList.astro`） | 讀者在文章列表輸入關鍵字 | 以標題或系列名稱（不分大小寫、包含比對）篩選；搜尋時連進行中系列的文章也納入；無結果顯示「沒有找到符合的文章」 | 純前端 |
 | 產生 RSS | `GET` in `rss.xml.ts` | 建置 | 已發布文章依日期新到舊輸出 `zh-TW` feed | |
-| 新增便利貼 | `addNote()`（桌機：文章左右留白處三連擊）、`addNoteFromPanel()`（面板「＋ 新增便利貼」） | 讀者操作 | 新增一張黃色空白便利貼並存檔；達上限則提示 | 桌機寬度門檻 `DESKTOP_MIN` 768px |
-| 編輯便利貼 | `syncText`（即時存）、詳情頁「保存這張便利貼」 | 讀者輸入 | 每次輸入即寫入 localStorage，避免重新整理遺失 | |
-| 移動／縮放便利貼 | `onPointerMove`/`onPointerUp`、`clampToViewport()` | 拖曳標題列／右下角 | 位置限制在視窗內；放開時存檔 | |
-| 切換便利貼顏色 | 顏色按鈕循環 `COLORS`、詳情頁色票 | 讀者點擊 | 改色並存檔 | |
-| 刪除便利貼 | `removeNote()` | 點 ×、拖到垃圾桶區、面板列表 × | 自畫面與存放中移除 | |
+| 新增便利貼 | `addNote()`（桌機：文章左右留白處三連擊）、`addNoteFromPanel()`（面板「＋ 新增便利貼」） | 讀者操作 | 新增一張黃色空白便利貼並存檔；達上限則提示 | 桌機寬度門檻 `DESKTOP_MIN` 768px；**To Be Deleted**（blog-ui-redesign 移除） |
+| 編輯便利貼 | `syncText`（即時存）、詳情頁「保存這張便利貼」 | 讀者輸入 | 每次輸入即寫入 localStorage，避免重新整理遺失 | **To Be Deleted**（blog-ui-redesign 移除） |
+| 移動／縮放便利貼 | `onPointerMove`/`onPointerUp`、`clampToViewport()` | 拖曳標題列／右下角 | 位置限制在視窗內；放開時存檔 | **To Be Deleted**（blog-ui-redesign 移除） |
+| 切換便利貼顏色 | 顏色按鈕循環 `COLORS`、詳情頁色票 | 讀者點擊 | 改色並存檔 | **To Be Deleted**（blog-ui-redesign 移除） |
+| 刪除便利貼 | `removeNote()` | 點 ×、拖到垃圾桶區、面板列表 × | 自畫面與存放中移除 | **To Be Deleted**（blog-ui-redesign 移除） |
 | 切換主題 | `getNextTheme()`、`ThemeToggle` | 讀者點主題按鈕 | `<html data-theme>` 在 `light`/`dark` 間切換；Mermaid 圖與 Giscus 跟著重繪 | |
-| 篩選作品集 | `filterProjects(category)` | 讀者點作品類型標籤 | 只顯示該類型作品（`all` 顯示全部） | |
+| 估算閱讀時間 | （待架構決定） | 建置文章頁與各列表 | 每篇文章得到「N 分鐘」 | Confirmed（blog-ui-redesign） |
+| 產生文章目錄 | （待架構決定） | 建置文章頁 | 章 ≥ 2 時產出目錄；讀者捲動時標出目前章節 | Confirmed（blog-ui-redesign） |
+| 篩選作品集 | `filterProjects(category)` | 讀者點作品類型標籤 | 只顯示該類型作品（`all` 顯示全部） | **To Be Deleted**（blog-ui-redesign 移除） |
 | 切換履歷語系 | `LanguageSwitcher`、`/cv/en`、`/cv/zh` | 讀者點語系 | 以 `getLocalizedText` 重新取字 | |
 | 履歷存成 PDF | `DownloadButton` | 讀者點「存成 PDF / Save as PDF」 | 呼叫瀏覽器列印；建議檔名 `{name} - {job} - CV` | |
 
@@ -123,14 +131,18 @@
 | 系列排序方式 | `title-asc` / `title-desc` | 依標題 | 以 `zh-TW` locale 比較 |
 | 草稿旗標 | `draft: true` / 省略或 `false` | 草稿 / 已發布 | |
 | 系列頁每頁篇數 | `ARTICLES_PER_PAGE = 12` | 每頁 12 篇 | |
+| 閱讀速度 | 中文 400 字／分、英文 200 字／分 | — | 閱讀時間估算基準；無條件進位、最少 1 分鐘 |
+| 目錄顯示門檻 | 章 ≥ 2 | — | 少於 2 個章不顯示目錄 |
+| 首頁最新文章篇數 | 5 | — | |
+| 首頁經歷段數 | 3 | — | 其餘導向完整履歷 |
 | 空系列代稱退路 | `'series'` | — | `createSlug` 產不出字元時使用 |
-| 便利貼顏色 | `yellow`（預設）/ `pink` / `blue` / `green` | 黃／粉／藍／綠 | 點顏色鈕依此順序循環 |
-| 便利貼上限 | `MAX_NOTES = 20` | 每篇 20 張 | |
-| 便利貼桌機門檻 | `DESKTOP_MIN = 768` | 桌機寬度 | 低於此寬度不啟用三連擊新增 |
-| 垃圾桶區高度 | `TRASH_THRESHOLD = 90` | 拖到頂端 90px 刪除 | |
-| 便利貼最小尺寸 | `MIN_W = 120`、`MIN_H = 80` | — | px |
-| 便利貼存放鍵 | `sticky-notes:{pathname}` | — | localStorage key |
-| 主題 | `light` / `dark`（`<html data-theme>`） | 淺色／深色 | Giscus 對應 `light_protanopia` / `dark_protanopia` |
+| 便利貼顏色（To Be Deleted） | `yellow`（預設）/ `pink` / `blue` / `green` | 黃／粉／藍／綠 | 點顏色鈕依此順序循環 |
+| 便利貼上限（To Be Deleted） | `MAX_NOTES = 20` | 每篇 20 張 | |
+| 便利貼桌機門檻（To Be Deleted） | `DESKTOP_MIN = 768` | 桌機寬度 | 低於此寬度不啟用三連擊新增 |
+| 垃圾桶區高度（To Be Deleted） | `TRASH_THRESHOLD = 90` | 拖到頂端 90px 刪除 | |
+| 便利貼最小尺寸（To Be Deleted） | `MIN_W = 120`、`MIN_H = 80` | — | px |
+| 便利貼存放鍵（To Be Deleted） | `sticky-notes:{pathname}` | — | localStorage key |
+| 主題 | `light` / `dark`（`<html data-theme>`） | 淺色／深色 | 無手動選擇時依裝置設定（blog-ui-redesign 起）；Giscus 隨主題切換 |
 | 履歷語系 | `en` / `zh` | English / 中文 | 非法值退回 `en` |
 | 作品類型 | `Side Project` / `Blog Series` / `DevOpsDays Speaker` / `SDK` / `Certification` | 篩選標籤 | 取自 `introduce.json` 的 `type.en`；`all` 為「全部」 |
 | 導覽選單 | `/`、`/blogs`、`/series` | About Me、Blog、Series | |
