@@ -1,36 +1,46 @@
 ---
 title: "Day 04：Gas 經濟學：如何寫出「省錢」的智能合約？"
 datetime: "2026-10-04"
+description: "EVM 的成本幾乎都花在 Storage 上。從操作碼的 Gas 價格出發，整理變數打包、減少 Storage 存取、constant 與 immutable 等寫出省錢合約的技巧。"
 image: ""
 parent: "From Web2 to Web3: Building Institutional-Grade DeFi Systems"
 draft: false
 ---
 
-在傳統開發中，我們關注的是伺服器的處理速度（Latency）與吞吐量（Throughput）。但在 Ethereum 或 EVM 上，執行每一行程式碼都需要消耗 **Gas**。如果你的合約需要頻繁進行金融運算，寫得「不夠省」的程式碼，會直接導致使用者體驗大幅下降，甚至讓整個 DeFi 協議因為手續費太高而沒人使用。
+在傳統開發中，我們關注的是伺服器的延遲（Latency）與吞吐量（Throughput）。但在 Ethereum 或其他 EVM 鏈上，每一行程式碼的執行都要消耗 **Gas**。合約如果需要頻繁進行金融運算，寫得不夠省會直接拉高使用者的手續費，嚴重時整個 DeFi 協議會因為太貴而沒人使用。
 
-### 1. Gas 是什麼？
-Gas 本質上是 EVM 對於計算資源的計價單位。簡單來說：
-*   **讀取資料：** 便宜。
-*   **計算運算 (加減乘除)：** 非常便宜。
-*   **寫入/修改資料 (Storage)：** **昂貴。**
-*   **部署合約：** **極度昂貴。**
+## 1. Gas 是什麼？
 
-### 2. 三個讓你程式碼「瘦身」的核心技巧
+Gas 是 EVM 對計算資源的計價單位。粗略來說：
 
-#### A. 變數封裝 (Storage Packing)
-EVM 的 Storage 空間是以 **32 bytes (256 bits)** 為一個插槽 (Slot)。如果你的變數小於 32 bytes，將它們放在一起會比分開存放更節省。
-*   **反面教材：** 宣告兩個 `uint256` 佔用兩個 Slot。
-*   **正面教材：** 如果你有兩個 `uint128`，把它們寫在一起，它們會共用一個 Slot。這能直接節省下一次寫入 Storage 的昂貴成本。
+- **算術運算（加減乘除）：** 非常便宜。
+- **讀取 memory 與 calldata：** 便宜。
+- **讀取 Storage：** 不便宜，一筆交易中第一次讀某個 slot 要 2,100。
+- **寫入／修改 Storage：** **昂貴。**
+- **部署合約：** **極度昂貴。**
 
-#### B. 減少對 Storage 的讀取
-每次從 Storage 讀取資料（如 `sstore` 或 `sload` 操作碼）都需要消耗 Gas。
-*   **優化方式：** 如果一個函式需要多次使用同一個 Storage 變數，請在函式開始時將其讀取到區域變數 (Local Variable)，後續運算都使用這個區域變數，最後再將結果寫回 Storage。
+## 2. 讓合約「瘦身」的四個方向
 
-#### C. 使用 `external` 代替 `public`
-對於不需要在合約內部被呼叫的函數，使用 `external`。這不僅能節省 Gas（因為參數不需要拷貝到 memory），還能明確函數的訪問邊界，這是一種良好的防禦性開發習慣。
+### A. 變數打包（Storage Packing）
 
-#### D. 各型別的 Gas 消耗
-前面三個技巧其實都繞著同一件事：EVM 的成本幾乎都花在 Storage 上。要判斷一個型別貴不貴，得先看底層操作碼的價格。下表以 Berlin、London 升級之後的規則（EIP-2929、EIP-3529）為準：
+EVM 的 Storage 以 **32 bytes（256 bits）** 為一個插槽（slot）。小於 32 bytes 的變數放在一起，可以共用同一個 slot。
+
+- **反面教材：** 兩個 `uint256` 各佔一個 slot。
+- **正面教材：** 兩個 `uint128` 相鄰宣告，會共用一個 slot；如果它們在同一筆交易中一起更新，就少了一次昂貴的 Storage 寫入。
+
+### B. 減少對 Storage 的存取
+
+每一次 `SLOAD`（讀）與 `SSTORE`（寫）都要消耗 Gas。
+
+- **優化方式：** 函式需要多次使用同一個 Storage 變數時，在函式開頭把它讀進區域變數，後續運算都用區域變數，最後再一次寫回 Storage。
+
+### C. 只給外部呼叫的函式用 external
+
+不需要在合約內部被呼叫的函式，宣告成 `external`。早期版本的 Solidity 中，`public` 函式的陣列與字串參數一律會複製到 memory，`external` 則直接從 calldata 讀，差距明顯；0.6.9 之後 `public` 函式也能宣告 `calldata` 參數，Gas 差距已經縮小。現在選 `external` 的主要理由，是它把函式的呼叫邊界寫得很清楚：這個函式只給外部呼叫，屬於防禦性開發的習慣。
+
+### D. 各型別的 Gas 消耗
+
+前面三個方向其實繞著同一件事：EVM 的成本幾乎都花在 Storage 上。要判斷一個型別貴不貴，得先看底層操作碼的價格。下表以 Berlin、London 升級之後的規則（EIP-2929、EIP-3529）為準：
 
 | 操作                 | Gas               | 說明                                                  |
 |:---------------------|:------------------|:------------------------------------------------------|
@@ -43,7 +53,6 @@ EVM 的 Storage 空間是以 **32 bytes (256 bits)** 為一個插槽 (Slot)。�
 | `SSTORE` 非 0 → 非 0 | 5,000             | 2,900 加上 cold 存取的 2,100                          |
 | `SSTORE` 非 0 → 0    | 5,000，退還 4,800 | 清空 slot 有部分退款，但退款上限是交易 Gas 的五分之一 |
 | Calldata             | 4 或 16 / byte    | 零 byte 4、非零 byte 16                               |
-
 
 一次冷寫入 22,100，大約是一次加法的七千倍。有了這張表，再來看各型別的差異：
 
@@ -90,39 +99,43 @@ struct Position {
 
 > 注意：這些數字會隨硬分叉調整，例如 EIP-7623 就提高了大量使用 calldata 之交易的最低計價。實際成本請以 Foundry Gas Report 的量測結果為準。
 
+## 3. 如何量化優化成效？
 
+程式碼變「省」了沒有，不能憑感覺判斷，要看數據：
 
-### 3. 如何量化你的優化成效？
-作為專業開發者，我們不能憑感覺說程式碼變「快」或變「省」了，必須依賴數據：
-1.  **Foundry Gas Report：** 在 `foundry.toml` 中開啟 `gas_reports` 設定，每次測試都能看到詳細的 Gas 消耗統計。
-2.  **Solidity Optimizer：** 在編譯設定中開啟 Optimizer（例如設定 `runs: 1000`）。這會告訴編譯器對程式碼進行最佳化，減少不必要的操作碼。
+1. **Foundry Gas Report：** 執行 `forge test --gas-report`，就能看到每個函式的 Gas 消耗統計；`foundry.toml` 的 `gas_reports` 設定可以指定要報告哪些合約。
+2. **Solidity Optimizer：** 在 `foundry.toml` 設定 `optimizer = true` 與 `optimizer_runs`。`optimizer_runs` 代表預期每個函式會被呼叫的次數，數字越大，編譯器越偏向壓低執行成本，代價是部署成本變高；數字越小則反過來。會被頻繁呼叫的 DeFi 合約通常設得比較高。
 
-### 4. 今日練習
-請嘗試重新整理你的合約變數排列順序，觀察 Gas 消耗的變化：
+## 4. 今日練習
+
+調整合約變數的宣告順序，觀察 Gas 消耗的變化：
 
 ```solidity
-// 優化前的結構 (消耗較多 Gas)
-uint256 public balance;
-uint8 public status; // 會佔據額外的 Slot
-uint256 public lastUpdate;
+// 優化前：3 個 slot
+uint64 public lastUpdate;  // slot 0（8 bytes）
+uint256 public balance;    // slot 1（slot 0 剩下的 24 bytes 放不下 32 bytes）
+uint8 public status;       // slot 2
 
-// 優化後的結構 (將小變數並排，節省一個 Slot)
-uint256 public balance;
-uint256 public lastUpdate;
-uint8 public status; 
+// 優化後：2 個 slot
+uint256 public balance;    // slot 0
+uint64 public lastUpdate;  // slot 1（8 bytes）
+uint8 public status;       // slot 1（再 1 byte，合計 9 bytes）
 ```
 
----
-
-### 今日思考題：
-在設計一個智能合約時，我們通常需要儲存「授權簽名者的地址列表」。**如果這是一個需要頻繁變動（增加或刪除管理員）的列表，你會傾向於使用什麼資料結構來兼顧安全性與 Gas 效率？**（提示：考慮 `mapping` 與 `array` 的成本差異）
+`lastUpdate` 存的是區塊時間戳，`uint64` 足以涵蓋數千億年。寫一個同時更新 `lastUpdate` 與 `status` 的函式，用 `forge test --gas-report` 比較兩種排法的差距。
 
 ---
 
-*我正在進行一場 60 天的技術轉型挑戰，這是 Day 04。透過精確的 Gas 控制，我們正在將開發思維從「能運作」提升到「具備工程美感」的層次。*
+## 今日思考題
 
-**你在開發時有遇到過因為 Gas 費太高而被迫重構邏輯的經驗嗎？歡迎在留言區分享你的優化秘訣！**
+合約常常需要儲存「授權簽署者的地址列表」。**如果這個列表需要頻繁變動（新增或刪除管理員），要用什麼資料結構來兼顧安全性與 Gas 效率？**（提示：比較 `mapping` 與 `array` 的成本差異）
 
 ---
 
-**Day 4 進度達成！掌握了 Gas 優化，你就已經領先了大部分的入門開發者。明天 Day 5，我們將正式開始「發行你的第一個代幣」，實作 ERC-20 標準！**
+*這是 45 天技術轉型紀錄的 Day 04。能用數字說明每一行程式碼花了多少 Gas，才算真正掌握了它的成本。*
+
+**開發時有沒有因為 Gas 太高而被迫重構邏輯的經驗？歡迎在留言區分享。**
+
+---
+
+明天 Day 05，我們要動手實作 ERC-20 標準，發行第一個代幣。

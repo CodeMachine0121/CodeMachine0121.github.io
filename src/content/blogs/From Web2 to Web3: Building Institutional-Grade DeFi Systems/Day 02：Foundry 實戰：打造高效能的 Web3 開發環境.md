@@ -1,71 +1,88 @@
 ---
 title: "Day 02：Foundry 實戰：打造高效能的 Web3 開發環境"
-datetime: "2026-10-03"
+datetime: "2026-10-02"
+description: "為什麼專業合約開發者偏好 Foundry：用 Solidity 寫測試、執行速度快、內建 trace 與 Gas 報告，並寫下第一個合約測試。"
 image: ""
 parent: "From Web2 to Web3: Building Institutional-Grade DeFi Systems"
 draft: false
 ---
 
-在昨天的文章中，我們聊到了智能合約是一個「確定性狀態機」。今天，我們將正式進入開發實作。如果你之前有寫過測試的經驗，你會發現 Web3 的開發工具鏈已經從「手動部署測試」進化到了「高度自動化的測試框架」。
+昨天我們聊到智能合約是一台「確定性狀態機」，也裝好了 Foundry。今天正式進入開發實作。寫過測試的人會發現，Web3 的工具鏈已經從「手動部署再測試」進化到高度自動化的測試框架。
 
-在眾多工具中，**Foundry** 是目前最受專業合約開發者青睞的框架，原因很簡單：它完全使用 Solidity 編寫測試，速度快，且與 EVM 的底層交互非常直觀。
+在眾多工具中，**Foundry** 是目前最受合約開發者青睞的框架：它用 Solidity 寫測試、執行速度快，而且和 EVM 底層的互動很直觀。
 
-### 1. 為什麼選擇 Foundry？
-傳統的 Web3 開發多半使用 Hardhat (JavaScript/TypeScript)。雖然它生態系龐大，但 Foundry 提供了幾個好功能：
-*   **Solidity Native：** 你不需要在 TypeScript 和 Solidity 之間切換心智模型，測試直接用 Solidity 寫，這能大幅提升對合約行為的精準控制。
-*   **極速運行：** 測試運行速度比傳統框架快上數倍，這對於需要頻繁執行數百個測試案例的開發流程至關重要。
-*   **強大的 Debug 工具：** 它內建的 Trace 功能，能讓你清楚看到每一筆交易呼叫過程中的狀態變化，這對於理解合約執行流程非常有幫助。
+## 1. 為什麼選擇 Foundry？
 
-### 2. 初始化你的專案
-如果昨天你已經完成了安裝，讓我們看看專案結構裡有什麼：
+早期的合約開發多半使用 Hardhat（JavaScript／TypeScript）。它的生態系龐大，但 Foundry 有幾個明顯的優勢：
+
+- **Solidity Native：** 測試直接用 Solidity 寫，不需要在 TypeScript 和 Solidity 之間切換心智模型，對合約行為的控制也更精準。
+- **執行速度快：** 測試執行速度比 JavaScript 系的框架快上數倍，當測試案例累積到數百個時，這個差距會直接影響開發節奏。
+- **Debug 工具：** 內建的 trace 功能可以看到每一筆交易呼叫過程中的狀態變化，對理解合約的執行流程很有幫助。
+
+## 2. 專案結構
+
+先看看昨天 `forge init` 產生了什麼：
 
 ```bash
 # 查看專案結構
 tree -L 2
 ```
 
-你會看到 `src` (存放你的合約)、`test` (存放測試程式碼) 和 `script` (存放部署腳本)。這與你在 Web2 常見的 MVC 或專案結構邏輯大同小異，但每個目錄的功能更加嚴謹。
+會看到三個主要目錄：`src`（合約）、`test`（測試）和 `script`（部署腳本）。這和 Web2 專案常見的分層邏輯差不多，只是每個目錄的職責劃分得更明確。另外還有 `lib`（依賴套件，例如 `forge-std`）與設定檔 `foundry.toml`。
 
-### 3. 第一個測試：從「假定」到「驗證」
-在 Solidity 測試中，我們使用 `assertEq` 來驗證結果。試著在 `test` 資料夾下建立一個測試檔案：
+## 3. 第一個測試：從「假定」到「驗證」
+
+`forge init` 預設會產生一個 `Counter` 合約，有 `number`、`setNumber` 與 `increment` 三個成員。在 `test` 資料夾下新增一個測試檔，驗證它的行為：
 
 ```solidity
+// test/CounterIncrement.t.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "forge-std/Test.sol";
-import "../src/YourContract.sol";
+import {Test} from "forge-std/Test.sol";
+import {Counter} from "../src/Counter.sol";
 
-contract CounterTest is Test {
-    function testIncrement() public {
-        uint256 x = 1;
-        assertEq(x + 1, 2);
+contract CounterIncrementTest is Test {
+    Counter private counter;
+
+    function setUp() public {
+        counter = new Counter();
+        counter.setNumber(1);
+    }
+
+    function testIncrementAddsOne() public {
+        counter.increment();
+        assertEq(counter.number(), 2);
     }
 }
 ```
 
-執行 `forge test`，當你看到綠色的 **[PASS]** 時，這代表你的環境已準備就緒。
+`setUp` 會在每個測試函式執行前跑一次，每個測試都從同樣的初始狀態開始。執行 `forge test`，看到 **[PASS]** 就代表環境已經準備就緒。
 
-### 4. 為何開發環境配置如此關鍵？
-在開發 DeFi 應用時，你的測試套件就是你的「合約防禦陣線」：
-1.  **測試驅動開發 (TDD)：** 由於 Production 環境中的錯誤無法撤銷，強迫自己先寫測試再寫功能，是保護資產的最低門檻。
-2.  **模擬狀態：** Foundry 允許你使用 `vm.prank(address)` 輕鬆模擬不同的使用者身份，這對於驗證權限控管（Access Control）非常有效。
-3.  **GAS 報告：** 在執行測試時，透過 `forge test --gas-report`，你可以直接看到每個函式呼叫消耗了多少 Gas，讓你從第一天起就養成優化程式碼的好習慣。
+## 4. 為什麼開發環境的配置這麼關鍵？
 
----
+開發 DeFi 應用時，測試套件就是合約的第一道防線：
 
-### 今日行動：部署你的第一個合約
-除了跑測試，請嘗試編寫一個簡單的 `Counter` 合約，並透過 `forge script` 將其部署到 Foundry 內建的測試鏈上。
-
-### 思考題：
-在開發過程中，你覺得「測試」這件事，在 Web2 的 API 開發與 Web3 的智能合約開發之間，最大的心理負擔差異是什麼？是「害怕丟失資產」還是「對區塊鏈狀態的不確定性」？
+1. **測試驅動開發（TDD）：** 正式環境的錯誤無法撤銷，先寫測試再寫功能，是保護資產的最低門檻。
+2. **模擬身份：** Foundry 可以用 `vm.prank(address)` 模擬不同使用者發出的呼叫，驗證權限控管（Access Control）時非常好用。
+3. **Gas 報告：** 執行 `forge test --gas-report` 可以直接看到每個函式消耗多少 Gas，從第一天起就能把成本納入考量。
 
 ---
 
-*我正在進行一場 60 天的技術轉型挑戰，這是 Day 2。透過紮實的工具鏈訓練，我正在一步步建立開發 DeFi 應用所需的專業素養。*
+## 今日行動：部署第一個合約
 
-**如果你在安裝或跑測試時遇到什麼問題，歡迎在留言區提出，我們一起解決！**
+除了跑測試，試著用 `forge script` 把 `Counter` 合約部署到 Foundry 內建的本機測試鏈 `anvil` 上。
+
+## 思考題
+
+「測試」這件事，在 Web2 的 API 開發與 Web3 的合約開發之間，最大的心理負擔差異是什麼？是「害怕資產損失」，還是「對區塊鏈狀態的不確定」？
 
 ---
 
-**Day 2 進度達成！接下來 Day 3 我們要深入探討 Solidity 最令開發者頭痛的「記憶體配置 (Memory vs Storage)」，這可是 Gas 優化的核心，準備好了嗎？**
+*這是 45 天技術轉型紀錄的 Day 02。先把工具鏈打穩，後面開發 DeFi 應用時才有可靠的驗證手段。*
+
+**安裝或跑測試時遇到問題，歡迎在留言區提出，我們一起解決。**
+
+---
+
+明天 Day 03，我們要談 Solidity 的三種資料存放位置：Storage、Memory 與 Calldata。它們的差別直接決定了每一筆交易的 Gas 成本。
