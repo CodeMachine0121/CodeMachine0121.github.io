@@ -1,5 +1,7 @@
 ---
 import LinkButton from '../common/LinkButton.astro';
+import UiText from '../common/UiText.astro';
+import { CV_PATH } from '../../utils/ui-language';
 import { Image } from 'astro:assets';
 import me from '../../assets/me.png';
 import { basic } from '../../config/introduce.json';
@@ -14,13 +16,13 @@ import { basic } from '../../config/introduce.json';
     loading="eager"
     class="h-20 w-20 rounded-full border border-line object-cover sm:h-24 sm:w-24"
   />
-  <h1 id="intro-title" class="mt-6 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl">
+  <h1 id="intro-title" class="mt-6 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl" translate="no">
     {basic.name}
   </h1>
-  <p class="mt-1 text-muted">{basic.job}</p>
-  <p class="mt-5 text-lg leading-relaxed text-ink">{basic.summary.en}</p>
+  <p class="mt-1 text-muted" data-content>{basic.job}</p>
+  <p class="mt-5 text-lg leading-relaxed text-ink"><UiText text={basic.summary} /></p>
   <div class="mt-6 flex flex-wrap gap-3">
-    <LinkButton href="/cv">看完整履歷</LinkButton>
-    <LinkButton href="mailto:james.afternoon.dev@gmail.com" variant="secondary">寫信給我</LinkButton>
+    <LinkButton href={CV_PATH}><UiText text="home.viewCv" /></LinkButton>
+    <LinkButton href="mailto:james.afternoon.dev@gmail.com" variant="secondary"><UiText text="home.email" /></LinkButton>
   </div>
 </section>

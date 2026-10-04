@@ -16,6 +16,9 @@ export const LANGUAGE_STORAGE_KEY = 'language';
 /** 無法得知讀者語言時（例如停用程式執行）使用網站內容的主要語言 */
 export const FALLBACK_LANGUAGE: Language = 'zh';
 
+/** 各語言版本履歷的網址；網站上的履歷連結指向目前語言的版本 */
+export const CV_PATH: LocalizedPair = { zh: '/cv/zh', en: '/cv/en' };
+
 /** 各語言在 HTML lang 屬性上的值 */
 export const HTML_LANG: Record<Language, string> = { zh: 'zh-Hant-TW', en: 'en' };
 

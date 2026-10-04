@@ -18,7 +18,7 @@ const newestSeries = selectNewestSeries(blogs);
 const latestArticles = selectStandaloneArticles(blogs).slice(0, LATEST_ARTICLE_COUNT);
 ---
 
-<HomeSection title="最新文章" titleId="latest-title" link={{ href: "/blogs", label: "所有文章 →" }}>
+<HomeSection title="home.latestArticles" titleId="latest-title" link={{ href: "/blogs", label: "home.allArticles" }}>
   {newestSeries && (
     <div class="mt-6" data-home-series>
       <SeriesEntry series={newestSeries} label="series.newest" />

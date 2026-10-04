@@ -1,23 +1,27 @@
 ---
+import UiText from '../common/UiText.astro';
+import { uiAttributes, type LocalizedPair, type UiTextKey } from '../../utils/ui-language';
+
 /**
  * 首頁區塊的共用外框：標題列（標題＋可選的「看更多」連結＋分隔線）與內容。
  * 首頁每個區塊的寬度、間距與標題樣式都由這裡決定。
  */
 interface Props {
-  title: string;
+  title: UiTextKey;
   /** 標題的 id，讓區塊以 aria-labelledby 取得名稱 */
   titleId: string;
   /** 標題列右側的連結，例如「所有文章 →」 */
-  link?: { href: string; label: string };
+  link?: { href: string | LocalizedPair; label: UiTextKey };
 }
 
 const { title, titleId, link } = Astro.props;
+const linkAttributes = link && (typeof link.href === 'string' ? { href: link.href } : uiAttributes({ href: link.href }));
 ---
 
 <section class="mx-auto mt-16 max-w-3xl px-4 sm:px-6" aria-labelledby={titleId}>
   <div class="flex items-baseline justify-between border-b border-line pb-3">
-    <h2 id={titleId} class="font-serif text-xl font-bold text-ink">{title}</h2>
-    {link && <a href={link.href} class="text-sm text-muted hover:text-accent">{link.label}</a>}
+    <h2 id={titleId} class="font-serif text-xl font-bold text-ink"><UiText text={title} /></h2>
+    {link && <a {...linkAttributes} class="text-sm text-muted hover:text-accent"><UiText text={link.label} /></a>}
   </div>
   <slot />
 </section>

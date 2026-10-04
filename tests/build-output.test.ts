@@ -371,13 +371,16 @@ describe('首頁', () => {
     readFileSync(join(import.meta.dir, '..', 'src', 'config', 'introduce.json'), 'utf-8')
   ) as { projects: unknown[]; experiences: { title: string }[] };
 
+  /** 履歷連結：預設指向中文版，英文介面時換成英文版 */
+  const CV_LINK = 'href="/cv/zh" data-ui-attrs="{&quot;href&quot;:{&quot;zh&quot;:&quot;/cv/zh&quot;,&quot;en&quot;:&quot;/cv/en&quot;}}"';
+
   test('上半部有自我介紹與前往履歷的入口', () => {
     const html = home();
     const introStart = html.indexOf('id="intro-title"');
     const latestStart = html.indexOf('data-home-latest');
 
     expect(introStart).toBeGreaterThan(-1);
-    expect(html.slice(introStart, latestStart)).toContain('href="/cv"');
+    expect(html.slice(introStart, latestStart)).toContain(CV_LINK);
   });
 
   /** 從系列頁（含分頁）取出每個系列的文章網址與發布日期 */
@@ -447,7 +450,7 @@ describe('首頁', () => {
     for (const experience of introduce.experiences.slice(0, 3)) {
       expect(experienceBlock).toContain(experience.title);
     }
-    expect(experienceBlock).toContain('href="/cv"');
+    expect(experienceBlock).toContain(CV_LINK);
   });
 });
 

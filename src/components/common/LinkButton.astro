@@ -1,17 +1,21 @@
 ---
 /**
  * 看起來像按鈕的連結。全站只有兩種：主要（實心）與次要（外框）。
+ * 連結目標依語言不同時（例如履歷）給中英兩個網址。
  */
+import { uiAttributes, type LocalizedPair } from '../../utils/ui-language';
+
 interface Props {
-  href: string;
+  href: string | LocalizedPair;
   variant?: 'primary' | 'secondary';
 }
 
 const { href, variant = 'primary' } = Astro.props;
+const linkAttributes = typeof href === 'string' ? { href } : uiAttributes({ href });
 ---
 
 <a
-  href={href}
+  {...linkAttributes}
   class:list={[
     'inline-flex items-center rounded px-4 py-2 text-sm font-medium',
     variant === 'primary'

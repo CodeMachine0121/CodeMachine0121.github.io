@@ -1,5 +1,7 @@
 ---
 import HomeSection from './HomeSection.astro';
+import UiText from '../common/UiText.astro';
+import { CV_PATH, inBothLanguages, localizePeriod } from '../../utils/ui-language';
 import { experiences } from '../../config/introduce.json';
 
 /**
@@ -11,12 +13,12 @@ const RECENT_EXPERIENCE_COUNT = 3;
 const recentExperiences = experiences.slice(0, RECENT_EXPERIENCE_COUNT);
 ---
 
-<HomeSection title="經歷" titleId="experience-title" link={{ href: "/cv", label: "完整履歷 →" }}>
+<HomeSection title="home.experience" titleId="experience-title" link={{ href: CV_PATH, label: "home.fullCv" }}>
   <ol class="divide-y divide-line">
     {recentExperiences.map(experience => (
       <li class="flex flex-col gap-1 py-4 sm:flex-row sm:gap-6" data-home-experience>
-        <p class="w-32 shrink-0 text-sm text-muted">{experience.years}</p>
-        <div>
+        <p class="w-32 shrink-0 text-sm text-muted"><UiText text={inBothLanguages(language => localizePeriod(experience.years, language))} /></p>
+        <div data-content>
           <p class="font-medium text-ink">{experience.title}</p>
           <p class="text-sm text-muted">{experience.sub_title}</p>
         </div>
