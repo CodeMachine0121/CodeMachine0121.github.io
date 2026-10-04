@@ -41,6 +41,9 @@
 | 預估閱讀時間（Reading Time） | `estimateReadingMinutes()`（`utils/reading-time.ts`）、`READING_SPEED`、`ReadingTime.astro` | 「N 分鐘」 | 中文字數 ÷ 400 ＋ 英文字數 ÷ 200，相加後無條件進位，最少 1 分鐘；程式碼內容計入。顯示於文章頁、文章列表、首頁最新文章、系列頁 | Confirmed |
 | 文章目錄（Table of Contents） | `buildTableOfContents()`（`utils/table-of-contents.ts`）、`TableOfContents.astro`、`scripts/tableOfContents.ts` | 目錄 | 列出文章的章與節兩層；章少於 2 個不顯示；寬螢幕在正文旁並標出目前位置，手機在文章開頭預設收合 | Confirmed |
 | 章／節 | 正文的第二層／第三層標題（正文從第二層起） | 文章小標 | 章 = 文章最上層小標；節 = 章底下一層；更深的小標不列入目錄 | Confirmed |
+| 介面語言（Interface Language） | `resolveLanguage()`、`<html data-language>`、`LanguageInit.astro`、`LanguageToggle.astro`、`scripts/language.ts` | 頁首語言切換鈕（EN／中文） | 整站介面文字只顯示一種語言；決定順序：讀者選擇 → 瀏覽器首選語言（任何中文為中文，其餘英文）→ 中文 | Confirmed |
+| 介面文字 | `UI_TEXT`、`UiTextKey`、`UiText.astro`、`uiAttributes()` | — | 導覽、標題、按鈕、提示、空狀態、分頁、無障礙名稱、分頁標題；不含文章與作品內容及各種名稱 | Confirmed |
+| 內容與名稱 | `data-content`、`translate="no"` | — | 文章標題／內文、系列與作品名稱、職稱、公司與學校；任何介面語言下都維持原文 | Confirmed |
 | 主題偏好 | `<html data-theme>`、`THEME_STORAGE_KEY`、`ThemeInit.astro`、`toggleTheme()` | 主題切換鈕 | 讀者手動選擇優先，否則依裝置設定；無法保存時僅本次有效 | Confirmed |
 | 首頁最新文章 | `selectStandaloneArticles()`、`home/LatestArticles.astro`（`LATEST_ARTICLE_COUNT`） | 首頁「最新文章」 | 已發布的單篇文章（不屬於系列）依發布日期新到舊取 5 篇（v1.1 起不含系列文章） | Confirmed |
 | 最新的系列（Newest Series） | `selectNewestSeries()` | 首頁系列入口「最新系列」 | 建立日期（第一篇文章發布日期）最新的系列；與「進行中的系列」（最近更新）不同，只用在首頁 | Confirmed |
@@ -97,6 +100,7 @@
 | 切換便利貼顏色 | 顏色按鈕循環 `COLORS`、詳情頁色票 | 讀者點擊 | 改色並存檔 | **To Be Deleted**（blog-ui-redesign 移除） |
 | 刪除便利貼 | `removeNote()` | 點 ×、拖到垃圾桶區、面板列表 × | 自畫面與存放中移除 | **To Be Deleted**（blog-ui-redesign 移除） |
 | 切換主題 | `toggleTheme()`、`ThemeToggle`（blog-ui-redesign 起；原 `getNextTheme()` 已移除） | 讀者點主題按鈕 | `<html data-theme>` 在 `light`/`dark` 間切換；Mermaid 圖與 Giscus 跟著重繪 | |
+| 切換介面語言 | `toggleLanguage()`、`chooseLanguage()`（履歷語言切換也走它） | 讀者點頁首語言切換鈕或履歷的語言鈕 | 介面立即換成另一種語言並記住；無法記住時本次有效 | Confirmed（ui-language） |
 | 估算閱讀時間 | `estimateReadingMinutes()` | 建置文章頁與各列表 | 每篇文章得到「N 分鐘」 | Confirmed（blog-ui-redesign） |
 | 產生文章目錄 | `buildTableOfContents()`＋`highlightCurrentChapter()` | 建置文章頁 | 章 ≥ 2 時產出目錄；讀者捲動時標出目前章節 | Confirmed（blog-ui-redesign） |
 | 篩選作品集 | `filterProjects(category)` | 讀者點作品類型標籤 | 只顯示該類型作品（`all` 顯示全部） | **To Be Deleted**（blog-ui-redesign 移除） |
@@ -116,7 +120,7 @@
 | `projects` | `introduce.json` 的作品集項目（首頁 Portfolio） | `cv.json` 的 `projects`（履歷 Projects 區塊），兩份資料各自維護 | 待確認：兩者是否應為同一份資料來源，或確實是不同受眾的兩種清單 |
 | `side_projects` vs `projects` vs 作品類型 `Side Project` | 履歷的 `side_projects` 以經歷格式呈現，標題「技術寫作與開源」 | 作品集 `type.en = "Side Project"` 是類型標籤 | 待確認命名；`side_projects` 實際內容偏「技術寫作與開源」 |
 | `Experience` | `components/sections/portfolio/Experience.astro`（首頁） | `components/cv/CVExperience.astro`（履歷，亦用於 side projects） | 兩套呈現；確認是否共用同一份資料（`introduce.json` vs `cv.json` 都有 `experiences`） |
-| 語系代碼 | `Language = 'en' \| 'zh'`（資料與網址） | HTML `lang` 用 `zh-TW`；RSS 與日期格式用 `zh-TW` | `zh` 為內部代碼，對外輸出一律 `zh-TW` |
+| 語系代碼 | `Language = 'en' \| 'zh'`（資料、網址與介面語言） | HTML `lang` 用 `zh-Hant-TW`／`en`；RSS 用 `zh-TW` | `zh` 為內部代碼；介面語言與履歷語系共用同一型別 |
 | 草稿 vs 未部署 | `draft: true`：在 collection 內、刻意隱藏 | `src/content/not-deployed/`：不在 collection 內 | 待確認：未部署資料夾是否為已淘汰的舊機制，新文章一律用 `draft` |
 | 「上一篇」方向 | 系列文章：更早的一天 | 單篇文章：**更新**的一篇 | 刻意設計，已有測試鎖住；保留，於 UI 文案不另區分 |
 | `Note` | 便利貼（`stickyNotes.ts`） | 部落格內容中的「筆記」類文章（如「原子習慣 note」） | 程式碼內 `Note` 專指便利貼；建議領域詞用「便利貼」 |
@@ -146,6 +150,7 @@
 | 便利貼存放鍵（To Be Deleted） | `sticky-notes:{pathname}` | — | localStorage key |
 | 主題 | `light` / `dark`（`<html data-theme>`） | 淺色／深色 | 無手動選擇時依裝置設定（blog-ui-redesign 起）；Giscus 隨主題切換 |
 | 履歷語系 | `en` / `zh` | English / 中文 | 非法值退回 `en` |
+| 介面語言 | `zh` / `en`（`<html data-language>`、localStorage `language`） | 中文／英文 | 沒有 JS 時為中文；`<html lang>` 為 `zh-Hant-TW` 或 `en` |
 | 作品類型 | `Side Project` / `Blog Series` / `DevOpsDays Speaker` / `SDK` / `Certification` | 篩選標籤 | 取自 `introduce.json` 的 `type.en`；`all` 為「全部」 |
 | 導覽選單 | `/`、`/blogs`、`/series` | About Me、Blog、Series | |
 | Giscus 對應方式 | `data-mapping = 'title'` | 以文章標題對應討論串 | 注意：改文章標題會斷開既有留言 |
