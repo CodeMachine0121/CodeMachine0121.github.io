@@ -38,11 +38,11 @@
 | 留言 | `GiscusComments`（Giscus，以文章標題 `mapping=title` 對應） | 文章底部留言區 | 以 GitHub Discussions 承載；跟隨站台主題切換 | Archeology |
 | 閱讀進度 | `ReadingProgress` | 頁面頂端進度條 | 純呈現 | Archeology |
 
-| 預估閱讀時間（Reading Time） | （待架構決定） | 「N 分鐘」 | 中文字數 ÷ 400 ＋ 英文字數 ÷ 200，相加後無條件進位，最少 1 分鐘；程式碼內容計入。顯示於文章頁、文章列表、首頁最新文章、系列頁 | Confirmed |
-| 文章目錄（Table of Contents） | （待架構決定） | 目錄 | 列出文章的章與節兩層；章少於 2 個不顯示；寬螢幕在正文旁並標出目前位置，手機在文章開頭預設收合 | Confirmed |
+| 預估閱讀時間（Reading Time） | `estimateReadingMinutes()`（`utils/reading-time.ts`）、`READING_SPEED`、`ReadingTime.astro` | 「N 分鐘」 | 中文字數 ÷ 400 ＋ 英文字數 ÷ 200，相加後無條件進位，最少 1 分鐘；程式碼內容計入。顯示於文章頁、文章列表、首頁最新文章、系列頁 | Confirmed |
+| 文章目錄（Table of Contents） | `buildTableOfContents()`（`utils/table-of-contents.ts`）、`TableOfContents.astro`、`scripts/tableOfContents.ts` | 目錄 | 列出文章的章與節兩層；章少於 2 個不顯示；寬螢幕在正文旁並標出目前位置，手機在文章開頭預設收合 | Confirmed |
 | 章／節 | 正文的第二層／第三層標題（正文從第二層起） | 文章小標 | 章 = 文章最上層小標；節 = 章底下一層；更深的小標不列入目錄 | Confirmed |
-| 主題偏好 | `<html data-theme>`＋讀者瀏覽器保存的選擇 | 主題切換鈕 | 讀者手動選擇優先，否則依裝置設定；無法保存時僅本次有效 | Confirmed |
-| 首頁最新文章 | （待架構決定） | 首頁「最新文章」 | 已發布文章依發布日期新到舊取 5 篇（單篇與系列文章皆算） | Confirmed |
+| 主題偏好 | `<html data-theme>`、`THEME_STORAGE_KEY`、`ThemeInit.astro`、`toggleTheme()` | 主題切換鈕 | 讀者手動選擇優先，否則依裝置設定；無法保存時僅本次有效 | Confirmed |
+| 首頁最新文章 | `selectLatestArticles()`、`home/LatestArticles.astro`（`LATEST_ARTICLE_COUNT`） | 首頁「最新文章」 | 已發布文章依發布日期新到舊取 5 篇（單篇與系列文章皆算） | Confirmed |
 
 ### 1.2 便利貼（改版後淘汰）（Sticky Notes）
 
@@ -94,9 +94,9 @@
 | 移動／縮放便利貼 | `onPointerMove`/`onPointerUp`、`clampToViewport()` | 拖曳標題列／右下角 | 位置限制在視窗內；放開時存檔 | **To Be Deleted**（blog-ui-redesign 移除） |
 | 切換便利貼顏色 | 顏色按鈕循環 `COLORS`、詳情頁色票 | 讀者點擊 | 改色並存檔 | **To Be Deleted**（blog-ui-redesign 移除） |
 | 刪除便利貼 | `removeNote()` | 點 ×、拖到垃圾桶區、面板列表 × | 自畫面與存放中移除 | **To Be Deleted**（blog-ui-redesign 移除） |
-| 切換主題 | `getNextTheme()`、`ThemeToggle` | 讀者點主題按鈕 | `<html data-theme>` 在 `light`/`dark` 間切換；Mermaid 圖與 Giscus 跟著重繪 | |
-| 估算閱讀時間 | （待架構決定） | 建置文章頁與各列表 | 每篇文章得到「N 分鐘」 | Confirmed（blog-ui-redesign） |
-| 產生文章目錄 | （待架構決定） | 建置文章頁 | 章 ≥ 2 時產出目錄；讀者捲動時標出目前章節 | Confirmed（blog-ui-redesign） |
+| 切換主題 | `toggleTheme()`、`ThemeToggle`（blog-ui-redesign 起；原 `getNextTheme()` 已移除） | 讀者點主題按鈕 | `<html data-theme>` 在 `light`/`dark` 間切換；Mermaid 圖與 Giscus 跟著重繪 | |
+| 估算閱讀時間 | `estimateReadingMinutes()` | 建置文章頁與各列表 | 每篇文章得到「N 分鐘」 | Confirmed（blog-ui-redesign） |
+| 產生文章目錄 | `buildTableOfContents()`＋`highlightCurrentChapter()` | 建置文章頁 | 章 ≥ 2 時產出目錄；讀者捲動時標出目前章節 | Confirmed（blog-ui-redesign） |
 | 篩選作品集 | `filterProjects(category)` | 讀者點作品類型標籤 | 只顯示該類型作品（`all` 顯示全部） | **To Be Deleted**（blog-ui-redesign 移除） |
 | 切換履歷語系 | `LanguageSwitcher`、`/cv/en`、`/cv/zh` | 讀者點語系 | 以 `getLocalizedText` 重新取字 | |
 | 履歷存成 PDF | `DownloadButton` | 讀者點「存成 PDF / Save as PDF」 | 呼叫瀏覽器列印；建議檔名 `{name} - {job} - CV` | |
@@ -109,7 +109,7 @@
 | Ambiguous Term | Meaning in Context A | Meaning in Context B | Resolution |
 | :--- | :--- | :--- | :--- |
 | `blog` / `post` / `article` | collection 與型別叫 `blogs`、`BlogEntry` | 純邏輯層叫 `ArticleLike`、`articles`；導覽叫 `prevPost`/`nextPost`；UI 叫「文章」「Recent posts」 | 待確認：建議領域詞固定為「文章（Article）」，`blogs` 只保留為 collection 名稱 |
-| `parent` | frontmatter 欄位名，值是系列名稱 | 元件 `ParentItem` / `parentName` / `childrenCount` 代表「系列卡片」 | 待確認：領域詞為「系列」；`parent` 視為歷史欄位名不改，元件命名可逐步改為 Series 語彙 |
+| `parent` | frontmatter 欄位名，值是系列名稱 | 元件 `ParentItem` / `parentName` / `childrenCount` 代表「系列卡片」 | 領域詞為「系列」；`parent` 保留為 frontmatter 歷史欄位名。blog-ui-redesign 已將元件改為 `SeriesEntry`（屬性 `series`），`ParentItem` 已移除 |
 | `slug` | 文章頁路由參數 `[...slug]` = `blog.id`（檔案路徑） | `Series.slug` = `createSlug(系列名稱)` | 兩者不同概念；建議稱前者「文章路徑（id）」、後者「系列代稱」 |
 | `projects` | `introduce.json` 的作品集項目（首頁 Portfolio） | `cv.json` 的 `projects`（履歷 Projects 區塊），兩份資料各自維護 | 待確認：兩者是否應為同一份資料來源，或確實是不同受眾的兩種清單 |
 | `side_projects` vs `projects` vs 作品類型 `Side Project` | 履歷的 `side_projects` 以經歷格式呈現，標題「技術寫作與開源」 | 作品集 `type.en = "Side Project"` 是類型標籤 | 待確認命名；`side_projects` 實際內容偏「技術寫作與開源」 |
