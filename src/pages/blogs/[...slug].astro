@@ -11,7 +11,6 @@ import PostNavigation from '../../components/blog/PostNavigation.astro';
 import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import GiscusComments from '../../components/common/GiscusComments.astro';
 import BackToTop from '../../components/common/BackToTop.astro';
-import StickyNotes from '../../components/common/StickyNotes.astro';
 import { createSlug } from '../../utils/slugify';
 import { getAdjacentPosts, getAdjacentSeriesPosts, getPublishedBlogs } from '../../utils/series';
 
@@ -79,8 +78,6 @@ const { prevPost, nextPost } = seriesName
         </footer>
     </article>
     <BackToTop />
-
-    <StickyNotes />
 
     <script>
         import "../../scripts/mobileFixes";

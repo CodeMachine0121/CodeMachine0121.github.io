@@ -297,6 +297,13 @@ describe('文章目錄', () => {
   });
 });
 
+describe('移除的功能', () => {
+  test('文章頁沒有便利貼', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    expect(html).not.toContain('sticky-notes');
+  });
+});
+
 describe('草稿不外流', () => {
   test('draft 文章不出現在 RSS、sitemap 或頁面', async () => {
     const rss = read('rss.xml');
