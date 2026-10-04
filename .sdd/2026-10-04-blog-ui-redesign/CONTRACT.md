@@ -3,7 +3,7 @@
 Contract: PRD.md
 Design map: ARCH.md
 Implementation: `src/`（Astro 靜態站）
-Oracle: Acceptance Criteria（33 AC ＋ 6 BR ＋ 4 NFR = 43 clauses）
+Oracle: Acceptance Criteria（PRD v1.1：35 AC ＋ 6 BR ＋ 4 NFR = 45 clauses）
 
 > **Run 2（依 Run 1 回饋補測試、修正後重新稽核）。** Run 1：19/43 conforms（44%），0 violation、0 gap；問題集中在瀏覽器互動沒有進版控的測試、數條建置測試只抽查。
 >
@@ -33,9 +33,11 @@ Oracle: Acceptance Criteria（33 AC ＋ 6 BR ＋ 4 NFR = 43 clauses）
 | AC-15 | US-04 裝置為淺色時預設淺色 | 頁面以淺色顯示 | 同上 | `e2e/features/reader-experience.feature`「裝置為淺色時預設淺色」 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-16 | US-04 手動切換後記住選擇 | 裝置深色、手動切淺色 → 再回來仍為淺色 | `src/scripts/theme.ts:15`、`ThemeInit.astro` | `e2e/features/reader-experience.feature`「手動切換後記住選擇」 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-17 | US-04 瀏覽器不允許記住設定 | 本次立即切換；下次依裝置設定 | `theme.ts:22`（try/catch）、`ThemeInit.astro`（try/catch） | `e2e/features/reader-experience.feature`「瀏覽器不允許記住設定」 | asserts-oracle | produces-oracle | ✅ conforms |
-| AC-18 | US-05 首頁呈現自我介紹、進行中的系列與最新文章 | 上半部自介＋履歷入口；下半部系列入口＋最新 5 篇 | `components/home/Intro.astro`、`LatestArticles.astro` | BO:313、322、338 | asserts-oracle | produces-oracle | ✅ conforms |
-| AC-19 | US-05 草稿不出現在首頁並往下補足 | 最新一篇為草稿時不出現，仍列 5 篇已發布 | `pages/index.astro`（`getPublishedBlogs`）→ `selectLatestArticles` | BO:322（與 RSS 比對） | shallow（內容中沒有草稿，斷言無法區分「有過濾」與「沒過濾」） | produces-oracle | 🟠 mis-asserted |
-| AC-20 | US-05 沒有任何系列時不顯示系列入口 | 首頁沒有系列入口，只列最新文章 | `LatestArticles.astro`（`latestSeries &&`） | SC「完全沒有系列文章時回傳 null」（只到資料層） | no-test（元件的條件呈現沒有測試） | produces-oracle | 🟡 partial |
+| AC-18 | US-05 首頁呈現自我介紹、最新的系列與最新的單篇文章 | 上半部自介＋履歷入口；下半部建立日期最新的系列入口＋最新 5 篇單篇文章 | `components/home/Intro.astro`、`LatestArticles.astro` | BO:「上半部有自我介紹…」「系列入口是建立日期…最新的系列」「最新文章只列單篇文章，且是最新的 5 篇」 | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-18a | US-05 系列入口依建立日期，而非最近更新（v1.1） | A（2025-01 開始、2026-06 更新）與 B（2026-01 開始）→ 首頁是 B | `series-core.ts`（`selectNewestSeries`） | SC「取第一篇發布最晚的系列，而不是最近更新的系列」＋ BO「系列入口是建立日期…」（實際內容：首頁為 Web2→Web3 系列，非最近更新的量化交易系列） | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-18b | US-05 最新文章不列入系列文章（v1.1） | 最新 3 篇是系列文章時不出現，列的是最新 5 篇單篇 | `LatestArticles.astro`（`selectStandaloneArticles`） | BO「最新文章只列單篇文章，且是最新的 5 篇」（以系列頁判定歸屬、以發布時間判定新舊） | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-19 | US-05 草稿不出現在首頁並往下補足 | 最新一篇為草稿時不出現，仍列 5 篇已發布 | `pages/index.astro`（`getPublishedBlogs`）→ `selectStandaloneArticles` | BO「最新文章只列單篇文章…」 | shallow（內容中沒有草稿，斷言無法區分「有過濾」與「沒過濾」） | produces-oracle | 🟠 mis-asserted |
+| AC-20 | US-05 沒有任何系列時不顯示系列入口 | 首頁沒有系列入口，只列最新文章 | `LatestArticles.astro`（`newestSeries &&`） | SC `selectNewestSeries`「完全沒有系列文章時回傳 null」（只到資料層） | no-test（元件的條件呈現沒有測試） | produces-oracle | 🟡 partial |
 | AC-21 | US-05 作品集直接列出、不再篩選 | 9 個作品全部列出，沒有分類篩選 | `components/home/ProjectList.astro` | BO:346 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-22 | US-05 經歷精簡呈現 | 只列最近 3 段，並有完整履歷入口 | `components/home/ExperienceSummary.astro` | BO:352 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-23 | US-06 便利貼不再出現 | 頁面上沒有便利貼，也沒有新增入口 | `pages/blogs/[...slug].astro`（已移除） | BO:433 | asserts-oracle | produces-oracle | ✅ conforms |
@@ -52,7 +54,7 @@ Oracle: Acceptance Criteria（33 AC ＋ 6 BR ＋ 4 NFR = 43 clauses）
 | BR-01 | 閱讀時間公式，且文章頁、文章列表、首頁最新文章、系列頁都顯示 | 四處都顯示依公式算出的「N 分鐘」 | `reading-time.ts`、`ArticleMeta.astro`（文章頁與列表共用） | RT ＋ BO「文章列表／系列頁／文章頁／首頁最新文章都標出閱讀時間」 | asserts-oracle | produces-oracle | ✅ conforms |
 | BR-02 | 目錄只列章與節；章少於 2 不顯示；寬螢幕側欄＋目前位置；手機收合 | 同 AC-07～13 | 同 AC-07～13 | 同 AC-07～13 | asserts-oracle | produces-oracle | ✅ conforms |
 | BR-03 | 主題：手動選擇優先 → 裝置設定；無法記住時僅本次有效 | 同 AC-14～17 | 同 AC-14～17 | 同 AC-14～17（`e2e/features/reader-experience.feature`） | asserts-oracle | produces-oracle | ✅ conforms |
-| BR-04 | 首頁最新文章：已發布文章依日期新到舊取 5 篇（單篇與系列皆算） | 5 篇、新到舊、系列文章也算 | `series-core.ts`（`selectLatestArticles`） | SC「selectLatestArticles」三則 ＋ BO:322 | asserts-oracle | produces-oracle | ✅ conforms |
+| BR-04 | 首頁最新文章：已發布的單篇文章依日期新到舊取 5 篇；首頁系列入口為建立日期最新的系列（v1.1） | 5 篇單篇、新到舊；系列入口為第一篇最晚的系列 | `series-core.ts`（`selectStandaloneArticles`、`selectNewestSeries`） | SC「selectStandaloneArticles」「selectNewestSeries」＋ BO 兩則首頁測試 | asserts-oracle | produces-oracle | ✅ conforms |
 | BR-05 | 首頁經歷只列最近 3 段，其餘看完整履歷 | 3 段＋履歷入口 | `ExperienceSummary.astro` | BO:352 | asserts-oracle | produces-oracle | ✅ conforms |
 | BR-06 | 相鄰文章、搜尋、草稿、網址完全沿用既有規則 | 同 AC-25～30 | 同 AC-25～30 | 網址、相鄰文章、搜尋皆有斷言（見 AC-25～29）；草稿部分同 AC-30 | shallow（僅草稿部分） | produces-oracle | 🟠 mis-asserted |
 | NFR-01 | 效能：字型不阻塞首屏、數學式建置期呈現、圖片走外部儲存、無 JS 可讀、手機可用 | 各項做法維持 | `SiteFonts.astro`、`astro.config.mjs`（rehype-katex）、`TableOfContents.astro`（`<details>`） | BO「字型不阻塞首屏」「數學式在建置期就呈現」＋ `e2e/features/reader-experience.feature`「停用程式執行時仍可閱讀」「手機寬度不會出現橫向捲動」 | asserts-oracle | produces-oracle | ✅ conforms |
@@ -74,7 +76,7 @@ Oracle: Acceptance Criteria（33 AC ＋ 6 BR ＋ 4 NFR = 43 clauses）
 
 ## Summary
 
-- Conforms: 39/43 clauses ✅ (91%)
+- Conforms: 41/45 clauses ✅ (91%)（PRD v1.1 新增 AC-18a、AC-18b，皆 conforms）
 - Violations: —
 - Mis-asserted: AC-19, AC-30, BR-06
 - Partial: AC-20
