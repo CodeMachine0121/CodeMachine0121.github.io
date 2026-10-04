@@ -33,3 +33,6 @@ test-results/*
 # 共享給 repo 的 Agent 文件與規範（其餘 .claude/ 仍維持本地）
 !.claude/docs/
 !.claude/rules/
+
+# playwright-bdd 由 .feature 產生的測試檔
+e2e/.features-gen/
