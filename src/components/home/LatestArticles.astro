@@ -2,25 +2,26 @@
 import HomeSection from './HomeSection.astro';
 import ArticleListItem from '../blog/ArticleListItem.astro';
 import SeriesEntry from '../blog/SeriesEntry.astro';
-import { selectLatestArticles, selectLatestSeries, type BlogEntry } from '../../utils/series';
+import { selectNewestSeries, selectStandaloneArticles, type BlogEntry } from '../../utils/series';
 
 interface Props {
   /** 已發布的文章（草稿已濾掉） */
   blogs: BlogEntry[];
 }
 
-/** 首頁列出的最新文章篇數 */
+/** 首頁列出的最新單篇文章篇數（系列文章由系列入口代表，不列在這裡） */
 const LATEST_ARTICLE_COUNT = 5;
 
 const { blogs } = Astro.props;
-const latestSeries = selectLatestSeries(blogs);
-const latestArticles = selectLatestArticles(blogs, LATEST_ARTICLE_COUNT);
+// 首頁介紹的是「最新開始的系列」，不是文章列表頁的「最近更新的系列」
+const newestSeries = selectNewestSeries(blogs);
+const latestArticles = selectStandaloneArticles(blogs).slice(0, LATEST_ARTICLE_COUNT);
 ---
 
 <HomeSection title="最新文章" titleId="latest-title" link={{ href: "/blogs", label: "所有文章 →" }}>
-  {latestSeries && (
+  {newestSeries && (
     <div class="mt-6" data-home-series>
-      <SeriesEntry series={latestSeries} label="進行中的系列" />
+      <SeriesEntry series={newestSeries} label="最新系列" />
     </div>
   )}
 

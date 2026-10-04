@@ -375,28 +375,57 @@ describe('首頁', () => {
     expect(html.slice(introStart, latestStart)).toContain('href="/cv"');
   });
 
-  test('最新文章列出 RSS 中最新的 5 篇已發布文章', () => {
-    const rssTitles = [...read('rss.xml').matchAll(/<item><title>([^<]*)<\/title>/g)]
-      .map(match => match[1]!)
-      .slice(0, 5);
-    const latestBlock = home().split('data-home-latest')[1] ?? '';
-    const homeTitles = [...latestBlock.matchAll(/<a href="\/blogs\/[^"]*"[^>]*>\s*([^<]*?)\s*<\/a>/g)]
-      .map(match => match[1]!)
-      .slice(0, 5);
+  /** 從系列頁（含分頁）取出每個系列的文章網址與發布日期 */
+  async function seriesFromBuiltPages() {
+    const series = new Map<string, { articles: Set<string>; dates: string[] }>();
+    for (const file of await allHtmlFiles(join(DIST, 'series'))) {
+      const slug = file.split('/series/')[1]!.split('/')[0]!;
+      if (slug === 'index.html') continue;
+      const html = readFileSync(file, 'utf-8');
+      const entry = series.get(slug) ?? { articles: new Set<string>(), dates: [] };
+      for (const match of html.matchAll(/<a href="(\/blogs\/[^"]+)"/g)) entry.articles.add(decodeURIComponent(match[1]!));
+      for (const match of html.matchAll(/<time datetime="([^"]+)"/g)) entry.dates.push(match[1]!);
+      series.set(slug, entry);
+    }
+    return series;
+  }
 
-    const decode = (text: string) =>
-      text.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  const homeLatestHrefs = () =>
+    [...(home().split('data-home-latest')[1]?.split('</section>')[0] ?? '').matchAll(/<a href="(\/blogs\/[^"]+)"/g)].map(
+      match => decodeURIComponent(match[1]!)
+    );
 
-    expect(rssTitles).toHaveLength(5);
-    expect(homeTitles.map(decode)).toEqual(rssTitles.map(decode));
+  test('最新文章只列單篇文章，且是最新的 5 篇', async () => {
+    const seriesArticles = new Set([...(await seriesFromBuiltPages()).values()].flatMap(entry => [...entry.articles]));
+
+    // 所有已建置的單篇文章頁，依發布日期新到舊
+    const standaloneDates: string[] = [];
+    for (const file of await allHtmlFiles(join(DIST, 'blogs'))) {
+      const html = readFileSync(file, 'utf-8');
+      const published = html.match(/<meta property="article:published_time" content="([^"]+)"/)?.[1];
+      const href = decodeURIComponent(html.match(/<link rel="canonical" href="https:\/\/[^/]+(\/blogs\/[^"]+?)\/?"/)?.[1] ?? '');
+      if (published && !seriesArticles.has(href)) standaloneDates.push(published);
+    }
+    standaloneDates.sort().reverse();
+
+    const hrefs = homeLatestHrefs();
+    expect(hrefs).toHaveLength(5);
+    for (const href of hrefs) expect(seriesArticles.has(href)).toBe(false);
+
+    const homeDates = [...(home().split('data-home-latest')[1]?.split('</section>')[0] ?? '').matchAll(/<time datetime="([^"]+)"/g)].map(
+      match => match[1]!
+    );
+    expect(homeDates).toEqual(standaloneDates.slice(0, 5));
   });
 
-  test('掛著進行中系列的入口，與文章列表的是同一個', () => {
-    const homeSeries = home().split('data-home-series')[1]?.match(/href="\/series\/([^"]+)"/)?.[1];
-    const listSeries = read('blogs/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
+  test('系列入口是建立日期（第一篇發布日期）最新的系列', async () => {
+    const series = await seriesFromBuiltPages();
+    const startedAt = (dates: string[]) => [...dates].sort()[0]!;
+    const newest = [...series.entries()].sort(([, a], [, b]) => startedAt(b.dates).localeCompare(startedAt(a.dates)))[0]![0];
 
+    const homeSeries = home().split('data-home-series')[1]?.match(/href="\/series\/([^"]+)"/)?.[1];
     expect(homeSeries).toBeTruthy();
-    expect(homeSeries).toBe(listSeries);
+    expect(decodeURIComponent(homeSeries!)).toBe(newest);
   });
 
   test('作品全部直接列出，沒有分類篩選', () => {

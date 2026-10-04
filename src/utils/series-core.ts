@@ -108,18 +108,6 @@ export function selectStandaloneArticles<T extends ArticleLike>(blogs: readonly 
 }
 
 /**
- * 取得最新的幾篇文章（單篇與系列文章都算），最新的在前。
- *
- * 首頁「最新文章」用它；草稿要在呼叫前就濾掉（`getPublishedBlogs`）。
- */
-export function selectLatestArticles<T extends ArticleLike>(blogs: readonly T[], limit: number): T[] {
-  return blogs
-    .slice()
-    .sort((a, b) => sortByDateAsc(b, a))
-    .slice(0, limit);
-}
-
-/**
  * 取得某系列的文章，第一篇在前。
  *
  * 這是「系列從第一篇讀到最後一篇」的閱讀順序，`findAdjacent` 依賴它。
@@ -203,4 +191,23 @@ export function groupIntoSeries<T extends ArticleLike>(blogs: readonly T[]): Ser
  */
 export function selectLatestSeries<T extends ArticleLike>(blogs: readonly T[]): Series<T> | null {
   return groupIntoSeries(blogs)[0] ?? null;
+}
+
+/**
+ * 取出建立日期最新的系列：第一篇文章發布得最晚的那一個。
+ *
+ * 和 `selectLatestSeries`（最近更新）不同：一個很早開始、最近還在更新的系列，
+ * 會輸給一個晚開始的新系列。首頁用它來介紹「最新開始的系列」。
+ * 建立日期相同時，最近更新的優先。
+ *
+ * @returns 建立日期最新的系列；完全沒有系列文章時回傳 null
+ */
+export function selectNewestSeries<T extends ArticleLike>(blogs: readonly T[]): Series<T> | null {
+  const startedAt = (series: Series<T>): number =>
+    series.articles.reduce(
+      (earliest, article) => Math.min(earliest, new Date(article.data.datetime).getTime()),
+      Number.POSITIVE_INFINITY
+    );
+
+  return groupIntoSeries(blogs).sort((a, b) => startedAt(b) - startedAt(a))[0] ?? null;
 }
