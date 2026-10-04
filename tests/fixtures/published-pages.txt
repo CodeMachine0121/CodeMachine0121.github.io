@@ -13,7 +13,6 @@ blogs/clean-architecture-with-asp-dotnet-core-10/index.html
 blogs/code-魔術師-aop-using-net/index.html
 blogs/csharp-net--隨口聊一下-mutexsemaphoreslim-與-lock/index.html
 blogs/csharp-unit-test-如何驗證多次呼叫/index.html
-blogs/day-05erc-20-標準解析發行你的第一個鏈上代幣/index.html
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-01告別傳統後端為什麼智能合約是確定性狀態機/index.html
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-02foundry-實戰打造高效能的-web3-開發環境/index.html
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-03solidity-資料結構storage-vs-memory-vs-calldata-的性能真相/index.html
