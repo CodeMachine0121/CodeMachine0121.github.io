@@ -2,6 +2,7 @@
 import ArticleListItem from './ArticleListItem.astro';
 import SeriesEntry from './SeriesEntry.astro';
 import SearchBar from '../common/SearchBar.astro';
+import UiText from '../common/UiText.astro';
 import { selectLatestSeries, selectStandaloneArticles, type BlogEntry } from '../../utils/series';
 
 interface Props {
@@ -20,15 +21,15 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
 
 <section class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 sm:pt-16">
   <header class="mb-8">
-    <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl">文章</h1>
-    <p class="mt-2 text-muted">軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。</p>
+    <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl"><UiText text="articles.title" /></h1>
+    <p class="mt-2 text-muted"><UiText text="articles.subtitle" /></p>
   </header>
 
-  <SearchBar class="mb-8" placeholder="搜尋文章標題或系列…" label="搜尋文章標題或系列" />
+  <SearchBar class="mb-8" placeholder="search.placeholder" label="search.label" />
 
   {latestSeries && (
     <div id="series-list" class="series-card mb-4" data-series-name={latestSeries.name}>
-      <SeriesEntry series={latestSeries} label="進行中的系列" />
+      <SeriesEntry series={latestSeries} label="series.ongoing" />
     </div>
   )}
 
@@ -47,8 +48,8 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
   </div>
 
   <div id="no-results" class="hidden py-16 text-center" role="status">
-    <p class="font-serif text-xl text-ink">沒有找到符合的文章</p>
-    <p class="mt-2 text-muted">試試其他關鍵字</p>
+    <p class="font-serif text-xl text-ink"><UiText text="search.noResults" /></p>
+    <p class="mt-2 text-muted"><UiText text="search.tryAgain" /></p>
   </div>
 </section>
 

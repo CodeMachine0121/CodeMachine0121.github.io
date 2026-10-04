@@ -38,6 +38,10 @@ function attr(html: string, pattern: RegExp): string | null {
   return html.match(pattern)?.[1] ?? null;
 }
 
+/** 閱讀時間的標記：中英兩份，數字相同（\\1 指回 data-reading-time 的分鐘數） */
+const READING_TIME =
+  'data-reading-time="(\\d+)"><span data-ui-lang="zh" lang="zh-Hant-TW">\\1 分鐘</span><span data-ui-lang="en" lang="en">\\1 min read</span>';
+
 /** 頁面實際套用的 CSS：外部樣式表加上 Astro 內嵌在頁面裡的 <style> */
 function cssOf(html: string): string {
   const stylesheets = [...html.matchAll(/href="(\/_astro\/[^"]+\.css)"/g)].map(match => read(match[1]!.slice(1)));
@@ -279,8 +283,9 @@ describe('文章列表', () => {
 
   test('搜尋框有可存取名稱', () => {
     const html = read('blogs/index.html');
-    const label = html.match(/<label[^>]*for="blog-search"[^>]*>([^<]*)<\/label>/)?.[1] ?? '';
-    expect(label.trim()).not.toBe('');
+    const label = html.match(/<label[^>]*for="blog-search"[^>]*>([\s\S]*?)<\/label>/)?.[1] ?? '';
+    expect(label).toMatch(/data-ui-lang="zh"[^>]*>[^<]+</);
+    expect(label).toMatch(/data-ui-lang="en"[^>]*>[^<]+</);
   });
 });
 
@@ -288,7 +293,7 @@ describe('預估閱讀時間', () => {
   test('文章列表的每一篇都標出閱讀時間', () => {
     const html = read('blogs/index.html');
     const items = [...html.matchAll(/class="blog-item[^"]*"/g)].length;
-    const readingTimes = [...html.matchAll(/data-reading-time="(\d+)">\1 分鐘</g)].length;
+    const readingTimes = [...html.matchAll(new RegExp(READING_TIME, 'g'))].length;
 
     expect(items).toBeGreaterThan(0);
     expect(readingTimes).toBe(items);
@@ -297,12 +302,12 @@ describe('預估閱讀時間', () => {
   test('文章頁的標題區標出閱讀時間', () => {
     const header = read('blogs/到底怎麼切微服務/index.html').split('</header>')[1] ?? '';
     // 第一個 </header> 是網站頁首，第二段才是文章標題區
-    expect(header).toMatch(/data-reading-time="(\d+)">\1 分鐘/);
+    expect(header).toMatch(new RegExp(READING_TIME));
   });
 
   test('首頁最新文章的每一篇都標出閱讀時間', () => {
     const latestBlock = read('index.html').split('data-home-latest')[1]?.split('</section>')[0] ?? '';
-    expect([...latestBlock.matchAll(/data-reading-time="(\d+)">\1 分鐘/g)]).toHaveLength(5);
+    expect([...latestBlock.matchAll(new RegExp(READING_TIME, 'g'))]).toHaveLength(5);
   });
 
   test('系列頁的每一篇都標出閱讀時間', () => {

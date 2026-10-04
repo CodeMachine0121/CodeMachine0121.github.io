@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import NotFound from '../components/layouts/NotFound.astro';
+import { localize } from '../utils/ui-language';
 ---
 
-<Layout title="Page Not Found" description="找不到這個頁面。" noindex>
+<Layout title={localize('pageTitle.notFound')} description="找不到這個頁面。" noindex>
 	<NotFound />
 </Layout>

@@ -1,10 +1,12 @@
 ---
+import UiText from '../common/UiText.astro';
 import type { Series } from '../../types/series';
+import { formatArticleCount, inBothLanguages, type UiTextSource } from '../../utils/ui-language';
 
 interface Props {
   series: Series;
   /** 標在入口上方的小字，例如「進行中的系列」 */
-  label?: string;
+  label?: UiTextSource;
 }
 
 const { series, label } = Astro.props;
@@ -15,11 +17,11 @@ const { series, label } = Astro.props;
   class="group flex items-center justify-between gap-4 rounded border border-line bg-surface px-5 py-4 hover:border-accent"
 >
   <div class="min-w-0">
-    {label && <p class="text-xs font-medium uppercase tracking-wide text-accent">{label}</p>}
-    <h2 class="mt-1 font-serif text-lg font-bold leading-snug text-ink group-hover:text-accent">
+    {label && <p class="text-xs font-medium uppercase tracking-wide text-accent"><UiText text={label} /></p>}
+    <h2 class="mt-1 font-serif text-lg font-bold leading-snug text-ink group-hover:text-accent" data-content>
       {series.name}
     </h2>
-    <p class="mt-1 text-sm text-muted">{series.count} 篇文章</p>
+    <p class="mt-1 text-sm text-muted"><UiText text={inBothLanguages(language => formatArticleCount(series.count, language))} /></p>
   </div>
   <span class="shrink-0 text-muted group-hover:text-accent" aria-hidden="true">→</span>
 </a>

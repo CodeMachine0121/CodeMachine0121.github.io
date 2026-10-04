@@ -1,10 +1,11 @@
 ---
 // 圖片模態視窗元件，用於放大檢視文章內文中的圖片
+import { uiAttributes } from '../../utils/ui-language';
 ---
 
-<div id="image-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 hidden" role="dialog" aria-modal="true" aria-label="圖片預覽">
+<div id="image-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 hidden" role="dialog" aria-modal="true" {...uiAttributes({ 'aria-label': 'imageModal.label' })}>
   <div class="relative max-w-screen-lg max-h-screen p-4">
-    <button id="close-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 z-10 hover:bg-gray-700" aria-label="關閉圖片預覽">
+    <button id="close-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full p-2 z-10 hover:bg-gray-700" {...uiAttributes({ 'aria-label': 'imageModal.close' })}>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>

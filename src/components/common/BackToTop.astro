@@ -1,9 +1,13 @@
+---
+import { uiAttributes } from '../../utils/ui-language';
+---
+
 <div class="back-to-top fixed bottom-6 right-6 z-30 opacity-0 invisible transition-opacity">
     <button
         id="back-to-top-button"
         type="button"
         class="inline-flex h-10 w-10 items-center justify-center rounded border border-line bg-surface text-muted shadow-sm hover:text-accent"
-        aria-label="回到頂部"
+        {...uiAttributes({ 'aria-label': 'site.backToTop' })}
     >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l5-5 5 5M10 7v9" />

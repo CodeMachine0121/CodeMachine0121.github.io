@@ -1,20 +1,22 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SeriesEntry from "../components/blog/SeriesEntry.astro";
+import UiText from "../components/common/UiText.astro";
 import { generateSeriesList } from "../utils/series";
+import { localize } from "../utils/ui-language";
 
 const seriesList = await generateSeriesList();
 ---
 
-<Layout title="系列文章">
+<Layout title={localize("pageTitle.series")}>
   <section class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 sm:pt-16">
     <header class="mb-8">
-      <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl">系列文章</h1>
-      <p class="mt-2 text-muted">依最近更新排序，點進去從第一篇開始讀。</p>
+      <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl"><UiText text="series.overviewTitle" /></h1>
+      <p class="mt-2 text-muted"><UiText text="series.overviewSubtitle" /></p>
     </header>
 
     {seriesList.length === 0 ? (
-      <p class="py-16 text-center text-muted">目前沒有任何系列文章。</p>
+      <p class="py-16 text-center text-muted"><UiText text="series.none" /></p>
     ) : (
       <ul class="space-y-4">
         {seriesList.map(series => (

@@ -1,5 +1,7 @@
 ---
+import UiText from '../common/UiText.astro';
 import { estimateReadingMinutes } from '../../utils/reading-time';
+import { formatReadingTime, inBothLanguages } from '../../utils/ui-language';
 
 interface Props {
   /** 文章原始內文；呼叫端只要把文章的 body 傳進來，不需要知道怎麼算 */
@@ -9,4 +11,4 @@ interface Props {
 const minutes = estimateReadingMinutes(Astro.props.markdown ?? '');
 ---
 
-<span data-reading-time={minutes}>{minutes} 分鐘</span>
+<span data-reading-time={minutes}><UiText text={inBothLanguages(language => formatReadingTime(minutes, language))} /></span>

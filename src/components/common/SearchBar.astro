@@ -1,12 +1,15 @@
 ---
+import UiText from './UiText.astro';
+import { uiAttributes, type UiTextKey } from '../../utils/ui-language';
+
 export interface Props {
-  placeholder?: string;
-  class?: string;
+  placeholder: UiTextKey;
   /** 輸入框的可存取名稱（不會顯示，但螢幕閱讀器會讀） */
-  label?: string;
+  label: UiTextKey;
+  class?: string;
 }
 
-const { placeholder = '搜尋文章...', class: className = '', label = '搜尋文章' } = Astro.props;
+const { placeholder, label, class: className = '' } = Astro.props;
 ---
 
 <div class:list={['relative', className]}>
@@ -19,12 +22,12 @@ const { placeholder = '搜尋文章...', class: className = '', label = '搜尋�
   >
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
   </svg>
-  <label class="sr-only" for="blog-search">{label}</label>
+  <label class="sr-only" for="blog-search"><UiText text={label} /></label>
   <input
     type="search"
     id="blog-search"
     class="w-full rounded border border-line bg-surface py-2.5 pl-9 pr-3 text-ink placeholder:text-muted focus:border-accent focus:outline-none"
-    placeholder={placeholder}
+    {...uiAttributes({ placeholder })}
     autocomplete="off"
   />
 </div>

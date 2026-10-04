@@ -1,5 +1,7 @@
 ---
+import UiText from '../common/UiText.astro';
 import { buildTableOfContents, type HeadingLike } from '../../utils/table-of-contents';
+import { uiAttributes } from '../../utils/ui-language';
 
 interface Props {
   headings: HeadingLike[];
@@ -16,8 +18,8 @@ const chapters = buildTableOfContents(Astro.props.headings);
 {chapters.length > 0 && (
   <div class="toc" data-toc>
     <details class="toc__collapsible mb-8 rounded border border-line bg-surface lg:hidden">
-      <summary class="cursor-pointer select-none px-4 py-3 text-sm font-medium text-ink">目錄</summary>
-      <nav aria-label="文章目錄" class="border-t border-line px-4 py-3">
+      <summary class="cursor-pointer select-none px-4 py-3 text-sm font-medium text-ink"><UiText text="toc.title" /></summary>
+      <nav {...uiAttributes({ 'aria-label': 'toc.label' })} class="border-t border-line px-4 py-3" data-content>
         <ol class="space-y-2 text-sm">
           {chapters.map(chapter => (
             <li>
@@ -35,9 +37,9 @@ const chapters = buildTableOfContents(Astro.props.headings);
       </nav>
     </details>
 
-    <nav aria-label="文章目錄" class="toc__sidebar hidden lg:block">
-      <p class="mb-3 text-xs font-medium uppercase tracking-wide text-muted">目錄</p>
-      <ol class="space-y-2 border-l border-line text-sm">
+    <nav {...uiAttributes({ 'aria-label': 'toc.label' })} class="toc__sidebar hidden lg:block">
+      <p class="mb-3 text-xs font-medium uppercase tracking-wide text-muted"><UiText text="toc.title" /></p>
+      <ol class="space-y-2 border-l border-line text-sm" data-content>
         {chapters.map(chapter => (
           <li>
             <a href={`#${chapter.slug}`} class="toc__link -ml-px block border-l-2 border-transparent pl-3 text-muted hover:text-ink" data-toc-chapter={chapter.slug}>{chapter.text}</a>

@@ -1,5 +1,7 @@
 ---
 import ReadingTime from './ReadingTime.astro';
+import UiText from '../common/UiText.astro';
+import { formatPublishedDate, inBothLanguages } from '../../utils/ui-language';
 import type { BlogEntry } from '../../utils/series';
 
 interface Props {
@@ -8,15 +10,11 @@ interface Props {
 }
 
 const { blog, class: className = '' } = Astro.props;
-const publishedDate = new Date(blog.data.datetime).toLocaleDateString('zh-TW', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const publishedDate = inBothLanguages(language => formatPublishedDate(blog.data.datetime, language));
 ---
 
 <p class:list={['flex flex-wrap items-center gap-x-2 text-sm text-muted', className]}>
-  <time datetime={blog.data.datetime}>{publishedDate}</time>
+  <time datetime={blog.data.datetime}><UiText text={publishedDate} /></time>
   <span aria-hidden="true">·</span>
   <ReadingTime markdown={blog.body} />
 </p>

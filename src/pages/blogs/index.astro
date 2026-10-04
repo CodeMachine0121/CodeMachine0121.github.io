@@ -2,10 +2,11 @@
 import Layout from '../../layouts/Layout.astro';
 import ArticleList from '../../components/blog/ArticleList.astro';
 import { getPublishedBlogs } from '../../utils/series';
+import { localize } from '../../utils/ui-language';
 
 const allBlogs = await getPublishedBlogs();
 ---
 
-<Layout title="Blogs" description="所有文章：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。">
+<Layout title={localize('pageTitle.articles')} description="所有文章：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。">
     <ArticleList blogs={allBlogs} />
 </Layout>

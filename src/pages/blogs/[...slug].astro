@@ -44,13 +44,13 @@ const { prevPost, nextPost } = seriesName
     <article class="article-layout mx-auto max-w-page px-4 pt-10 sm:px-6 sm:pt-14">
         <header class="article-layout__main mb-8">
             {seriesName && (
-                <a href={`/series/${createSlug(seriesName)}`} class="text-xs font-medium uppercase tracking-wide text-accent hover:underline">
+                <a href={`/series/${createSlug(seriesName)}`} class="text-xs font-medium uppercase tracking-wide text-accent hover:underline" data-content>
                     {seriesName}
                 </a>
             )}
-            <h1 class="mt-2 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl">{blog.data.title}</h1>
+            <h1 class="mt-2 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl" data-content>{blog.data.title}</h1>
             {blog.data.description && (
-                <p class="mt-4 text-lg leading-relaxed text-muted">{blog.data.description}</p>
+                <p class="mt-4 text-lg leading-relaxed text-muted" data-content>{blog.data.description}</p>
             )}
             <ArticleMeta blog={blog} class="mt-5 border-b border-line pb-6" />
         </header>
@@ -68,7 +68,7 @@ const { prevPost, nextPost } = seriesName
             <TableOfContents headings={headings} />
         </div>
 
-        <div class="article-layout__main prose article-body">
+        <div class="article-layout__main prose article-body" data-content>
             <Content />
         </div>
 
