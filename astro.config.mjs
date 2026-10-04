@@ -14,6 +14,11 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: "https://coding-afternoon.com",
   integrations: [tailwind(), icon(), mdx(), sitemap()],
+  redirects: {
+    // Day 04 檔名曾帶結尾空白，slug 多一個 "-"；去掉空白後保留舊網址導向新網址。
+    '/blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-04gas-經濟學如何寫出省錢的智能合約-':
+      '/blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-04gas-經濟學如何寫出省錢的智能合約'
+  },
   markdown: {
     // Astro 6.4 起 markdown.remarkPlugins 已棄用，插件改由 unified() 組進 processor。
     processor: unified({

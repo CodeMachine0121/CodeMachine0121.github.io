@@ -18,6 +18,7 @@ blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-01告別�
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-02foundry-實戰打造高效能的-web3-開發環境/index.html
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-03solidity-資料結構storage-vs-memory-vs-calldata-的性能真相/index.html
 blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-04gas-經濟學如何寫出省錢的智能合約-/index.html
+blogs/from-web2-to-web3-building-institutional-grade-defi-systems/day-04gas-經濟學如何寫出省錢的智能合約/index.html
 blogs/index.html
 blogs/ithome/2025/day-1-tdd-濃縮精華-一日搞懂-what-why-how/index.html
 blogs/ithome/2025/day-10-kata-演練fizzbuzz-二---最簡單的實作與重構-綠燈---重構/index.html
