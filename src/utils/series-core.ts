@@ -23,6 +23,7 @@ export interface ArticleLike {
     parent?: string;
     seriesIndex?: number;
     draft?: boolean;
+    image?: string;
   };
 }
 
@@ -166,12 +167,6 @@ export function groupIntoSeries<T extends ArticleLike>(blogs: readonly T[]): Ser
     seriesMap.set(seriesName, articles);
   }
 
-  const latestPublishedAt = (articles: readonly T[]): number =>
-    articles.reduce((latest, article) => {
-      const time = new Date(article.data.datetime).getTime();
-      return time > latest ? time : latest;
-    }, Number.NEGATIVE_INFINITY);
-
   return Array.from(seriesMap.entries())
     .map(([name, articles]) => ({
       name,
@@ -179,7 +174,7 @@ export function groupIntoSeries<T extends ArticleLike>(blogs: readonly T[]): Ser
       articles: sortArticlesBySeries(articles),
       count: articles.length,
     }))
-    .sort((a, b) => latestPublishedAt(b.articles) - latestPublishedAt(a.articles));
+    .sort((a, b) => new Date(lastPublishedOf(b)).getTime() - new Date(lastPublishedOf(a)).getTime());
 }
 
 /**
@@ -210,4 +205,33 @@ export function selectNewestSeries<T extends ArticleLike>(blogs: readonly T[]): 
     );
 
   return groupIntoSeries(blogs).sort((a, b) => startedAt(b) - startedAt(a))[0] ?? null;
+}
+
+/**
+ * 系列的最後更新日期：系列中發布日期最新的那一篇文章的日期（原始的 datetime 字串）。
+ * 系列總覽依它排序，卡片上也顯示它。
+ */
+export function lastPublishedOf<T extends ArticleLike>(series: Series<T>): string {
+  return series.articles.reduce((latest, article) =>
+    new Date(article.data.datetime).getTime() > new Date(latest).getTime() ? article.data.datetime : latest
+  , series.articles[0]?.data.datetime ?? '');
+}
+
+/**
+ * 決定系列的封面網址：設定檔指定的優先；否則用系列中最新一篇有封面的文章；
+ * 都沒有時回傳 null，由畫面顯示預設的佔位封面。
+ *
+ * @param configuredCovers 系列名稱 → 封面網址（未指定為 null），即 config/series-covers.json
+ */
+export function selectSeriesCover<T extends ArticleLike>(
+  series: Series<T>,
+  configuredCovers: Readonly<Record<string, string | null>>
+): string | null {
+  const configured = configuredCovers[series.name];
+  if (configured) return configured;
+
+  const newestWithCover = series.articles
+    .filter(article => article.data.image)
+    .sort((a, b) => sortByDateAsc(b, a))[0];
+  return newestWithCover?.data.image ?? null;
 }

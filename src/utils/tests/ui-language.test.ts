@@ -2,6 +2,7 @@ import { test, expect, describe } from 'bun:test';
 import {
   UI_TEXT,
   formatArticleCount,
+  formatLastUpdated,
   formatPageOf,
   formatPublishedDate,
   formatReadingTime,
@@ -169,5 +170,12 @@ describe('localizedHref', () => {
       href: '/cv/zh',
       'data-ui-attrs': JSON.stringify({ href: { zh: '/cv/zh', en: '/cv/en' } }),
     });
+  });
+});
+
+describe('formatLastUpdated', () => {
+  test('中文「更新於 2026年10月14日」、英文「Updated Oct 14, 2026」', () => {
+    expect(formatLastUpdated('2026-10-14', 'zh')).toBe('更新於 2026年10月14日');
+    expect(formatLastUpdated('2026-10-14', 'en')).toBe('Updated Oct 14, 2026');
   });
 });

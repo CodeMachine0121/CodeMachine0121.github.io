@@ -186,6 +186,12 @@ export function formatArticleCount(count: number, language: Language): string {
   return `${count} ${count === 1 ? 'article' : 'articles'}`;
 }
 
+/** 系列最後更新：中文「更新於 2026年10月14日」、英文「Updated Oct 14, 2026」 */
+export function formatLastUpdated(datetime: string, language: Language): string {
+  const date = formatPublishedDate(datetime, language);
+  return language === 'zh' ? `更新於 ${date}` : `Updated ${date}`;
+}
+
 /** 系列頁分頁：中文「第 2 / 3 頁」、英文「Page 2 of 3」 */
 export function formatPageOf(current: number, last: number, language: Language): string {
   return language === 'zh' ? `第 ${current} / ${last} 頁` : `Page ${current} of ${last}`;

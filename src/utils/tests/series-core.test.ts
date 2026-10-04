@@ -3,8 +3,10 @@ import {
   findAdjacent,
   groupIntoSeries,
   isPublished,
+  lastPublishedOf,
   selectLatestSeries,
   selectNewestSeries,
+  selectSeriesCover,
   selectSeriesArticles,
   selectStandaloneArticles,
   sortArticlesBySeries,
@@ -334,5 +336,93 @@ describe('selectNewestSeries', () => {
   test('完全沒有系列文章時回傳 null', () => {
     expect(selectNewestSeries([article('standalone', '2026-01-01')])).toBeNull();
     expect(selectNewestSeries([])).toBeNull();
+  });
+});
+
+describe('lastPublishedOf', () => {
+  test('系列的最後更新日期是最新一篇的發布日期，與系列內順序無關', () => {
+    const [series] = groupIntoSeries([
+      article('day1', '2026-09-14', { parent: 'S', seriesIndex: 1 }),
+      article('day30', '2026-10-14', { parent: 'S', seriesIndex: 30 }),
+      article('day2', '2026-09-15', { parent: 'S', seriesIndex: 2 }),
+    ]);
+
+    expect(lastPublishedOf(series!)).toBe('2026-10-14');
+  });
+});
+
+describe('系列總覽排序：依最後一篇文章的日期', () => {
+  test('最後一篇較新的系列排前面', () => {
+    const blogs = [
+      article('b1', '2026-10-05', { parent: 'B' }),
+      article('a1', '2026-10-14', { parent: 'A' }),
+    ];
+
+    expect(groupIntoSeries(blogs).map(series => series.name)).toEqual(['A', 'B']);
+  });
+
+  test('只看最後一篇，不看開始日期', () => {
+    const blogs = [
+      // C 很早開始，但最後一篇比 D 新
+      article('c1', '2025-01-01', { parent: 'C' }),
+      article('c2', '2026-04-13', { parent: 'C' }),
+      // D 較晚開始，最後一篇比較舊
+      article('d1', '2026-02-01', { parent: 'D' }),
+      article('d2', '2026-02-17', { parent: 'D' }),
+    ];
+
+    expect(groupIntoSeries(blogs).map(series => series.name)).toEqual(['C', 'D']);
+  });
+});
+
+describe('selectSeriesCover', () => {
+  const seriesOf = (articles: ArticleLike[]) => groupIntoSeries(articles)[0]!;
+
+  test('設定檔指定的封面優先', () => {
+    const series = seriesOf([article('a1', '2026-01-01', { parent: 'A', image: 'https://cdn/article.png' })]);
+
+    expect(selectSeriesCover(series, { A: 'https://cdn/configured.png' })).toBe('https://cdn/configured.png');
+  });
+
+  test('未指定時用最新一篇文章的封面', () => {
+    const series = seriesOf([
+      article('b1', '2026-01-01', { parent: 'B', image: 'https://cdn/older.png' }),
+      article('b2', '2026-02-01', { parent: 'B', image: 'https://cdn/newest.png' }),
+    ]);
+
+    expect(selectSeriesCover(series, { B: null })).toBe('https://cdn/newest.png');
+  });
+
+  test('最新一篇沒有封面時往前找最新一篇有封面的', () => {
+    const series = seriesOf([
+      article('c1', '2026-01-01', { parent: 'C', image: 'https://cdn/first.png' }),
+      article('c2', '2026-02-01', { parent: 'C', image: 'https://cdn/second.png' }),
+      article('c3', '2026-03-01', { parent: 'C' }),
+    ]);
+
+    expect(selectSeriesCover(series, {})).toBe('https://cdn/second.png');
+  });
+
+  test('空字串的封面視為沒有封面', () => {
+    const series = seriesOf([article('d1', '2026-01-01', { parent: 'D', image: '' })]);
+
+    expect(selectSeriesCover(series, { D: '' })).toBeNull();
+  });
+
+  test('都沒有封面時回傳 null（顯示預設佔位封面）', () => {
+    const series = seriesOf([article('e1', '2026-01-01', { parent: 'E' }), article('e2', '2026-02-01', { parent: 'E' })]);
+
+    expect(selectSeriesCover(series, { E: null })).toBeNull();
+  });
+});
+
+describe('lastPublishedOf 以日期比較，不是字串比較', () => {
+  test('沒有補零的日期也比得對', () => {
+    const [series] = groupIntoSeries([
+      article('a', '2026-10-1', { parent: 'S' }),
+      article('b', '2026-9-30', { parent: 'S' }),
+    ]);
+
+    expect(lastPublishedOf(series!)).toBe('2026-10-1');
   });
 });
