@@ -28,7 +28,7 @@
 | 系列篇數 | `Series.count`、`childrenCount` | 「N 篇」「共 N 篇文章」 | 該系列已發布文章數 | Archeology |
 | 系列序號 | `data.seriesIndex` | （不顯示） | 選填非負整數；系列內升冪排序，未設定者排後、同序號再依發布日期 | Archeology |
 | 單篇文章（Standalone Article） | `selectStandaloneArticles()`、`data-series=""` | 文章列表主體 | 沒有 `parent` 的文章；列表依發布日期新到舊 | Archeology |
-| 進行中的系列（Latest Series） | `selectLatestSeries()`、`latestSeries` | 文章列表頁上方的系列卡片 | 「最新一篇發布日期最新」的那個系列；文章列表頁只掛它的入口，其餘走 `/series` | Archeology |
+| 進行中的系列（Latest Series） | `selectLatestSeries()`、`latestSeries` | 文章列表頁上方的系列卡片（首頁改用「最新的系列」） | 「最新一篇發布日期最新」的那個系列；文章列表頁只掛它的入口，其餘走 `/series` | Archeology |
 | 草稿（Draft） | `data.draft`、`isPublished()` | （不顯示） | `draft: true` 的文章：不列出、不建置頁面、不進系列頁／上下篇／RSS。預設 `false` | Archeology |
 | 已發布文章 | `getPublishedBlogs()` | — | 全站取用文章的唯一入口，負責過濾草稿 | Archeology |
 | 未部署文章 | `src/content/not-deployed/` | （不存在於站上） | collection loader 的 base 是 `src/content/blogs`，此資料夾的文章永遠不會被建置 | Archeology |
@@ -42,7 +42,9 @@
 | 文章目錄（Table of Contents） | `buildTableOfContents()`（`utils/table-of-contents.ts`）、`TableOfContents.astro`、`scripts/tableOfContents.ts` | 目錄 | 列出文章的章與節兩層；章少於 2 個不顯示；寬螢幕在正文旁並標出目前位置，手機在文章開頭預設收合 | Confirmed |
 | 章／節 | 正文的第二層／第三層標題（正文從第二層起） | 文章小標 | 章 = 文章最上層小標；節 = 章底下一層；更深的小標不列入目錄 | Confirmed |
 | 主題偏好 | `<html data-theme>`、`THEME_STORAGE_KEY`、`ThemeInit.astro`、`toggleTheme()` | 主題切換鈕 | 讀者手動選擇優先，否則依裝置設定；無法保存時僅本次有效 | Confirmed |
-| 首頁最新文章 | `selectLatestArticles()`、`home/LatestArticles.astro`（`LATEST_ARTICLE_COUNT`） | 首頁「最新文章」 | 已發布文章依發布日期新到舊取 5 篇（單篇與系列文章皆算） | Confirmed |
+| 首頁最新文章 | `selectStandaloneArticles()`、`home/LatestArticles.astro`（`LATEST_ARTICLE_COUNT`） | 首頁「最新文章」 | 已發布的單篇文章（不屬於系列）依發布日期新到舊取 5 篇（v1.1 起不含系列文章） | Confirmed |
+| 最新的系列（Newest Series） | `selectNewestSeries()` | 首頁系列入口「最新系列」 | 建立日期（第一篇文章發布日期）最新的系列；與「進行中的系列」（最近更新）不同，只用在首頁 | Confirmed |
+| 系列建立日期 | 系列中最早一篇文章的 `datetime` | — | 系列沒有獨立的建立日期欄位，以第一篇文章的發布日期代表 | Confirmed |
 
 ### 1.2 便利貼（改版後淘汰）（Sticky Notes）
 
@@ -133,7 +135,7 @@
 | 系列頁每頁篇數 | `ARTICLES_PER_PAGE = 12` | 每頁 12 篇 | |
 | 閱讀速度 | 中文 400 字／分、英文 200 字／分 | — | 閱讀時間估算基準；無條件進位、最少 1 分鐘 |
 | 目錄顯示門檻 | 章 ≥ 2 | — | 少於 2 個章不顯示目錄 |
-| 首頁最新文章篇數 | 5 | — | |
+| 首頁最新文章篇數 | 5 | — | 只計單篇文章 |
 | 首頁經歷段數 | 3 | — | 其餘導向完整履歷 |
 | 空系列代稱退路 | `'series'` | — | `createSlug` 產不出字元時使用 |
 | 便利貼顏色（To Be Deleted） | `yellow`（預設）/ `pink` / `blue` / `green` | 黃／粉／藍／綠 | 點顏色鈕依此順序循環 |

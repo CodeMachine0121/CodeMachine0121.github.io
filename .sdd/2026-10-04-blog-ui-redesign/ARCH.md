@@ -24,7 +24,7 @@
 | `tailwind.config.mjs` | **Modify** | 色彩／字體改對應新 token（`bg`、`surface`、`ink`、`muted`、`line`、`accent`）；typography 外掛改用 token |
 | `src/utils/reading-time.ts` | **Add** | 閱讀時間估算（純函式，可單元測試） |
 | `src/utils/table-of-contents.ts` | **Add** | 從文章標題清單建出兩層目錄（純函式，可單元測試） |
-| `src/utils/series-core.ts` | **Modify** | 新增 `selectLatestArticles`（首頁最新文章） |
+| `src/utils/series-core.ts` | **Modify** | 新增 `selectNewestSeries`（首頁系列入口）；首頁最新文章沿用 `selectStandaloneArticles` |
 | `src/layouts/Layout.astro` | **Modify** | 換字型、移除載入畫面、主題初始化改為可容錯（瀏覽器不允許儲存時不壞）；SEO meta **原封不動** |
 | `src/components/layouts/Header.astro`、`Footer.astro`、`NotFound.astro` | **Modify** | 重寫外觀 |
 | `src/components/common/ThemeToggle.astro`、`src/scripts/theme.ts` | **Modify** | 新外觀；儲存失敗時本次仍生效 |
@@ -49,7 +49,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | `estimateReadingMinutes(markdown)` in `src/utils/reading-time.ts` | Pure function ＋ `READING_SPEED` 常數 | 把一篇文章的原始內文換算成「N 分鐘」：中文字 ÷ 400 ＋ 英文字 ÷ 200，無條件進位、最少 1；程式碼計入，連結網址與 HTML 標籤不計 | — | US-02 全部 |
 | `buildTableOfContents(headings)` in `src/utils/table-of-contents.ts` | Pure function ＋ `TableOfContentsEntry` 型別 | 由文章標題清單（深度、錨點、文字）建出「章 → 節」兩層樹；章少於 2 個回傳空陣列；更深層與無所屬章的節捨棄 | Astro `render()` 的 `headings` | US-03：兩層、只有 1 章、2 章、深層不列 |
-| `selectLatestArticles(blogs, limit)` in `series-core.ts` | Pure function | 依發布日期新到舊取前 N 篇（單篇與系列皆算） | 已發布文章 | US-05：最新 5 篇、草稿補足 |
+| `selectNewestSeries(blogs)` in `series-core.ts` | Pure function | 取建立日期（第一篇發布日期）最新的系列；沒有系列時回傳 null | `groupIntoSeries` | US-05：系列入口依建立日期、沒有系列時不顯示（v1.1） |
 | `tokens.css` | Design tokens | 定義兩組主題的語意色、字體堆疊、正文版寬 | Tailwind config、`article.css`、`cv.scss`、`mermaid.ts` | US-01 |
 | `ReadingTime.astro` | Component | 接收文章內文，渲染「N 分鐘」；呼叫端不需知道算法 | `estimateReadingMinutes` | US-02（文章頁、列表、首頁、系列頁） |
 | `TableOfContents.astro` | Component | 接收標題清單；無目錄時不輸出任何東西；寬螢幕為側欄、窄螢幕為 `<details>` 預設收合（沒有 JS 也可展開） | `buildTableOfContents`、`tableOfContents.ts` | US-03 |
@@ -59,7 +59,7 @@
 | `ArticleListItem.astro` | Component | 單篇文章列：系列名（若有）、標題、摘要（若有）、日期、閱讀時間、封面（若有） | `ReadingTime` | US-02、US-05、US-07 |
 | `SeriesEntry.astro` | Component（取代 `ParentItem`） | 系列入口：系列名、篇數、連結；屬性名改用「系列」語彙 | — | US-05、US-07 |
 | `ArticleList.astro` | Component（取代 `BlogList`） | 文章列表＋搜尋；搜尋邏輯原樣搬移 | `ArticleListItem`、`SeriesEntry`、`SearchBar` | US-07：搜尋 |
-| `Intro.astro`、`LatestArticles.astro`、`ProjectList.astro`、`ExperienceSummary.astro` | Components | 首頁四區塊；`ExperienceSummary` 取資料中前 3 段（資料以新到舊維護）並附完整履歷入口；`ProjectList` 全部列出、無篩選 | `introduce.json`、`selectLatestArticles`、`selectLatestSeries` | US-05 |
+| `Intro.astro`、`LatestArticles.astro`、`ProjectList.astro`、`ExperienceSummary.astro` | Components | 首頁四區塊；`LatestArticles` 掛建立日期最新的系列與最新 5 篇單篇文章；`ExperienceSummary` 取資料中前 3 段（資料以新到舊維護）並附完整履歷入口；`ProjectList` 全部列出、無篩選 | `introduce.json`、`selectNewestSeries`、`selectStandaloneArticles` | US-05 |
 
 > 每個新的純函式都只有一個參數（或資料＋上限），呼叫端一次呼叫就拿到完整結果，沒有需要依序呼叫的步驟。
 
@@ -93,7 +93,7 @@ flowchart TD
   home --> latest["home/LatestArticles"]
   home --> projects["home/ProjectList"]
   home --> experience["home/ExperienceSummary"]
-  latest --> core["series-core: selectLatestArticles / selectLatestSeries"]
+  latest --> core["series-core: selectNewestSeries / selectStandaloneArticles"]
   latest --> item["blog/ArticleListItem"]
   blogIndex["pages/blogs/index"] --> list["blog/ArticleList"] --> item
   list --> entry["blog/SeriesEntry"]
@@ -138,9 +138,11 @@ flowchart TD
 | US-04 依裝置設定（深／淺） | `Layout.astro` inline 主題初始化 |
 | US-04 手動切換後記住 | `ThemeToggle.astro` 寫入偏好 ＋ 初始化讀取偏好 |
 | US-04 瀏覽器不允許記住 | 初始化與切換的 `try/catch`：切換照常生效、讀取失敗則依裝置設定 |
-| US-05 自我介紹＋系列入口＋最新 5 篇 | `Intro`、`LatestArticles`（`selectLatestSeries`、`selectLatestArticles`） |
-| US-05 草稿不出現並補足 | `getPublishedBlogs` → `selectLatestArticles` |
-| US-05 沒有系列時不顯示入口 | `LatestArticles`（`selectLatestSeries` 回傳 null） |
+| US-05 自我介紹＋最新的系列＋最新 5 篇單篇 | `Intro`、`LatestArticles`（`selectNewestSeries`、`selectStandaloneArticles`） |
+| US-05 系列入口依建立日期 | `selectNewestSeries` |
+| US-05 最新文章不列入系列文章 | `selectStandaloneArticles` |
+| US-05 草稿不出現並補足 | `getPublishedBlogs` → `selectStandaloneArticles` |
+| US-05 沒有系列時不顯示入口 | `LatestArticles`（`selectNewestSeries` 回傳 null） |
 | US-05 作品集直接列出 | `ProjectList`（無篩選） |
 | US-05 經歷精簡為 3 段＋完整履歷入口 | `ExperienceSummary` |
 | US-06 便利貼不再出現 | 移除 `StickyNotes` 與腳本 |
