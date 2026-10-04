@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components'
+import { uiAttributes } from '../../utils/ui-language';
 ---
 
 {/*
@@ -9,7 +10,7 @@ import { Icon } from 'astro-icon/components'
 <button
     id="toggle-theme-button"
     type="button"
-    aria-label="切換深淺色主題"
+    {...uiAttributes({ 'aria-label': 'theme.toggle' })}
     class="theme-toggle inline-flex h-9 w-9 items-center justify-center rounded text-muted hover:text-accent">
     <Icon name="Moon" class="theme-toggle__to-dark size-5" />
     <Icon name="Sun" class="theme-toggle__to-light size-5" />

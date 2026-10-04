@@ -520,6 +520,27 @@ describe('整站同一套編輯風格', () => {
   });
 });
 
+describe('介面語言', () => {
+  test('語言在 <head> 裡、首次繪製前就決定', () => {
+    for (const page of SAMPLE_PAGES) {
+      const head = read(page).split('</head>')[0] ?? '';
+      expect(head).toContain('document.documentElement.dataset.language');
+    }
+  });
+
+  test('導覽同時帶著中英兩份文字，由語言決定顯示哪一份', () => {
+    const header = read('index.html').match(/<header[\s\S]*?<\/header>/)?.[0] ?? '';
+    for (const [zh, en] of [['關於我', 'About'], ['文章', 'Articles'], ['系列', 'Series']]) {
+      expect(header).toContain(`<span data-ui-lang="zh" lang="zh-Hant-TW">${zh}</span>`);
+      expect(header).toContain(`<span data-ui-lang="en" lang="en">${en}</span>`);
+    }
+  });
+
+  test('頁首有語言切換鈕，名稱可被讀出', () => {
+    expect(read('index.html')).toMatch(/id="toggle-language-button"[^>]*aria-label="切換介面語言"/);
+  });
+});
+
 describe('移除的功能', () => {
   test('文章頁沒有便利貼', () => {
     const html = read('blogs/到底怎麼切微服務/index.html');

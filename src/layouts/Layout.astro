@@ -4,13 +4,19 @@ import Footer from '../components/layouts/Footer.astro';
 import ImageModal from '../components/common/ImageModal.astro';
 import SiteFonts from '../components/common/SiteFonts.astro';
 import ThemeInit from '../components/common/ThemeInit.astro';
+import LanguageInit from '../components/common/LanguageInit.astro';
+import UiText from '../components/common/UiText.astro';
+import type { LocalizedPair } from '../utils/ui-language';
 import defaultShareImage from '../assets/me.png';
 
 import '../styles/index.css';
 
 interface Props {
-	/** 分頁標題，會直接進 <title> 與 og:title */
-	title: string;
+	/**
+	 * 分頁標題。文章標題等名稱直接給字串（不翻譯）；介面性質的標題給中英兩份，
+	 * <title> 與 og:title 用中文，英文介面時由 scripts/language.ts 換上英文。
+	 */
+	title: string | LocalizedPair;
 	/** 一句話摘要，進 meta description 與 og:description；未給則用站台預設 */
 	description?: string;
 	/** 分享縮圖的網址（通常是文章 frontmatter 的 image）；未給則用站台預設圖 */
@@ -29,7 +35,7 @@ const SITE_NAME = 'Coding Afternoon';
 const DEFAULT_DESCRIPTION = '軟體開發技術分享：架構、測試、AI 協作與日常踩坑筆記。';
 
 const {
-	title,
+	title: titleSource,
 	description = DEFAULT_DESCRIPTION,
 	image,
 	type = 'website',
@@ -38,13 +44,16 @@ const {
 	noindex = false,
 } = Astro.props;
 
+const title = typeof titleSource === 'string' ? titleSource : titleSource.zh;
+const localizedTitle = typeof titleSource === 'string' ? undefined : JSON.stringify(titleSource);
+
 // Astro.site 由 astro.config.mjs 提供，靜態建置時一定存在
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site);
 const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 ---
 
 <!doctype html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hant-TW" data-ui-title={localizedTitle}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -79,9 +88,10 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 		<title>{title}</title>
 
 		<ThemeInit />
+		<LanguageInit />
 	</head>
 	<body class="min-h-screen flex flex-col">
-		<a href="#main" class="skip-link">跳到主要內容</a>
+		<a href="#main" class="skip-link"><UiText text="site.skipToContent" /></a>
 		<Header />
 		<main id="main" class="flex-grow w-full">
 			<slot />
@@ -89,6 +99,11 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 		<Footer />
 		<ImageModal />
 
+		<script>
+			// 可見文字由 CSS 依語言切換；屬性與分頁標題要等 DOM 好了再換
+			import { applyLanguage, currentLanguage } from '../scripts/language';
+			applyLanguage(currentLanguage());
+		</script>
 	</body>
 </html>
 

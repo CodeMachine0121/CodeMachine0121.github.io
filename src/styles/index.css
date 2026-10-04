@@ -56,3 +56,12 @@ button {
         scroll-behavior: auto !important;
     }
 }
+
+/*
+ * 介面語言：同一份 HTML 帶著中英兩份介面文字（UiText），只顯示 <html data-language> 指定的那份。
+ * 沒有屬性時（停用程式執行）顯示中文。display: none 也讓螢幕閱讀器不會讀到另一份。
+ */
+:root[data-language='en'] [data-ui-lang='zh'],
+:root:not([data-language='en']) [data-ui-lang='en'] {
+    display: none !important;
+}

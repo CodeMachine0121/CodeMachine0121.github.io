@@ -1,0 +1,23 @@
+---
+/**
+ * 介面語言初始化：放在 <head>，在首次繪製前決定語言，設定 <html data-language> 與 lang。
+ *
+ * 決定規則不在這裡重寫一份：直接把 utils/ui-language.ts 的 resolveLanguage 序列化進來
+ * （它被設計成自給自足的純函式，單元測試也驗證了序列化後的行為）。
+ * 瀏覽器不允許存取 localStorage 時讀取會丟例外，吞掉後依瀏覽器語言決定。
+ */
+import { HTML_LANG, LANGUAGE_STORAGE_KEY, resolveLanguage } from '../../utils/ui-language';
+
+const bootstrap = `(() => {
+  const resolveLanguage = ${resolveLanguage.toString()};
+  let saved = null;
+  try {
+    saved = localStorage.getItem(${JSON.stringify(LANGUAGE_STORAGE_KEY)});
+  } catch {}
+  const language = resolveLanguage(saved, navigator.language);
+  document.documentElement.dataset.language = language;
+  document.documentElement.lang = ${JSON.stringify(HTML_LANG)}[language];
+})();`;
+---
+
+<script is:inline set:html={bootstrap} />

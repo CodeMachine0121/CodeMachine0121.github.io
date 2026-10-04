@@ -1,0 +1,19 @@
+---
+import UiText from './UiText.astro';
+import { uiAttributes } from '../../utils/ui-language';
+---
+
+{/* 顯示的是切換後的語言：中文介面顯示 EN，英文介面顯示 中文 */}
+<button
+    id="toggle-language-button"
+    type="button"
+    {...uiAttributes({ 'aria-label': 'language.toggle' })}
+    class="inline-flex h-9 min-w-9 items-center justify-center rounded px-1.5 text-sm font-medium text-muted hover:text-accent">
+    <UiText text="language.target" />
+</button>
+
+<script>
+    import { toggleLanguage } from '../../scripts/language';
+
+    document.getElementById('toggle-language-button')?.addEventListener('click', toggleLanguage);
+</script>

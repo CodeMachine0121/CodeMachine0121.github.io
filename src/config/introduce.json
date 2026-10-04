@@ -4,7 +4,8 @@
     "site_name": "Coding Afternoon",
     "job": "Full Stack Software Engineer",
     "summary": {
-      "en": "A full-stack engineer with a product mindset. I build backends in .NET Core or Go and front ends in TypeScript, hold to Clean Architecture and TDD, and work with AI through a spec-driven workflow of my own."
+      "en": "A full-stack engineer with a product mindset. I build backends in .NET Core or Go and front ends in TypeScript, hold to Clean Architecture and TDD, and work with AI through a spec-driven workflow of my own.",
+      "zh": "我是一個具備產品思維的全端工程師。後端以 .NET Core 或 Go 開發、前端搭配 TypeScript，遵循 Clean Architecture 與 TDD，並以自己的一套規格驅動流程與 AI 協作。"
     },
     "cv_file_name": "james_cv.pdf"
   },
@@ -103,69 +104,69 @@
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/go-trading.png",
       "title": { "en": "GoTrading: Trading API with Live Streaming, Sandboxed Indicator Scripts & an LLM Assistant" },
-      "type": { "en": "Side Project" },
+      "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://github.com/CodeMachine0121/go-trading"
     },
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/ZenMD.png",
       "title": { "en": "ZenMD: A Local Desktop Writing Environment That Never Interrupts You" },
-      "type": { "en": "Side Project" },
+      "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://zenmd.coding-afternoon.com/en/"
     },
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/2026-ithome.jpeg",
       "title": { "en": "Quantitative Trading for Engineers: From K-Lines to a Composable Strategy Engine" },
-      "type": { "en": "Blog Series" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/9051"
     },
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/GSI%20Protocol.png",
       "title": { "en": "Speaker at DevOpsDays Taipei 2026" },
-      "type": { "en": "DevOpsDays Speaker" },
+      "type": { "en": "DevOpsDays Speaker", "zh": "DevOpsDays 講者" },
       "link": "https://devopsdays.tw/2026/session/4723"
     },
     {
       "imageUrl": "",
       "title": { "en": "Trader Risk Radar: Risk Analysis & Ranking API for On-Chain Perpetual Traders" },
-      "type": { "en": "Side Project" },
+      "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
     },
     {
       "imageUrl": "https://cdn.coding-afternoon.com/images/titles/golang-strong.png",
       "title": { "en": "From 0 to 1: Golang TDD with AI" },
-      "type": { "en": "Blog Series" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
     },
     {
       "imageUrl": "",
       "title": { "en": "Side-Project: Build a Editable Blockchain" },
-      "type": { "en": "Blog Series" },
+      "type": { "en": "Blog Series", "zh": "部落格系列" },
       "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
     },
     {
       "imageUrl": "",
       "title": { "en": "Open Source SDK for NuGet: EccSDK" },
-      "type": { "en": "SDK" },
+      "type": { "en": "SDK", "zh": "SDK" },
       "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
     },
     {
       "imageUrl": "https://images.credly.com/size/340x340/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob",
       "title": { "en": "CKAD Certification" },
-      "type": { "en": "Certification" },
+      "type": { "en": "Certification", "zh": "認證" },
       "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
     }
   ],
   "menuItems": [
     {
-      "name": { "en": "About Me" },
+      "name": { "en": "About", "zh": "關於我" },
       "link": "/"
     },
     {
-      "name": { "en": "Blog" },
+      "name": { "en": "Articles", "zh": "文章" },
       "link": "/blogs"
     },
     {
-      "name": { "en": "Series" },
+      "name": { "en": "Series", "zh": "系列" },
       "link": "/series"
     }
   ],

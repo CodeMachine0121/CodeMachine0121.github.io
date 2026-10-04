@@ -1,0 +1,15 @@
+---
+/**
+ * 一句介面文字的中英兩份，各自帶 lang；index.css 依 <html data-language> 只顯示一份。
+ * 給字典的鍵，或直接給 { zh, en }（例如帶數字的句子）。
+ */
+import { localize, type UiTextSource } from '../../utils/ui-language';
+
+interface Props {
+  text: UiTextSource;
+}
+
+const { zh, en } = localize(Astro.props.text);
+---
+
+<span data-ui-lang="zh" lang="zh-Hant-TW">{zh}</span><span data-ui-lang="en" lang="en">{en}</span>
