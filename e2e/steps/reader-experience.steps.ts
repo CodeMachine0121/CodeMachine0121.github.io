@@ -1,5 +1,6 @@
 import { expect, type Browser, type Page } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
+import { pageOf, resetScenarioPage, useScenarioPage } from '../support/scenario-page';
 
 // 步驟依文字比對、不分 Given/When/Then，同一句只定義一次
 const { Given, When, Then, Before } = createBdd();
@@ -11,17 +12,7 @@ const PHONE = { width: 375, height: 800 };
 /** tokens.css 的深淺色底色 */
 const BACKGROUND = { dark: 'rgb(20, 20, 19)', light: 'rgb(250, 249, 247)' };
 
-/**
- * 大部分情境直接用 Playwright 給的 page；需要不同瀏覽器設定（停用程式執行）時
- * 另開一個 context，之後的步驟都改用它。每個情境開始前重設。
- */
-let scenarioPage: Page | null = null;
-const pageOf = (page: Page): Page => scenarioPage ?? page;
-
-Before(async () => {
-  if (scenarioPage) await scenarioPage.context().close();
-  scenarioPage = null;
-});
+Before(resetScenarioPage);
 
 const sidebarChapters = (page: Page) =>
   page.locator('.toc__sidebar [data-toc-chapter]').evaluateAll(links =>
@@ -133,15 +124,15 @@ Given('讀者的瀏覽器不允許網站記住任何設定', async ({ context })
 });
 
 Given('讀者打開首頁', async ({ page }) => {
-  await page.goto('/');
+  await pageOf(page).goto('/');
 });
 
 When('讀者手動切換主題', async ({ page }) => {
-  await page.locator('#toggle-theme-button').click();
+  await pageOf(page).locator('#toggle-theme-button').click();
 });
 
 When('讀者之後再回到網站', async ({ page }) => {
-  await page.goto('/blogs');
+  await pageOf(page).goto('/blogs');
 });
 
 Then('頁面以{word}顯示', async ({ page }, theme: string) => {
@@ -211,7 +202,7 @@ Then('列印版面不含返回首頁、存成 PDF、語系與主題切換', asyn
 
 Given('讀者的瀏覽器停用程式執行，且裝置設定為深色', async ({ browser }: { browser: Browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, colorScheme: 'dark' });
-  scenarioPage = await context.newPage();
+  useScenarioPage(await context.newPage());
 });
 
 Then('正文可以閱讀', async ({ page }) => {
@@ -229,7 +220,7 @@ Given('讀者用 {int} 像素寬的手機', async ({ page }, width: number) => {
 });
 
 When('讀者打開 {string}', async ({ page }, path: string) => {
-  await page.goto(path);
+  await pageOf(page).goto(path);
 });
 
 Then('頁面沒有橫向捲動', async ({ page }) => {

@@ -20,7 +20,7 @@ import { basic } from '../../config/introduce.json';
     {basic.name}
   </h1>
   <p class="mt-1 text-muted" data-content>{basic.job}</p>
-  <p class="mt-5 text-lg leading-relaxed text-ink"><UiText text={basic.summary} /></p>
+  <p class="mt-5 text-lg leading-relaxed text-ink" data-content><UiText text={basic.summary} /></p>
   <div class="mt-6 flex flex-wrap gap-3">
     <LinkButton href={CV_PATH}><UiText text="home.viewCv" /></LinkButton>
     <LinkButton href="mailto:james.afternoon.dev@gmail.com" variant="secondary"><UiText text="home.email" /></LinkButton>

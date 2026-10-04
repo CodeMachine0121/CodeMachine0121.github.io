@@ -15,6 +15,8 @@ export default defineConfig({
   retries: 0,
   use: {
     baseURL: BASE_URL,
+    // 介面語言依瀏覽器語言決定；既有情境以中文介面撰寫，語言相關情境各自指定瀏覽器語言
+    locale: 'zh-TW',
     trace: 'on-first-retry',
   },
   projects: [
