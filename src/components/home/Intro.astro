@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import me from '../../assets/me.png';
+import { basic } from '../../config/introduce.json';
+---
+
+<section class="mx-auto max-w-3xl px-4 pt-14 sm:px-6 sm:pt-20" aria-labelledby="intro-title">
+  <Image
+    src={me}
+    alt={basic.name}
+    width={96}
+    height={96}
+    loading="eager"
+    class="h-20 w-20 rounded-full border border-line object-cover sm:h-24 sm:w-24"
+  />
+  <h1 id="intro-title" class="mt-6 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl">
+    {basic.name}
+  </h1>
+  <p class="mt-1 text-muted">{basic.job}</p>
+  <p class="mt-5 text-lg leading-relaxed text-ink">{basic.summary.en}</p>
+  <div class="mt-6 flex flex-wrap gap-3">
+    <a href="/cv" class="inline-flex items-center rounded bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent">
+      看完整履歷
+    </a>
+    <a href="mailto:james.afternoon.dev@gmail.com" class="inline-flex items-center rounded border border-line px-4 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent">
+      寫信給我
+    </a>
+  </div>
+</section>

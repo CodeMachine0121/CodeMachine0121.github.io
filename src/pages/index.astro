@@ -1,15 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/sections/Hero.astro';
-import Resume from '../components/sections/Resume.astro';
-import Portfolio from '../components/sections/portfolio/Portfolio.astro';
+import Intro from '../components/home/Intro.astro';
+import LatestArticles from '../components/home/LatestArticles.astro';
+import ProjectList from '../components/home/ProjectList.astro';
+import ExperienceSummary from '../components/home/ExperienceSummary.astro';
+import { getPublishedBlogs } from '../utils/series';
+
+const publishedBlogs = await getPublishedBlogs();
 ---
 
 <Layout
 	title="Coding Afternoon"
 	description="James Hsueh 的技術部落格與作品集：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。"
 >
-	<Hero />
-	<Resume />
-	<Portfolio />
+	<Intro />
+	<LatestArticles blogs={publishedBlogs} />
+	<ProjectList />
+	<ExperienceSummary />
 </Layout>

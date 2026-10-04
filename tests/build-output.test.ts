@@ -297,6 +297,63 @@ describe('文章目錄', () => {
   });
 });
 
+describe('首頁', () => {
+  const home = () => read('index.html');
+  const introduce = JSON.parse(
+    readFileSync(join(import.meta.dir, '..', 'src', 'config', 'introduce.json'), 'utf-8')
+  ) as { projects: unknown[]; experiences: { title: string }[] };
+
+  test('上半部有自我介紹與前往履歷的入口', () => {
+    const html = home();
+    const introStart = html.indexOf('id="intro-title"');
+    const latestStart = html.indexOf('data-home-latest');
+
+    expect(introStart).toBeGreaterThan(-1);
+    expect(html.slice(introStart, latestStart)).toContain('href="/cv"');
+  });
+
+  test('最新文章列出 RSS 中最新的 5 篇已發布文章', () => {
+    const rssTitles = [...read('rss.xml').matchAll(/<item><title>([^<]*)<\/title>/g)]
+      .map(match => match[1]!)
+      .slice(0, 5);
+    const latestBlock = home().split('data-home-latest')[1] ?? '';
+    const homeTitles = [...latestBlock.matchAll(/<a href="\/blogs\/[^"]*"[^>]*>\s*([^<]*?)\s*<\/a>/g)]
+      .map(match => match[1]!)
+      .slice(0, 5);
+
+    const decode = (text: string) =>
+      text.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+
+    expect(rssTitles).toHaveLength(5);
+    expect(homeTitles.map(decode)).toEqual(rssTitles.map(decode));
+  });
+
+  test('掛著進行中系列的入口，與文章列表的是同一個', () => {
+    const homeSeries = home().split('data-home-series')[1]?.match(/href="\/series\/([^"]+)"/)?.[1];
+    const listSeries = read('blogs/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
+
+    expect(homeSeries).toBeTruthy();
+    expect(homeSeries).toBe(listSeries);
+  });
+
+  test('作品全部直接列出，沒有分類篩選', () => {
+    const html = home();
+    expect([...html.matchAll(/data-home-project/g)]).toHaveLength(introduce.projects.length);
+    expect(html).not.toContain('data-filter');
+  });
+
+  test('經歷只列最近 3 段，並附完整履歷入口', () => {
+    const html = home();
+    const experienceBlock = html.slice(html.indexOf('id="experience-title"'));
+
+    expect([...html.matchAll(/data-home-experience/g)]).toHaveLength(3);
+    for (const experience of introduce.experiences.slice(0, 3)) {
+      expect(experienceBlock).toContain(experience.title);
+    }
+    expect(experienceBlock).toContain('href="/cv"');
+  });
+});
+
 describe('移除的功能', () => {
   test('文章頁沒有便利貼', () => {
     const html = read('blogs/到底怎麼切微服務/index.html');
