@@ -1,0 +1,51 @@
+---
+/**
+ * 系列總覽的一張卡片：封面、系列名稱、篇數與最後更新日期，整張卡片連到系列頁。
+ * 封面由 config/series-covers.json 指定；沒有指定時退回最新一篇有封面的文章，
+ * 再沒有就顯示佔位封面（規則見 selectSeriesCover）。
+ */
+import UiText from '../common/UiText.astro';
+import seriesCovers from '../../config/series-covers.json';
+import type { Series } from '../../types/series';
+import { lastPublishedOf, selectSeriesCover } from '../../utils/series';
+import { formatArticleCount, formatLastUpdated, inBothLanguages } from '../../utils/ui-language';
+
+interface Props {
+  series: Series;
+  /** 首屏內的卡片封面不延遲載入 */
+  eager?: boolean;
+}
+
+const { series, eager = false } = Astro.props;
+const cover = selectSeriesCover(series, seriesCovers);
+const lastPublished = lastPublishedOf(series);
+const summary = inBothLanguages(
+  language => `${formatArticleCount(series.count, language)} · ${formatLastUpdated(lastPublished, language)}`
+);
+---
+
+<a
+  href={`/series/${series.slug}`}
+  class="group flex h-full flex-col overflow-hidden rounded border border-line bg-surface hover:border-accent"
+  data-series-card
+>
+  <div class="aspect-[16/9] w-full overflow-hidden border-b border-line bg-accent-soft">
+    {cover ? (
+      <img src={cover} alt="" loading={eager ? 'eager' : 'lazy'} class="h-full w-full object-cover" data-series-cover />
+    ) : (
+      <div class="flex h-full w-full items-center justify-center text-accent" data-series-cover-placeholder aria-hidden="true">
+        <svg class="h-12 w-12 opacity-70" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+        </svg>
+      </div>
+    )}
+  </div>
+  <div class="flex flex-1 flex-col gap-3 p-5">
+    <h2 class="line-clamp-2 font-serif text-lg font-bold leading-snug text-ink group-hover:text-accent" data-content>
+      {series.name}
+    </h2>
+    <p class="mt-auto text-sm text-muted" data-series-summary>
+      <time datetime={lastPublished}><UiText text={summary} /></time>
+    </p>
+  </div>
+</a>

@@ -49,6 +49,33 @@ function cssOf(html: string): string {
   return [...stylesheets, ...inlineStyles].join('\n');
 }
 
+/** 從系列頁（含分頁）取出每個系列的名稱、文章網址、發布日期與各篇的封面 */
+async function seriesFromBuiltPages() {
+  type BuiltSeries = { name: string; articles: Set<string>; dates: string[]; covers: { date: string; image: string }[] };
+  const series = new Map<string, BuiltSeries>();
+  for (const file of await allHtmlFiles(join(DIST, 'series'))) {
+    const slug = file.split('/series/')[1]!.split('/')[0]!;
+    if (slug === 'index.html') continue;
+    const html = readFileSync(file, 'utf-8');
+    const entry = series.get(slug) ?? { name: '', articles: new Set<string>(), dates: [], covers: [] };
+    entry.name ||= decodeEntities(html.match(/<h1[^>]*data-content[^>]*>([^<]*)<\/h1>/)?.[1]?.trim() ?? '');
+    for (const article of html.matchAll(/<article[\s\S]*?<\/article>/g)) {
+      const href = article[0].match(/<a href="(\/blogs\/[^"]+)"/)?.[1];
+      const date = article[0].match(/<time datetime="([^"]+)"/)?.[1];
+      const image = article[0].match(/<img src="([^"]+)"/)?.[1];
+      if (href) entry.articles.add(decodeURIComponent(href));
+      if (date) entry.dates.push(date);
+      if (date && image) entry.covers.push({ date, image: decodeEntities(image) });
+    }
+    series.set(slug, entry);
+  }
+  return series;
+}
+
+function decodeEntities(text: string): string {
+  return text.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+}
+
 async function allHtmlFiles(directory: string): Promise<string[]> {
   return Array.fromAsync(new Glob('**/*.html').scan({ cwd: directory, absolute: true }));
 }
@@ -383,21 +410,6 @@ describe('首頁', () => {
     expect(html.slice(introStart, latestStart)).toContain(CV_LINK);
   });
 
-  /** 從系列頁（含分頁）取出每個系列的文章網址與發布日期 */
-  async function seriesFromBuiltPages() {
-    const series = new Map<string, { articles: Set<string>; dates: string[] }>();
-    for (const file of await allHtmlFiles(join(DIST, 'series'))) {
-      const slug = file.split('/series/')[1]!.split('/')[0]!;
-      if (slug === 'index.html') continue;
-      const html = readFileSync(file, 'utf-8');
-      const entry = series.get(slug) ?? { articles: new Set<string>(), dates: [] };
-      for (const match of html.matchAll(/<a href="(\/blogs\/[^"]+)"/g)) entry.articles.add(decodeURIComponent(match[1]!));
-      for (const match of html.matchAll(/<time datetime="([^"]+)"/g)) entry.dates.push(match[1]!);
-      series.set(slug, entry);
-    }
-    return series;
-  }
-
   const homeLatestHrefs = () =>
     [...(home().split('data-home-latest')[1]?.split('</section>')[0] ?? '').matchAll(/<a href="(\/blogs\/[^"]+)"/g)].map(
       match => decodeURIComponent(match[1]!)
@@ -546,6 +558,68 @@ describe('介面語言', () => {
 
   test('頁首有語言切換鈕，名稱可被讀出', () => {
     expect(read('index.html')).toMatch(/id="toggle-language-button"[^>]*aria-label="切換介面語言"/);
+  });
+});
+
+describe('系列總覽封面卡片', () => {
+  const covers = JSON.parse(
+    readFileSync(join(import.meta.dir, '..', 'src', 'config', 'series-covers.json'), 'utf-8')
+  ) as Record<string, string | null>;
+
+  const cards = () =>
+    [...read('series/index.html').matchAll(/<a href="\/series\/([^"]+)"[^>]*data-series-card[\s\S]*?<\/a>/g)].map(match => ({
+      slug: decodeURIComponent(match[1]!),
+      html: match[0],
+    }));
+
+  test('封面設定檔的每個名稱都對得到網站上的系列', async () => {
+    const seriesNames = new Set([...(await seriesFromBuiltPages()).values()].map(entry => entry.name));
+    const unknown = Object.keys(covers).filter(name => !seriesNames.has(name));
+
+    expect(seriesNames.size).toBeGreaterThan(0);
+    expect(unknown).toEqual([]);
+  });
+
+  test('卡片依各系列最後一篇文章的日期排序，新的在前', async () => {
+    const series = await seriesFromBuiltPages();
+    const lastOf = (slug: string) => [...series.get(slug)!.dates].sort().at(-1)!;
+    const expected = [...series.keys()].sort((a, b) => lastOf(b).localeCompare(lastOf(a)));
+
+    expect(cards().map(card => card.slug)).toEqual(expected);
+  });
+
+  test('卡片顯示篇數與最後更新日期（中英兩份）', () => {
+    const golang = cards().find(card => card.slug.startsWith('2025-ithome'))!;
+    expect(golang.html).toContain('<span data-ui-lang="zh" lang="zh-Hant-TW">30 篇文章 · 更新於 2025年8月30日</span>');
+    expect(golang.html).toContain('<span data-ui-lang="en" lang="en">30 articles · Updated Aug 30, 2025</span>');
+  });
+
+  test('封面：設定檔指定的優先，否則最新一篇有封面的文章，否則佔位', async () => {
+    const series = await seriesFromBuiltPages();
+    let withCover = 0;
+    let withPlaceholder = 0;
+
+    for (const card of cards()) {
+      const entry = series.get(card.slug)!;
+      const newestCover = [...entry.covers].sort((a, b) => b.date.localeCompare(a.date))[0]?.image;
+      const expected = covers[entry.name] || newestCover;
+
+      if (expected) {
+        expect(decodeEntities(card.html.match(/<img src="([^"]+)"[^>]*data-series-cover/)?.[1] ?? '')).toBe(expected);
+        withCover++;
+      } else {
+        expect(card.html).toContain('data-series-cover-placeholder');
+        withPlaceholder++;
+      }
+    }
+
+    expect(withCover + withPlaceholder).toBe(cards().length);
+  });
+
+  test('每張卡片都連到實際存在的系列頁', () => {
+    for (const card of cards()) {
+      expect(existsSync(join(DIST, 'series', card.slug, 'index.html'))).toBe(true);
+    }
   });
 });
 

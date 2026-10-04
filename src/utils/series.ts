@@ -27,6 +27,8 @@ export {
   groupIntoSeries,
   selectLatestSeries,
   selectNewestSeries,
+  lastPublishedOf,
+  selectSeriesCover,
   findAdjacent,
   type ArticleLike,
   type AdjacentArticles,

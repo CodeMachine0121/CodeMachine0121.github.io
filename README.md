@@ -65,6 +65,19 @@ draft: true        # 尚未發佈；會從列表、系列、RSS 與建置一併�
 
 撰寫規範見 [`.claude/rules/blog-writing-style.md`](.claude/rules/blog-writing-style.md)。
 
+## 系列封面
+
+系列總覽的每張卡片都有封面，設定在 `src/config/series-covers.json`：鍵是系列名稱（與文章 frontmatter 的 `parent` 完全相同），值是封面網址（放 Cloudflare R2），未指定時為 `null`。
+
+```json
+{
+  "NixOs Bootcamp": "https://cdn.coding-afternoon.com/images/series/nixos.png",
+  "Kotlin Coroutines Bootcamp": null
+}
+```
+
+未指定時退回系列中最新一篇有封面的文章，再沒有就顯示預設的佔位封面。設定檔裡的名稱對不到任何系列時，`bun run test:build` 會失敗並指出那個名稱。新增系列時記得在這裡加一行。
+
 ## 兩個容易誤會的地方
 
 - **「上一篇／下一篇」的方向在兩種列表刻意不同。** 兩者都是「閱讀順序上的前一篇」，
