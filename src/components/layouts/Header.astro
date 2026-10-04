@@ -8,7 +8,7 @@ const isCurrent = (link: string) =>
   link === "/" ? currentPath === "/" : currentPath.startsWith(link);
 ---
 
-<header class="sticky top-0 z-30 border-b border-line bg-bg/90 backdrop-blur">
+<header class="sticky top-0 z-30 site-header border-b border-line backdrop-blur">
   <div class="mx-auto flex h-14 max-w-page items-center justify-between gap-4 px-4 sm:px-6">
     <a href="/" class="font-serif text-lg font-bold tracking-tight text-ink hover:text-accent">
       {basic?.site_name}
@@ -37,3 +37,11 @@ const isCurrent = (link: string) =>
     </div>
   </div>
 </header>
+
+<style>
+  /* Tailwind 的透明度修飾（bg-bg/90）對 CSS 變數色無效，改用 color-mix 從 token 調出半透明底 */
+  .site-header {
+    background-color: var(--color-bg);
+    background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  }
+</style>
