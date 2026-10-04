@@ -1,9 +1,9 @@
 ---
+import HomeSection from './HomeSection.astro';
 import { projects } from '../../config/introduce.json';
 ---
 
-<section class="mx-auto mt-16 max-w-3xl px-4 sm:px-6" aria-labelledby="projects-title">
-  <h2 id="projects-title" class="border-b border-line pb-3 font-serif text-xl font-bold text-ink">作品</h2>
+<HomeSection title="作品" titleId="projects-title">
   <ul class="divide-y divide-line">
     {projects.map(project => (
       <li data-home-project>
@@ -17,4 +17,4 @@ import { projects } from '../../config/introduce.json';
       </li>
     ))}
   </ul>
-</section>
+</HomeSection>

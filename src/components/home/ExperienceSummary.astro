@@ -1,4 +1,5 @@
 ---
+import HomeSection from './HomeSection.astro';
 import { experiences } from '../../config/introduce.json';
 
 /**
@@ -10,11 +11,7 @@ const RECENT_EXPERIENCE_COUNT = 3;
 const recentExperiences = experiences.slice(0, RECENT_EXPERIENCE_COUNT);
 ---
 
-<section class="mx-auto mt-16 max-w-3xl px-4 sm:px-6" aria-labelledby="experience-title">
-  <div class="flex items-baseline justify-between border-b border-line pb-3">
-    <h2 id="experience-title" class="font-serif text-xl font-bold text-ink">經歷</h2>
-    <a href="/cv" class="text-sm text-muted hover:text-accent">完整履歷 →</a>
-  </div>
+<HomeSection title="經歷" titleId="experience-title" link={{ href: "/cv", label: "完整履歷 →" }}>
   <ol class="divide-y divide-line">
     {recentExperiences.map(experience => (
       <li class="flex flex-col gap-1 py-4 sm:flex-row sm:gap-6" data-home-experience>
@@ -26,4 +23,4 @@ const recentExperiences = experiences.slice(0, RECENT_EXPERIENCE_COUNT);
       </li>
     ))}
   </ol>
-</section>
+</HomeSection>

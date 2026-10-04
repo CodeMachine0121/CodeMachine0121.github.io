@@ -1,4 +1,5 @@
 ---
+import HomeSection from './HomeSection.astro';
 import ArticleListItem from '../blog/ArticleListItem.astro';
 import SeriesEntry from '../blog/SeriesEntry.astro';
 import { selectLatestArticles, selectLatestSeries, type BlogEntry } from '../../utils/series';
@@ -16,12 +17,7 @@ const latestSeries = selectLatestSeries(blogs);
 const latestArticles = selectLatestArticles(blogs, LATEST_ARTICLE_COUNT);
 ---
 
-<section class="mx-auto mt-16 max-w-3xl px-4 sm:px-6" aria-labelledby="latest-title">
-  <div class="flex items-baseline justify-between border-b border-line pb-3">
-    <h2 id="latest-title" class="font-serif text-xl font-bold text-ink">最新文章</h2>
-    <a href="/blogs" class="text-sm text-muted hover:text-accent">所有文章 →</a>
-  </div>
-
+<HomeSection title="最新文章" titleId="latest-title" link={{ href: "/blogs", label: "所有文章 →" }}>
   {latestSeries && (
     <div class="mt-6" data-home-series>
       <SeriesEntry series={latestSeries} label="進行中的系列" />
@@ -33,4 +29,4 @@ const latestArticles = selectLatestArticles(blogs, LATEST_ARTICLE_COUNT);
       <ArticleListItem blog={blog} isFirst={index === 0} />
     ))}
   </div>
-</section>
+</HomeSection>
