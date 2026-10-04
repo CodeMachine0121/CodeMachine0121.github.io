@@ -8,44 +8,49 @@
 type MermaidModule = typeof import('mermaid');
 
 /**
- * 顏色與 src/styles/tokens.css 同值（mermaid 不吃 CSS 變數，只好再寫一份），深淺各一組。
- * 改 tokens.css 的配色時這裡要一起改。
+ * mermaid 不吃 CSS 變數，所以在每次渲染當下讀出 tokens.css 解析後的實際色值再交給它。
+ * 這樣配色只存在 tokens.css 一處，深淺色也自動跟著目前的主題。
  *
  * xyChart 那一組不能省：mermaid 會拿 primaryColor 去推導折線的調色盤，而這裡的
  * primaryColor 是很淡的底色，推出來的線淺到看不見。折線圖的顏色要自己指定。
  */
-const INK = { light: '#1c1b19', dark: '#ecebe7' };
-const SOFT_INK = { light: '#6b6862', dark: '#a29f98' };
-const PAPER_OFFSET = { light: '#f3f1ed', dark: '#22211f' };
-const SURFACE = { light: '#ffffff', dark: '#1c1c1a' };
-const ACCENT = { light: '#b7410e', dark: '#f08a4b' };
+const readToken = (name: string): string =>
+    getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-const themeVariablesFor = (theme: 'light' | 'dark') => ({
-    primaryColor: PAPER_OFFSET[theme],
-    primaryTextColor: INK[theme],
-    primaryBorderColor: INK[theme],
-    lineColor: INK[theme],
-    secondaryColor: SURFACE[theme],
-    tertiaryColor: SURFACE[theme],
-    background: SURFACE[theme],
-    mainBkg: PAPER_OFFSET[theme],
-    textColor: INK[theme],
-    xyChart: {
-        backgroundColor: 'transparent',
-        titleColor: INK[theme],
-        xAxisLabelColor: SOFT_INK[theme],
-        xAxisTitleColor: SOFT_INK[theme],
-        xAxisTickColor: SOFT_INK[theme],
-        xAxisLineColor: INK[theme],
-        yAxisLabelColor: SOFT_INK[theme],
-        yAxisTitleColor: SOFT_INK[theme],
-        yAxisTickColor: SOFT_INK[theme],
-        yAxisLineColor: INK[theme],
-        // 第一條線是資料本身（正文色），第二條之後都是參考線（強調色）。
-        // 參考線同色是刻意的：它們是同一種東西，不該被讀成兩組資料。
-        plotColorPalette: `${INK[theme]}, ${ACCENT[theme]}, ${ACCENT[theme]}`,
-    },
-});
+const themeVariablesFromTokens = () => {
+    const ink = readToken('--color-ink');
+    const muted = readToken('--color-muted');
+    const codeBackground = readToken('--color-code-bg');
+    const surface = readToken('--color-surface');
+    const accent = readToken('--color-accent');
+
+    return {
+        primaryColor: codeBackground,
+        primaryTextColor: ink,
+        primaryBorderColor: ink,
+        lineColor: ink,
+        secondaryColor: surface,
+        tertiaryColor: surface,
+        background: surface,
+        mainBkg: codeBackground,
+        textColor: ink,
+        xyChart: {
+            backgroundColor: 'transparent',
+            titleColor: ink,
+            xAxisLabelColor: muted,
+            xAxisTitleColor: muted,
+            xAxisTickColor: muted,
+            xAxisLineColor: ink,
+            yAxisLabelColor: muted,
+            yAxisTitleColor: muted,
+            yAxisTickColor: muted,
+            yAxisLineColor: ink,
+            // 第一條線是資料本身（正文色），第二條之後都是參考線（強調色）。
+            // 參考線同色是刻意的：它們是同一種東西，不該被讀成兩組資料。
+            plotColorPalette: `${ink}, ${accent}, ${accent}`,
+        },
+    };
+};
 
 const currentTheme = (): 'light' | 'dark' =>
     document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -60,9 +65,9 @@ const renderAll = async (mermaid: MermaidModule['default'], blocks: HTMLElement[
     mermaid.initialize({
         startOnLoad: false,
         securityLevel: 'strict',
-        fontFamily: "ui-sans-serif, system-ui, 'Noto Sans TC', 'PingFang TC', sans-serif",
+        fontFamily: readToken('--font-sans'),
         theme: 'base',
-        themeVariables: themeVariablesFor(theme),
+        themeVariables: themeVariablesFromTokens(),
     });
 
     await Promise.all(

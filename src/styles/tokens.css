@@ -1,8 +1,8 @@
 /*
  * 設計 token：全站唯一的視覺真相來源。
  *
- * 元件、文章排版、履歷與 Tailwind 都只讀這裡的變數，換配色或字體只改這一個檔案。
- * 例外：src/scripts/mermaid.ts 需要實際色值（mermaid 不吃 CSS 變數），改色時要一起改。
+ * 元件、文章排版、履歷、Tailwind 與 Mermaid 圖表（渲染時讀出解析後的值）都只讀這裡的變數，
+ * 換配色或字體只改這一個檔案。
  *
  * 主題的決定順序：讀者手動選擇（<html data-theme>）> 裝置設定 > 淺色。
  * 沒有 JS 時 data-theme 不會被設定，靠 prefers-color-scheme 仍能跟隨裝置。

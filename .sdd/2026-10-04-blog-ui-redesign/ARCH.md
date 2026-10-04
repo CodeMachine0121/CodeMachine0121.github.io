@@ -75,7 +75,7 @@
 | `series/[slug]/[...page].astro` | 系列頁分頁 | 改用 `ArticleListItem`（含閱讀時間）；分頁與 `rel=prev/next` 保留 |
 | `cv/[lang].astro` ＋ `cv.scss` | 獨立履歷頁（僅淺色） | 加入主題初始化與切換鈕（不列印）；顏色改讀 token；`@media print` 強制淺色 token |
 | `ai-redefines-software.astro` | 自帶 Tailwind CDN 的深色獨立頁 | 包進 `Layout`，自帶色票改為 token 類別；內容不動 |
-| `mermaid.ts` | 手繪色票寫死在檔內 | 改為新色票（與 `tokens.css` 同值） |
+| `mermaid.ts` | 手繪色票寫死在檔內 | 渲染當下讀取 `tokens.css` 解析後的色值與字體，不再自帶色票 |
 | `tests/build-output.test.ts` | 產物驗收 | 見 §2 |
 
 ---
@@ -111,14 +111,13 @@ flowchart TD
 
 - **Most likely next requirement:** (a) 換一組配色或字體；(b) 文章列表加上新的中繼資訊（如標籤、更新日期）；(c) 調整閱讀速度或目錄層數。
 - **Where it lands:**
-  - (a) 只改 `tokens.css`（`mermaid.ts` 的色值需同步，見 Known debt）。
+  - (a) 只改 `tokens.css`（Mermaid 圖表在渲染時讀取 token 的解析值，不需另改）。
   - (b) 只改 `ArticleListItem.astro`——首頁、文章列表、系列頁都用它。
   - (c) 只改 `READING_SPEED` 或 `table-of-contents.ts` 內的深度常數。
 - **How to add it:** 新增 token 或常數、在單一元件加欄位；不需要在頁面間複製貼上。
 - **Patterns applied & why:** 設計 token（視覺變更的單一來源）；純函式核心＋薄元件（沿用 `series-core.ts`，讓業務規則可被 `bun test` 直接測）；漸進增強（目錄用 `<details>`、主題用 inline script，沒有 JS 也能讀）。
 - **Do not hardcode:** 色值不得寫在元件或 `article.css` 內，一律用 token；閱讀速度與目錄層數不得寫在元件內。
 - **Known debt / deferred:**
-  - `mermaid.ts` 需要實際色值（mermaid 不吃 CSS 變數），與 `tokens.css` 重複一份；兩邊改色要一起改。
   - `introduce.json` 與 `cv.json` 的資料重複未處理（PRD 範圍外）。
   - `ExperienceSummary` 依賴資料以新到舊排列；若日後資料順序不可靠，改為依 `years` 排序。
 
