@@ -38,6 +38,13 @@ function attr(html: string, pattern: RegExp): string | null {
   return html.match(pattern)?.[1] ?? null;
 }
 
+/** 頁面實際套用的 CSS：外部樣式表加上 Astro 內嵌在頁面裡的 <style> */
+function cssOf(html: string): string {
+  const stylesheets = [...html.matchAll(/href="(\/_astro\/[^"]+\.css)"/g)].map(match => read(match[1]!.slice(1)));
+  const inlineStyles = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(match => match[1]!);
+  return [...stylesheets, ...inlineStyles].join('\n');
+}
+
 async function allHtmlFiles(directory: string): Promise<string[]> {
   return Array.fromAsync(new Glob('**/*.html').scan({ cwd: directory, absolute: true }));
 }
@@ -377,10 +384,7 @@ describe('履歷', () => {
   });
 
   test('深色配色只套用在螢幕上，列印一律是淺色', () => {
-    const html = read('cv/zh/index.html');
-    const stylesheets = [...html.matchAll(/href="(\/_astro\/[^"]+\.css)"/g)].map(match => read(match[1]!.slice(1)));
-    const inlineStyles = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(match => match[1]!);
-    const css = [...stylesheets, ...inlineStyles].join('\n');
+    const css = cssOf(read('cv/zh/index.html'));
 
     // 深色主題的底色宣告（壓縮後冒號後面可能留一個空白）
     const darkBackgrounds = [...css.matchAll(/--color-bg:\s*#141413/g)];
@@ -397,6 +401,31 @@ describe('對談筆記頁', () => {
     const html = read('ai-redefines-software/index.html');
     expect(html).not.toContain('cdn.tailwindcss.com');
     expect(html).toContain('id="main"');
+  });
+});
+
+describe('整站同一套編輯風格', () => {
+  const pages = [...SAMPLE_PAGES, 'cv/zh/index.html', 'ai-redefines-software/index.html'];
+
+  for (const page of pages) {
+    test(`${page} 不再帶手繪設計系統的類別與字型`, () => {
+      const html = read(page);
+      expect(html).not.toMatch(/class="[^"]*\bhd-/);
+      expect(html).not.toMatch(/Kalam|Patrick\+?\s?Hand|LXGW/);
+    });
+
+    test(`${page} 使用全站共用的字型`, () => {
+      expect(read(page)).toContain('family=Noto+Sans+TC');
+    });
+  }
+
+  test('文章正文限制在固定的閱讀寬度內', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    const css = cssOf(html);
+
+    expect(html).toMatch(/class="article-layout__main prose article-body"/);
+    expect(css).toMatch(/\.article-layout__main[^{]*\{[^}]*max-width:\s*var\(--measure\)/);
+    expect(css).toMatch(/--measure:\s*68ch/);
   });
 });
 
