@@ -186,6 +186,18 @@ describe('不要把開發用的東西帶上線', () => {
   });
 });
 
+describe('已上線網址繼續有效', () => {
+  test('改版前就存在的每一頁，建置後都還在', () => {
+    const published = readFileSync(join(import.meta.dir, 'fixtures', 'published-pages.txt'), 'utf-8')
+      .split('\n')
+      .filter(line => line.trim() !== '' && !line.startsWith('#'));
+
+    expect(published.length).toBeGreaterThan(100);
+    const missing = published.filter(path => !existsSync(join(DIST, path)));
+    expect(missing).toEqual([]);
+  });
+});
+
 describe('系列分頁是真實路徑', () => {
   test('第一頁維持原本網址', () => {
     expect(existsSync(join(DIST, 'series/nixos-bootcamp/index.html'))).toBe(true);
@@ -243,6 +255,12 @@ describe('文章列表', () => {
     }
   });
 
+  test('目錄與主題切換都有可讀出的名稱', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    expect(html).toContain('aria-label="文章目錄"');
+    expect(html).toMatch(/id="toggle-theme-button"[^>]*aria-label="切換深淺色主題"/);
+  });
+
   test('搜尋框有可存取名稱', () => {
     const html = read('blogs/index.html');
     const label = html.match(/<label[^>]*for="blog-search"[^>]*>([^<]*)<\/label>/)?.[1] ?? '';
@@ -258,6 +276,17 @@ describe('預估閱讀時間', () => {
 
     expect(items).toBeGreaterThan(0);
     expect(readingTimes).toBe(items);
+  });
+
+  test('文章頁的標題區標出閱讀時間', () => {
+    const header = read('blogs/到底怎麼切微服務/index.html').split('</header>')[1] ?? '';
+    // 第一個 </header> 是網站頁首，第二段才是文章標題區
+    expect(header).toMatch(/data-reading-time="(\d+)">\1 分鐘/);
+  });
+
+  test('首頁最新文章的每一篇都標出閱讀時間', () => {
+    const latestBlock = read('index.html').split('data-home-latest')[1]?.split('</section>')[0] ?? '';
+    expect([...latestBlock.matchAll(/data-reading-time="(\d+)">\1 分鐘/g)]).toHaveLength(5);
   });
 
   test('系列頁的每一篇都標出閱讀時間', () => {
@@ -294,6 +323,17 @@ describe('文章目錄', () => {
     // 兩種情況都要真的被檢查到，否則這個測試沒有意義
     expect(withToc).toBeGreaterThan(0);
     expect(withoutToc).toBeGreaterThan(0);
+  });
+
+  test('目錄的每一章都連到正文中那一章的標題', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    const links = [...html.matchAll(/<a href="#([^"]+)"[^>]*data-toc-chapter="([^"]+)"/g)];
+
+    expect(links.length).toBeGreaterThan(0);
+    for (const [, target, chapter] of links) {
+      expect(target).toBe(chapter);
+      expect(html).toContain(`<h2 id="${chapter}"`);
+    }
   });
 
   test('窄螢幕的目錄預設收合', () => {
@@ -416,6 +456,12 @@ describe('整站同一套編輯風格', () => {
 
     test(`${page} 使用全站共用的字型`, () => {
       expect(read(page)).toContain('family=Noto+Sans+TC');
+    });
+  }
+
+  for (const page of pages) {
+    test(`${page} 套用全站共用的配色 token`, () => {
+      expect(cssOf(read(page))).toMatch(/--color-bg:\s*#faf9f7/);
     });
   }
 
