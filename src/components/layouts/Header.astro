@@ -9,14 +9,15 @@ const isCurrent = (link: string) =>
 ---
 
 <header class="sticky top-0 z-30 site-header border-b border-line backdrop-blur">
-  <div class="mx-auto flex h-14 max-w-page items-center justify-between gap-4 px-4 sm:px-6">
-    <a href="/" class="font-serif text-lg font-bold tracking-tight text-ink hover:text-accent">
+  {/* 窄螢幕：站名＋主題鈕一列、導覽另起一列；寬螢幕全部同一列 */}
+  <div class="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-4 px-4 py-2 sm:h-14 sm:flex-nowrap sm:py-0 sm:px-6">
+    <a href="/" class="whitespace-nowrap font-serif text-lg font-bold tracking-tight text-ink hover:text-accent">
       {basic?.site_name}
     </a>
 
-    <div class="flex items-center gap-1 sm:gap-2">
-      <nav aria-label="主要導覽">
-        <ul class="flex items-center gap-1 text-sm sm:gap-2">
+    <div class="contents sm:flex sm:items-center sm:gap-2">
+      <nav aria-label="主要導覽" class="order-last -ml-2 w-full sm:order-none sm:ml-0 sm:w-auto">
+        <ul class="flex items-center gap-1 whitespace-nowrap text-sm sm:gap-2">
           {menuItems.map((item) => (
             <li>
               <a
