@@ -2,13 +2,17 @@
 import { render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import 'katex/dist/katex.min.css';
+import '../../styles/article.css';
 
 import Layout from '../../layouts/Layout.astro';
-import PostNavigation from '../../components/sections/blog/PostNavigation.astro';
+import ArticleMeta from '../../components/blog/ArticleMeta.astro';
+import TableOfContents from '../../components/blog/TableOfContents.astro';
+import PostNavigation from '../../components/blog/PostNavigation.astro';
 import ReadingProgress from '../../components/common/ReadingProgress.astro';
 import GiscusComments from '../../components/common/GiscusComments.astro';
 import BackToTop from '../../components/common/BackToTop.astro';
 import StickyNotes from '../../components/common/StickyNotes.astro';
+import { createSlug } from '../../utils/slugify';
 import { getAdjacentPosts, getAdjacentSeriesPosts, getPublishedBlogs } from '../../utils/series';
 
 export const getStaticPaths = (async () => {
@@ -20,12 +24,13 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { blog } = Astro.props;
-const { Content } = await render(blog);
+const { Content, headings } = await render(blog);
+const seriesName = blog.data.parent;
 
 // 「上一篇／下一篇」走閱讀順序：系列是第一篇→最後一篇，單篇是最新→最舊。
 // 兩者方向不同是刻意的，詳見 utils/series-core.ts 的 findAdjacent。
-const { prevPost, nextPost } = blog.data.parent
-    ? await getAdjacentSeriesPosts(blog.id, blog.data.parent)
+const { prevPost, nextPost } = seriesName
+    ? await getAdjacentSeriesPosts(blog.id, seriesName)
     : await getAdjacentPosts(blog.id);
 ---
 
@@ -37,40 +42,43 @@ const { prevPost, nextPost } = blog.data.parent
     publishedTime={blog.data.datetime}
 >
     <ReadingProgress />
-    <article class="w-full max-w-none md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <header class="mb-12 pb-8 border-b-[3px] border-dashed border-border">
-            {blog.data.parent && (
-                <span class="hd-badge mb-4">{blog.data.parent}</span>
+    <article class="article-layout mx-auto max-w-page px-4 pt-10 sm:px-6 sm:pt-14">
+        <header class="article-layout__main mb-8">
+            {seriesName && (
+                <a href={`/series/${createSlug(seriesName)}`} class="text-xs font-medium uppercase tracking-wide text-accent hover:underline">
+                    {seriesName}
+                </a>
             )}
-            <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl mb-4 leading-tight text-ink">{blog.data.title}</h1>
+            <h1 class="mt-2 font-serif text-3xl font-bold leading-tight text-ink sm:text-4xl">{blog.data.title}</h1>
             {blog.data.description && (
-                <p class="text-lg md:text-xl text-ink-soft mb-5 leading-relaxed">{blog.data.description}</p>
+                <p class="mt-4 text-lg leading-relaxed text-muted">{blog.data.description}</p>
             )}
-            <time datetime={blog.data.datetime} class="hd-badge">
-                {new Date(blog.data.datetime).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </time>
+            <ArticleMeta blog={blog} class="mt-5 border-b border-line pb-6" />
         </header>
 
         {blog.data.image && (
-            <div class="overflow-hidden border-[3px] border-border mb-10 rotate-1" style="border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; box-shadow: 6px 6px 0 0 var(--hd-shadow);">
-                <img
-                    src={blog.data.image}
-                    alt={blog.data.title}
-                    loading="eager"
-                    class="w-full max-h-96 object-cover"
-                />
-            </div>
+            <img
+                src={blog.data.image}
+                alt={blog.data.title}
+                loading="eager"
+                class="article-layout__main mb-10 max-h-96 w-full rounded object-cover"
+            />
         )}
 
-        <div class="blog-content prose prose-lg dark:prose-invert">
+        <div class="article-layout__toc">
+            <TableOfContents headings={headings} />
+        </div>
+
+        <div class="article-layout__main prose article-body">
             <Content />
         </div>
 
-        <GiscusComments />
-
-        <PostNavigation {prevPost} {nextPost} />
-        <BackToTop />
+        <footer class="article-layout__main">
+            <GiscusComments />
+            <PostNavigation {prevPost} {nextPost} />
+        </footer>
     </article>
+    <BackToTop />
 
     <StickyNotes />
 
@@ -79,3 +87,43 @@ const { prevPost, nextPost } = blog.data.parent
         import "../../scripts/mermaid";
     </script>
 </Layout>
+
+<style>
+    /*
+     * 窄螢幕：單欄，目錄（可收合）在正文之前。
+     * 寬螢幕：正文一欄＋右側固定目錄一欄，兩欄一起置中。
+     */
+    .article-layout__main,
+    .article-layout__toc {
+        max-width: var(--measure);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @media (min-width: 1024px) {
+        .article-layout {
+            display: grid;
+            grid-template-columns: minmax(0, var(--measure)) var(--toc-width);
+            column-gap: 3rem;
+            justify-content: center;
+        }
+
+        .article-layout__main {
+            grid-column: 1;
+            width: 100%;
+            margin: 0;
+        }
+
+        .article-layout__toc {
+            grid-column: 2;
+            width: 100%;
+            margin: 0;
+            grid-row: 1 / span 4;
+            position: sticky;
+            top: 5rem;
+            align-self: start;
+            max-height: calc(100vh - 6rem);
+            overflow-y: auto;
+        }
+    }
+</style>

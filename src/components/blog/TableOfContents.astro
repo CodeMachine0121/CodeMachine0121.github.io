@@ -1,0 +1,72 @@
+---
+import { buildTableOfContents, type HeadingLike } from '../../utils/table-of-contents';
+
+interface Props {
+  headings: HeadingLike[];
+}
+
+const chapters = buildTableOfContents(Astro.props.headings);
+---
+
+{/*
+  同一份目錄輸出兩種呈現：窄螢幕是文章開頭可收合的 <details>（沒有 JS 也能展開），
+  寬螢幕是正文旁固定的側欄。兩者用 CSS 切換，任一時刻只有一個在無障礙樹裡。
+  章少於兩個時 chapters 是空陣列，整個元件不輸出任何東西。
+*/}
+{chapters.length > 0 && (
+  <div class="toc" data-toc>
+    <details class="toc__collapsible mb-8 rounded border border-line bg-surface lg:hidden">
+      <summary class="cursor-pointer select-none px-4 py-3 text-sm font-medium text-ink">目錄</summary>
+      <nav aria-label="文章目錄" class="border-t border-line px-4 py-3">
+        <ol class="space-y-2 text-sm">
+          {chapters.map(chapter => (
+            <li>
+              <a href={`#${chapter.slug}`} class="toc__link text-muted hover:text-accent" data-toc-chapter={chapter.slug}>{chapter.text}</a>
+              {chapter.sections.length > 0 && (
+                <ol class="mt-2 space-y-2 pl-4">
+                  {chapter.sections.map(section => (
+                    <li><a href={`#${section.slug}`} class="text-muted hover:text-accent">{section.text}</a></li>
+                  ))}
+                </ol>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+
+    <nav aria-label="文章目錄" class="toc__sidebar hidden lg:block">
+      <p class="mb-3 text-xs font-medium uppercase tracking-wide text-muted">目錄</p>
+      <ol class="space-y-2 border-l border-line text-sm">
+        {chapters.map(chapter => (
+          <li>
+            <a href={`#${chapter.slug}`} class="toc__link -ml-px block border-l-2 border-transparent pl-3 text-muted hover:text-ink" data-toc-chapter={chapter.slug}>{chapter.text}</a>
+            {chapter.sections.length > 0 && (
+              <ol class="mt-2 space-y-2">
+                {chapter.sections.map(section => (
+                  <li><a href={`#${section.slug}`} class="block pl-6 text-muted hover:text-ink">{section.text}</a></li>
+                ))}
+              </ol>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </div>
+)}
+
+<style is:global>
+  .toc__link[aria-current='true'] {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .toc__sidebar .toc__link[aria-current='true'] {
+    border-left-color: var(--color-accent);
+  }
+</style>
+
+<script>
+  import { highlightCurrentChapter } from '../../scripts/tableOfContents';
+  highlightCurrentChapter();
+</script>

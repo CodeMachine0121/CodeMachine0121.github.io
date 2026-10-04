@@ -2,7 +2,7 @@
 // No server-side props needed
 ---
 
-<div class="giscus-wrapper mt-16 pt-8 border-t border-[var(--color-border)]">
+<div class="giscus-wrapper mt-16 border-t border-line pt-8">
   <div class="giscus"></div>
 </div>
 
@@ -12,7 +12,7 @@
 
     function getGiscusTheme() {
       const theme = document.documentElement.dataset.theme;
-      return theme === 'dark' ? 'dark_protanopia' : 'light_protanopia';
+      return theme === 'dark' ? 'noborder_dark' : 'noborder_light';
     }
 
     function loadGiscus() {

@@ -259,6 +259,44 @@ describe('預估閱讀時間', () => {
   });
 });
 
+describe('文章目錄', () => {
+  /** 文章頁裡帶 id 的第二層標題就是正文的章（頁面其他地方不用 h2） */
+  const chaptersOf = (html: string) => [...html.matchAll(/<h2 id="([^"]+)"/g)].map(match => match[1]!);
+  const tocChaptersOf = (html: string) =>
+    [...new Set([...html.matchAll(/data-toc-chapter="([^"]+)"/g)].map(match => match[1]!))];
+
+  test('章有兩個以上的文章，目錄依序列出每一章；不到兩個的沒有目錄', async () => {
+    const articlePages = await allHtmlFiles(join(DIST, 'blogs'));
+    let withToc = 0;
+    let withoutToc = 0;
+
+    for (const file of articlePages) {
+      const html = readFileSync(file, 'utf-8');
+      if (!html.includes('og:type" content="article"')) continue;
+
+      const chapters = chaptersOf(html);
+      if (chapters.length >= 2) {
+        expect(tocChaptersOf(html)).toEqual(chapters);
+        withToc++;
+      } else {
+        expect(html).not.toContain('aria-label="文章目錄"');
+        withoutToc++;
+      }
+    }
+
+    // 兩種情況都要真的被檢查到，否則這個測試沒有意義
+    expect(withToc).toBeGreaterThan(0);
+    expect(withoutToc).toBeGreaterThan(0);
+  });
+
+  test('窄螢幕的目錄預設收合', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    const details = html.match(/<details[^>]*toc__collapsible[^>]*>/)?.[0] ?? '';
+    expect(details).not.toBe('');
+    expect(details).not.toContain(' open');
+  });
+});
+
 describe('草稿不外流', () => {
   test('draft 文章不出現在 RSS、sitemap 或頁面', async () => {
     const rss = read('rss.xml');
