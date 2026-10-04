@@ -1,6 +1,5 @@
 ---
 import ArticleListItem from './ArticleListItem.astro';
-import SeriesEntry from './SeriesEntry.astro';
 import SearchBar from '../common/SearchBar.astro';
 import UiText from '../common/UiText.astro';
 import { selectLatestSeries, selectStandaloneArticles, type BlogEntry } from '../../utils/series';
@@ -11,11 +10,10 @@ interface Props {
 
 const { blogs } = Astro.props;
 
-// 這一頁的主角是單篇文章，系列只掛「目前進行中」那一個的入口，
-// 其餘系列走 /series。哪一個算最新由資料決定，不寫死系列名稱。
-const latestSeries = selectLatestSeries(blogs);
+// 這一頁只列單篇文章；系列從系列總覽或首頁進入。
 const standaloneBlogs = selectStandaloneArticles(blogs);
-// 該系列的文章預設不列出（點入口會進系列頁），但仍放進 DOM 讓搜尋找得到。
+// 最近更新那個系列的文章預設不列出，但仍放進 DOM，讓搜尋文章標題或系列名稱時找得到。
+const latestSeries = selectLatestSeries(blogs);
 const latestSeriesArticles = latestSeries?.articles ?? [];
 ---
 
@@ -26,12 +24,6 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
   </header>
 
   <SearchBar class="mb-8" placeholder="search.placeholder" label="search.label" />
-
-  {latestSeries && (
-    <div id="series-list" class="series-card mb-4" data-series-name={latestSeries.name}>
-      <SeriesEntry series={latestSeries} label="series.ongoing" />
-    </div>
-  )}
 
   <div id="blog-list" class="divide-y divide-line">
     {standaloneBlogs.map((blog, index) => (
@@ -57,7 +49,6 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
   function initBlogSearch() {
     const searchInput = document.querySelector<HTMLInputElement>('#blog-search');
     const blogItems = Array.from(document.querySelectorAll<HTMLElement>('.blog-item'));
-    const seriesCards = Array.from(document.querySelectorAll<HTMLElement>('.series-card'));
     const noResultsBox = document.querySelector<HTMLElement>('#no-results');
 
     if (!searchInput || !noResultsBox) return;
@@ -70,9 +61,8 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
       element.classList.toggle('hidden', hidden);
     }
 
-    /** 沒有搜尋字時的預設樣貌：系列入口全開，只列單篇文章。 */
+    /** 沒有搜尋字時的預設樣貌：只列單篇文章。 */
     function resetToDefault() {
-      for (const card of seriesCards) setHidden(card, false);
       for (const item of blogItems) setHidden(item, seriesOf(item) !== '');
       setHidden(noResults, true);
     }
@@ -86,16 +76,10 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
 
       let matches = 0;
 
-      // 搜尋時把系列文章也納入，命中就顯示（含系列名命中整個系列）
+      // 搜尋時把系列文章也納入：標題或所屬系列名稱命中就顯示
       for (const item of blogItems) {
         const isMatch = titleOf(item).includes(term) || seriesOf(item).includes(term);
         setHidden(item, !isMatch);
-        if (isMatch) matches++;
-      }
-
-      for (const card of seriesCards) {
-        const isMatch = (card.dataset.seriesName ?? '').toLowerCase().includes(term);
-        setHidden(card, !isMatch);
         if (isMatch) matches++;
       }
 

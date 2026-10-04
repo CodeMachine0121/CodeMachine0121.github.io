@@ -51,10 +51,14 @@ Feature: 改版後的讀者體驗
     When 讀者之後再回到網站
     Then 頁面以深色顯示
 
+  Scenario: 文章列表沒有系列入口
+    Given 讀者在文章列表
+    Then 頁面上沒有系列入口
+
   Scenario: 搜尋命中系列名稱
     Given 讀者在文章列表
     When 讀者搜尋進行中系列名稱的一部分
-    Then 該系列入口與其文章都出現在結果中
+    Then 該系列的文章出現在結果中
 
   Scenario: 搜尋沒有結果
     Given 讀者在文章列表

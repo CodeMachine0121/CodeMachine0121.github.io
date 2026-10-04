@@ -155,16 +155,25 @@ Given('讀者在文章列表', async ({ page }) => {
   await page.goto('/blogs');
 });
 
+/** 文章列表裡藏著的系列文章所屬的系列名稱（給搜尋用） */
+const hiddenSeriesName = async (page: Page) =>
+  (await page.locator('.blog-item[data-series]:not([data-series=""])').first().getAttribute('data-series'))!;
+
 When('讀者搜尋進行中系列名稱的一部分', async ({ page }) => {
-  const seriesName = (await page.locator('.series-card').getAttribute('data-series-name'))!;
+  const seriesName = await hiddenSeriesName(page);
   const keyword = seriesName.split(/[\s:：]+/).find(part => /[A-Za-z]{3,}/.test(part)) ?? seriesName.slice(0, 4);
   await page.locator('#blog-search').fill(keyword.toLowerCase());
 });
 
-Then('該系列入口與其文章都出現在結果中', async ({ page }) => {
-  const seriesName = (await page.locator('.series-card').getAttribute('data-series-name'))!;
-  await expect(page.locator('.series-card')).toBeVisible();
+Then('該系列的文章出現在結果中', async ({ page }) => {
+  const seriesName = await hiddenSeriesName(page);
   await expect(page.locator(`.blog-item[data-series="${seriesName}"]`).first()).toBeVisible();
+});
+
+Then('頁面上沒有系列入口', async ({ page }) => {
+  await expect(page.locator('main a[href^="/series/"]')).toHaveCount(0);
+  // 系列文章都還藏著，只有單篇文章看得到
+  await expect(page.locator('.blog-item:not([data-series=""]):visible')).toHaveCount(0);
 });
 
 When('讀者搜尋「{word}」', async ({ page }, keyword: string) => {

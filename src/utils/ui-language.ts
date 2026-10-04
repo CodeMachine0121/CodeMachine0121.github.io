@@ -81,7 +81,6 @@ export const UI_TEXT = {
   'search.noResults': { zh: '沒有找到符合的文章', en: 'No matching articles' },
   'search.tryAgain': { zh: '試試其他關鍵字', en: 'Try a different keyword' },
 
-  'series.ongoing': { zh: '進行中的系列', en: 'Ongoing series' },
   'series.newest': { zh: '最新系列', en: 'Newest series' },
   'series.overviewTitle': { zh: '系列文章', en: 'Series' },
   'series.overviewSubtitle': {

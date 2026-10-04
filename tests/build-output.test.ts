@@ -275,31 +275,18 @@ describe('系列分頁是真實路徑', () => {
 });
 
 describe('文章列表', () => {
-  test('只掛一個系列入口', () => {
-    const cards = [...read('blogs/index.html').matchAll(/data-series-name="([^"]*)"/g)];
-    expect(cards).toHaveLength(1);
+  test('沒有系列入口，只列單篇文章', () => {
+    const html = read('blogs/index.html');
+    expect(html).not.toMatch(/href="\/series\/[^"]+"/);
+    expect(html).not.toContain('data-series-name');
   });
 
-  test('掛的是最近更新的那個系列', () => {
-    const shown = read('blogs/index.html').match(/data-series-name="([^"]*)"/)?.[1];
+  test('最近更新那個系列的文章預設隱藏，留給搜尋', () => {
+    const html = read('blogs/index.html');
+    const seriesItems = [...html.matchAll(/<div class="blog-item([^"]*)" data-series="([^"]+)"/g)];
 
-    // 從 /series 取實際的排序（generateSeriesList 已是最新在前），拿第一個來比對
-    const newestOnSeriesPage = read('series/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
-    const shownHref = read('blogs/index.html').match(/href="\/series\/([^"]+)"/)?.[1];
-
-    expect(shown).toBeTruthy();
-    expect(shownHref).toBe(newestOnSeriesPage);
-  });
-
-  test('系列卡片連到實際存在的系列頁', () => {
-    const hrefs = [...read('blogs/index.html').matchAll(/href="\/series\/([^"]+)"/g)].map(
-      match => decodeURIComponent(match[1]!)
-    );
-
-    expect(hrefs.length).toBeGreaterThan(0);
-    for (const slug of hrefs) {
-      expect(existsSync(join(DIST, 'series', slug, 'index.html'))).toBe(true);
-    }
+    expect(seriesItems.length).toBeGreaterThan(0);
+    for (const [, classes] of seriesItems) expect(classes).toContain('hidden');
   });
 
   test('目錄與主題切換都有可讀出的名稱', () => {
