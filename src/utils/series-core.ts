@@ -108,6 +108,18 @@ export function selectStandaloneArticles<T extends ArticleLike>(blogs: readonly 
 }
 
 /**
+ * 取得最新的幾篇文章（單篇與系列文章都算），最新的在前。
+ *
+ * 首頁「最新文章」用它；草稿要在呼叫前就濾掉（`getPublishedBlogs`）。
+ */
+export function selectLatestArticles<T extends ArticleLike>(blogs: readonly T[], limit: number): T[] {
+  return blogs
+    .slice()
+    .sort((a, b) => sortByDateAsc(b, a))
+    .slice(0, limit);
+}
+
+/**
  * 取得某系列的文章，第一篇在前。
  *
  * 這是「系列從第一篇讀到最後一篇」的閱讀順序，`findAdjacent` 依賴它。

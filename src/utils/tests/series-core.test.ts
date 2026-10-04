@@ -3,6 +3,7 @@ import {
   findAdjacent,
   groupIntoSeries,
   isPublished,
+  selectLatestArticles,
   selectLatestSeries,
   selectSeriesArticles,
   selectStandaloneArticles,
@@ -293,5 +294,38 @@ describe('selectLatestSeries', () => {
   test('完全沒有系列文章時回傳 null', () => {
     expect(selectLatestSeries([article('standalone', '2026-01-01')])).toBeNull();
     expect(selectLatestSeries([])).toBeNull();
+  });
+});
+
+describe('selectLatestArticles', () => {
+  test('從 12 篇中依發布日期新到舊取前 5 篇', () => {
+    const blogs = Array.from({ length: 12 }, (_, index) => {
+      const day = String(index + 1).padStart(2, '0');
+      return article(`day${day}`, `2026-01-${day}`);
+    });
+
+    expect(selectLatestArticles(blogs, 5).map(a => a.id)).toEqual([
+      'day12',
+      'day11',
+      'day10',
+      'day09',
+      'day08',
+    ]);
+  });
+
+  test('系列文章與單篇文章一起排', () => {
+    const blogs = [
+      article('standalone-old', '2026-01-01'),
+      article('series-new', '2026-03-01', { parent: 'S' }),
+      article('standalone-mid', '2026-02-01'),
+    ];
+
+    expect(selectLatestArticles(blogs, 2).map(a => a.id)).toEqual(['series-new', 'standalone-mid']);
+  });
+
+  test('文章不足上限時全部列出', () => {
+    const blogs = [article('a', '2026-01-01'), article('b', '2026-01-02')];
+
+    expect(selectLatestArticles(blogs, 5).map(a => a.id)).toEqual(['b', 'a']);
   });
 });

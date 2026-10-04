@@ -24,6 +24,7 @@ export {
   sortArticlesBySeries,
   selectStandaloneArticles,
   selectSeriesArticles,
+  selectLatestArticles,
   groupIntoSeries,
   selectLatestSeries,
   findAdjacent,
