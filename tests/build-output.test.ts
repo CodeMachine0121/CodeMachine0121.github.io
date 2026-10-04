@@ -171,6 +171,22 @@ describe('沒有 JS 也要能用', () => {
   });
 });
 
+describe('數學式在建置期就呈現', () => {
+  test('含數學式的文章輸出的是排好的 HTML，前端不需載入 KaTeX 腳本', async () => {
+    let pagesWithMath = 0;
+
+    for (const file of await allHtmlFiles(join(DIST, 'blogs'))) {
+      const html = readFileSync(file, 'utf-8');
+      if (!html.includes('class="katex"')) continue;
+
+      pagesWithMath++;
+      expect(html).not.toMatch(/<script[^>]*src="[^"]*katex[^"]*"/);
+    }
+
+    expect(pagesWithMath).toBeGreaterThan(0);
+  });
+});
+
 describe('不要把開發用的東西帶上線', () => {
   test('產物 HTML 裡沒有 console.log（文章內文提到的字串除外）', async () => {
     const offenders: string[] = [];
