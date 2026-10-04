@@ -1,5 +1,6 @@
 ---
 import type { Language } from '../../types/cv';
+import { uiText } from '../../utils/ui-language';
 
 interface Props {
   currentLang: Language;
@@ -11,13 +12,27 @@ const otherLangLabel = otherLang === 'en' ? 'EN' : '中文';
 ---
 
 <button
+  type="button"
   class="cv-lang-switch no-print"
-  aria-label={`Switch to ${otherLangLabel}`}
-  title={`Switch to ${otherLangLabel}`}
-  onclick={`window.location.href='/cv/${otherLang}'`}
+  data-target-language={otherLang}
+  aria-label={uiText('cv.switchLanguage', currentLang)}
+  title={uiText('cv.switchLanguage', currentLang)}
 >
   {otherLangLabel}
 </button>
+
+<script>
+  // 在履歷上切換語言視為讀者的語言選擇：記住後再前往另一個版本
+  import { chooseLanguage } from '../../scripts/language';
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-target-language]')) {
+    button.addEventListener('click', () => {
+      const language = button.dataset.targetLanguage === 'zh' ? 'zh' : 'en';
+      chooseLanguage(language);
+      window.location.href = `/cv/${language}`;
+    });
+  }
+</script>
 
 <style>
   .cv-lang-switch {

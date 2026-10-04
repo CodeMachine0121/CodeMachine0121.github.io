@@ -10,6 +10,10 @@
   (function () {
     const GISCUS_ORIGIN = 'https://giscus.app';
 
+    function getGiscusLanguage() {
+      return document.documentElement.dataset.language === 'en' ? 'en' : 'zh-TW';
+    }
+
     function getGiscusTheme() {
       const theme = document.documentElement.dataset.theme;
       return theme === 'dark' ? 'noborder_dark' : 'noborder_light';
@@ -28,7 +32,7 @@
       script.setAttribute('data-emit-metadata', '0');
       script.setAttribute('data-input-position', 'bottom');
       script.setAttribute('data-theme', getGiscusTheme());
-      script.setAttribute('data-lang', 'en');
+      script.setAttribute('data-lang', getGiscusLanguage());
       script.setAttribute('data-loading', 'lazy');
       script.crossOrigin = 'anonymous';
       script.async = true;
@@ -39,28 +43,24 @@
       }
     }
 
-    function sendThemeToGiscus(theme) {
+    function sendConfigToGiscus(config) {
       const iframe = document.querySelector('iframe.giscus-frame');
       if (iframe) {
-        iframe.contentWindow.postMessage(
-          { giscus: { setConfig: { theme } } },
-          GISCUS_ORIGIN
-        );
+        iframe.contentWindow.postMessage({ giscus: { setConfig: config } }, GISCUS_ORIGIN);
       }
     }
 
     // Load Giscus on page load
     loadGiscus();
 
-    // Watch for theme changes on <html data-theme="...">
+    // 主題與介面語言都寫在 <html> 上（data-theme / data-language），變了就同步給留言區
     const observer = new MutationObserver(function (mutations) {
       for (const mutation of mutations) {
-        if (mutation.attributeName === 'data-theme') {
-          sendThemeToGiscus(getGiscusTheme());
-        }
+        if (mutation.attributeName === 'data-theme') sendConfigToGiscus({ theme: getGiscusTheme() });
+        if (mutation.attributeName === 'data-language') sendConfigToGiscus({ lang: getGiscusLanguage() });
       }
     });
 
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-language'] });
   })();
 </script>

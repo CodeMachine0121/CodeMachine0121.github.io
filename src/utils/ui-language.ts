@@ -109,6 +109,8 @@ export const UI_TEXT = {
 
   'cv.home': { zh: '首頁', en: 'Home' },
   'cv.backToHome': { zh: '回到首頁', en: 'Back to home' },
+  'cv.switchLanguage': { zh: '切換為英文版履歷', en: 'Switch to the Chinese CV' },
+  'cv.chooseVersion': { zh: '選擇履歷語言', en: 'Choose a CV language' },
 } as const satisfies Record<string, LocalizedPair>;
 
 export type UiTextKey = keyof typeof UI_TEXT;

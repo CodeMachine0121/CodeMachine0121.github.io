@@ -1,3 +1,36 @@
 ---
-return Astro.redirect('/cv/en');
+/**
+ * 不帶語言的履歷網址：依介面語言的規則（讀者選過的語言 → 瀏覽器首選語言）導向對應版本。
+ * 沒有 JS 時導向中文版（網站內容的主要語言），頁面上也留著兩個版本的連結。
+ */
+import { CV_PATH, FALLBACK_LANGUAGE, LANGUAGE_STORAGE_KEY, resolveLanguage, uiText } from '../../utils/ui-language';
+
+const redirect = `(() => {
+  const resolveLanguage = ${resolveLanguage.toString()};
+  let saved = null;
+  try {
+    saved = localStorage.getItem(${JSON.stringify(LANGUAGE_STORAGE_KEY)});
+  } catch {}
+  window.location.replace(${JSON.stringify(CV_PATH)}[resolveLanguage(saved, navigator.language)]);
+})();`;
+const fallbackPath = CV_PATH[FALLBACK_LANGUAGE];
 ---
+
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(fallbackPath, Astro.site)} />
+    <title>CV</title>
+    <script is:inline set:html={redirect} />
+    <noscript><meta http-equiv="refresh" content={`0; url=${fallbackPath}`} /></noscript>
+  </head>
+  <body>
+    <nav aria-label={uiText('cv.chooseVersion', 'zh')}>
+      <a href={CV_PATH.zh} lang="zh-Hant-TW">中文履歷</a>
+      <a href={CV_PATH.en} lang="en">English CV</a>
+    </nav>
+  </body>
+</html>
