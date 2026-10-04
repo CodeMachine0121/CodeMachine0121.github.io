@@ -25,6 +25,8 @@
 | 系列（Series） | `Series<T>`、frontmatter `parent`、`seriesName`、`parentName` | 系列文章、Series | 以 `parent` 字串相同的文章歸為同一系列；同系列 `parent` 必須完全一致（`trim` 後比對） | Archeology |
 | 系列名稱 | `Series.name`（= `parent`） | 系列卡片標題、文章頁徽章 | 原始名稱，可含中文與標點 | Archeology |
 | 系列代稱（slug） | `Series.slug`、`createSlug()` | 網址 `/series/{slug}` | 保留中文、英數、底線、連字號；空白折成 `-`；無可用字元時退回 `series` | Archeology |
+| 系列封面（Series Cover） | `selectSeriesCover()`、`src/config/series-covers.json`、`SeriesCard.astro` | 系列總覽卡片的封面 | 設定檔指定 → 系列中最新一篇有封面的文章 → 佔位封面；設定檔以系列名稱為鍵，所有系列都要列入 | Confirmed |
+| 系列最後更新日期 | `lastPublishedOf()` | 「更新於 2026年10月14日」／「Updated Oct 14, 2026」 | 系列中發布日期最新的那一篇；系列總覽依它排序 | Confirmed |
 | 系列篇數 | `Series.count`、`childrenCount` | 「N 篇」「共 N 篇文章」 | 該系列已發布文章數 | Archeology |
 | 系列序號 | `data.seriesIndex` | （不顯示） | 選填非負整數；系列內升冪排序，未設定者排後、同序號再依發布日期 | Archeology |
 | 單篇文章（Standalone Article） | `selectStandaloneArticles()`、`data-series=""` | 文章列表主體 | 沒有 `parent` 的文章；列表依發布日期新到舊 | Archeology |

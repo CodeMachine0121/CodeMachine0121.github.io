@@ -580,6 +580,30 @@ describe('系列總覽封面卡片', () => {
     expect(unknown).toEqual([]);
   });
 
+  test('網站上的每個系列都列在封面設定檔中（未指定時為 null）', async () => {
+    const missing = [...(await seriesFromBuiltPages()).values()]
+      .map(entry => entry.name)
+      .filter(name => !(name in covers));
+
+    expect(missing).toEqual([]);
+  });
+
+  test('封面區固定 16:9；前兩張以外的封面延遲載入', () => {
+    cards().forEach((card, index) => {
+      expect(card.html).toContain('aspect-[16/9]');
+      const loading = card.html.match(/<img[^>]*data-series-cover[^>]*>/)?.[0].match(/loading="(\w+)"/)?.[1];
+      if (loading) expect(loading).toBe(index < 2 ? 'eager' : 'lazy');
+    });
+  });
+
+  test('封面是裝飾性圖片，不會被重複朗讀', () => {
+    for (const card of cards()) {
+      const cover = card.html.match(/<img[^>]*data-series-cover[^>]*>/)?.[0];
+      if (cover) expect(cover).toContain('alt=""');
+      else expect(card.html).toMatch(/data-series-cover-placeholder[^>]*aria-hidden="true"/);
+    }
+  });
+
   test('卡片依各系列最後一篇文章的日期排序，新的在前', async () => {
     const series = await seriesFromBuiltPages();
     const lastOf = (slug: string) => [...series.get(slug)!.dates].sort().at(-1)!;
