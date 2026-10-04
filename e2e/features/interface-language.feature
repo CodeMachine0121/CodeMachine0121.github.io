@@ -57,6 +57,27 @@ Feature: 介面語言
     And 首頁區塊標題顯示 "Latest articles"
     And 文章日期與閱讀時間以英文格式顯示
 
+  Scenario: 英文介面下名稱與內容維持原文，分頁標題與無障礙名稱為英文
+    Given 讀者第一次來，瀏覽器首選語言為 "en-US"
+    When 讀者打開 "/blogs"
+    Then 分頁標題為 "Articles"
+    And 主題切換鈕的名稱為 "Toggle light and dark theme"
+    When 讀者打開一篇文章
+    Then 文章標題維持原文
+
+  Scenario Outline: 英文介面在手機寬度不會出現橫向捲動
+    Given 讀者第一次來，瀏覽器首選語言為 "en-US"
+    And 讀者用 360 像素寬的手機
+    When 讀者打開 "<頁面>"
+    Then 頁面沒有橫向捲動
+
+    Examples:
+      | 頁面                   |
+      | /                      |
+      | /blogs                 |
+      | /series/nixos-bootcamp |
+      | /404                   |
+
   Scenario: 中文介面的作品類型與經歷期間
     Given 讀者第一次來，瀏覽器首選語言為 "zh-TW"
     When 讀者打開首頁

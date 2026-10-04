@@ -148,3 +148,21 @@ Then('返回首頁的連結文字為 {string}', async ({ page }, label: string) 
 When('讀者在履歷切換語言', async ({ page }) => {
   await pageOf(page).locator('.cv-lang-switch').click();
 });
+
+Then('分頁標題為 {string}', async ({ page }, title: string) => {
+  await expect(pageOf(page)).toHaveTitle(title);
+});
+
+Then('主題切換鈕的名稱為 {string}', async ({ page }, name: string) => {
+  await expect(pageOf(page).locator('#toggle-theme-button')).toHaveAttribute('aria-label', name);
+});
+
+When('讀者打開一篇文章', async ({ page }) => {
+  await pageOf(page).goto(ARTICLE_WITH_CHAPTERS);
+});
+
+Then('文章標題維持原文', async ({ page }) => {
+  // 文章標題以原文撰寫（中文），英文介面下不翻譯
+  await expect(pageOf(page).locator('h1')).toHaveText('怎麼切微服務架構，從吃牛排開始');
+  await expect(pageOf(page)).toHaveTitle('怎麼切微服務架構，從吃牛排開始');
+});

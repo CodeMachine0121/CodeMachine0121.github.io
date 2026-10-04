@@ -216,7 +216,7 @@ Then('讀者仍可點開目錄看到章節', async ({ page }) => {
 });
 
 Given('讀者用 {int} 像素寬的手機', async ({ page }, width: number) => {
-  await page.setViewportSize({ width, height: 800 });
+  await pageOf(page).setViewportSize({ width, height: 800 });
 });
 
 When('讀者打開 {string}', async ({ page }, path: string) => {
@@ -224,6 +224,6 @@ When('讀者打開 {string}', async ({ page }, path: string) => {
 });
 
 Then('頁面沒有橫向捲動', async ({ page }) => {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  const overflow = await pageOf(page).evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
