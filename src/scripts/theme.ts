@@ -1,6 +1,7 @@
 export type Theme = 'dark' | 'light';
 
-const STORAGE_KEY = 'theme';
+/** 讀者手動選擇的主題存在 localStorage 的這個鍵；ThemeInit 也讀它 */
+export const THEME_STORAGE_KEY = 'theme';
 
 const currentTheme = (): Theme =>
     document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
@@ -20,7 +21,7 @@ export function toggleTheme(): Theme {
     root.dataset.themeChosen = 'true';
 
     try {
-        localStorage.setItem(STORAGE_KEY, next);
+        localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
         // 無法記住，本次瀏覽仍有效
     }
