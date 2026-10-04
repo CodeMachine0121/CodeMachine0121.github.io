@@ -30,7 +30,7 @@
 | 系列篇數 | `Series.count`、`childrenCount` | 「N 篇」「共 N 篇文章」 | 該系列已發布文章數 | Archeology |
 | 系列序號 | `data.seriesIndex` | （不顯示） | 選填非負整數；系列內升冪排序，未設定者排後、同序號再依發布日期 | Archeology |
 | 單篇文章（Standalone Article） | `selectStandaloneArticles()`、`data-series=""` | 文章列表主體 | 沒有 `parent` 的文章；列表依發布日期新到舊 | Archeology |
-| 進行中的系列（Latest Series） | `selectLatestSeries()`、`latestSeries` | 文章列表頁上方的系列卡片（首頁改用「最新的系列」） | 「最新一篇發布日期最新」的那個系列；文章列表頁只掛它的入口，其餘走 `/series` | Archeology |
+| 進行中的系列（Latest Series） | `selectLatestSeries()`、`latestSeries` | 不再顯示入口（blog-ui-redesign v1.2 拿掉文章列表的系列卡片）；其文章仍供文章列表搜尋 | 「最新一篇發布日期最新」的那個系列；文章列表頁只掛它的入口，其餘走 `/series` | Archeology |
 | 草稿（Draft） | `data.draft`、`isPublished()` | （不顯示） | `draft: true` 的文章：不列出、不建置頁面、不進系列頁／上下篇／RSS。預設 `false` | Archeology |
 | 已發布文章 | `getPublishedBlogs()` | — | 全站取用文章的唯一入口，負責過濾草稿 | Archeology |
 | 未部署文章 | `src/content/not-deployed/` | （不存在於站上） | collection loader 的 base 是 `src/content/blogs`，此資料夾的文章永遠不會被建置 | Archeology |

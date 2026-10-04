@@ -57,8 +57,8 @@
 | `ThemeInit.astro` | Component | 首次繪製前決定深淺色（可容錯）；`Layout` 與履歷頁共用 | — | US-04 |
 | `SiteFonts.astro` | Component | 非阻塞載入全站字型＋noscript 備援；`Layout` 與履歷頁共用 | — | US-01 |
 | `ArticleListItem.astro` | Component | 單篇文章列：系列名（若有）、標題、摘要（若有）、日期、閱讀時間、封面（若有） | `ReadingTime` | US-02、US-05、US-07 |
-| `SeriesEntry.astro` | Component（取代 `ParentItem`） | 系列入口：系列名、篇數、連結；屬性名改用「系列」語彙 | — | US-05、US-07 |
-| `ArticleList.astro` | Component（取代 `BlogList`） | 文章列表＋搜尋；搜尋邏輯原樣搬移 | `ArticleListItem`、`SeriesEntry`、`SearchBar` | US-07：搜尋 |
+| `SeriesEntry.astro` | Component（取代 `ParentItem`） | 系列入口：系列名、篇數、連結；屬性名改用「系列」語彙（v1.2 起只用在首頁） | — | US-05 |
+| `ArticleList.astro` | Component（取代 `BlogList`） | 文章列表＋搜尋；v1.2 起不顯示系列入口，最近更新系列的文章仍隱藏在列表中供搜尋 | `ArticleListItem`、`SearchBar` | US-07：搜尋、文章列表沒有系列入口 |
 | `Intro.astro`、`LatestArticles.astro`、`ProjectList.astro`、`ExperienceSummary.astro` | Components | 首頁四區塊；`LatestArticles` 掛建立日期最新的系列與最新 5 篇單篇文章；`ExperienceSummary` 取資料中前 3 段（資料以新到舊維護）並附完整履歷入口；`ProjectList` 全部列出、無篩選 | `introduce.json`、`selectNewestSeries`、`selectStandaloneArticles` | US-05 |
 
 > 每個新的純函式都只有一個參數（或資料＋上限），呼叫端一次呼叫就拿到完整結果，沒有需要依序呼叫的步驟。
@@ -96,7 +96,6 @@ flowchart TD
   latest --> core["series-core: selectNewestSeries / selectStandaloneArticles"]
   latest --> item["blog/ArticleListItem"]
   blogIndex["pages/blogs/index"] --> list["blog/ArticleList"] --> item
-  list --> entry["blog/SeriesEntry"]
   seriesPage["pages/series/slug/page"] --> item
   item --> readingTime["blog/ReadingTime"] --> estimate["utils/reading-time"]
   articlePage["pages/blogs/slug"] --> readingTime
@@ -149,7 +148,8 @@ flowchart TD
 | US-06 沒有載入畫面 | `Layout.astro` 移除 `LoadingScreen` |
 | US-07 已上線網址有效 | 路由檔案不改名；`getStaticPaths` 不動；產物測試 |
 | US-07 系列／單篇上一篇方向 | 既有 `findAdjacent`（不動）＋ `PostNavigation` |
-| US-07 搜尋命中系列名／無結果 | `ArticleList.astro`（搜尋邏輯原樣） |
+| US-07 文章列表沒有系列入口（v1.2） | `ArticleList.astro` |
+| US-07 搜尋命中系列名／無結果 | `ArticleList.astro`（搜尋文章標題與所屬系列名） |
 | US-07 草稿全站隱藏 | 既有 `getPublishedBlogs`（不動） |
 | US-08 乾淨 PDF＋檔名 | `cv/[lang].astro` `.no-print` ＋ `<title>` 不變 |
 | US-08 深色下 PDF 仍淺色 | `cv.scss` `@media print` 強制淺色 token |

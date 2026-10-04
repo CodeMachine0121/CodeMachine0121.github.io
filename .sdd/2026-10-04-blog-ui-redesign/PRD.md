@@ -1,11 +1,15 @@
 # Product Requirements Document (PRD) — 部落格全站介面重新設計
 
 **Status:** Finalized
-**Version:** v1.1
+**Version:** v1.2
 **Owner:** James Hsueh
 **Stakeholders:** Engineering（個人專案）
 
 > ## 變更紀錄
+>
+> ### v1.2 — 文章列表拿掉系列入口
+> - 文章列表不再顯示「進行中的系列」入口，只列單篇文章；系列一律從系列總覽或首頁進入。
+> - 搜尋行為保留：搜尋系列名稱或系列文章標題時，最近更新的那個系列的文章仍會出現在結果中。
 >
 > ### v1.1 — 首頁的系列入口與最新文章
 > - 首頁的系列入口改為「建立日期最新的系列」（第一篇文章發布日期最新者），不再是最近更新的系列。
@@ -235,10 +239,15 @@ Scenario: 單篇文章的上一篇是較新的一篇
   When 讀者點「上一篇」
   Then 進到發布日期比它新的那篇單篇文章
 
+Scenario: 文章列表沒有系列入口
+  Given 有一個最近更新的系列
+  When 讀者打開文章列表
+  Then 頁面上沒有系列入口，只列出單篇文章
+
 Scenario: 搜尋命中系列名稱
-  Given 進行中系列的名稱含「Agent」
+  Given 最近更新的系列名稱含「Agent」
   When 讀者在文章列表搜尋「agent」
-  Then 該系列入口與其文章都出現在結果中
+  Then 該系列的文章出現在結果中
 
 Scenario: 搜尋沒有結果
   Given 沒有任何文章符合「xyz」
