@@ -18,7 +18,7 @@
 | Area | Action | What / Why |
 | :--- | :--- | :--- |
 | `src/styles/tokens.css` | **Add** | 編輯風設計 token（色彩、字體、版寬、間距）＋深淺色兩組；全站唯一的視覺真相來源 |
-| `src/styles/article.css` | **Add**（取代 `blog.css`） | 文章正文排版（標題、段落、程式碼、表格、引言、Mermaid 容器）＋目錄樣式，全用 token |
+| `src/styles/article.css` | **Add**（取代 `blog.css`） | 文章頁雙欄版面（文章頁與對談筆記頁共用）＋正文排版（標題、段落、程式碼、表格、引言、Mermaid 容器），全用 token |
 | `src/styles/index.css` | **Modify** | 基礎樣式：body 背景／字色／字體、連結、焦點外框、減少動態效果 |
 | `src/styles/handdrawn/**`、`blog.css`、`animations.css`、`theme.css` | **Remove** | 手繪設計系統與捲動揭示動畫；新風格不保留 |
 | `tailwind.config.mjs` | **Modify** | 色彩／字體改對應新 token（`bg`、`surface`、`ink`、`muted`、`line`、`accent`）；typography 外掛改用 token |
@@ -53,7 +53,9 @@
 | `tokens.css` | Design tokens | 定義兩組主題的語意色、字體堆疊、正文版寬 | Tailwind config、`article.css`、`cv.scss`、`mermaid.ts` | US-01 |
 | `ReadingTime.astro` | Component | 接收文章內文，渲染「N 分鐘」；呼叫端不需知道算法 | `estimateReadingMinutes` | US-02（文章頁、列表、首頁、系列頁） |
 | `TableOfContents.astro` | Component | 接收標題清單；無目錄時不輸出任何東西；寬螢幕為側欄、窄螢幕為 `<details>` 預設收合（沒有 JS 也可展開） | `buildTableOfContents`、`tableOfContents.ts` | US-03 |
-| `src/scripts/tableOfContents.ts` | Browser script | 以 IntersectionObserver 標出目前所在的章（`aria-current`） | 目錄 DOM | US-03：捲動時標出目前位置 |
+| `src/scripts/tableOfContents.ts` | Browser script | 捲動時（`requestAnimationFrame` 節流）標出目前所在的章（`aria-current`）；捲到頁底時改標畫面上最後一章 | 目錄 DOM | US-03：捲動時標出目前位置 |
+| `ThemeInit.astro` | Component | 首次繪製前決定深淺色（可容錯）；`Layout` 與履歷頁共用 | — | US-04 |
+| `SiteFonts.astro` | Component | 非阻塞載入全站字型＋noscript 備援；`Layout` 與履歷頁共用 | — | US-01 |
 | `ArticleListItem.astro` | Component | 單篇文章列：系列名（若有）、標題、摘要（若有）、日期、閱讀時間、封面（若有） | `ReadingTime` | US-02、US-05、US-07 |
 | `SeriesEntry.astro` | Component（取代 `ParentItem`） | 系列入口：系列名、篇數、連結；屬性名改用「系列」語彙 | — | US-05、US-07 |
 | `ArticleList.astro` | Component（取代 `BlogList`） | 文章列表＋搜尋；搜尋邏輯原樣搬移 | `ArticleListItem`、`SeriesEntry`、`SearchBar` | US-07：搜尋 |
@@ -130,7 +132,7 @@ flowchart TD
 | US-01 正文舒適閱讀寬度 | `article.css` 的正文最大寬度 token（`--measure`） |
 | US-02 一般中文文章／無條件進位／最少 1 分鐘／中英混合 | `estimateReadingMinutes` ＋ `ReadingTime.astro` |
 | US-03 寬螢幕兩層目錄 | `buildTableOfContents` ＋ `TableOfContents.astro`（側欄） |
-| US-03 捲動時標出目前位置 | `scripts/tableOfContents.ts` |
+| US-03 捲動時標出目前位置 | `scripts/tableOfContents.ts`（含頁底退路） |
 | US-03 點目錄跳到該章 | 目錄連結指向標題錨點（Astro 自動產生的 heading id） |
 | US-03 手機預設收合 | `TableOfContents.astro` 的 `<details>`（窄螢幕） |
 | US-03 只有 1 章不顯示／2 章顯示／深層不列 | `buildTableOfContents` 規則 |
@@ -166,3 +168,7 @@ flowchart TD
   - 正文版寬 `68ch`；頁面容器最大寬 `72rem`；文章頁寬螢幕（≥ 1024px）為「正文＋右側目錄 14rem」。
   - 動態效果：只保留 150ms 的顏色過渡，並尊重減少動態效果設定。
 - **Open decisions (for implementation):** 無。
+- **實作期間的調整（已同步本文件）：**
+  - 目錄目前位置改用捲動事件＋`requestAnimationFrame`，而非 IntersectionObserver：「最後一個捲過閱讀線的章」用位置比較最直接，且需要頁底退路。
+  - 主題初始化與字型載入抽成 `ThemeInit`、`SiteFonts` 兩個元件，因為履歷頁不走 `Layout` 也需要它們。
+  - 深色 token 包在 `@media screen` 內，列印（含履歷 PDF）一律淺色——取代在 `cv.scss` 另寫一份淺色覆寫。
