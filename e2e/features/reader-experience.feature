@@ -88,3 +88,11 @@ Feature: 改版後的讀者體驗
       | /cv/zh                 |
       | /ai-redefines-software |
       | /404                   |
+
+  Scenario: 只用鍵盤也能切換主題與展開目錄
+    Given 讀者第一次來，且裝置設定為淺色
+    And 讀者用手機打開一篇有多個章的文章
+    When 讀者用鍵盤操作主題切換鈕
+    Then 頁面以深色顯示
+    When 讀者用鍵盤展開目錄
+    Then 目錄列出所有章與節

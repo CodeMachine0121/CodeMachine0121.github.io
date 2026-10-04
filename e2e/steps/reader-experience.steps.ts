@@ -148,6 +148,16 @@ Then('頁面以{word}顯示', async ({ page }, theme: string) => {
   await expectTheme(pageOf(page), theme === '深色' ? 'dark' : 'light');
 });
 
+When('讀者用鍵盤操作主題切換鈕', async ({ page }) => {
+  await page.locator('#toggle-theme-button').focus();
+  await page.keyboard.press('Enter');
+});
+
+When('讀者用鍵盤展開目錄', async ({ page }) => {
+  await page.locator('.toc__collapsible summary').focus();
+  await page.keyboard.press('Enter');
+});
+
 // ── 搜尋 ────────────────────────────────────────────────────────────────────
 
 Given('讀者在文章列表', async ({ page }) => {
