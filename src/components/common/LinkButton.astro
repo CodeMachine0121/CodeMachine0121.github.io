@@ -1,0 +1,23 @@
+---
+/**
+ * 看起來像按鈕的連結。全站只有兩種：主要（實心）與次要（外框）。
+ */
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { href, variant = 'primary' } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex items-center rounded px-4 py-2 text-sm font-medium',
+    variant === 'primary'
+      ? 'bg-ink text-bg hover:bg-accent'
+      : 'border border-line text-ink hover:border-accent hover:text-accent',
+  ]}
+>
+  <slot />
+</a>

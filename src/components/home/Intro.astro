@@ -1,4 +1,5 @@
 ---
+import LinkButton from '../common/LinkButton.astro';
 import { Image } from 'astro:assets';
 import me from '../../assets/me.png';
 import { basic } from '../../config/introduce.json';
@@ -19,11 +20,7 @@ import { basic } from '../../config/introduce.json';
   <p class="mt-1 text-muted">{basic.job}</p>
   <p class="mt-5 text-lg leading-relaxed text-ink">{basic.summary.en}</p>
   <div class="mt-6 flex flex-wrap gap-3">
-    <a href="/cv" class="inline-flex items-center rounded bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent">
-      看完整履歷
-    </a>
-    <a href="mailto:james.afternoon.dev@gmail.com" class="inline-flex items-center rounded border border-line px-4 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent">
-      寫信給我
-    </a>
+    <LinkButton href="/cv">看完整履歷</LinkButton>
+    <LinkButton href="mailto:james.afternoon.dev@gmail.com" variant="secondary">寫信給我</LinkButton>
   </div>
 </section>
