@@ -243,6 +243,22 @@ describe('文章列表', () => {
   });
 });
 
+describe('預估閱讀時間', () => {
+  test('文章列表的每一篇都標出閱讀時間', () => {
+    const html = read('blogs/index.html');
+    const items = [...html.matchAll(/class="blog-item[^"]*"/g)].length;
+    const readingTimes = [...html.matchAll(/data-reading-time="(\d+)">\1 分鐘</g)].length;
+
+    expect(items).toBeGreaterThan(0);
+    expect(readingTimes).toBe(items);
+  });
+
+  test('系列頁的每一篇都標出閱讀時間', () => {
+    const html = read('series/nixos-bootcamp/index.html');
+    expect([...html.matchAll(/data-reading-time="\d+"/g)].length).toBe(12);
+  });
+});
+
 describe('草稿不外流', () => {
   test('draft 文章不出現在 RSS、sitemap 或頁面', async () => {
     const rss = read('rss.xml');

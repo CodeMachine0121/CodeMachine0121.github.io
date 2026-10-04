@@ -1,0 +1,12 @@
+---
+import { estimateReadingMinutes } from '../../utils/reading-time';
+
+interface Props {
+  /** 文章原始內文；呼叫端只要把文章的 body 傳進來，不需要知道怎麼算 */
+  markdown: string | undefined;
+}
+
+const minutes = estimateReadingMinutes(Astro.props.markdown ?? '');
+---
+
+<span data-reading-time={minutes}>{minutes} 分鐘</span>

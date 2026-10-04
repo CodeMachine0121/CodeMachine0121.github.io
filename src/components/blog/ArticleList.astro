@@ -1,8 +1,8 @@
 ---
-import BlogItem from './BlogItem.astro';
-import ParentItem from './ParentItem.astro';
-import SearchBar from '../../common/SearchBar.astro';
-import { selectLatestSeries, selectStandaloneArticles, type BlogEntry } from '../../../utils/series';
+import ArticleListItem from './ArticleListItem.astro';
+import SeriesEntry from './SeriesEntry.astro';
+import SearchBar from '../common/SearchBar.astro';
+import { selectLatestSeries, selectStandaloneArticles, type BlogEntry } from '../../utils/series';
 
 interface Props {
   blogs: BlogEntry[];
@@ -14,58 +14,41 @@ const { blogs } = Astro.props;
 // 其餘系列走 /series。哪一個算最新由資料決定，不寫死系列名稱。
 const latestSeries = selectLatestSeries(blogs);
 const standaloneBlogs = selectStandaloneArticles(blogs);
-
-// 該系列的文章預設不列出（點卡片會進系列頁），但仍放進 DOM 讓搜尋找得到。
+// 該系列的文章預設不列出（點入口會進系列頁），但仍放進 DOM 讓搜尋找得到。
 const latestSeriesArticles = latestSeries?.articles ?? [];
 ---
 
-<section class="py-12">
-  <div class="container mx-auto px-4 max-w-4xl">
-    <div class="text-center mb-10">
-      <span class="hd-label">Blog</span>
-      <h1 class="font-heading text-4xl sm:text-5xl text-ink mt-5">Recent posts</h1>
-      <span class="hd-squiggle mx-auto mt-5" aria-hidden="true"></span>
-    </div>
+<section class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 sm:pt-16">
+  <header class="mb-8">
+    <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl">文章</h1>
+    <p class="mt-2 text-muted">軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。</p>
+  </header>
 
-    <!-- 搜尋列 -->
-    <div class="mb-8">
-      <SearchBar placeholder="搜尋文章標題或系列..." label="搜尋文章標題或系列" />
-    </div>
+  <SearchBar class="mb-8" placeholder="搜尋文章標題或系列…" label="搜尋文章標題或系列" />
 
-    <!-- 進行中的系列 -->
-    {latestSeries && (
-      <div id="series-list" class="mb-6">
-        <div class="series-card" data-series-name={latestSeries.name}>
-          <ParentItem
-            parentName={latestSeries.name}
-            childrenCount={latestSeries.count}
-            href={`/series/${latestSeries.slug}`}
-          />
-        </div>
+  {latestSeries && (
+    <div id="series-list" class="series-card mb-4" data-series-name={latestSeries.name}>
+      <SeriesEntry series={latestSeries} label="進行中的系列" />
+    </div>
+  )}
+
+  <div id="blog-list" class="divide-y divide-line">
+    {standaloneBlogs.map((blog, index) => (
+      <div class="blog-item" data-series="">
+        <ArticleListItem blog={blog} isFirst={index === 0} />
       </div>
-    )}
+    ))}
+    {/* 進行中系列的文章：預設隱藏，只在搜尋命中時出現 */}
+    {latestSeriesArticles.map(blog => (
+      <div class="blog-item hidden" data-series={latestSeries!.name}>
+        <ArticleListItem blog={blog} />
+      </div>
+    ))}
+  </div>
 
-    <!-- 文章列表 -->
-    <div id="blog-list" class="space-y-6">
-      {standaloneBlogs.map((blog, index) => (
-        <div class="blog-item" data-series="">
-          <BlogItem blog={blog} isFirst={index === 0} />
-        </div>
-      ))}
-
-      {/* 進行中系列的文章：預設隱藏，只在搜尋命中時出現 */}
-      {latestSeriesArticles.map(blog => (
-        <div class="blog-item hidden" data-series={latestSeries!.name}>
-          <BlogItem blog={blog} isFirst={false} />
-        </div>
-      ))}
-    </div>
-
-    <!-- 無搜尋結果提示 -->
-    <div id="no-results" class="hidden text-center py-12">
-      <p class="font-heading text-2xl text-ink">沒有找到符合的文章</p>
-      <p class="text-ink-soft mt-2">試試其他關鍵字</p>
-    </div>
+  <div id="no-results" class="hidden py-16 text-center" role="status">
+    <p class="font-serif text-xl text-ink">沒有找到符合的文章</p>
+    <p class="mt-2 text-muted">試試其他關鍵字</p>
   </div>
 </section>
 
@@ -77,7 +60,6 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
     const noResultsBox = document.querySelector<HTMLElement>('#no-results');
 
     if (!searchInput || !noResultsBox) return;
-
     const noResults = noResultsBox;
 
     const titleOf = (item: HTMLElement) => item.querySelector('h2')?.textContent?.toLowerCase() ?? '';
@@ -87,7 +69,7 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
       element.classList.toggle('hidden', hidden);
     }
 
-    /** 沒有搜尋字時的預設樣貌：系列卡片全開，只列單篇文章。 */
+    /** 沒有搜尋字時的預設樣貌：系列入口全開，只列單篇文章。 */
     function resetToDefault() {
       for (const card of seriesCards) setHidden(card, false);
       for (const item of blogItems) setHidden(item, seriesOf(item) !== '');
@@ -96,7 +78,6 @@ const latestSeriesArticles = latestSeries?.articles ?? [];
 
     function applySearch(rawTerm: string) {
       const term = rawTerm.toLowerCase().trim();
-
       if (term === '') {
         resetToDefault();
         return;

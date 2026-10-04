@@ -1,11 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import BlogList from '../../components/sections/blog/BlogList.astro';
+import ArticleList from '../../components/blog/ArticleList.astro';
 import { getPublishedBlogs } from '../../utils/series';
 
 const allBlogs = await getPublishedBlogs();
 ---
 
 <Layout title="Blogs" description="所有文章：軟體架構、測試驅動開發、AI 協作與日常踩坑筆記。">
-    <BlogList blogs={allBlogs} />
+    <ArticleList blogs={allBlogs} />
 </Layout>

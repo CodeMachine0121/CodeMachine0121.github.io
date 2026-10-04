@@ -1,43 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SeriesEntry from "../components/blog/SeriesEntry.astro";
 import { generateSeriesList } from "../utils/series";
 
 const seriesList = await generateSeriesList();
 ---
 
 <Layout title="系列文章">
-  <section class="py-12 max-w-4xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <span class="hd-label">Series</span>
-      <h1 class="font-heading text-4xl sm:text-5xl text-ink mt-5">系列文章</h1>
-      <span class="hd-squiggle mx-auto mt-5" aria-hidden="true"></span>
-    </div>
+  <section class="mx-auto max-w-3xl px-4 pt-12 sm:px-6 sm:pt-16">
+    <header class="mb-8">
+      <h1 class="font-serif text-3xl font-bold text-ink sm:text-4xl">系列文章</h1>
+      <p class="mt-2 text-muted">依最近更新排序，點進去從第一篇開始讀。</p>
+    </header>
 
-    {seriesList.length === 0 && (
-      <p class="text-center text-ink-soft text-lg">目前沒有任何系列文章。</p>
+    {seriesList.length === 0 ? (
+      <p class="py-16 text-center text-muted">目前沒有任何系列文章。</p>
+    ) : (
+      <ul class="space-y-4">
+        {seriesList.map(series => (
+          <li><SeriesEntry series={series} /></li>
+        ))}
+      </ul>
     )}
-
-    <div class="grid gap-7 sm:grid-cols-2">
-      {seriesList.map((series, index) => (
-        <a
-          href={`/series/${series.slug}`}
-          class="hd-card hd-card--link group flex flex-col"
-          style={`transform: rotate(${(index % 2 === 0 ? -1 : 1)}deg);`}
-        >
-          <div class="flex items-start justify-between gap-3">
-            <h2 class="font-heading text-2xl text-ink leading-snug group-hover:text-accent transition-colors duration-100">
-              {series.name}
-            </h2>
-            <span class="hd-badge shrink-0">{series.count} 篇</span>
-          </div>
-          <div class="mt-4 pt-4 border-t-2 border-dashed border-border flex items-center gap-2 text-ink-soft font-heading">
-            點擊查看全部文章
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-        </a>
-      ))}
-    </div>
   </section>
 </Layout>

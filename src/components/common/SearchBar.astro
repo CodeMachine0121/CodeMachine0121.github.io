@@ -10,45 +10,21 @@ const { placeholder = '搜尋文章...', class: className = '', label = '搜尋�
 ---
 
 <div class:list={['relative', className]}>
-  <div class="relative">
-    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-ink-soft">
-      <svg
-        class="w-5 h-5"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-      >
-        <path
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-        />
-      </svg>
-    </div>
-    <label class="sr-only" for="blog-search">{label}</label>
-    <input
-      type="search"
-      id="blog-search"
-      class="hd-input !pl-11"
-      placeholder={placeholder}
-      autocomplete="off"
-    />
-  </div>
+  <svg
+    class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="none"
+  >
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+  </svg>
+  <label class="sr-only" for="blog-search">{label}</label>
+  <input
+    type="search"
+    id="blog-search"
+    class="w-full rounded border border-line bg-surface py-2.5 pl-9 pr-3 text-ink placeholder:text-muted focus:border-accent focus:outline-none"
+    placeholder={placeholder}
+    autocomplete="off"
+  />
 </div>
-
-<style>
-  /* 視覺上隱藏，但保留給螢幕閱讀器 */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-</style>
