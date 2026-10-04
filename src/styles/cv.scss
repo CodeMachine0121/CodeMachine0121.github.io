@@ -25,6 +25,11 @@ body {
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
   border-radius: 3px;
   padding: $cv-paper-pad-y $cv-paper-pad-x;
+
+  // 手機上 88px 的左右留白會把內容擠出畫面
+  @media screen and (max-width: 640px) {
+    padding: 2rem 1.25rem;
+  }
 }
 
 // ─── Print / Save-as-PDF ───────────────────────────────────────────────────────

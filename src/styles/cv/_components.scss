@@ -157,6 +157,14 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.125rem;
+
+  // 手機寬度放不下「職稱＋期間」同一行：允許換行，職稱也可以折行
+  @media screen and (max-width: 640px) {
+    flex-wrap: wrap;
+    gap: 0 1rem;
+
+    .cv-entry__title { white-space: normal; }
+  }
 }
 
 .cv-entry__title {
