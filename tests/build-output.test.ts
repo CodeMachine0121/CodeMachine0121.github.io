@@ -354,6 +354,44 @@ describe('首頁', () => {
   });
 });
 
+describe('履歷', () => {
+  const cv = JSON.parse(
+    readFileSync(join(import.meta.dir, '..', 'src', 'config', 'cv.json'), 'utf-8')
+  ) as { basic: { name: string; job: string } };
+
+  test('存成 PDF 的建議檔名是「姓名 - 職稱 - CV」', () => {
+    const title = read('cv/zh/index.html').match(/<title>([^<]*)<\/title>/)?.[1];
+    expect(title).toBe(`${cv.basic.name} - ${cv.basic.job} - CV`);
+  });
+
+  test('按鈕、語系與主題切換都不會被印出來', () => {
+    const html = read('cv/zh/index.html');
+    const toolbarStart = html.indexOf('class="cv-toolbar no-print"');
+    // 工具列裡沒有巢狀的 div，第一個 </div> 就是它的結尾
+    const toolbarHtml = html.slice(toolbarStart, html.indexOf('</div>', toolbarStart));
+    const paperStart = html.indexOf('id="cv-content"');
+    expect(toolbarHtml).toContain('print-pdf-btn');
+    expect(toolbarHtml).toContain('cv-lang-switch');
+    expect(toolbarHtml).toContain('toggle-theme-button');
+    expect(html.slice(paperStart)).not.toContain('toggle-theme-button');
+  });
+
+  test('深色配色只套用在螢幕上，列印一律是淺色', () => {
+    const html = read('cv/zh/index.html');
+    const stylesheets = [...html.matchAll(/href="(\/_astro\/[^"]+\.css)"/g)].map(match => read(match[1]!.slice(1)));
+    const inlineStyles = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(match => match[1]!);
+    const css = [...stylesheets, ...inlineStyles].join('\n');
+
+    // 深色主題的底色宣告（壓縮後冒號後面可能留一個空白）
+    const darkBackgrounds = [...css.matchAll(/--color-bg:\s*#141413/g)];
+    expect(darkBackgrounds.length).toBeGreaterThan(0);
+    for (const match of darkBackgrounds) {
+      const enclosingMedia = css.slice(css.lastIndexOf('@media', match.index), match.index);
+      expect(enclosingMedia).toStartWith('@media screen');
+    }
+  });
+});
+
 describe('移除的功能', () => {
   test('文章頁沒有便利貼', () => {
     const html = read('blogs/到底怎麼切微服務/index.html');

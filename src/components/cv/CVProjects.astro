@@ -11,27 +11,6 @@ const { items, lang = 'en' } = Astro.props;
 
 const visibleItems = items.filter(p => p.title.en);
 
-type BadgePalette = { bg: string; color: string };
-const badgePalette: Record<string, BadgePalette> = {
-  'Blog Series':        { bg: '#EEF2FF', color: '#4338CA' },
-  '部落格系列':          { bg: '#EEF2FF', color: '#4338CA' },
-  'Open Source':        { bg: '#F0FDF4', color: '#15803D' },
-  '開源專案':            { bg: '#F0FDF4', color: '#15803D' },
-  'Side Project':       { bg: '#ECFEFF', color: '#0E7490' },
-  '個人專案':            { bg: '#ECFEFF', color: '#0E7490' },
-  'Certification':      { bg: '#FFFBEB', color: '#B45309' },
-  '認證':                { bg: '#FFFBEB', color: '#B45309' },
-  'GDG Kaohsiung Talk': { bg: '#FFF1F2', color: '#BE123C' },
-  'GDG Kaohsiung 演講':  { bg: '#FFF1F2', color: '#BE123C' },
-  'Conference Talk':    { bg: '#F5F3FF', color: '#6D28D9' },
-  '研討會演講':          { bg: '#F5F3FF', color: '#6D28D9' },
-};
-const defaultPalette: BadgePalette = { bg: '#F4F4F5', color: '#52525B' };
-
-function badgeStyle(type: string): string {
-  const p = badgePalette[type] ?? defaultPalette;
-  return `background:${p.bg};color:${p.color}`;
-}
 ---
 
 <CVSection title={lang === 'zh' ? '專案、演講與認證' : 'Projects, Talks & Certifications'}>
@@ -58,7 +37,7 @@ function badgeStyle(type: string): string {
             </span>
             {description && <span class="cv-project-desc">{description}</span>}
           </div>
-          <span class="cv-badge" style={badgeStyle(localizedType)}>
+          <span class="cv-badge">
             {localizedType}
           </span>
         </li>

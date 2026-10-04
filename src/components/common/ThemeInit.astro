@@ -1,0 +1,26 @@
+{/*
+  主題初始化：放在 <head>，在首次繪製前決定深淺色，避免閃爍。讀者手動選過就用它，否則跟隨裝置。
+  瀏覽器不允許存取 localStorage 時（隱私模式、封鎖網站資料）讀寫都會丟例外，
+  一律吞掉並退回裝置設定。切換由 ThemeToggle（scripts/theme.ts）負責。
+*/}
+<script is:inline>
+	(() => {
+		const root = document.documentElement;
+		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		const readSaved = () => {
+			try {
+				const saved = localStorage.getItem('theme');
+				return saved === 'dark' || saved === 'light' ? saved : null;
+			} catch {
+				return null;
+			}
+		};
+
+		root.dataset.theme = readSaved() ?? (media.matches ? 'dark' : 'light');
+
+		media.addEventListener('change', (event) => {
+			if (readSaved() || root.dataset.themeChosen) return;
+			root.dataset.theme = event.matches ? 'dark' : 'light';
+		});
+	})();
+</script>

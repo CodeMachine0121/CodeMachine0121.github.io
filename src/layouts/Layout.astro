@@ -2,6 +2,8 @@
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
 import ImageModal from '../components/common/ImageModal.astro';
+import SiteFonts from '../components/common/SiteFonts.astro';
+import ThemeInit from '../components/common/ThemeInit.astro';
 import defaultShareImage from '../assets/me.png';
 
 import '../styles/index.css';
@@ -24,8 +26,6 @@ interface Props {
 }
 
 const SITE_NAME = 'Coding Afternoon';
-const FONT_STYLESHEET =
-	'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap';
 const DEFAULT_DESCRIPTION = '軟體開發技術分享：架構、測試、AI 協作與日常踩坑筆記。';
 
 const {
@@ -74,51 +74,11 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={shareImageUrl} />
 
-		<!--
-			字型：Noto Sans TC（正文）＋ Noto Serif TC（大標）。以 media="print" 載入讓瀏覽器
-			不把它們算進首屏阻塞資源，首屏先用系統字型；body 結尾的 module script（deferred）
-			再把 media 切回 all。關閉 JS 時由 <noscript> 照常載入。
-		-->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			rel="stylesheet"
-			href={FONT_STYLESHEET}
-			media="print"
-			data-async-font
-		/>
-		<noscript>
-			<link rel="stylesheet" href={FONT_STYLESHEET} />
-		</noscript>
+		<SiteFonts />
 
 		<title>{title}</title>
 
-		<!--
-			主題初始化：在首次繪製前決定深淺色，避免閃爍。讀者手動選過就用它，否則跟隨裝置。
-			瀏覽器不允許存取 localStorage 時（隱私模式、封鎖網站資料）讀寫都會丟例外，
-			一律吞掉並退回裝置設定。
-		-->
-		<script is:inline>
-			(() => {
-				const root = document.documentElement;
-				const media = window.matchMedia('(prefers-color-scheme: dark)');
-				const readSaved = () => {
-					try {
-						const saved = localStorage.getItem('theme');
-						return saved === 'dark' || saved === 'light' ? saved : null;
-					} catch {
-						return null;
-					}
-				};
-
-				root.dataset.theme = readSaved() ?? (media.matches ? 'dark' : 'light');
-
-				media.addEventListener('change', (event) => {
-					if (readSaved() || root.dataset.themeChosen) return;
-					root.dataset.theme = event.matches ? 'dark' : 'light';
-				});
-			})();
-		</script>
+		<ThemeInit />
 	</head>
 	<body class="min-h-screen flex flex-col">
 		<a href="#main" class="skip-link">跳到主要內容</a>
@@ -129,13 +89,6 @@ const shareImageUrl = new URL(image ?? defaultShareImage.src, Astro.site);
 		<Footer />
 		<ImageModal />
 
-		<script>
-			// 字型樣式表以 media="print" 送出以避開首屏阻塞；這支 module script 是
-			// deferred 的（首次繪製之後才跑），此時再把它們切回實際生效。
-			for (const link of document.querySelectorAll<HTMLLinkElement>('link[data-async-font]')) {
-				link.media = 'all';
-			}
-		</script>
 	</body>
 </html>
 

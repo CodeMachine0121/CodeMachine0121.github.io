@@ -12,6 +12,10 @@ import profilePicture from '../../assets/profile-picture.png';
 import cvData from '../../config/cv.json';
 import { getLocalizedText, isValidLanguage } from '../../utils/i18n';
 import type { Language } from '../../types/cv';
+import SiteFonts from '../../components/common/SiteFonts.astro';
+import ThemeInit from '../../components/common/ThemeInit.astro';
+import ThemeToggle from '../../components/common/ThemeToggle.astro';
+import '../../styles/tokens.css';
 import '../../styles/cv.scss';
 
 export function getStaticPaths() {
@@ -40,14 +44,11 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
     <meta name="description" content={`${basic.name} – Curriculum Vitae`} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <SiteFonts />
 
     <title>{pageTitle}</title>
+
+    <ThemeInit />
 
     <!--
       Marks that JS is running, which is what lets the entrance animation hide
@@ -70,6 +71,7 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
     <div class="cv-toolbar no-print">
       <DownloadButton label={language === 'zh' ? '存成 PDF' : 'Save as PDF'} />
       <LanguageSwitcher currentLang={language} />
+      <ThemeToggle />
     </div>
 
     <!-- CV Paper -->

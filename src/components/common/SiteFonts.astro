@@ -1,0 +1,24 @@
+---
+/**
+ * 全站字型：Noto Sans TC（正文）＋ Noto Serif TC（大標）。
+ *
+ * 以 media="print" 載入讓瀏覽器不把它們算進首屏阻塞資源，首屏先用系統字型；
+ * 下方的 module script（deferred，首次繪製之後才跑）再把 media 切回 all。
+ * 關閉 JS 時由 <noscript> 照常載入。放在 <head> 裡。
+ */
+const FONT_STYLESHEET =
+	'https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap';
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href={FONT_STYLESHEET} media="print" data-async-font />
+<noscript>
+	<link rel="stylesheet" href={FONT_STYLESHEET} />
+</noscript>
+
+<script>
+	for (const link of document.querySelectorAll<HTMLLinkElement>('link[data-async-font]')) {
+		link.media = 'all';
+	}
+</script>

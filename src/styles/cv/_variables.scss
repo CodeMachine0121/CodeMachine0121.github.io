@@ -1,27 +1,30 @@
-// CV Design Tokens — Redesign 2026
-// Palette: Zinc neutrals + Blue accent (used sparingly)
+// CV Design Tokens — 對應全站 tokens.css
+//
+// 顏色與字體一律讀全站的 CSS 變數，所以履歷跟著深淺色主題變；列印時 tokens.css
+// 只套用淺色（深色包在 @media screen 裡），存成 PDF 一律是淺色。
+// 灰階級距沿用原本的名稱，對應到語意 token：深字 → ink、次要字 → muted、線與淺底 → line／bg。
 
-$cv-zinc-900: #18181B;
-$cv-zinc-800: #27272A;
-$cv-zinc-700: #3F3F46;
-$cv-zinc-600: #52525B;
-$cv-zinc-500: #71717A;
-$cv-zinc-400: #A1A1AA;
-$cv-zinc-300: #D4D4D8;
-$cv-zinc-200: #E4E4E7;
-$cv-zinc-100: #F4F4F5;
-$cv-zinc-50:  #FAFAFA;
+$cv-zinc-900: var(--color-ink);
+$cv-zinc-800: var(--color-ink);
+$cv-zinc-700: var(--color-ink);
+$cv-zinc-600: var(--color-muted);
+$cv-zinc-500: var(--color-muted);
+$cv-zinc-400: var(--color-muted);
+$cv-zinc-300: var(--color-line);
+$cv-zinc-200: var(--color-line);
+$cv-zinc-100: var(--color-bg);
+$cv-zinc-50:  var(--color-bg);
 
-$cv-accent:    #2563EB; // blue-600 — links & interactive only
-$cv-accent-bg: #EFF6FF; // blue-50
+$cv-accent:    var(--color-accent);
+$cv-accent-bg: var(--color-accent-soft);
 
-$cv-surface: #FFFFFF;
-$cv-bg:      $cv-zinc-100;
-$cv-border:  $cv-zinc-200;
+$cv-surface: var(--color-surface);
+$cv-bg:      var(--color-bg);
+$cv-border:  var(--color-line);
 
 // Typography
-$cv-font-heading: 'Archivo', system-ui, sans-serif;
-$cv-font-body:    'Space Grotesk', system-ui, sans-serif;
+$cv-font-heading: var(--font-serif);
+$cv-font-body:    var(--font-sans);
 
 // Type scale
 $cv-fs-name:  42px;
