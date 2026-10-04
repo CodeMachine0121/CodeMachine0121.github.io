@@ -7,7 +7,9 @@ import {
   formatReadingTime,
   inBothLanguages,
   localizePeriod,
+  localizedHref,
   resolveLanguage,
+  resolveLanguageExpression,
   uiAttributes,
   uiText,
 } from '../ui-language';
@@ -126,6 +128,46 @@ describe('介面文字', () => {
         'aria-label': { zh: '切換深淺色主題', en: 'Toggle light and dark theme' },
         href: { zh: '/cv/zh', en: '/cv/en' },
       }),
+    });
+  });
+});
+
+describe('給 inline script 的語言運算式', () => {
+  function evaluateIn(environment: { saved?: string | null; language: string; storageBlocked?: boolean }): unknown {
+    const localStorage = {
+      getItem: () => {
+        if (environment.storageBlocked) throw new Error('blocked');
+        return environment.saved ?? null;
+      },
+    };
+    return new Function('localStorage', 'navigator', `return ${resolveLanguageExpression()};`)(localStorage, {
+      language: environment.language,
+    });
+  }
+
+  test('沒選過時依瀏覽器語言', () => {
+    expect(evaluateIn({ language: 'zh-TW' })).toBe('zh');
+    expect(evaluateIn({ language: 'en-US' })).toBe('en');
+  });
+
+  test('選過的語言優先', () => {
+    expect(evaluateIn({ saved: 'en', language: 'zh-TW' })).toBe('en');
+  });
+
+  test('讀不到儲存時當作沒選過', () => {
+    expect(evaluateIn({ storageBlocked: true, language: 'zh-TW' })).toBe('zh');
+  });
+});
+
+describe('localizedHref', () => {
+  test('一般連結直接用', () => {
+    expect(localizedHref('/blogs')).toEqual({ href: '/blogs' });
+  });
+
+  test('依語言不同的連結預設中文，另附對照', () => {
+    expect(localizedHref({ zh: '/cv/zh', en: '/cv/en' })).toEqual({
+      href: '/cv/zh',
+      'data-ui-attrs': JSON.stringify({ href: { zh: '/cv/zh', en: '/cv/en' } }),
     });
   });
 });

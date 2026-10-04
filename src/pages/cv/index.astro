@@ -3,16 +3,9 @@
  * 不帶語言的履歷網址：依介面語言的規則（讀者選過的語言 → 瀏覽器首選語言）導向對應版本。
  * 沒有 JS 時導向中文版（網站內容的主要語言），頁面上也留著兩個版本的連結。
  */
-import { CV_PATH, FALLBACK_LANGUAGE, LANGUAGE_STORAGE_KEY, resolveLanguage, uiText } from '../../utils/ui-language';
+import { CV_PATH, FALLBACK_LANGUAGE, resolveLanguageExpression, uiText } from '../../utils/ui-language';
 
-const redirect = `(() => {
-  const resolveLanguage = ${resolveLanguage.toString()};
-  let saved = null;
-  try {
-    saved = localStorage.getItem(${JSON.stringify(LANGUAGE_STORAGE_KEY)});
-  } catch {}
-  window.location.replace(${JSON.stringify(CV_PATH)}[resolveLanguage(saved, navigator.language)]);
-})();`;
+const redirect = `window.location.replace(${JSON.stringify(CV_PATH)}[${resolveLanguageExpression()}]);`;
 const fallbackPath = CV_PATH[FALLBACK_LANGUAGE];
 ---
 

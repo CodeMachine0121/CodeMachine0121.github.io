@@ -1,6 +1,6 @@
 ---
 import UiText from '../common/UiText.astro';
-import { uiAttributes, type LocalizedPair, type UiTextKey } from '../../utils/ui-language';
+import { localizedHref, type LocalizedPair, type UiTextKey } from '../../utils/ui-language';
 
 /**
  * 首頁區塊的共用外框：標題列（標題＋可選的「看更多」連結＋分隔線）與內容。
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { title, titleId, link } = Astro.props;
-const linkAttributes = link && (typeof link.href === 'string' ? { href: link.href } : uiAttributes({ href: link.href }));
+const linkAttributes = link && localizedHref(link.href);
 ---
 
 <section class="mx-auto mt-16 max-w-3xl px-4 sm:px-6" aria-labelledby={titleId}>

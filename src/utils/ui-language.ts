@@ -35,6 +35,20 @@ export function resolveLanguage(saved: string | null | undefined, preferredLangu
   return preferredLanguage.toLowerCase().startsWith('zh') ? 'zh' : 'en';
 }
 
+/**
+ * 給 inline script 用的一段 JavaScript 運算式：在瀏覽器裡算出目前的介面語言。
+ * resolveLanguage 直接序列化進去，規則只有一份；讀不到 localStorage 時當作沒選過。
+ */
+export function resolveLanguageExpression(): string {
+  return `((resolveLanguage) => {
+  let saved = null;
+  try {
+    saved = localStorage.getItem(${JSON.stringify(LANGUAGE_STORAGE_KEY)});
+  } catch {}
+  return resolveLanguage(saved, navigator.language);
+})(${resolveLanguage.toString()})`;
+}
+
 export interface LocalizedPair {
   zh: string;
   en: string;
@@ -141,6 +155,11 @@ export function uiAttributes(attributes: Record<string, UiTextSource>): Record<s
     ...Object.fromEntries(Object.entries(pairs).map(([name, pair]) => [name, pair.zh])),
     'data-ui-attrs': JSON.stringify(pairs),
   };
+}
+
+/** 連結網址：一般連結直接用；依語言不同的連結（例如履歷）給中英兩個網址 */
+export function localizedHref(href: string | LocalizedPair): Record<string, string> {
+  return typeof href === 'string' ? { href } : uiAttributes({ href });
 }
 
 // ── 依語言的格式 ─────────────────────────────────────────────────────────────
