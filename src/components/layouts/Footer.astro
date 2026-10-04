@@ -1,44 +1,27 @@
 ---
 import { Icon } from "astro-icon/components";
-import { menuItems, socialLinks, basic } from "../../config/introduce.json";
+import { socialLinks, basic } from "../../config/introduce.json";
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-8 border-t-[3px] border-dashed border-border">
-    <div class="px-4 mx-auto sm:px-6 max-w-6xl py-12">
-        <div class="flex flex-col items-center gap-8 xl:flex-row xl:justify-between">
-            <!-- Sign-off note -->
-            <div class="text-center xl:text-left">
-                <p class="font-heading text-2xl text-ink -rotate-1">{basic?.site_name}</p>
-                <p class="text-ink-soft mt-1">May the Bugs be with you.</p>
-            </div>
-
-            <div class="flex flex-col items-center gap-6 xl:flex-row xl:gap-10">
-                <!-- Nav -->
-                <ul class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-                    {menuItems.map(menu => (
-                        <li>
-                            <a href={menu.link} title={menu.name.en} class="hd-link font-heading text-lg">
-                                {menu.name.en}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-
-                <!-- Socials in rough circles -->
-                <ul class="flex items-center justify-center gap-4">
-                    {socialLinks.map(social => (
-                        <li>
-                            <a href={social.link} title={social.iconName} target="_blank" rel="noopener noreferrer"
-                               class="hd-icon-circle" aria-label={social.iconName}>
-                                <Icon name={social.iconName} class="size-5" />
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+<footer class="mt-24 border-t border-line">
+    <div class="mx-auto flex max-w-page flex-col gap-6 px-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div>
+            <p class="font-serif text-base font-bold text-ink">{basic?.site_name}</p>
+            <p class="mt-1">© {year} {basic?.name} · <a href="/rss.xml" class="hover:text-accent">RSS</a></p>
         </div>
 
-        <p class="text-center text-ink-soft text-sm mt-10">© {year} · scribbled with care</p>
+        <ul class="flex items-center gap-2" aria-label="社群連結">
+            {socialLinks.map(social => (
+                <li>
+                    <a href={social.link} target="_blank" rel="noopener noreferrer"
+                       class="inline-flex h-9 w-9 items-center justify-center rounded text-muted hover:text-accent"
+                       aria-label={social.iconName}>
+                        <Icon name={social.iconName} class="size-5" />
+                    </a>
+                </li>
+            ))}
+        </ul>
     </div>
 </footer>

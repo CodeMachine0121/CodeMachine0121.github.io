@@ -1,125 +1,66 @@
 import typography from '@tailwindcss/typography';
 
-/** @type {import('tailwindcss').Config} */
+/**
+ * 色彩與字體一律對應 src/styles/tokens.css 的變數，這裡不寫任何實際色值。
+ *
+ * @type {import('tailwindcss').Config}
+ */
 export default {
-    darkMode: ['selector', '[data-theme="dark"]'],
+	darkMode: ['selector', '[data-theme="dark"]'],
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
 			fontFamily: {
-				// Hand-drawn: Latin handwriting first, CJK kaishu fallback per-glyph.
-				heading: ['Kalam', 'LXGW WenKai TC', 'Patrick Hand', 'Noto Sans TC', 'sans-serif'],
-				body: ['Patrick Hand', 'LXGW WenKai TC', 'Noto Sans TC', 'sans-serif'],
-				sans: ['Patrick Hand', 'LXGW WenKai TC', 'Noto Sans TC', 'sans-serif'],
+				sans: 'var(--font-sans)',
+				serif: 'var(--font-serif)',
+				mono: 'var(--font-mono)',
 			},
 			colors: {
-				primary: "var(--color-primary)",
-				secondary: "var(--color-secondary)",
-				// Hand-drawn palette aliases (theme-aware via --hd-* custom props)
-				ink: "var(--hd-ink)",
-				"ink-soft": "var(--hd-ink-soft)",
-				paper: "var(--hd-paper)",
-				"paper-offset": "var(--hd-paper-offset)",
-				surface: "var(--hd-surface)",
-				accent: "var(--hd-accent)",
-				"accent-2": "var(--hd-accent-2)",
-				note: "var(--hd-note)",
+				bg: 'var(--color-bg)',
+				surface: 'var(--color-surface)',
+				ink: 'var(--color-ink)',
+				muted: 'var(--color-muted)',
+				line: 'var(--color-line)',
+				accent: 'var(--color-accent)',
+				'accent-soft': 'var(--color-accent-soft)',
 			},
-			boxShadow: {
-				hd: "4px 4px 0 0 var(--hd-shadow)",
-				"hd-sm": "2px 2px 0 0 var(--hd-shadow)",
-				"hd-lg": "8px 8px 0 0 var(--hd-shadow)",
+			maxWidth: {
+				measure: 'var(--measure)',
+				page: 'var(--page-width)',
 			},
 			borderRadius: {
-				wobbly: "255px 15px 225px 15px / 15px 225px 15px 255px",
-				"wobbly-md": "15px 225px 15px 255px / 255px 15px 225px 15px",
-				"wobbly-sm": "14px 6px 12px 8px / 8px 12px 6px 14px",
+				DEFAULT: 'var(--radius)',
 			},
-			textColor: {
-				default: "var(--color-text)",
-				offset: "var(--color-text-offset)",
+			// 文章正文的配色交給 token，深淺色自動跟著變，不需要 prose-invert。
+			// 間距與元件細節在 src/styles/article.css。
+			typography: {
+				DEFAULT: {
+					css: {
+						maxWidth: 'var(--measure)',
+						'--tw-prose-body': 'var(--color-ink)',
+						'--tw-prose-headings': 'var(--color-ink)',
+						'--tw-prose-lead': 'var(--color-muted)',
+						'--tw-prose-links': 'var(--color-accent)',
+						'--tw-prose-bold': 'var(--color-ink)',
+						'--tw-prose-counters': 'var(--color-muted)',
+						'--tw-prose-bullets': 'var(--color-muted)',
+						'--tw-prose-hr': 'var(--color-line)',
+						'--tw-prose-quotes': 'var(--color-ink)',
+						'--tw-prose-quote-borders': 'var(--color-accent)',
+						'--tw-prose-captions': 'var(--color-muted)',
+						'--tw-prose-code': 'var(--color-ink)',
+						'--tw-prose-pre-code': 'var(--color-ink)',
+						'--tw-prose-pre-bg': 'var(--color-code-bg)',
+						'--tw-prose-th-borders': 'var(--color-line)',
+						'--tw-prose-td-borders': 'var(--color-line)',
+						'code::before': { content: '""' },
+						'code::after': { content: '""' },
+						'blockquote p:first-of-type::before': { content: '""' },
+						'blockquote p:last-of-type::after': { content: '""' },
+					},
+				},
 			},
-			backgroundColor: {
-				default: "var(--color-background)",
-				offset: "var(--color-background-offset)",
-				border: "var(--color-border)",
-			},
-						typography: (theme) => ({
-							DEFAULT: {
-								css: {
-									color: 'var(--color-text)',
-									pre: {
-										padding: '1rem',
-										borderRadius: '0.375rem',
-										backgroundColor: theme('colors.gray.800'),
-										color: theme('colors.gray.100'),
-										overflow: 'auto',
-										width: '100%',
-									},
-									code: {
-										color: theme('colors.pink.500'),
-										backgroundColor: theme('colors.gray.100'),
-										borderRadius: '0.25rem',
-										padding: '0.2em 0.4em',
-										fontWeight: '400',
-									},
-									'code::before': {
-										content: '""',
-									},
-									'code::after': {
-										content: '""',
-									},
-									img: {
-										marginTop: '2em',
-										marginBottom: '2em',
-										borderRadius: '0.375rem',
-									},
-									// 手機版字級不要寫在這裡：@tailwindcss/typography 會把每個
-									// key 包成 `.prose :where(<key>)`，`@media` 於是變成
-									// `.prose :where(@media (max-width: 640px))` 這種無效選擇器，
-									// esbuild 只會丟一個 css-syntax-error 警告然後整段丟掉。
-									// 實際的手機版覆寫在 src/styles/blog.css。
-								},
-							},
-							dark: {
-								css: {
-									color: 'var(--color-text)',
-									h1: {
-										color: theme('colors.white'),
-									},
-									h2: {
-										color: theme('colors.white'),
-									},
-									h3: {
-										color: theme('colors.white'),
-									},
-									h4: {
-										color: theme('colors.white'),
-									},
-									strong: {
-										color: theme('colors.white'),
-									},
-									code: {
-										color: theme('colors.pink.400'),
-										backgroundColor: theme('colors.gray.800'),
-									},
-									pre: {
-										backgroundColor: theme('colors.gray.900'),
-										color: theme('colors.gray.200'),
-									},
-								},
-							},
-						}),
-			borderColor: {
-				default: "var(--color-border)",
-			},
-			animation: {
-				"spin-slower": "spin 35s ease infinite",
-				"spin-slow": "spin 25s ease-in-out infinite reverse",
-			},
-		}
+		},
 	},
-	plugins: [
-		typography
-	],
-}
+	plugins: [typography],
+};

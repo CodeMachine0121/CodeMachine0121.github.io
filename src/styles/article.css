@@ -1,0 +1,151 @@
+/*
+ * 文章正文排版。配色由 tailwind typography 對應到 tokens.css，這裡只補
+ * 間距、程式碼、表格、引言、圖片與 Mermaid 的細節，一樣只讀 token。
+ */
+
+.article-body {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+
+/* 標題：章用襯線字，給足上方留白，並留出被目錄跳轉時的頁首高度 */
+.article-body :where(h2, h3, h4) {
+  scroll-margin-top: 5rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.article-body h2 {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+.article-body h3 {
+  font-size: 1.25rem;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.article-body h4 {
+  font-size: 1.0625rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-body a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.article-body a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* 程式碼 */
+.article-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.article-body :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background-color: var(--color-code-bg);
+  font-weight: 400;
+}
+
+.article-body pre {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.article-body pre code {
+  font-size: 0.8125rem;
+}
+
+/* Mermaid：渲染前（或沒有 JS 時）顯示原始碼；渲染後置中、跟著容器縮放 */
+.article-body pre.mermaid {
+  text-align: center;
+  background-color: var(--color-surface);
+}
+
+.article-body pre.mermaid[data-rendered='true'] svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body pre.mermaid[data-rendered='true'] :where(text, .nodeLabel, .edgeLabel) {
+  font-family: var(--font-sans);
+}
+
+/* 圖片 */
+.article-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: var(--radius);
+}
+
+/* 引言 */
+.article-body blockquote {
+  border-left-width: 3px;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+/* 表格：外層由 mobileFixes 包上可橫向捲動的容器 */
+.article-body .table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+}
+
+.article-body .table-scroll-wrapper table {
+  margin: 0;
+}
+
+.article-body table {
+  font-size: 0.9375rem;
+}
+
+.article-body th {
+  text-align: left;
+}
+
+.article-body hr {
+  margin: 3rem 0;
+}
+
+@media (max-width: 640px) {
+  .article-body {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .article-body h2 {
+    font-size: 1.4rem;
+    margin-top: 2.5rem;
+  }
+
+  .article-body h3 {
+    font-size: 1.15rem;
+  }
+
+  .article-body pre {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+}

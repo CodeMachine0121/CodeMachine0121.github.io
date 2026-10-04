@@ -1,0 +1,63 @@
+/*
+ * 設計 token：全站唯一的視覺真相來源。
+ *
+ * 元件、文章排版、履歷與 Tailwind 都只讀這裡的變數，換配色或字體只改這一個檔案。
+ * 例外：src/scripts/mermaid.ts 需要實際色值（mermaid 不吃 CSS 變數），改色時要一起改。
+ *
+ * 主題的決定順序：讀者手動選擇（<html data-theme>）> 裝置設定 > 淺色。
+ * 沒有 JS 時 data-theme 不會被設定，靠 prefers-color-scheme 仍能跟隨裝置。
+ */
+
+:root {
+  /* 色彩：淺色 */
+  --color-bg: #faf9f7;
+  --color-surface: #ffffff;
+  --color-ink: #1c1b19;
+  --color-muted: #6b6862;
+  --color-line: #e6e3dd;
+  --color-accent: #b7410e;
+  --color-accent-soft: #f6e9e1;
+  --color-code-bg: #f3f1ed;
+
+  /* 字體：中文以 Noto 為主，英數先吃系統字型 */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans TC', 'PingFang TC',
+    'Microsoft JhengHei', sans-serif;
+  --font-serif: 'Noto Serif TC', 'Songti TC', 'PMingLiU', ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* 版面 */
+  --measure: 68ch; /* 正文最大行長 */
+  --page-width: 72rem; /* 頁面容器最大寬 */
+  --toc-width: 14rem; /* 寬螢幕目錄欄寬 */
+  --radius: 6px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #141413;
+    --color-surface: #1c1c1a;
+    --color-ink: #ecebe7;
+    --color-muted: #a29f98;
+    --color-line: #2c2b28;
+    --color-accent: #f08a4b;
+    --color-accent-soft: #33241b;
+    --color-code-bg: #22211f;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #141413;
+  --color-surface: #1c1c1a;
+  --color-ink: #ecebe7;
+  --color-muted: #a29f98;
+  --color-line: #2c2b28;
+  --color-accent: #f08a4b;
+  --color-accent-soft: #33241b;
+  --color-code-bg: #22211f;
+
+  color-scheme: dark;
+}

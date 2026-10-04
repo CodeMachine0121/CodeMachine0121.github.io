@@ -142,12 +142,10 @@ describe('文件結構', () => {
 });
 
 describe('沒有 JS 也要能用', () => {
-  test('loading 遮罩有 noscript 退路', () => {
-    const noscripts = [...stripComments(read('index.html')).matchAll(/<noscript>([\s\S]*?)<\/noscript>/g)];
-    const hidesOverlay = noscripts.some(
-      match => match[1]!.includes('#loading-screen') && match[1]!.includes('display: none')
-    );
-    expect(hidesOverlay).toBe(true);
+  test('沒有進站載入遮罩，內容直接出現', () => {
+    for (const page of SAMPLE_PAGES) {
+      expect(read(page)).not.toContain('id="loading-screen"');
+    }
   });
 
   test('字型不阻塞首屏，且 noscript 有備援', () => {
