@@ -1,4 +1,42 @@
 /*
+ * 文章頁版面：窄螢幕單欄，目錄（可收合）在正文之前；寬螢幕為正文一欄＋右側固定目錄一欄，
+ * 兩欄一起置中。文章頁與對談筆記頁共用。
+ */
+.article-layout__main,
+.article-layout__toc {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1024px) {
+  .article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, var(--measure)) var(--toc-width);
+    column-gap: 3rem;
+    justify-content: center;
+  }
+
+  .article-layout__main {
+    grid-column: 1;
+    width: 100%;
+    margin: 0;
+  }
+
+  .article-layout__toc {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    width: 100%;
+    margin: 0;
+    position: sticky;
+    top: 5rem;
+    align-self: start;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+}
+
+/*
  * 文章正文排版。配色由 tailwind typography 對應到 tokens.css，這裡只補
  * 間距、程式碼、表格、引言、圖片與 Mermaid 的細節，一樣只讀 token。
  */

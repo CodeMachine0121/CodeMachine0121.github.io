@@ -392,6 +392,14 @@ describe('履歷', () => {
   });
 });
 
+describe('對談筆記頁', () => {
+  test('套用全站版面，不再自帶外部 Tailwind 與配色', () => {
+    const html = read('ai-redefines-software/index.html');
+    expect(html).not.toContain('cdn.tailwindcss.com');
+    expect(html).toContain('id="main"');
+  });
+});
+
 describe('移除的功能', () => {
   test('文章頁沒有便利貼', () => {
     const html = read('blogs/到底怎麼切微服務/index.html');
