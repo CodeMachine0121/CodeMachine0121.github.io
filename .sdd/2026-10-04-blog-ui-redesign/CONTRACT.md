@@ -3,7 +3,7 @@
 Contract: PRD.md
 Design map: ARCH.md
 Implementation: `src/`（Astro 靜態站）
-Oracle: Acceptance Criteria（PRD v1.1：35 AC ＋ 6 BR ＋ 4 NFR = 45 clauses）
+Oracle: Acceptance Criteria（PRD v1.2：36 AC ＋ 6 BR ＋ 4 NFR = 46 clauses）
 
 > **Run 2（依 Run 1 回饋補測試、修正後重新稽核）。** Run 1：19/43 conforms（44%），0 violation、0 gap；問題集中在瀏覽器互動沒有進版控的測試、數條建置測試只抽查。
 >
@@ -45,7 +45,8 @@ Oracle: Acceptance Criteria（PRD v1.1：35 AC ＋ 6 BR ＋ 4 NFR = 45 clauses�
 | AC-25 | US-07 已上線網址繼續有效 | 任一已上線網址仍打開同一內容 | 路由檔未改名 | BO「改版前就存在的每一頁，建置後都還在」（`tests/fixtures/published-pages.txt`，148 項） | asserts-oracle | produces-oracle（改版前後 148 頁清單一致） | ✅ conforms |
 | AC-26 | US-07 系列文章的上一篇是較早的一天 | 系列第 2 天點上一篇 → 第 1 天 | `utils/series-core.ts`（`findAdjacent`）、`components/blog/PostNavigation.astro` | SC:189 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-27 | US-07 單篇文章的上一篇是較新的一篇 | 進到發布日期較新的單篇 | 同上 | SC:183 | asserts-oracle | produces-oracle | ✅ conforms |
-| AC-28 | US-07 搜尋命中系列名稱 | 搜尋「agent」→ 系列入口與其文章都出現 | `components/blog/ArticleList.astro`（`applySearch`） | `e2e/features/reader-experience.feature`「搜尋命中系列名稱」 | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-28 | US-07 搜尋命中系列名稱（v1.2） | 搜尋系列名稱 → 該系列的文章出現 | `components/blog/ArticleList.astro`（`applySearch`） | `e2e/features/reader-experience.feature`「搜尋命中系列名稱」 | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-28a | US-07 文章列表沒有系列入口（v1.2） | 文章列表上沒有系列入口，只列單篇文章 | `components/blog/ArticleList.astro` | BO「沒有系列入口，只列單篇文章」「最近更新那個系列的文章預設隱藏，留給搜尋」＋ RE「文章列表沒有系列入口」（突變驗證：放回系列連結時兩者皆失敗） | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-29 | US-07 搜尋沒有結果 | 顯示「沒有找到符合的文章」 | 同上 | `e2e/features/reader-experience.feature`「搜尋沒有結果」 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-30 | US-07 草稿全站隱藏 | 任何列表、系列、上下篇、訂閱來源都看不到草稿 | `utils/series.ts`（`getPublishedBlogs`，全站唯一入口，含新首頁） | SC「isPublished」＋ BO:440 | shallow（建置測試在沒有草稿時恆過；只有判斷式有單元測試） | produces-oracle | 🟠 mis-asserted |
 | AC-31 | US-08 存成乾淨的 PDF | 印出的履歷不含頁首、按鈕、主題切換；建議檔名「姓名 - 職稱 - CV」 | `cv/[lang].astro`（`.no-print`、`<title>`）、`cv.scss`（`@media print`） | BO:369（檔名）＋ `e2e/features/reader-experience.feature`「存成 PDF 時不含頁首與按鈕」（列印媒體下實際隱藏） | asserts-oracle | produces-oracle | ✅ conforms |
@@ -76,7 +77,7 @@ Oracle: Acceptance Criteria（PRD v1.1：35 AC ＋ 6 BR ＋ 4 NFR = 45 clauses�
 
 ## Summary
 
-- Conforms: 41/45 clauses ✅ (91%)（PRD v1.1 新增 AC-18a、AC-18b，皆 conforms）
+- Conforms: 42/46 clauses ✅ (91%)（PRD v1.1 新增 AC-18a、AC-18b；v1.2 新增 AC-28a，皆 conforms）
 - Violations: —
 - Mis-asserted: AC-19, AC-30, BR-06
 - Partial: AC-20
