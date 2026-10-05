@@ -1,19 +1,32 @@
 ---
 interface Props {
   title: string;
+  title_link?: string;
   sub_title: string;
-  years: string;
+  sub_title_link?: string;
+  years?: string;
   details?: string;
+  stack?: string;
+  stackLabel?: string;
 }
-const { title, sub_title, years, details } = Astro.props;
+const { title, title_link, sub_title, sub_title_link, years, details, stack, stackLabel = 'Stack' } = Astro.props;
 ---
 
 <div class="cv-entry">
   <div class="cv-entry__header">
-    <h3 class="cv-entry__title">{title}</h3>
-    <time class="cv-entry__date">{years}</time>
+    <h3 class="cv-entry__title">
+      {title_link ? (
+        <a href={title_link} target="_blank" rel="noopener noreferrer" class="cv-inline-link">{title}</a>
+      ) : title}
+    </h3>
+    {years && <time class="cv-entry__date">{years}</time>}
   </div>
-  <p class="cv-entry__org">{sub_title}</p>
+  <p class="cv-entry__org">
+    {sub_title_link ? (
+      <a href={sub_title_link} target="_blank" rel="noopener noreferrer" class="cv-inline-link">{sub_title}</a>
+    ) : sub_title}
+  </p>
   {details && <p class="cv-entry__details">{details}</p>}
+  {stack && <p class="cv-entry__stack"><strong>{stackLabel}:</strong> {stack}</p>}
   <slot />
 </div>

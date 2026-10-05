@@ -200,6 +200,23 @@
   font-style: italic;
 }
 
+.cv-entry__stack {
+  font-family: $cv-font-body;
+  font-size: $cv-fs-body;
+  color: $cv-zinc-700;
+  line-height: 1.6;
+
+  strong { font-weight: 600; color: $cv-zinc-900; }
+}
+
+// Links inside entry titles, org lines and bullets
+.cv-inline-link {
+  color: $cv-accent;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
 // ─── Achievement list ──────────────────────────────────────────────────────────
 .cv-achievements {
   display: flex;
@@ -216,6 +233,20 @@
   font-size: $cv-fs-body;
   color: $cv-zinc-800;
   line-height: 1.6;
+}
+
+.cv-achievement__body {
+  min-width: 0;
+}
+
+// A bullet's own sub-bullets: hollow markers, no extra top gap
+.cv-achievements--nested {
+  margin-top: 0.15rem;
+
+  .cv-bullet {
+    background: transparent;
+    border: 1px solid $cv-zinc-400;
+  }
 }
 
 .cv-bullet {
@@ -316,10 +347,6 @@
 }
 
 .cv-project-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid $cv-zinc-100;
 
@@ -327,24 +354,21 @@
 }
 
 .cv-project-main {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.125rem 0.5rem;
   min-width: 0;
 }
 
-.cv-project-desc {
-  font-family: $cv-font-body;
-  font-size: 12px;
-  color: $cv-zinc-500;
-  line-height: 1.5;
+.cv-project-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .cv-project-link {
   font-family: $cv-font-body;
-  font-size: $cv-fs-body;
-  color: $cv-zinc-800;
+  font-size: $cv-fs-title;
+  font-weight: 600;
+  color: $cv-zinc-900;
   text-decoration: none;
   transition: color 150ms;
   cursor: pointer;
@@ -354,8 +378,9 @@
 
 .cv-project-text {
   font-family: $cv-font-body;
-  font-size: $cv-fs-body;
-  color: $cv-zinc-800;
+  font-size: $cv-fs-title;
+  font-weight: 600;
+  color: $cv-zinc-900;
 }
 
 // ─── Badge ─────────────────────────────────────────────────────────────────────

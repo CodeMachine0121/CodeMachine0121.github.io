@@ -82,13 +82,13 @@ body {
   .cv-skill-category,
   .cv-skill-items,
   .cv-entry__details,
+  .cv-entry__stack,
   .cv-looking-for__text { font-size: 11px; line-height: 1.5; }
-  .cv-entry__title { font-size: 12.5px; }
-  .cv-entry__org,
-  .cv-entry__date,
+  .cv-entry__title,
   .cv-project-link,
-  .cv-project-text { font-size: 11px; }
-  .cv-project-desc { font-size: 10px; }
+  .cv-project-text { font-size: 12.5px; }
+  .cv-entry__org,
+  .cv-entry__date { font-size: 11px; }
 
   .cv-header { margin-bottom: 0.9rem; }
   .cv-header__rule { margin-top: 0.75rem; }

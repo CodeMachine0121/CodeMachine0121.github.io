@@ -1,17 +1,19 @@
 ---
 import CVSection from './CVSection.astro';
 import CVTimelineEntry from './CVTimelineEntry.astro';
+import CVAchievements from './CVAchievements.astro';
 import { getLocalizedText } from '../../utils/i18n';
 import type { ExperienceItem, Language } from '../../types/cv';
 
 interface Props {
   items: ExperienceItem[];
   lang?: Language;
-  /** Overrides the default "Experience" heading — used by the side-projects section. */
+  /** Overrides the default "Experience" heading — used by the talks, writing and certification sections. */
   title?: string;
 }
 const { items, lang = 'en', title } = Astro.props;
 const heading = title ?? (lang === 'zh' ? '工作經驗' : 'Experience');
+const stackLabel = lang === 'zh' ? '技術棧' : 'Stack';
 ---
 
 <CVSection title={heading}>
@@ -19,19 +21,16 @@ const heading = title ?? (lang === 'zh' ? '工作經驗' : 'Experience');
     {items.map((item) => (
       <CVTimelineEntry
         title={item.title}
+        title_link={item.title_link}
         sub_title={item.sub_title}
+        sub_title_link={item.sub_title_link}
         years={item.years}
         details={getLocalizedText(item.details, lang)}
+        stack={item.stack}
+        stackLabel={stackLabel}
       >
         {item.achievements && item.achievements.length > 0 && (
-          <ul class="cv-achievements">
-            {item.achievements.map((a) => (
-              <li class="cv-achievement">
-                <span class="cv-bullet" aria-hidden="true"></span>
-                <span>{getLocalizedText(a, lang)}</span>
-              </li>
-            ))}
-          </ul>
+          <CVAchievements items={item.achievements} lang={lang} />
         )}
       </CVTimelineEntry>
     ))}

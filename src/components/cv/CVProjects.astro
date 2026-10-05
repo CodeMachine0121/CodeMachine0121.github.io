@@ -1,5 +1,6 @@
 ---
 import CVSection from './CVSection.astro';
+import CVAchievements from './CVAchievements.astro';
 import { getLocalizedText } from '../../utils/i18n';
 import type { ProjectItem, Language } from '../../types/cv';
 
@@ -13,14 +14,12 @@ const visibleItems = items.filter(p => p.title.en);
 
 ---
 
-<CVSection title={lang === 'zh' ? '專案、演講與認證' : 'Projects, Talks & Certifications'}>
+<CVSection title={lang === 'zh' ? '專案與開源' : 'Projects & Open Source'}>
   <ul class="cv-projects-list">
-    {visibleItems.map((item) => {
-      const localizedType = getLocalizedText(item.type, lang);
-      const description = item.description ? getLocalizedText(item.description, lang) : '';
-      return (
-        <li class="cv-project-row">
-          <div class="cv-project-main">
+    {visibleItems.map((item) => (
+      <li class="cv-project-row">
+        <div class="cv-project-main">
+          <div class="cv-project-head">
             <span class="cv-project-title">
               {item.link ? (
                 <a
@@ -35,13 +34,15 @@ const visibleItems = items.filter(p => p.title.en);
                 <span class="cv-project-text">{getLocalizedText(item.title, lang)}</span>
               )}
             </span>
-            {description && <span class="cv-project-desc">{description}</span>}
+            <span class="cv-badge">
+              {getLocalizedText(item.type, lang)}
+            </span>
           </div>
-          <span class="cv-badge">
-            {localizedType}
-          </span>
-        </li>
-      );
-    })}
+          {item.achievements && item.achievements.length > 0 && (
+            <CVAchievements items={item.achievements} lang={lang} />
+          )}
+        </div>
+      </li>
+    ))}
   </ul>
 </CVSection>

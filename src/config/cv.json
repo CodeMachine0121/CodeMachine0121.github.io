@@ -1,16 +1,17 @@
 {
   "basic": {
     "name": "James Hsueh",
-    "job": "Full Stack",
+    "job": "Full Stack Software Engineer",
+    "tech": ".NET Core / Go / TypeScript",
     "location": "Taiwan",
     "email": "asdfg55887@gmail.com",
     "looking_for": {
-      "en": "Full-stack engineering roles on product teams that own domain-heavy systems end to end — .NET Core or Go on the backend, TypeScript on the front end, running on Kubernetes. Open to remote or Taiwan-based.",
-      "zh": "尋找由團隊端到端負責領域系統的全端工程職位 — 後端 .NET Core 或 Go、前端 TypeScript，運行於 Kubernetes。可接受遠端或台灣在地。"
+      "en": "Full-stack roles on product teams that own domain-heavy systems end to end, running on Kubernetes. Open to remote or Taiwan-based.",
+      "zh": "由產品團隊端到端負責領域複雜系統、運行於 Kubernetes 的全端職位。可接受遠端或台灣在地。"
     },
     "summary": {
-      "en": "A full-stack engineer with a product mindset. I build backends in .NET Core or Go and front ends in TypeScript, hold to Clean Architecture and TDD, and work with AI through a spec-driven workflow of my own.",
-      "zh": "我是一個具備產品思維的全端工程師。後端以 .NET Core 或 Go 開發、前端搭配 TypeScript，遵循 Clean Architecture 與 TDD，並以自己的一套規格驅動流程與 AI 協作。"
+      "en": "Full-stack engineer with a product mindset, building backends in .NET Core or Go and front ends in TypeScript. Committed to Clean Architecture and TDD, working with AI through a self-designed spec-driven development workflow. Delivered scalable solutions across payments, microservices, trading platforms, and cloud-native environments.",
+      "zh": "具備產品思維的全端工程師，後端以 .NET Core 或 Go 開發、前端使用 TypeScript。堅持 Clean Architecture 與 TDD，並透過自行設計的規格驅動開發流程與 AI 協作。曾在支付、微服務、交易平台與雲原生環境中交付可擴展的解決方案。"
     }
   },
   "skills": [
@@ -27,8 +28,8 @@
       "items": ["Nuxt / Vue 3", "React", "Electron", "Kotlin Multiplatform", "Storybook", "Design-System Component Libraries"]
     },
     {
-      "category": { "en": "Cloud & Platform", "zh": "雲端與平台" },
-      "items": ["Kubernetes (CKAD)", "Docker", "Docker Swarm", "Azure", "Oracle Cloud (OCP)", "Azure DevOps CI/CD", "ELK Stack"]
+      "category": { "en": "Cloud & DevOps", "zh": "雲端與 DevOps" },
+      "items": ["Kubernetes (CKAD)", "Docker", "Docker Swarm", "Azure", "Oracle Cloud (OCP)", "Azure DevOps CI/CD", "GitHub CI/CD", "ArgoCD", "ELK Stack"]
     },
     {
       "category": { "en": "Data & Runtime", "zh": "資料與執行環境" },
@@ -40,7 +41,7 @@
     },
     {
       "category": { "en": "Blockchain & Cryptography", "zh": "區塊鏈與密碼學" },
-      "items": ["Elliptic-Curve Cryptography (ECC)", "Chameleon Hash", "Redactable Blockchain", "On-Chain Data Analysis", "Perpetual Futures Risk Modelling", "Exchange Market-Data APIs"]
+      "items": ["Elliptic-Curve Cryptography (ECC)", "Chameleon Hash", "Redactable Blockchain", "On-Chain Data Analysis", "Perpetual Futures Risk Modelling"]
     }
   ],
   "experiences": [
@@ -49,17 +50,26 @@
       "sub_title": "Cafler",
       "years": "2026.04 – Present",
       "details": {
-        "en": "Backends for a global vehicle-care platform's expansion into the Taiwan market, built with Clean Architecture, CQRS, and TDD.",
-        "zh": "為全球車輛護理平台的台灣市場擴張建置後端，採用 Clean Architecture、CQRS 與 TDD。"
+        "en": "Backends for a global vehicle-care platform's expansion into the Taiwan market, built with .NET Core, Clean Architecture, CQRS, and TDD.",
+        "zh": "為全球車輛護理平台的台灣市場擴張建置後端，採用 .NET Core、Clean Architecture、CQRS 與 TDD。"
       },
       "achievements": [
-        { "en": "Backend: .NET", "zh": "Backend: .NET" },
-        { "en": "OS and Commercial platforms, built from zero to production", "zh": "OS 與 Commercial 雙平台（從 0 到 1）" },
-        { "en": "Finance module for the Asia market", "zh": "亞洲市場財務模組" },
-        { "en": "Payment flow, covering transaction state management, duplicate-charge prevention, and e-invoicing (issue / void / allowance)", "zh": "支付流程，含交易狀態管理、重複扣款防護、電子發票開立／作廢／折讓" },
-        { "en": "LINE bot hosting, covering verification, API key management, the apply flow, account binding, and scheduled notifications", "zh": "LINE Bot 代管，含驗證機制、API Key 管理、套用流程、帳號綁定與排程通知" },
-        { "en": "Field-level audit logging", "zh": "欄位級稽核日誌" },
-        { "en": "Market analysis dashboard", "zh": "市場分析儀表板" }
+        { "en": "Built the OS and Commercial platforms from zero to production", "zh": "從零到正式上線打造 OS 與 Commercial 雙平台" },
+        { "en": "Implemented the payment flow, covering transaction state management, duplicate-charge prevention, and e-invoicing (issue / void / allowance)", "zh": "實作支付流程，含交易狀態管理、重複扣款防護與電子發票（開立／作廢／折讓）" },
+        { "en": "Developed the finance module tailored for the Asia market", "zh": "開發針對亞洲市場的財務模組" },
+        { "en": "Hosted LINE bot services, covering verification, API key management, the apply flow, account binding, and scheduled notifications", "zh": "代管 LINE Bot 服務，含驗證機制、API Key 管理、套用流程、帳號綁定與排程通知" },
+        { "en": "Implemented RESTful APIs in .NET Core to streamline frontend–backend integration", "zh": "以 .NET Core 實作 RESTful API，簡化前後端整合" },
+        { "en": "Implemented field-level audit logging and built a market analysis dashboard", "zh": "實作欄位級稽核日誌，並建置市場分析儀表板" },
+        {
+          "en": "Worked on the product's AI assistant features:",
+          "zh": "參與開發產品的 AI 助理功能：",
+          "items": [
+            { "en": "Max token usage limit for each subscription plan", "zh": "每個訂閱方案的 Max Token Usage 限制" },
+            { "en": "Invocation and limit boundaries for each tool", "zh": "各個 Tools 的調用與限制邊界切分" },
+            { "en": "Different assistant tone or restricted tools for different users", "zh": "針對不同使用者設定不同的 AI 助理語氣或限用 Tools" },
+            { "en": "Clients can use the AI assistant through WhatsApp, with tone settings that follow a separate configuration", "zh": "客戶可透過 WhatsApp 使用 AI 助理，其語氣設定另依一套獨立配置" }
+          ]
+        }
       ]
     },
     {
@@ -67,15 +77,14 @@
       "sub_title": "Hospital Health Check & Fitness Analytics Platform (Contract)",
       "years": "2026 – Present",
       "details": {
-        "en": "Contract build of a hospital's health check and fitness analytics platform — the back office, the mobile app, and the deployment behind them.",
-        "zh": "接案打造醫院健檢與健身分析平台 — 管理後台、行動 App，以及背後的部署。"
+        "en": "Contract build of a hospital's health check and fitness analytics platform: the back office, the mobile app, and the deployment behind them.",
+        "zh": "接案打造醫院健檢與體能分析平台：管理後台、行動 App，以及背後的部署。"
       },
+      "stack": "Golang / Gin · TypeScript / Bun / Nuxt · Kotlin Multiplatform · PostgreSQL · Docker Swarm",
       "achievements": [
-        { "en": "Backend: Golang / Gin · Frontend: TypeScript / Bun / Nuxt · Mobile: Kotlin Multiplatform · DB: PostgreSQL · DevOps: Docker Swarm", "zh": "Backend: Golang / Gin · Frontend: TypeScript / Bun / Nuxt · Mobile: Kotlin Multiplatform · DB: PostgreSQL · DevOps: Docker Swarm" },
-        { "en": "Front-end UI component library with Storybook", "zh": "前端 UI 元件庫與 Storybook" },
-        { "en": "Platform-wide role-based access control (RBAC)", "zh": "全平台角色權限控管（RBAC）" },
-        { "en": "SSO and OAuth sign-in", "zh": "SSO 與 OAuth 登入" },
-        { "en": "Health check and fitness measurement analysis", "zh": "健檢與健身檢測數據分析" }
+        { "en": "Health check and fitness measurement analysis: staff import Excel results, and employees view their own results in the mobile app", "zh": "健檢與體能檢測數據分析：工作人員匯入 Excel 結果，員工在行動 App 查看自己的結果" },
+        { "en": "Platform-wide role-based access control (RBAC) with SSO and OAuth sign-in", "zh": "全平台角色權限控管（RBAC），支援 SSO 與 OAuth 登入" },
+        { "en": "Front-end UI component library with Storybook", "zh": "前端 UI 元件庫與 Storybook" }
       ]
     },
     {
@@ -87,10 +96,12 @@
         "zh": "將信用貸款平台遷移至微服務，建置其 Oracle Cloud 基礎設施，並為團隊導入規格驅動開發。"
       },
       "achievements": [
-        { "en": "Microservice migration of a credit-loan platform, covering a 10+ service split and a decoupled loan-strategy module", "zh": "信用貸款平台微服務化，含 10 個以上服務拆分與貸款策略模組解耦" },
-        { "en": "Spec-driven development workflow, a lightweight in-house process adopted across 3–4 projects", "zh": "規格驅動開發流程導入，自製輕量流程並於 3 至 4 個專案採用" },
-        { "en": "Shared SSO / OAuth sign-in for internal services", "zh": "內部服務共用 SSO／OAuth 登入" },
-        { "en": "CI/CD and cloud operations, covering Azure DevOps, Oracle Cloud (OCP), and reproducible local test environments", "zh": "CI/CD 與雲端維運，含 Azure DevOps、Oracle Cloud (OCP) 與本地測試環境" }
+        { "en": "Delivered the microservice migration of a credit-loan platform, covering a 10+ service split and a decoupled loan-strategy module", "zh": "完成信用貸款平台的微服務遷移，含 10 個以上服務拆分與貸款策略模組解耦" },
+        { "en": "Implemented an election mechanism in Golang to prevent background services from doing duplicate work", "zh": "使用 Golang 實作 election 選舉機制，避免背景服務重工" },
+        { "en": "Introduced GitHub SpecKit's AI SDD workflow to the team; a retrospective found its context too large for our projects", "zh": "為團隊導入 GitHub SpecKit 的 AI SDD workflow；事後檢討發現其 context 太大，不適合我們的專案" },
+        { "en": "Designed a custom SDD workflow based on our projects' characteristics and rolled it out to the team, adopted across 3–4 projects", "zh": "結合專案特性自定義一套 SDD workflow 並導入團隊使用，於 3 至 4 個專案採用" },
+        { "en": "Built shared SSO / OAuth sign-in for internal services", "zh": "為內部服務建置共用 SSO／OAuth 登入" },
+        { "en": "Ran CI/CD and cloud operations on Azure DevOps and Oracle Cloud (OCP), with reproducible local test environments", "zh": "於 Azure DevOps 與 Oracle Cloud (OCP) 負責 CI/CD 與雲端維運，並提供可重現的本地測試環境" }
       ]
     },
     {
@@ -102,106 +113,109 @@
         "zh": "支付處理與第三方 API 整合，以 TDD 與六邊形架構開發。"
       },
       "achievements": [
-        { "en": "Scrum Master for a 4–6 person intern team, plus workshops on hexagonal architecture, TDD, refactoring, Docker, and Kubernetes", "zh": "實習生團隊 Scrum Master（4 至 6 人），含六邊形架構、TDD、重構、Docker、Kubernetes 工作坊" },
-        { "en": "ELK monitoring for Kubernetes services (issue detection cut from hours to minutes)", "zh": "Kubernetes 服務 ELK 監控（問題發現時間由數小時縮短至數分鐘）" },
-        { "en": "Legacy payment code refactoring, including defects open for over two years", "zh": "遺留支付程式碼重構，含懸置兩年以上的缺陷修復" },
-        { "en": "GDG Kaohsiung speaker: two talks on Golang and developer tooling", "zh": "GDG Kaohsiung 講者：Golang 與開發工具，共兩場" }
-      ]
-    }
-  ],
-  "side_projects": [
-    {
-      "title": "Founder & Author",
-      "sub_title": "Coding Afternoon",
-      "years": "2023 – Present",
-      "details": {
-        "en": "Tech-education blog at coding-afternoon.com — content, site, and infrastructure, all solo.",
-        "zh": "技術教育部落格 coding-afternoon.com — 內容、網站與基礎設施皆獨力完成。"
-      },
-      "achievements": [
-        { "en": "80+ technical articles (6,390 unique visitors and 51,660 requests a month)", "zh": "技術文章 80 篇以上（月不重複訪客 6,390、月請求 51,660）" },
-        { "en": "EccSDK: open-source elliptic-curve cryptography SDK on NuGet (2.7K downloads)", "zh": "EccSDK：NuGet 開源橢圓曲線密碼學 SDK（累計下載 2.7K）" }
+        { "en": "Built ELK monitoring for Kubernetes services, cutting issue detection from hours to minutes", "zh": "為 Kubernetes 服務建置 ELK 監控，問題發現時間由數小時縮短至數分鐘" },
+        { "en": "Refactored legacy payment code, resolving defects that had been open for over two years", "zh": "重構遺留支付程式碼，修復懸置兩年以上的缺陷" },
+        { "en": "Scrum Master for a 4–6 person intern team; ran workshops on hexagonal architecture, TDD, refactoring, Docker, and Kubernetes", "zh": "擔任 4 至 6 人實習生團隊的 Scrum Master；主持六邊形架構、TDD、重構、Docker 與 Kubernetes 工作坊" }
       ]
     }
   ],
   "projects": [
     {
       "title": { "en": "GoTrading", "zh": "GoTrading" },
-      "description": {
-        "en": "Trading service across two repos: a Go/Gin + PostgreSQL REST API with live market streaming over SSE, sandboxed user-written indicator scripts (yaegi), and an LLM market assistant — plus a Nuxt front end with charting and a strategy console.",
-        "zh": "跨前後端兩個專案的交易服務：Go/Gin 與 PostgreSQL 的 REST API，含 SSE 即時跟盤、以 yaegi 沙箱執行使用者自寫的指標算式，以及 LLM 行情助手；前端為 Nuxt 的圖表與策略操作台。"
-      },
+      "achievements": [
+        {
+          "en": "Trading service across two repos: a Go/Gin + PostgreSQL REST API with live market streaming over SSE, sandboxed user-written indicator scripts (yaegi), and an LLM market assistant, plus a Nuxt front end with charting and a strategy console",
+          "zh": "跨前後端兩個專案的交易服務：Go/Gin 與 PostgreSQL 的 REST API，含 SSE 即時跟盤、以 yaegi 沙箱執行使用者自寫的指標算式，以及 LLM 行情助手；前端為 Nuxt 的圖表與策略操作台"
+        },
+        { "en": "Users compose their own scripts into trading strategies and run them on bots that monitor prices, detect signals, and send Telegram alerts", "zh": "使用者將自己的腳本組合成交易策略，交由機器人監控價格、偵測訊號並發送 Telegram 通知" },
+        { "en": "DevOps: Kubernetes, GitHub CI/CD, ArgoCD, and Cloudflare Tunnel", "zh": "DevOps：Kubernetes、GitHub CI/CD、ArgoCD 與 Cloudflare Tunnel" }
+      ],
       "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://github.com/CodeMachine0121/go-trading"
     },
     {
-      "title": { "en": "ZenMD", "zh": "ZenMD" },
-      "description": {
-        "en": "Local desktop writing environment built around one question — will this interrupt the person writing? Electron, React, and CodeMirror, with plain Markdown files as the storage format and a Zen Mode that clears everything but the text.",
-        "zh": "本機桌面寫作環境，每個設計決定都回到同一個問題：這會不會打斷正在寫的人？以 Electron、React 與 CodeMirror 打造，純 Markdown 檔為儲存格式，並以 Zen Mode 收掉正文以外的一切，讓寫作者進入心流。"
-      },
+      "title": { "en": "SDD Skills", "zh": "SDD Skills" },
+      "achievements": [
+        { "en": "Claude Code plugin that runs spec-driven development as a skill workflow: ubiquitous language → clarify → PRD → architecture → implement (TDD or code-first)", "zh": "以技能工作流程執行規格驅動開發的 Claude Code 外掛：ubiquitous language → clarify → PRD → architecture → implement（TDD 或 code-first）" },
+        { "en": "Gherkin acceptance criteria in the PRD drive the test cases, and a contract check traces each one back to the tests and code", "zh": "由 PRD 中的 Gherkin 驗收條件驅動測試案例，並以 contract 檢查將每一條追溯到測試與程式碼" }
+      ],
       "type": { "en": "Side Project", "zh": "個人專案" },
-      "link": "https://zenmd.coding-afternoon.com/en/"
-    },
-    {
-      "title": { "en": "Quantitative Trading for Engineers: From K-Lines to a Composable Strategy Engine", "zh": "工程師的量化交易入門：從 K 線到可組合的交易策略引擎" },
-      "description": {
-        "en": "30-day iThome Ironman 2026 series building a quantitative trading system in Python from scratch — market-data pipeline into TimescaleDB, indicators as reusable features, strategies as composable blocks, vectorized backtesting with slippage and fees, then position sizing, alerting, and deployment.",
-        "zh": "iThome 鐵人賽 2026 年 30 天系列，以 Python 從零打造量化交易系統 — 行情資料管線與 TimescaleDB、指標收斂成可重用的 feature 模組、策略拆成可組合的積木、含滑價與手續費的向量化回測，以及部位管理、告警與部署。"
-      },
-      "type": { "en": "Blog Series", "zh": "部落格系列" },
-      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/9051"
-    },
-    {
-      "title": { "en": "Speaker at DevOpsDays Taipei 2026", "zh": "DevOpsDays Taipei 2026 講者" },
-      "description": { "en": "", "zh": "" },
-      "type": { "en": "Conference Talk", "zh": "研討會演講" },
-      "link": "https://devopsdays.tw/2026/session/4723"
+      "link": "https://github.com/CodeMachine0121/SDD-Skill"
     },
     {
       "title": { "en": "Trader Risk Radar", "zh": "Trader Risk Radar" },
-      "description": {
-        "en": "Risk analysis and ranking API for on-chain perpetual-futures traders.",
-        "zh": "鏈上永續合約交易員的風險分析與排行 API。"
-      },
+      "achievements": [
+        { "en": "Risk analysis and ranking API for on-chain perpetual-futures traders, built to evaluate traders for copy trading", "zh": "鏈上永續合約交易員的風險分析與排行 API，用於評估跟單對象" },
+        { "en": "Scores each top-ranked trader on the spread between highest and lowest revenue and on the standard deviation of historical revenue", "zh": "依最高與最低收益的差距，以及歷史收益的標準差，為排行前列的交易員評分" }
+      ],
       "type": { "en": "Side Project", "zh": "個人專案" },
       "link": "https://github.com/CodeMachine0121/Transaction-Risk-Radar"
     },
     {
-      "title": { "en": "Open Source SDK on NuGet: EccSDK", "zh": "NuGet 開源 SDK：EccSDK" },
-      "description": {
-        "en": "Elliptic-curve cryptography SDK for .NET, published on NuGet — 2.7K downloads.",
-        "zh": "發布於 NuGet 的 .NET 橢圓曲線密碼學 SDK — 累計下載 2.7K。"
-      },
+      "title": { "en": "ZenMD", "zh": "ZenMD" },
+      "achievements": [
+        {
+          "en": "Local desktop writing environment built around one question: will this interrupt the person writing? Built with Electron, React, and CodeMirror, using plain Markdown files as storage and a Zen Mode that clears everything but the text",
+          "zh": "本機桌面寫作環境，圍繞一個問題打造：這會不會打斷正在寫的人？以 Electron、React 與 CodeMirror 開發，用純 Markdown 檔儲存，並以 Zen Mode 收掉正文以外的一切"
+        }
+      ],
+      "type": { "en": "Side Project", "zh": "個人專案" },
+      "link": "https://zenmd.coding-afternoon.com/en/"
+    },
+    {
+      "title": { "en": "EccSDK", "zh": "EccSDK" },
+      "achievements": [
+        { "en": "Open-source elliptic-curve cryptography SDK for .NET, published on NuGet with 2.7K downloads", "zh": "發布於 NuGet 的 .NET 開源橢圓曲線密碼學 SDK，累計下載 2.7K" }
+      ],
       "type": { "en": "Open Source", "zh": "開源專案" },
-      "link": "https://www.nuget.org/packages/EccSDK#usedby-body-tab"
+      "link": "https://www.nuget.org/packages/EccSDK"
+    }
+  ],
+  "talks": [
+    {
+      "title": "Speaker",
+      "sub_title": "DevOpsDays Taipei 2026",
+      "sub_title_link": "https://devopsdays.tw/2026/session/4723",
+      "years": "2026.02",
+      "achievements": [
+        { "en": "GSI 協議：提升 AI 驅動 SDD 的效率與敏捷性 (GSI Protocol: Improving the Efficiency and Agility of AI-Driven SDD), a 25-minute session", "zh": "GSI 協議：提升 AI 驅動 SDD 的效率與敏捷性（25 分鐘議程）" },
+        { "en": "A protocol for AI agents doing spec-driven development, built on Gherkin specs and project-aware architecture design", "zh": "為 AI 代理進行規格驅動開發而設計的協議，以 Gherkin 規格與貼合專案的架構設計為基礎" }
+      ]
     },
     {
-      "title": { "en": "Build an Editable Blockchain", "zh": "打造可編輯的區塊鏈" },
-      "description": {
-        "en": "30-day iThome Ironman series building a redactable blockchain from scratch.",
-        "zh": "iThome 鐵人賽 30 天系列，從零打造可修改的區塊鏈。"
-      },
-      "type": { "en": "Blog Series", "zh": "部落格系列" },
-      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165"
-    },
+      "title": "Speaker",
+      "sub_title": "GDG Kaohsiung",
+      "achievements": [
+        { "en": "Two talks on Golang and developer tooling", "zh": "Golang 與開發工具主題，共兩場" }
+      ]
+    }
+  ],
+  "writing": [
     {
-      "title": { "en": "From 0 to 1: Golang TDD with AI", "zh": "從 0 到 1：Golang TDD with AI" },
-      "description": {
-        "en": "30-day iThome Ironman series on driving Go development with AI-assisted TDD.",
-        "zh": "iThome 鐵人賽 30 天系列，探討以 AI 輔助 TDD 推進 Go 開發。"
-      },
-      "type": { "en": "Blog Series", "zh": "部落格系列" },
-      "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190"
-    },
+      "title": "Founder & Author",
+      "sub_title": "Coding Afternoon",
+      "sub_title_link": "https://coding-afternoon.com",
+      "years": "2023 – Present",
+      "achievements": [
+        { "en": "Tech-education blog with 80+ technical articles (6,390 unique visitors and 51,660 requests a month). Content, site, and infrastructure are all solo", "zh": "技術教育部落格，80 篇以上技術文章（月不重複訪客 6,390、月請求 51,660）。內容、網站與基礎設施皆獨力完成" },
+        {
+          "en": "iThome Ironman 30-day series:",
+          "zh": "iThome 鐵人賽 30 天系列：",
+          "items": [
+            { "en": "Quantitative Trading for Engineers: From K-Lines to a Composable Strategy Engine (2026)", "zh": "工程師的量化交易入門：從 K 線到可組合的交易策略引擎（2026）", "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/9051" },
+            { "en": "From 0 to 1: Golang TDD with AI (2025)", "zh": "從 0 到 1：與 AI 協作的 Golang TDD 實戰（2025）", "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/8190" },
+            { "en": "Build an Editable Blockchain (2024)", "zh": "打造可編輯的區塊鏈（2024）", "link": "https://ithelp.ithome.com.tw/users/20115082/ironman/7165" }
+          ]
+        }
+      ]
+    }
+  ],
+  "certifications": [
     {
-      "title": { "en": "CKAD — Certified Kubernetes Application Developer", "zh": "CKAD — Kubernetes 應用開發者認證" },
-      "description": {
-        "en": "Linux Foundation / CNCF, hands-on performance-based certification.",
-        "zh": "Linux Foundation / CNCF 實作型認證。"
-      },
-      "type": { "en": "Certification", "zh": "認證" },
-      "link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf"
+      "title": "CKAD: Certified Kubernetes Application Developer",
+      "title_link": "https://ti-user-certificates.s3.amazonaws.com/e0df7fbf-a057-42af-8a1f-590912be5460/1ee39008-e3d3-4b49-9411-735f9104f901-james-hsueh-bbb6d2cb-d4a9-41f5-bc17-d32d8399c29b-certificate.pdf",
+      "sub_title": "Linux Foundation / CNCF",
+      "years": "2026"
     }
   ],
   "education": [
@@ -226,8 +240,19 @@
   ],
   "socialLinks": [
     {
+      "iconName": "LinkedIn",
+      "label": "LinkedIn",
+      "link": "https://www.linkedin.com/in/jameshsueh/"
+    },
+    {
       "iconName": "Github",
+      "label": "GitHub",
       "link": "https://github.com/CodeMachine0121"
+    },
+    {
+      "iconName": "Website",
+      "label": "coding-afternoon.com",
+      "link": "https://coding-afternoon.com"
     },
     {
       "iconName": "Email",

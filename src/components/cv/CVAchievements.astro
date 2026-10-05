@@ -1,0 +1,27 @@
+---
+import { getLocalizedText } from '../../utils/i18n';
+import type { Achievement, Language } from '../../types/cv';
+
+interface Props {
+  items: Achievement[];
+  lang?: Language;
+  nested?: boolean;
+}
+const { items, lang = 'en', nested = false } = Astro.props;
+---
+
+<ul class:list={['cv-achievements', { 'cv-achievements--nested': nested }]}>
+  {items.map((a) => (
+    <li class="cv-achievement">
+      <span class="cv-bullet" aria-hidden="true"></span>
+      <div class="cv-achievement__body">
+        {a.link ? (
+          <a href={a.link} target="_blank" rel="noopener noreferrer" class="cv-inline-link">{getLocalizedText(a, lang)}</a>
+        ) : (
+          <span>{getLocalizedText(a, lang)}</span>
+        )}
+        {a.items && a.items.length > 0 && <Astro.self items={a.items} lang={lang} nested />}
+      </div>
+    </li>
+  ))}
+</ul>

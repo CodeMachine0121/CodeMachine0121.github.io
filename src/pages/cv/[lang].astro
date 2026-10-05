@@ -29,10 +29,12 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const language: Language = isValidLanguage(lang) ? lang : 'en';
 
-const { basic, skills, experiences, side_projects, education, projects, socialLinks } = cvData;
+const { basic, skills, experiences, projects, talks, writing, certifications, education, socialLinks } = cvData;
 const htmlLang = language === 'zh' ? 'zh-TW' : 'en';
 
-const sideProjectsTitle = language === 'zh' ? '技術寫作與開源' : 'Writing & Open Source';
+const talksTitle = language === 'zh' ? '研討會演講' : 'Conference Talks';
+const writingTitle = language === 'zh' ? '寫作' : 'Writing';
+const certificationsTitle = language === 'zh' ? '認證' : 'Certifications';
 // The browser's print dialog derives the suggested PDF filename from <title>.
 const pageTitle = `${basic.name} - ${basic.job} - CV`;
 ---
@@ -86,10 +88,12 @@ const pageTitle = `${basic.name} - ${basic.job} - CV`;
         <CVSummary summary={getLocalizedText(basic.summary, language)} lang={language} />
         {skills && skills.length > 0 && <CVSkills groups={skills} lang={language} />}
         <CVExperience items={experiences} lang={language} />
-        {side_projects && side_projects.length > 0 && (
-          <CVExperience items={side_projects} lang={language} title={sideProjectsTitle} />
-        )}
         <CVProjects items={projects} lang={language} />
+        {talks && talks.length > 0 && <CVExperience items={talks} lang={language} title={talksTitle} />}
+        {writing && writing.length > 0 && <CVExperience items={writing} lang={language} title={writingTitle} />}
+        {certifications && certifications.length > 0 && (
+          <CVExperience items={certifications} lang={language} title={certificationsTitle} />
+        )}
         <CVEducation items={education} lang={language} />
       </div>
     </div>
