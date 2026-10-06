@@ -104,6 +104,10 @@ export const UI_TEXT = {
   'toc.title': { zh: '目錄', en: 'Contents' },
   'toc.label': { zh: '文章目錄', en: 'Table of contents' },
 
+  'code.copy': { zh: '複製程式碼', en: 'Copy code' },
+  'code.copied': { zh: '已複製', en: 'Copied' },
+  'code.copyFailed': { zh: '複製失敗', en: 'Copy failed' },
+
   'home.viewCv': { zh: '看完整履歷', en: 'View CV' },
   'home.email': { zh: '寫信給我', en: 'Email me' },
   'home.latestArticles': { zh: '最新文章', en: 'Latest articles' },
