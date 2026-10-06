@@ -27,12 +27,20 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
 
   /* 版面 */
-  --measure: 68ch; /* 正文最大行長 */
+  --measure: 46rem; /* 正文最大行長：以 rem 計，正文 17px 時約 43 個中文字一行；用 ch 會因中文全形而偏窄 */
   --page-width: 72rem; /* 頁面容器最大寬 */
   --toc-width: 14rem; /* 寬螢幕目錄欄寬 */
   --radius: 6px;
 
   color-scheme: light;
+}
+
+/* 大螢幕放寬正文與頁面容器，避免兩側留白過多（正文 17px 時約 52 個中文字一行） */
+@media screen and (min-width: 1440px) {
+  :root {
+    --measure: 56rem;
+    --page-width: 84rem;
+  }
 }
 
 @media screen and (prefers-color-scheme: dark) {
