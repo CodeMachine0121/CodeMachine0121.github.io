@@ -17,7 +17,7 @@ Oracle: Acceptance Criteria（PRD v1.2：36 AC ＋ 6 BR ＋ 4 NFR = 46 clauses�
 | ID | Clause | Spec-expected (oracle) | Impl | Test | Test audit | Code audit | Status |
 |----|--------|------------------------|------|------|------------|------------|--------|
 | AC-01 | US-01 全站套用同一套編輯風格 | 八種頁面使用同一套字體、配色、版寬；任何頁面都沒有手繪風格元素 | `src/styles/tokens.css:12`、`src/layouts/Layout.astro`、`src/pages/cv/[lang].astro:18` | BO「不再帶手繪設計系統的類別與字型」「使用全站共用的字型」「套用全站共用的配色 token」（8 頁） | asserts-oracle | produces-oracle | ✅ conforms |
-| AC-02 | US-01 文章正文維持舒適的閱讀寬度 | 寬螢幕上正文行長有上限，不隨螢幕拉寬 | `src/styles/article.css:5`、`tokens.css`（`--measure: 68ch`） | BO:422「文章正文限制在固定的閱讀寬度內」 | asserts-oracle | produces-oracle | ✅ conforms |
+| AC-02 | US-01 文章正文維持舒適的閱讀寬度 | 寬螢幕上正文行長有上限，不隨螢幕拉寬 | `src/styles/article.css:7`、`tokens.css`（`--measure: 46rem`，≥ 1440px 為 `56rem`） | BO:520「文章正文限制在固定的閱讀寬度內」 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-03 | US-02 一般中文文章 | 3,200 字中文 → 顯示「8 分鐘」 | `src/utils/reading-time.ts:31`、`components/blog/ReadingTime.astro` | RT「3,200 個中文字是 8 分鐘」＋ BO:254/263（顯示格式「N 分鐘」） | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-04 | US-02 超過整分鐘時無條件進位 | 3,201 字 → 「9 分鐘」 | `reading-time.ts:39` | RT「3,201 個中文字是 9 分鐘」 | asserts-oracle | produces-oracle | ✅ conforms |
 | AC-05 | US-02 極短文章最少 1 分鐘 | 120 字 → 「1 分鐘」 | `reading-time.ts:39` | RT「極短文章最少 1 分鐘」 | asserts-oracle | produces-oracle | ✅ conforms |
