@@ -523,7 +523,8 @@ describe('整站同一套編輯風格', () => {
 
     expect(html).toMatch(/class="article-layout__main prose article-body"/);
     expect(css).toMatch(/\.article-layout__main[^{]*\{[^}]*max-width:\s*var\(--measure\)/);
-    expect(css).toMatch(/--measure:\s*68ch/);
+    expect(css).toMatch(/--measure:\s*46rem/);
+    expect(css).toMatch(/min-width:\s*1440px\)\s*\{\s*:root\s*\{[^}]*--measure:\s*56rem/);
   });
 });
 
