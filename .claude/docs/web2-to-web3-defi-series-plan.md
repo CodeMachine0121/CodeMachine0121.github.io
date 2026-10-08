@@ -87,7 +87,7 @@
 | 05 | 2026-10-05 | 實戰：用 Solidity 寫一個極簡版 ERC-20 代幣合約 | 已完成 |
 | 06 | 2026-10-06 | 深入理解 OpenZeppelin：為什麼我們從不自己寫標準合約？ | 已完成 |
 | 07 | 2026-10-07 | 權限管理機制：Ownable vs AccessControl 的應用場景 | 已完成 |
-| 08 | 2026-10-08 | 事件（Events）與日誌（Logs）：鏈上數據的檢索與監控 | 待撰寫 |
+| 08 | 2026-10-08 | 事件（Events）與日誌（Logs）：鏈上數據的檢索與監控 | 已完成 |
 | 09 | 2026-10-09 | 錯誤處理：require、revert、assert 與 0.8 的溢位檢查 | 待撰寫 |
 | 10 | 2026-10-10 | 介面與函數可視度：合約之間如何互相呼叫？ | 待撰寫 |
 | 11 | 2026-10-11 | 用 Viem 連上鏈：從讀取狀態到第一個前端交互介面 | 待撰寫 |
@@ -222,10 +222,11 @@
 
 ## 目前進度
 
-- **已完成：Day 01–07**（皆為 `draft: false`）。Day 05 的合約與七個測試已用 Foundry 實跑通過。
+- **已完成：Day 01–08**（皆為 `draft: false`）。
+- **Day 08**：`TreasuryToken` 新增 `event Minted(address indexed minter, address indexed to, uint256 amount)`，`mint` 在 `_mint` 之後 `emit Minted(msg.sender, to, amount)`（建構子不變）；新增 `TreasuryTokenEvents.t.sol`（5 個測試，`pragma ^0.8.22`：帶合約名稱的 `emit IERC20.Transfer(...)` 在 0.8.21 會觸發 NatSpec 內部錯誤），五個檔案共 30 個測試實跑通過。實測 `mint` 57,053 → 59,002 Gas、runtime bytecode 7,025 → 7,126 bytes。另在 anvil 上以 `cast logs` 重播 `RoleGranted`／`RoleRevoked` 重建角色成員，並驗證 revert 交易收據 `status 0`、`logs []`。注意：`vm.recordLogs` 會錄到被 revert 呼叫框內的事件，與真實節點不同，相關論點要在 anvil 上驗。Day 05 的合約與七個測試已用 Foundry 實跑通過。
 - **Day 07**：`TreasuryToken` 改為 `ERC20` ＋ `ERC20Burnable` ＋ `ERC20Capped` ＋ `ERC20Pausable` ＋ `AccessControl`，建構子變成 `(initialSupply, maxSupply, admin)`（零地址 revert `TreasuryTokenInvalidAdmin`，初始供給鑄給 `admin`）；角色 `MINTER_ROLE`（`mint`）、`PAUSER_ROLE`（`pause`），`unpause` 刻意只給 `DEFAULT_ADMIN_ROLE`。另有對照用的 `OwnableTreasuryToken`（只有 `mint`，無暫停）。Day 06 兩個測試檔的 `setUp` 補第三個參數，連同 `OwnableTreasuryToken.t.sol`（4）與 `TreasuryTokenRoles.t.sol`（10）共 25 個測試，以 Forge 1.8.3、solc 0.8.37、OZ v5.6.1 實跑通過。Day 18、28 沿用此三參數建構子。
 - **Day 06**：OpenZeppelin 固定在 `v5.6.1`（寫作時最新 tag v5.7.0 尚未列入 audits 表）。合約名為 `TreasuryToken`（`ERC20` ＋ `ERC20Burnable` ＋ `ERC20Capped`，覆寫 `_update` 擋下轉給代幣合約本身），建構子 `(initialSupply, maxSupply)`；後續 Day 07、18、28 沿用此合約。十一個測試以 Forge 1.8.3、solc 0.8.37 實跑通過。
-- **待撰寫：Day 08–45。**
+- **待撰寫：Day 09–45。**
 - **Day 01–04 已對齊撰寫規範（2026-10-05）**：
   - 日期改為 10-01／10-02／10-03／10-04（原本 Day 02 是 10-03，Day 03 與 Day 04 重複 10-04）。
   - 補上 `description`；正文標題改從 h2 起始；標題內不再有反引號；「你」當主詞全部移除（四篇皆為 0）；拿掉獎勵式說辭與「準備好了嗎？」式結尾，結尾統一為「明天 Day N＋1」預告。
