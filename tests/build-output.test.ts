@@ -526,6 +526,16 @@ describe('整站同一套編輯風格', () => {
     expect(css).toMatch(/--measure:\s*46rem/);
     expect(css).toMatch(/min-width:\s*1440px\)\s*\{\s*:root\s*\{[^}]*--measure:\s*56rem/);
   });
+
+  test('文章封面等比例縮放，不裁切圖片', () => {
+    const html = read('blogs/到底怎麼切微服務/index.html');
+    const cover = html.match(/<img[^>]*data-article-cover[^>]*>/)?.[0];
+
+    expect(cover).toBeDefined();
+    expect(cover).not.toContain('object-cover');
+    expect(cover).toMatch(/class="[^"]*\bh-auto\b[^"]*\bw-auto\b[^"]*\bmax-w-full\b/);
+    expect(cssOf(html)).toMatch(/max-height:\s*32rem/);
+  });
 });
 
 describe('介面語言', () => {
